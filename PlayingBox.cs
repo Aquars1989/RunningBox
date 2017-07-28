@@ -13,18 +13,19 @@ namespace RunningBox
 {
     public partial class PlayingBox : UserControl
     {
-        private const int _MaxEnergy = 1000;
-        private const int _JetEnergy = 350;
-        private const int _LowEnergy = 350;
-        private const int _SlowEnergy = 15;
-        private const int _EnergyGet = 5;
+        private const int _EnergyMax = 1000;
+        private const int _EnergyGetPerAction = 5;
+        private const int _EnergyForSprint = 350;
+        private const int _EnergyForSlow = 350;
+        private const int _EnergyForSlowPerAction = 15;
+
         private const int _EndTickMax = 30;
 
-        bool _HiderAlive = false;
-        private GameObject _HiderObj = null;
-        private List<GameObject> _ActiveObjs = new List<GameObject>();
-        private List<VoidObject> _VoidObjs = new List<VoidObject>();
-        private PointF _MousePot = new PointF(50, 50);
+        private bool _PlayerAlive = false;
+        private GameObject _PlayerObject = null;
+        private List<GameObject> _ActiveObjects = new List<GameObject>();
+        private List<VoidObject> _VoidObjects = new List<VoidObject>();
+        private PointF _PointOfMouse = new PointF(50, 50);
 
         private int _Energy = 0;
         private int _Score = 0;
@@ -37,22 +38,22 @@ namespace RunningBox
         private SolidBrush _BrushHalfFuchsia = new SolidBrush(Color.FromArgb(30, 255, 0, 255));
         private SolidBrush _BrushHalfFirebrick = new SolidBrush(Color.FromArgb(30, 178, 34, 34));
 
-        private Timer _TimerMove = new Timer() { Enabled = true, Interval = 25 };
-        private Timer _TimerBuild = new Timer() { Enabled = true, Interval = 1000 };
+        private Timer _TimerOfAction = new Timer() { Enabled = true, Interval = 25 };
+        private Timer _TimerOfBuild = new Timer() { Enabled = true, Interval = 1000 };
         private Random _Rand = new Random();
 
-        private bool _Start = false;
-        private bool _End = false;
+        private bool _IsStart = false;
+        private bool _IsEnd = false;
         private int _EndTick = 0;
         private int _LeveL = 0;
         private int _DarkAni = 0;
 
-        private int _DarkLv = 22;
-        private int _GroupLv = 15;
-        private int _SmartLv = 11;
-        private int _MineLv = 8;
-        private int _FastLv = 3;
-        private int _RerectLv = 28;
+        private int _LevelOfDark = 22;
+        private int _LevelOfGroup = 15;
+        private int _LevelOfInterceptor = 11;
+        private int _LeveLOfMine = 8;
+        private int _LevelOfCatcher = 3;
+        private int _LevelOfLimited = 28;
 
         private int _GroupPw = 0;
         private int _MinePw = 0;
@@ -64,37 +65,39 @@ namespace RunningBox
         private Graphics _BackGraphics;
         private Bitmap _BackImage;
 
-        private int _RerectTick = 0;
+        private int _TickOfLimited = 0;
         private Rectangle _RerectValue = new Rectangle();
 
         private int _FPSTic = 10;
         public PlayingBox()
         {
             InitializeComponent();
+
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            _TimerMove.Tick += TimerMove_Tick;
-            _TimerBuild.Tick += TimerBuild_Tick;
+            _TimerOfAction.Tick += TimerOfAction_Tick;
+            _TimerOfBuild.Tick += TimerOfBuild_Tick;
         }
 
-        private void TimerBuild_Tick(object sender, EventArgs e)
+        private void TimerOfBuild_Tick(object sender, EventArgs e)
         {
-            if (!_Start) return;
+            if (!_IsStart) return;
+
             _LeveL++;
 
             float lifeTimeFx = (100F + _LeveL) / 100F;
             float lifeSpeedFx = (70F + _LeveL) / 100F;
 
             //darkscreen
-            if (_LeveL % _DarkLv == 0)
+            if (_LeveL % _LevelOfDark == 0)
             {
                 _DarkAni = 2;
             }
 
-            if (_LeveL % _RerectLv == 0 && _RerectTick == 0)
+            if (_LeveL % _LevelOfLimited == 0 && _TickOfLimited == 0)
             {
-                _RerectTick = 1;
+                _TickOfLimited = 1;
                 int helfVal = ((_RectInside.Height + _RectInside.Width) / 2) / 100;
                 int helfX = _Rand.Next(2, helfVal - 2);
                 int helfY = helfVal - helfX;
@@ -107,7 +110,7 @@ namespace RunningBox
                 _RerectValue = new Rectangle(helfX1, helfY1, helfX2, helfY2);
             }
 
-            if (_LeveL % _GroupLv == 0)
+            if (_LeveL % _LevelOfGroup == 0)
             {
                 for (int i = 0; i < 6 + _GroupPw; i++)
                 {
@@ -136,12 +139,12 @@ namespace RunningBox
                             y2 = Height + _Rand.Next(20, 60);
                             break;
                     }
-                    _ActiveObjs.Add(new GameObject(ActType.Nomal, ShapeType.Ellipse, x2, y2, maxMove, size, speed2, Brushes.Red, life, 0, 0));
+                    _ActiveObjects.Add(new GameObject(ActType.Nomal, ShapeType.Ellipse, x2, y2, maxMove, size, speed2, Brushes.Red, life, 0, 0));
                 }
                 _GroupPw++;
             }
 
-            if (_LeveL % _MineLv == 0)
+            if (_LeveL % _LeveLOfMine == 0)
             {
                 for (int i = 0; i < 4 + (_MinePw / 2); i++)
                 {
@@ -149,7 +152,7 @@ namespace RunningBox
                     int maxMove = _Rand.Next(10, 15);
                     float speed = _Rand.Next(850, 1000) - (size * 50) * lifeSpeedFx;
                     float speed2 = speed / maxMove;
-                    int life = SecToTick(_MineLv * 0.5F);// +_Rand.Next(0, 5);
+                    int life = SecToTick(_LeveLOfMine * 0.5F);// +_Rand.Next(0, 5);
                     int x2 = 0, y2 = 0, lockPotX = 0, lockPotY = 0;
                     switch (_Rand.Next(1, 4))
                     {
@@ -178,7 +181,7 @@ namespace RunningBox
                             lockPotY = _Rand.Next(_RectInside.Top + _RectInside.Height / 2, _RectInside.Height - 20);
                             break;
                     }
-                    _ActiveObjs.Add(new GameObject(ActType.Mine, ShapeType.Image, x2, y2, maxMove, size, speed2, Brushes.Firebrick, life, lockPotX, lockPotY) { Image = RunningBox.Properties.Resources.Mine });
+                    _ActiveObjects.Add(new GameObject(ActType.Mine, ShapeType.Image, x2, y2, maxMove, size, speed2, Brushes.Firebrick, life, lockPotX, lockPotY) { Image = RunningBox.Properties.Resources.Mine });
                 }
                 _MinePw++;
             }
@@ -204,23 +207,23 @@ namespace RunningBox
                     break;
             }
 
-            if (_LeveL % _SmartLv == 0)
+            if (_LeveL % _LevelOfInterceptor == 0)
             {
                 int size = _Rand.Next(6, 8);
                 int maxMove = _Rand.Next(10, 15);
                 float speed = _Rand.Next(850, 1000) - (size * 50) * lifeSpeedFx;
                 float speed2 = speed / maxMove;
                 int life = SecToTick(7F * lifeTimeFx);
-                _ActiveObjs.Add(new GameObject(ActType.Smart, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Fuchsia, life, 0, 0));
+                _ActiveObjects.Add(new GameObject(ActType.Smart, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Fuchsia, life, 0, 0));
             }
-            else if (_LeveL % _FastLv == 0)
+            else if (_LeveL % _LevelOfCatcher == 0)
             {
                 int size = _Rand.Next(3, 4);
                 int maxMove = _Rand.Next(8, 15);
                 float speed = _Rand.Next(800, 900) - (size * 50) * lifeSpeedFx;
                 float speed2 = speed / maxMove;
                 int life = SecToTick(4.5F * lifeTimeFx);
-                _ActiveObjs.Add(new GameObject(ActType.Fast, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Blue, life, 0, 0));
+                _ActiveObjects.Add(new GameObject(ActType.Fast, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Blue, life, 0, 0));
             }
             else
             {
@@ -229,15 +232,15 @@ namespace RunningBox
                 float speed = _Rand.Next(700, 850) - (size * 50) * lifeSpeedFx;
                 float speed2 = speed / maxMove;
                 int life = SecToTick(3.5F * lifeTimeFx);
-                _ActiveObjs.Add(new GameObject(ActType.Nomal, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Red, life, 0, 0));
+                _ActiveObjects.Add(new GameObject(ActType.Nomal, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Red, life, 0, 0));
             }
         }
 
-        private void TimerMove_Tick(object sender, EventArgs e)
+        private void TimerOfAction_Tick(object sender, EventArgs e)
         {
-            if (!_Start) return;
+            if (!_IsStart) return;
 
-            if (!_End)
+            if (!_IsEnd)
             {
                 //Score
                 _Score += _SlowON ? _LeveL / 2 : _LeveL;
@@ -245,7 +248,7 @@ namespace RunningBox
                 //Slow
                 if (_SlowON)
                 {
-                    _Energy -= _SlowEnergy;
+                    _Energy -= _EnergyForSlowPerAction;
                     if (_Energy <= 0)
                     {
                         _Energy = 0;
@@ -254,7 +257,7 @@ namespace RunningBox
                 }
                 else
                 {
-                    if (_Energy < _MaxEnergy) _Energy += _EnergyGet;
+                    if (_Energy < _EnergyMax) _Energy += _EnergyGetPerAction;
                 }
 
                 //DarkScreen
@@ -272,42 +275,42 @@ namespace RunningBox
                 _EndTick--;
                 if (_EndTick <= 0)
                 {
-                    _Start = false;
-                    _End = false;
+                    _IsStart = false;
+                    _IsEnd = false;
                 }
             }
 
             float speedFx = _SlowON ? 0.3F : 1;
 
             //rerect
-            if (_RerectTick > 0)
+            if (_TickOfLimited > 0)
             {
-                if (_RerectTick >= 300)
+                if (_TickOfLimited >= 300)
                 {
-                    _RerectTick = 0;
+                    _TickOfLimited = 0;
                 }
                 else
                 {
-                    if (_RerectTick < 40)
+                    if (_TickOfLimited < 40)
                     {
                         _RectInside = new Rectangle(_RectInside.X + _RerectValue.X, _RectInside.Y + _RerectValue.Y,
                                                     _RectInside.Width - _RerectValue.Width, _RectInside.Height - _RerectValue.Height);
                     }
-                    else if (_RerectTick > 260)
+                    else if (_TickOfLimited > 260)
                     {
                         _RectInside = new Rectangle(_RectInside.X - _RerectValue.X, _RectInside.Y - _RerectValue.Y,
                                                    _RectInside.Width + _RerectValue.Width, _RectInside.Height + _RerectValue.Height);
                     }
 
-                    _RerectTick++;
+                    _TickOfLimited++;
                 }
             }
 
             //void
             List<VoidObject> liRemoveVoid = new List<VoidObject>();
-            for (int i = 0; i < _VoidObjs.Count; i++)
+            for (int i = 0; i < _VoidObjects.Count; i++)
             {
-                VoidObject vo = _VoidObjs[i];
+                VoidObject vo = _VoidObjects[i];
                 vo.FadeTick++;
                 if (vo.FadeTick > vo.MaxFadeTick)
                 {
@@ -324,22 +327,22 @@ namespace RunningBox
             }
             foreach (VoidObject vo in liRemoveVoid)
             {
-                _VoidObjs.Remove(vo);
+                _VoidObjects.Remove(vo);
             }
 
             //hider
             PointF hiderPot = new PointF(0, 0);
-            if (_HiderAlive)
+            if (_PlayerAlive)
             {
-                if (_HiderObj.Moves.Count >= _HiderObj.MaxMoves)
+                if (_PlayerObject.Moves.Count >= _PlayerObject.MaxMoves)
                 {
-                    _HiderObj.Moves.RemoveAt(0);
+                    _PlayerObject.Moves.RemoveAt(0);
                 }
 
-                float x1 = _HiderObj.X;
-                float y1 = _HiderObj.Y;
-                double dist1 = ((Math.Abs(_MousePot.X - x1) * 2 + Math.Abs(_MousePot.Y - y1) * 2) / 120) + 0.4F;
-                double rota1 = PointRotation(new PointF(x1, y1), _MousePot);
+                float x1 = _PlayerObject.X;
+                float y1 = _PlayerObject.Y;
+                double dist1 = ((Math.Abs(_PointOfMouse.X - x1) * 2 + Math.Abs(_PointOfMouse.Y - y1) * 2) / 120) + 0.4F;
+                double rota1 = PointRotation(new PointF(x1, y1), _PointOfMouse);
                 double moveX1 = Math.Cos(rota1 / 180 * Math.PI) * dist1;
                 double moveY1 = Math.Sin(rota1 / 180 * Math.PI) * dist1;
 
@@ -361,42 +364,42 @@ namespace RunningBox
                     moveY1 = -Math.Abs(moveY1) * 2;
                 }
 
-                if (_HiderObj.JetTime == 0 && _JetON && _Energy > _JetEnergy)
+                if (_PlayerObject.JetTime == 0 && _JetON && _Energy > _EnergyForSprint)
                 {
-                    _Energy -= _JetEnergy;
+                    _Energy -= _EnergyForSprint;
                     moveX1 *= 5;
                     moveY1 *= 5;
                     moveX1 += Math.Cos(rota1 / 180 * Math.PI) * 15F;
                     moveY1 += Math.Sin(rota1 / 180 * Math.PI) * 15F;
-                    _HiderObj.JetTime = _HiderObj.MaxMoves;
+                    _PlayerObject.JetTime = _PlayerObject.MaxMoves;
                 }
 
-                if (_HiderObj.JetTime > 0)
+                if (_PlayerObject.JetTime > 0)
                 {
-                    _HiderObj.JetTime--;
-                    _VoidObjs.Add(new VoidObject((int)x1, (int)y1, _HiderObj.Size, 3, _BrushHalfBlack));
+                    _PlayerObject.JetTime--;
+                    _VoidObjects.Add(new VoidObject((int)x1, (int)y1, _PlayerObject.Size, 3, _BrushHalfBlack));
                 }
                 _JetON = false;
 
-                _HiderObj.Moves.Add(new PointF((float)moveX1, (float)moveY1));
-                foreach (PointF pt in _HiderObj.Moves)
+                _PlayerObject.Moves.Add(new PointF((float)moveX1, (float)moveY1));
+                foreach (PointF pt in _PlayerObject.Moves)
                 {
                     x1 += pt.X * speedFx;
                     y1 += pt.Y * speedFx;
                 }
 
                 hiderPot = new PointF(x1, y1);
-                _HiderObj.X = (int)x1;
-                _HiderObj.Y = (int)y1;
+                _PlayerObject.X = (int)x1;
+                _PlayerObject.Y = (int)y1;
             }
 
             //seeker
             List<GameObject> liRemoveObj = new List<GameObject>();
-            for (int i = 0; i < _ActiveObjs.Count; i++)
+            for (int i = 0; i < _ActiveObjects.Count; i++)
             {
-                GameObject go = _ActiveObjs[i];
+                GameObject go = _ActiveObjects[i];
                 //checkIntersects
-                if (_HiderAlive && go.ActType != ActType.Leave && go.Rect.IntersectsWith(_HiderObj.Rect))
+                if (_PlayerAlive && go.ActType != ActType.Leave && go.Rect.IntersectsWith(_PlayerObject.Rect))
                 {
                     SetEnd(go);
                     return;
@@ -432,7 +435,7 @@ namespace RunningBox
                 {
                     case ActType.Nomal:
                         {
-                            if (_HiderAlive)
+                            if (_PlayerAlive)
                             {
                                 double rota2 = PointRotation(new PointF(x2, y2), hiderPot);
                                 double moveX2 = Math.Cos(rota2 / 180 * Math.PI) * (go.Speed / 100F);
@@ -442,7 +445,7 @@ namespace RunningBox
                                     go.JetTime--;
                                     if (go.JetType == 2)
                                     {
-                                        _VoidObjs.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfRed));
+                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfRed));
                                     }
                                 }
                                 else
@@ -474,7 +477,7 @@ namespace RunningBox
                         break;
                     case ActType.Fast:
                         {
-                            if (_HiderAlive)
+                            if (_PlayerAlive)
                             {
                                 double rota2 = PointRotation(new PointF(x2, y2), hiderPot);
                                 double moveX2 = Math.Cos(rota2 / 180 * Math.PI) * (go.Speed / 100F);
@@ -484,7 +487,7 @@ namespace RunningBox
                                     go.JetTime--;
                                     if (go.JetType == 2)
                                     {
-                                        _VoidObjs.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfBlue));
+                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfBlue));
                                     }
                                 }
                                 else
@@ -516,9 +519,9 @@ namespace RunningBox
                         break;
                     case ActType.Smart:
                         {
-                            if (_HiderAlive)
+                            if (_PlayerAlive)
                             {
-                                double rota2 = PointRotation(new PointF(x2, y2), _MousePot);
+                                double rota2 = PointRotation(new PointF(x2, y2), _PointOfMouse);
                                 double moveX2 = Math.Cos(rota2 / 180 * Math.PI) * (go.Speed / 100F);
                                 double moveY2 = Math.Sin(rota2 / 180 * Math.PI) * (go.Speed / 100F);
                                 if (go.JetTime > 0)
@@ -592,7 +595,7 @@ namespace RunningBox
                 go.Y = (int)y2;
 
                 //checkIntersects
-                if (_HiderAlive && go.ActType != ActType.Leave && go.Rect.IntersectsWith(_HiderObj.Rect))
+                if (_PlayerAlive && go.ActType != ActType.Leave && go.Rect.IntersectsWith(_PlayerObject.Rect))
                 {
                     SetEnd(go);
                     return;
@@ -601,14 +604,14 @@ namespace RunningBox
 
             foreach (GameObject go in liRemoveObj)
             {
-                _ActiveObjs.Remove(go);
+                _ActiveObjects.Remove(go);
             }
             Drawing();
         }
 
         private void RunningBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!_Start)
+            if (!_IsStart)
             {
                 SetStart(e.X, e.Y);
             }
@@ -623,7 +626,7 @@ namespace RunningBox
                         }
                         break;
                     case System.Windows.Forms.MouseButtons.Right:
-                        if (!_SlowON && _Energy > _LowEnergy)
+                        if (!_SlowON && _Energy > _EnergyForSlow)
                         {
                             _SlowON = true;
                         }
@@ -634,12 +637,12 @@ namespace RunningBox
 
         private void RunningBox_MouseMove(object sender, MouseEventArgs e)
         {
-            _MousePot = e.Location;
+            _PointOfMouse = e.Location;
         }
 
         private void RunningBox_MouseEnter(object sender, EventArgs e)
         {
-            if (_Start)
+            if (_IsStart)
             {
                 Cursor.Hide();
             }
@@ -647,7 +650,7 @@ namespace RunningBox
 
         private void RunningBox_MouseLeave(object sender, EventArgs e)
         {
-            if (_Start)
+            if (_IsStart)
             {
                 Cursor.Show();
             }
@@ -656,19 +659,19 @@ namespace RunningBox
         public void SetStart(int potX, int potY)
         {
             _LeveL = 0;
-            _HiderObj = new GameObject(ActType.Hider, ShapeType.Ellipse, potX, potY, 8, 3, 0, Brushes.Black, 0, 0, 0);
-            _HiderAlive = true;
-            _VoidObjs.Clear();
-            _ActiveObjs.Clear();
-            _Energy = _MaxEnergy;
+            _PlayerObject = new GameObject(ActType.Hider, ShapeType.Ellipse, potX, potY, 8, 3, 0, Brushes.Black, 0, 0, 0);
+            _PlayerAlive = true;
+            _VoidObjects.Clear();
+            _ActiveObjects.Clear();
+            _Energy = _EnergyMax;
             _Score = 0;
             _GroupPw = 0;
             _MinePw = 0;
             _DarkAni = 0;
-            _RerectTick = 0;
+            _TickOfLimited = 0;
             _SlowON = false;
             _JetON = false;
-            _Start = true;
+            _IsStart = true;
             _RectInside = new Rectangle(50, 50, Width - 100, Height - 100);
 
             if (_BackImage != null) _BackImage.Dispose();
@@ -690,7 +693,7 @@ namespace RunningBox
                 case ActType.Mine:
                     go.ShapeType = ShapeType.Ellipse;
                     go.Size *= 8;
-                    if (_HiderAlive && go.Rect.IntersectsWith(_HiderObj.Rect))
+                    if (_PlayerAlive && go.Rect.IntersectsWith(_PlayerObject.Rect))
                     {
                         SetEnd(go);
                         return;
@@ -703,16 +706,16 @@ namespace RunningBox
 
         private void SetEnd(GameObject endBy)
         {
-            _HiderAlive = false;
+            _PlayerAlive = false;
 
             if (endBy.ActType == ActType.Mine)
             {
                 KillObject(endBy);
             }
 
-            int x1 = _HiderObj.X;
-            int y1 = _HiderObj.Y;
-            double rota = PointRotation(new PointF(x1, y1), new PointF(_MousePot.X, _MousePot.Y));
+            int x1 = _PlayerObject.X;
+            int y1 = _PlayerObject.Y;
+            double rota = PointRotation(new PointF(x1, y1), new PointF(_PointOfMouse.X, _PointOfMouse.Y));
             for (int i = 0; i < 15; i++)
             {
                 int speed = _Rand.Next(300, 900);
@@ -720,10 +723,10 @@ namespace RunningBox
                 double rota2 = rota + (_Rand.NextDouble() - 0.5) * 20;
                 int x2 = x1 + (int)(Math.Cos(rota2 / 180 * Math.PI) * 1000);
                 int y2 = y1 + (int)(Math.Sin(rota2 / 180 * Math.PI) * 1000);
-                _ActiveObjs.Add(new GameObject(ActType.Leave, ShapeType.Rectangle, x1, y1, 1, 1, speed, _HiderObj.Brush, 0, x2, y2) { FadeTime = live });
+                _ActiveObjects.Add(new GameObject(ActType.Leave, ShapeType.Rectangle, x1, y1, 1, 1, speed, _PlayerObject.Brush, 0, x2, y2) { FadeTime = live });
             }
-            _HiderObj = null;
-            _End = true;
+            _PlayerObject = null;
+            _IsEnd = true;
             _EndTick = _EndTickMax;
             _DarkAni = 0;
             Cursor.Show();
@@ -731,7 +734,7 @@ namespace RunningBox
 
         public int SecToTick(float sec)
         {
-            return (int)(sec * 1000 / _TimerMove.Interval);
+            return (int)(sec * 1000 / _TimerOfAction.Interval);
         }
 
         Pen _PenRect = new Pen(Color.LightGreen, 2);
@@ -742,7 +745,7 @@ namespace RunningBox
             sw.Restart();
             _BackGraphics.Clear(Color.White);
             _BackGraphics.ResetTransform();
-            if (_End && _EndTick > _EndTickMax - (_EndTickMax / 3))
+            if (_IsEnd && _EndTick > _EndTickMax - (_EndTickMax / 3))
             {
                 int shakeX = _Rand.Next(-10, 10);
                 int shakeY = _Rand.Next(-10, 10);
@@ -764,31 +767,31 @@ namespace RunningBox
                     _BackGraphics.FillRectangle(sb, 0, 0, Width, Height);
                 }
             }
-            _BackGraphics.FillRectangle(_Energy < _LowEnergy ? Brushes.Red : Brushes.Black, _RectEngery.X + 2, _RectEngery.Y + 2, (_RectEngery.Width - 4) * _Energy / _MaxEnergy, _RectEngery.Height - 4);
+            _BackGraphics.FillRectangle(_Energy < _EnergyForSlow ? Brushes.Red : Brushes.Black, _RectEngery.X + 2, _RectEngery.Y + 2, (_RectEngery.Width - 4) * _Energy / _EnergyMax, _RectEngery.Height - 4);
             _BackGraphics.DrawRectangle(Pens.Black, _RectEngery);
             _BackGraphics.DrawString(_Score.ToString(), Font, Brushes.Black, _RectEngery.X + _RectEngery.Width + 10, _RectEngery.Y);
-            foreach (VoidObject vo in _VoidObjs)
+            foreach (VoidObject vo in _VoidObjects)
             {
                 _BackGraphics.FillEllipse(vo.Brush, vo.Rect);
             }
 
-            if (_Start && _HiderAlive)
+            if (_IsStart && _PlayerAlive)
             {
-                switch (_HiderObj.ShapeType)
+                switch (_PlayerObject.ShapeType)
                 {
                     case ShapeType.Rectangle:
-                        _BackGraphics.FillRectangle(_HiderObj.Brush, _HiderObj.Rect);
+                        _BackGraphics.FillRectangle(_PlayerObject.Brush, _PlayerObject.Rect);
                         break;
                     case ShapeType.Ellipse:
-                        _BackGraphics.DrawEllipse(_PenHider, _HiderObj.Rect);
+                        _BackGraphics.DrawEllipse(_PenHider, _PlayerObject.Rect);
                         break;
                     case ShapeType.Image:
-                        _BackGraphics.DrawImage(_HiderObj.Image, _HiderObj.Rect);
+                        _BackGraphics.DrawImage(_PlayerObject.Image, _PlayerObject.Rect);
                         break;
                 }
             }
 
-            foreach (GameObject bo in _ActiveObjs)
+            foreach (GameObject bo in _ActiveObjects)
             {
                 Rectangle rtgDraw = Rectangle.Empty;
                 Brush brushDraw = null;

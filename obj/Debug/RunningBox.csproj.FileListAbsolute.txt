@@ -1,0 +1,9 @@
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.exe
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.MainForm.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.Properties.Resources.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.PlayingBox.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csproj.GenerateResource.Cache
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.exe
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
