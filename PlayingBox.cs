@@ -32,11 +32,11 @@ namespace RunningBox
         private bool _SlowON = false;
         private bool _JetON = false;
 
-        private SolidBrush _BrushHalfBlue = new SolidBrush(Color.FromArgb(30, 0, 0, 255));
-        private SolidBrush _BrushHalfRed = new SolidBrush(Color.FromArgb(30, 255, 0, 0));
-        private SolidBrush _BrushHalfBlack = new SolidBrush(Color.FromArgb(30, 0, 0, 0));
-        private SolidBrush _BrushHalfFuchsia = new SolidBrush(Color.FromArgb(30, 255, 0, 255));
-        private SolidBrush _BrushHalfFirebrick = new SolidBrush(Color.FromArgb(30, 178, 34, 34));
+        private SolidBrush _BrushFadeBlue = new SolidBrush(Color.FromArgb(30, 0, 0, 255));
+        private SolidBrush _BrushFadeRed = new SolidBrush(Color.FromArgb(30, 255, 0, 0));
+        private SolidBrush _BrushFadeBlack = new SolidBrush(Color.FromArgb(30, 0, 0, 0));
+        private SolidBrush _BrushFadeFuchsia = new SolidBrush(Color.FromArgb(30, 255, 0, 255));
+        private SolidBrush _BrushFadeFirebrick = new SolidBrush(Color.FromArgb(30, 178, 34, 34));
 
         private Timer _TimerOfAction = new Timer() { Enabled = true, Interval = 25 };
         private Timer _TimerOfBuild = new Timer() { Enabled = true, Interval = 1000 };
@@ -58,15 +58,15 @@ namespace RunningBox
         private int _GroupPw = 0;
         private int _MinePw = 0;
 
-        private Rectangle _RectEngery = new Rectangle(50, 10, 100, 10);
-        private Rectangle _RectInside;
+        private Rectangle _RectOfEngery = new Rectangle(50, 10, 100, 10);
+        private Rectangle _RectOfGaming;
 
         private Graphics _ControlGraphics;
         private Graphics _BackGraphics;
         private Bitmap _BackImage;
 
         private int _TickOfLimited = 0;
-        private Rectangle _RerectValue = new Rectangle();
+        private Padding _LimitedPerAction = new Padding();
 
         private int _FPSTic = 10;
         public PlayingBox()
@@ -86,11 +86,11 @@ namespace RunningBox
 
             _LeveL++;
 
-            float lifeTimeFx = (100F + _LeveL) / 100F;
-            float lifeSpeedFx = (70F + _LeveL) / 100F;
+            float lifeLevel = (100F + _LeveL) / 100F;
+            float speedLevel = (70F + _LeveL) / 100F;
 
             //darkscreen
-            if (_LeveL % _LevelOfDark == 0)
+            if (_LeveL % _LevelOfDark == 0 && _DarkAni == 0)
             {
                 _DarkAni = 2;
             }
@@ -98,27 +98,28 @@ namespace RunningBox
             if (_LeveL % _LevelOfLimited == 0 && _TickOfLimited == 0)
             {
                 _TickOfLimited = 1;
-                int helfVal = ((_RectInside.Height + _RectInside.Width) / 2) / 100;
-                int helfX = _Rand.Next(2, helfVal - 2);
-                int helfY = helfVal - helfX;
-                int helfX2 = helfX;
-                int helfY2 = helfY;
+                double scaleX = _Rand.NextDouble();
+                double scaleY = 1 - scaleX;
+                int limitX = (int)(scaleX * _RectOfGaming.Width / 100);
+                int limitY = (int)(scaleY * _RectOfGaming.Height / 100);
 
+                int limitLeft = _Rand.Next(0, limitX);
+                int limitTop = _Rand.Next(0, limitY);
+                int limitRight = limitX - limitLeft;
+                int limitDown = limitY - limitTop;
 
-                int helfX1 = _Rand.Next(0, helfX2);
-                int helfY1 = _Rand.Next(0, helfY2);
-                _RerectValue = new Rectangle(helfX1, helfY1, helfX2, helfY2);
+                _LimitedPerAction = new Padding(limitLeft, limitTop, limitRight, limitDown);
             }
 
             if (_LeveL % _LevelOfGroup == 0)
             {
-                for (int i = 0; i < 6 + _GroupPw; i++)
+                for (int i = 0; i < _GroupPw; i++)
                 {
                     int size = _Rand.Next(3, 6);
                     int maxMove = _Rand.Next(15, 30);
-                    float speed = _Rand.Next(700, 850) - (size * 50) * lifeSpeedFx;
+                    float speed = _Rand.Next(700, 850) - (size * 50) * speedLevel;
                     float speed2 = speed / maxMove;
-                    int life = SecToTick(6F * lifeTimeFx) + _Rand.Next(0, 5); ;
+                    int life = SecToTick(6F * lifeLevel) + _Rand.Next(0, 5); ;
                     int x2 = 0, y2 = 0;
                     switch (_Rand.Next(1, 4))
                     {
@@ -150,35 +151,35 @@ namespace RunningBox
                 {
                     int size = _Rand.Next(8, 10);
                     int maxMove = _Rand.Next(10, 15);
-                    float speed = _Rand.Next(850, 1000) - (size * 50) * lifeSpeedFx;
+                    float speed = _Rand.Next(850, 1000) - (size * 50) * speedLevel;
                     float speed2 = speed / maxMove;
                     int life = SecToTick(_LeveLOfMine * 0.5F);// +_Rand.Next(0, 5);
-                    int x2 = 0, y2 = 0, lockPotX = 0, lockPotY = 0;
+                    int x1 = 0, y2 = 0, lockPotX = 0, lockPotY = 0;
                     switch (_Rand.Next(1, 4))
                     {
                         case 1:
                             x2 = -_Rand.Next(20, 60);
                             y2 = _Rand.Next(0, Height);
-                            lockPotX = _Rand.Next(_RectInside.Left + 20, _RectInside.Left + _RectInside.Width / 2);
-                            lockPotY = _Rand.Next(_RectInside.Top + 20, _RectInside.Top + _RectInside.Height - 20);
+                            lockPotX = _Rand.Next(_RectOfGaming.Left + 20, _RectOfGaming.Left + _RectOfGaming.Width / 2);
+                            lockPotY = _Rand.Next(_RectOfGaming.Top + 20, _RectOfGaming.Top + _RectOfGaming.Height - 20);
                             break;
                         case 2:
                             x2 = Width + _Rand.Next(20, 60);
                             y2 = _Rand.Next(0, Height);
-                            lockPotX = _Rand.Next(_RectInside.Left + _RectInside.Width / 2, _RectInside.Left + _RectInside.Width - 20);
-                            lockPotY = _Rand.Next(_RectInside.Top + 20, _RectInside.Top + _RectInside.Height - 20);
+                            lockPotX = _Rand.Next(_RectOfGaming.Left + _RectOfGaming.Width / 2, _RectOfGaming.Left + _RectOfGaming.Width - 20);
+                            lockPotY = _Rand.Next(_RectOfGaming.Top + 20, _RectOfGaming.Top + _RectOfGaming.Height - 20);
                             break;
                         case 3:
                             x2 = _Rand.Next(0, Width);
                             y2 = -_Rand.Next(20, 60);
-                            lockPotX = _Rand.Next(_RectInside.Left + 20, _RectInside.Left + _RectInside.Width - 20);
-                            lockPotY = _Rand.Next(_RectInside.Top + 20, _RectInside.Top + _RectInside.Height / 2);
+                            lockPotX = _Rand.Next(_RectOfGaming.Left + 20, _RectOfGaming.Left + _RectOfGaming.Width - 20);
+                            lockPotY = _Rand.Next(_RectOfGaming.Top + 20, _RectOfGaming.Top + _RectOfGaming.Height / 2);
                             break;
                         case 4:
                             x2 = _Rand.Next(0, Width);
                             y2 = Height + _Rand.Next(20, 60);
-                            lockPotX = _Rand.Next(_RectInside.Left + 20, _RectInside.Left + _RectInside.Width - 20);
-                            lockPotY = _Rand.Next(_RectInside.Top + _RectInside.Height / 2, _RectInside.Height - 20);
+                            lockPotX = _Rand.Next(_RectOfGaming.Left + 20, _RectOfGaming.Left + _RectOfGaming.Width - 20);
+                            lockPotY = _Rand.Next(_RectOfGaming.Top + _RectOfGaming.Height / 2, _RectOfGaming.Height - 20);
                             break;
                     }
                     _ActiveObjects.Add(new GameObject(ActType.Mine, ShapeType.Image, x2, y2, maxMove, size, speed2, Brushes.Firebrick, life, lockPotX, lockPotY) { Image = RunningBox.Properties.Resources.Mine });
@@ -211,27 +212,27 @@ namespace RunningBox
             {
                 int size = _Rand.Next(6, 8);
                 int maxMove = _Rand.Next(10, 15);
-                float speed = _Rand.Next(850, 1000) - (size * 50) * lifeSpeedFx;
+                float speed = _Rand.Next(850, 1000) - (size * 50) * speedLevel;
                 float speed2 = speed / maxMove;
-                int life = SecToTick(7F * lifeTimeFx);
+                int life = SecToTick(7F * lifeLevel);
                 _ActiveObjects.Add(new GameObject(ActType.Smart, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Fuchsia, life, 0, 0));
             }
             else if (_LeveL % _LevelOfCatcher == 0)
             {
                 int size = _Rand.Next(3, 4);
                 int maxMove = _Rand.Next(8, 15);
-                float speed = _Rand.Next(800, 900) - (size * 50) * lifeSpeedFx;
+                float speed = _Rand.Next(800, 900) - (size * 50) * speedLevel;
                 float speed2 = speed / maxMove;
-                int life = SecToTick(4.5F * lifeTimeFx);
+                int life = SecToTick(4.5F * lifeLevel);
                 _ActiveObjects.Add(new GameObject(ActType.Fast, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Blue, life, 0, 0));
             }
             else
             {
                 int size = _Rand.Next(3, 6);
                 int maxMove = _Rand.Next(15, 30);
-                float speed = _Rand.Next(700, 850) - (size * 50) * lifeSpeedFx;
+                float speed = _Rand.Next(700, 850) - (size * 50) * speedLevel;
                 float speed2 = speed / maxMove;
-                int life = SecToTick(3.5F * lifeTimeFx);
+                int life = SecToTick(3.5F * lifeLevel);
                 _ActiveObjects.Add(new GameObject(ActType.Nomal, ShapeType.Ellipse, x1, y1, maxMove, size, speed2, Brushes.Red, life, 0, 0));
             }
         }
@@ -293,13 +294,13 @@ namespace RunningBox
                 {
                     if (_TickOfLimited < 40)
                     {
-                        _RectInside = new Rectangle(_RectInside.X + _RerectValue.X, _RectInside.Y + _RerectValue.Y,
-                                                    _RectInside.Width - _RerectValue.Width, _RectInside.Height - _RerectValue.Height);
+                        _RectOfGaming = new Rectangle(_RectOfGaming.X + _LimitedPerAction.X, _RectOfGaming.Y + _LimitedPerAction.Y,
+                                                    _RectOfGaming.Width - _LimitedPerAction.Width, _RectOfGaming.Height - _LimitedPerAction.Height);
                     }
                     else if (_TickOfLimited > 260)
                     {
-                        _RectInside = new Rectangle(_RectInside.X - _RerectValue.X, _RectInside.Y - _RerectValue.Y,
-                                                   _RectInside.Width + _RerectValue.Width, _RectInside.Height + _RerectValue.Height);
+                        _RectOfGaming = new Rectangle(_RectOfGaming.X - _LimitedPerAction.X, _RectOfGaming.Y - _LimitedPerAction.Y,
+                                                   _RectOfGaming.Width + _LimitedPerAction.Width, _RectOfGaming.Height + _LimitedPerAction.Height);
                     }
 
                     _TickOfLimited++;
@@ -346,20 +347,20 @@ namespace RunningBox
                 double moveX1 = Math.Cos(rota1 / 180 * Math.PI) * dist1;
                 double moveY1 = Math.Sin(rota1 / 180 * Math.PI) * dist1;
 
-                if (x1 < _RectInside.Left)
+                if (x1 < _RectOfGaming.Left)
                 {
                     moveX1 = Math.Abs(moveX1) * 2;
                 }
-                else if (x1 > _RectInside.Left + _RectInside.Width)
+                else if (x1 > _RectOfGaming.Left + _RectOfGaming.Width)
                 {
                     moveX1 = -Math.Abs(moveX1) * 2;
                 }
 
-                if (y1 < _RectInside.Top)
+                if (y1 < _RectOfGaming.Top)
                 {
                     moveY1 = Math.Abs(moveY1) * 2;
                 }
-                else if (y1 > _RectInside.Top + _RectInside.Height)
+                else if (y1 > _RectOfGaming.Top + _RectOfGaming.Height)
                 {
                     moveY1 = -Math.Abs(moveY1) * 2;
                 }
@@ -377,7 +378,7 @@ namespace RunningBox
                 if (_PlayerObject.JetTime > 0)
                 {
                     _PlayerObject.JetTime--;
-                    _VoidObjects.Add(new VoidObject((int)x1, (int)y1, _PlayerObject.Size, 3, _BrushHalfBlack));
+                    _VoidObjects.Add(new VoidObject((int)x1, (int)y1, _PlayerObject.Size, 3, _BrushFadeBlack));
                 }
                 _JetON = false;
 
@@ -445,7 +446,7 @@ namespace RunningBox
                                     go.JetTime--;
                                     if (go.JetType == 2)
                                     {
-                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfRed));
+                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushFadeRed));
                                     }
                                 }
                                 else
@@ -487,7 +488,7 @@ namespace RunningBox
                                     go.JetTime--;
                                     if (go.JetType == 2)
                                     {
-                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushHalfBlue));
+                                        _VoidObjects.Add(new VoidObject((int)x2, (int)y2, go.Size, 3, _BrushFadeBlue));
                                     }
                                 }
                                 else
@@ -582,13 +583,13 @@ namespace RunningBox
                             //}
                         }
                         break;
-                    //case ActType.Leave:
-                    //    foreach (PointF pt in go.Moves)
-                    //    {
-                    //        x2 += pt.X * speedFx;
-                    //        y2 += pt.Y * speedFx;
-                    //    }
-                    //    break;
+                        //case ActType.Leave:
+                        //    foreach (PointF pt in go.Moves)
+                        //    {
+                        //        x2 += pt.X * speedFx;
+                        //        y2 += pt.Y * speedFx;
+                        //    }
+                        //    break;
                 }
 
                 go.X = (int)x2;
@@ -672,7 +673,7 @@ namespace RunningBox
             _SlowON = false;
             _JetON = false;
             _IsStart = true;
-            _RectInside = new Rectangle(50, 50, Width - 100, Height - 100);
+            _RectOfGaming = new Rectangle(50, 50, Width - 100, Height - 100);
 
             if (_BackImage != null) _BackImage.Dispose();
             if (_BackGraphics != null) _BackGraphics.Dispose();
@@ -752,10 +753,10 @@ namespace RunningBox
                 _BackGraphics.TranslateTransform(shakeX, shakeY, System.Drawing.Drawing2D.MatrixOrder.Append);
             }
 
-            if (_RectInside != null)
+            if (_RectOfGaming != null)
             {
                 //_BackGraphics.FillRectangle(Brushes.White, _RectInside);
-                _BackGraphics.DrawRectangle(_PenRect, _RectInside);
+                _BackGraphics.DrawRectangle(_PenRect, _RectOfGaming);
             }
 
             if (_DarkAni > 0)
@@ -767,9 +768,9 @@ namespace RunningBox
                     _BackGraphics.FillRectangle(sb, 0, 0, Width, Height);
                 }
             }
-            _BackGraphics.FillRectangle(_Energy < _EnergyForSlow ? Brushes.Red : Brushes.Black, _RectEngery.X + 2, _RectEngery.Y + 2, (_RectEngery.Width - 4) * _Energy / _EnergyMax, _RectEngery.Height - 4);
-            _BackGraphics.DrawRectangle(Pens.Black, _RectEngery);
-            _BackGraphics.DrawString(_Score.ToString(), Font, Brushes.Black, _RectEngery.X + _RectEngery.Width + 10, _RectEngery.Y);
+            _BackGraphics.FillRectangle(_Energy < _EnergyForSlow ? Brushes.Red : Brushes.Black, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * _Energy / _EnergyMax, _RectOfEngery.Height - 4);
+            _BackGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
+            _BackGraphics.DrawString(_Score.ToString(), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
             foreach (VoidObject vo in _VoidObjects)
             {
                 _BackGraphics.FillEllipse(vo.Brush, vo.Rect);
