@@ -1,6 +1,6 @@
 ﻿namespace RunningBox
 {
-    partial class PlayingBox2
+    partial class PlayingBox
     {
         /// <summary> 
         /// 設計工具所需的變數。
