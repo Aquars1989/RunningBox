@@ -8,6 +8,10 @@ namespace RunningBox
 {
     public class ObjectPlayer : ObjectBase
     {
+        public int Energy { get; set; }
+        public int EnergyMax { get; set; }
+        public int EnergyGetPerAction { get; set; }
+
         private Pen _Pen;
         private Color _Color;
         public Color Color
@@ -35,8 +39,11 @@ namespace RunningBox
             Y = y;
             Size = size;
             Speed = speed;
-            Moves = new Queue<PointF>();
+            Moves = new List<PointF>();
             Color = color;
+
+            EnergyMax = Energy = 1000;
+            EnergyGetPerAction = 5;
         }
 
         ~ObjectPlayer()
@@ -46,9 +53,15 @@ namespace RunningBox
 
         public override void Action()
         {
+            Energy += EnergyGetPerAction;
+            if (Energy > EnergyMax)
+            {
+                Energy = EnergyMax;
+            }
+
             if (Moves.Count >= MaxMoves)
             {
-                Moves.Dequeue();
+                Moves.RemoveAt(0);
             }
 
             Point trackPoint = Scene.TrackPoint;
@@ -77,7 +90,7 @@ namespace RunningBox
             }
 
 
-            Moves.Enqueue(new PointF(moveX, moveY));
+            Moves.Add(new PointF(moveX, moveY));
             float moveTotalX = 0;
             float moveTotalY = 0;
             foreach (PointF pt in Moves)
@@ -111,6 +124,7 @@ namespace RunningBox
                 double scrapDirection = direction + (Global.Rand.NextDouble() - 0.5) * 20;
                 Scene.GameObjects.Add(new ObjectScrap(X, Y, 1, speed, life, scrapDirection, Color));
             }
+            Scene.EffectObjects.Add(new EffectShark(20, 10));
             base.Kill();
         }
 

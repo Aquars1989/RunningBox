@@ -19,7 +19,7 @@ namespace RunningBox
 
         public SceneBase Scene { get; set; }
         public ObjectStatus Status { get; set; }
-        public Queue<PointF> Moves { get; set; }
+        public List<PointF> Moves { get; set; }
         public int MaxMoves { get; set; }
         public float Speed { get; set; }
 

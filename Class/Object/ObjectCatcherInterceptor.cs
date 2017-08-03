@@ -42,7 +42,7 @@ namespace RunningBox
             Speed = speed;
             LifeTickMax = life;
             LifeTick = life;
-            Moves = new Queue<PointF>();
+            Moves = new List<PointF>();
             Color = color;
         }
 
@@ -65,14 +65,14 @@ namespace RunningBox
 
                     if (Moves.Count >= MaxMoves)
                     {
-                        Moves.Dequeue();
+                        Moves.RemoveAt(0);
                     }
 
                     double direction = Function.PointRotation(X, Y, Scene.TrackPoint.X, Scene.TrackPoint.Y);
                     float moveX = (float)Math.Cos(direction / 180 * Math.PI) * (Speed / 100F);
                     float moveY = (float)Math.Sin(direction / 180 * Math.PI) * (Speed / 100F);
 
-                    Moves.Enqueue(new PointF((float)moveX, (float)moveY));
+                    Moves.Add(new PointF((float)moveX, (float)moveY));
 
                     float moveTotalX = 0;
                     float moveTotalY = 0;

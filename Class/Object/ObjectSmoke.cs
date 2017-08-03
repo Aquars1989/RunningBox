@@ -36,7 +36,7 @@ namespace RunningBox
             X = x;
             Y = y;
             Size = size;
-            Moves = new Queue<PointF>();
+            //Moves = new List<PointF>();
             FadeTickMax = fadeTick;
             FadeTick = fadeTick;
             Color = color;
