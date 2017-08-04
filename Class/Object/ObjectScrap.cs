@@ -46,7 +46,7 @@ namespace RunningBox
             LifeTick--;
             if (LifeTick == 0)
             {
-                Kill();
+                Kill(null);
             }
             else
             {

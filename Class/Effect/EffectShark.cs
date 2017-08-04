@@ -9,26 +9,27 @@ namespace RunningBox
 {
     public class EffectShark : IEffect
     {
-        public EffectStatus Status { get; set; }
-        public int Life { get; set; }
+        public SceneBase Scene { get; set; }
+        public EffectStatus Status { get; private set; }
+        public int DurationRounds { get; set; }
         public int Power { get; set; }
 
-        public EffectShark(int life, int power)
+        public EffectShark(int duration, int power)
         {
-            Status = EffectStatus.Alive;
-            Life = life;
+            Status = EffectStatus.Enabled;
+            DurationRounds = duration;
             Power = power;
+
         }
 
-        public void DoBeforeAction() { }
-        public void DoAfterAction()
+        public void DoAfterRound()
         {
-            if (Status == EffectStatus.Alive)
+            if (Status == EffectStatus.Enabled)
             {
-                Life--;
-                if (Life <= 0)
+                DurationRounds--;
+                if (DurationRounds <= 0)
                 {
-                    End();
+                    Break();
                 }
             }
         }
@@ -40,12 +41,13 @@ namespace RunningBox
             g.TranslateTransform(shakeX, shakeY, System.Drawing.Drawing2D.MatrixOrder.Append);
         }
 
+        public void Break()
+        {
+            Status = EffectStatus.Disabled;
+        }
+
+        public void DoBeforeRound() { }
         public void DoBeforeDrawObject(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
-
-        public void End()
-        {
-            Status = EffectStatus.Dead;
-        }
     }
 }

@@ -55,7 +55,7 @@ namespace RunningBox
                 Size--;
                 if (Size == 0)
                 {
-                    Kill();
+                    Kill(null);
                 }
                 else
                 {

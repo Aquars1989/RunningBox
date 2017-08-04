@@ -47,11 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\Effect\EffectDarK.cs" />
+    <Compile Include="Class\Effect\EffectCollection.cs" />
+    <Compile Include="Class\Effect\EffectDark.cs" />
     <Compile Include="Class\Effect\EffectShark.cs" />
     <Compile Include="Class\Effect\IEffect.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
+    <Compile Include="Class\Object\ObjectCollection.cs" />
     <Compile Include="Class\Object\ObjectCatcherInterceptor.cs" />
     <Compile Include="Class\Object\ObjectCatcherFaster.cs" />
     <Compile Include="Class\Object\ObjectScrap.cs" />
@@ -71,19 +73,19 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayingBox.cs">
+    <Compile Include="Class\Scene\SceneStand.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayingBox.Designer.cs">
-      <DependentUpon>PlayingBox.cs</DependentUpon>
+    <Compile Include="Class\Scene\SceneStand.Designer.cs">
+      <DependentUpon>SceneStand.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayingBox.resx">
-      <DependentUpon>PlayingBox.cs</DependentUpon>
+    <EmbeddedResource Include="Class\Scene\SceneStand.resx">
+      <DependentUpon>SceneStand.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

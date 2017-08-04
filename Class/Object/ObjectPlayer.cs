@@ -10,7 +10,7 @@ namespace RunningBox
     {
         public int Energy { get; set; }
         public int EnergyMax { get; set; }
-        public int EnergyGetPerAction { get; set; }
+        public int EnergyGetPerRound { get; set; }
 
         private Pen _Pen;
         private Color _Color;
@@ -43,7 +43,7 @@ namespace RunningBox
             Color = color;
 
             EnergyMax = Energy = 1000;
-            EnergyGetPerAction = 5;
+            EnergyGetPerRound = 5;
         }
 
         ~ObjectPlayer()
@@ -53,7 +53,7 @@ namespace RunningBox
 
         public override void Action()
         {
-            Energy += EnergyGetPerAction;
+            Energy += EnergyGetPerRound;
             if (Energy > EnergyMax)
             {
                 Energy = EnergyMax;
@@ -103,7 +103,7 @@ namespace RunningBox
             Y += moveTotalY * Scene.WorldSpeed;
         }
 
-        public override void Kill()
+        public override void Kill(ObjectBase killer)
         {
             if (Status != ObjectStatus.Alive) return;
 
@@ -125,7 +125,8 @@ namespace RunningBox
                 Scene.GameObjects.Add(new ObjectScrap(X, Y, 1, speed, life, scrapDirection, Color));
             }
             Scene.EffectObjects.Add(new EffectShark(20, 10));
-            base.Kill();
+
+            base.Kill(killer);
         }
 
         public override void DrawSelf(Graphics g)

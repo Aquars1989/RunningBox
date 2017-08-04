@@ -9,14 +9,14 @@ namespace RunningBox
     class SkillSprint : ISkill
     {
         public int CostEnargy { get; set; }
-        public int CostEnargyPerAction { get; set; }
+        public int CostEnargyPerRound { get; set; }
 
         public SkillSprint()
         {
             CostEnargy = 300;
         }
 
-        public void DoWhenAction(){}
+        public void DoWhenRound(){}
         public void DoWhenDrawing() { }
 
         public void Use() { }

@@ -60,7 +60,7 @@ namespace RunningBox
                     ObjectBase playObject = Scene.PlayerObject;
                     if (playObject != null && playObject.Rectangle.IntersectsWith(Rectangle))
                     {
-                        playObject.Kill();
+                        playObject.Kill(this);
                     }
 
                     if (Moves.Count >= MaxMoves)
@@ -87,7 +87,7 @@ namespace RunningBox
 
                     if (playObject != null && playObject.Rectangle.IntersectsWith(Rectangle))
                     {
-                        playObject.Kill();
+                        playObject.Kill(this);
                     }
 
                     Speed *= 1.006F;
@@ -102,7 +102,7 @@ namespace RunningBox
                 case ObjectStatus.Dying:
                     if (LifeTick <= 0)
                     {
-                        Kill();
+                        Kill(null);
                     }
                     break;
             }

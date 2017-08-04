@@ -13,9 +13,20 @@ namespace RunningBox
         Dead = 2,
     }
 
+    /// <summary>
+    /// 處理物件死亡事件
+    /// </summary>
+    /// <param name="sender">死亡物件</param>
+    /// <param name="killer">殺手物件</param>
+    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer);
+
+
     public abstract class ObjectBase
     {
-        public event EventHandler Killed;
+        /// <summary>
+        /// 發生於物件死亡
+        /// </summary>
+        public event ObjectDeadEventHandle Dead;
 
         public SceneBase Scene { get; set; }
         public ObjectStatus Status { get; set; }
@@ -24,7 +35,11 @@ namespace RunningBox
         public float Speed { get; set; }
 
         private bool BuildRect = false;
+
         private float _X;
+        /// <summary>
+        /// 物件位置X
+        /// </summary>
         public float X
         {
             get { return _X; }
@@ -36,6 +51,9 @@ namespace RunningBox
         }
 
         private float _Y;
+        /// <summary>
+        /// 物件位置Y
+        /// </summary>
         public float Y
         {
             get { return _Y; }
@@ -47,6 +65,9 @@ namespace RunningBox
         }
 
         private int _Size;
+        /// <summary>
+        /// 物件大小
+        /// </summary>
         public int Size
         {
             get { return _Size; }
@@ -58,6 +79,9 @@ namespace RunningBox
         }
 
         private Rectangle _Rectangle;
+        /// <summary>
+        /// 物件的實體範圍
+        /// </summary>
         public Rectangle Rectangle
         {
             get
@@ -71,16 +95,34 @@ namespace RunningBox
             }
         }
 
-        public virtual void Kill()
+        /// <summary>
+        /// 殺死此物件
+        /// </summary>
+        /// <param name="killer">殺手物件</param>
+        public virtual void Kill(ObjectBase killer)
         {
             Status = ObjectStatus.Dead;
-            if (Killed != null)
-            {
-                Killed(this, new EventArgs());
-            }
+            OnDead(this, killer);
         }
 
+        protected void OnDead(ObjectBase sender, ObjectBase killer)
+        {
+            if (Dead != null)
+            {
+                Dead(sender, killer);
+            }
+
+        }
+
+        /// <summary>
+        /// 物件在1回合內進行的活動
+        /// </summary>
         public abstract void Action();
+
+        /// <summary>
+        /// 繪製物件本身
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
         public abstract void DrawSelf(Graphics g);
     }
 }

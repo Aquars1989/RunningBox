@@ -7,45 +7,99 @@ using System.Text;
 
 namespace RunningBox
 {
-    public class EffectShark : IEffect
+    public class EffectDark : IEffect
     {
+        public SceneBase Scene { get; set; }
         public EffectStatus Status { get; set; }
-        public int Life { get; set; }
-        public int Power { get; set; }
+        public int DurationRounds { get; set; }
+        public int EnablingRoundsMax { get; private set; }
+        public int DisablingRoundsMax { get; private set; }
+        public int EnablingRounds { get; set; }
+        public int DisablingRounds { get; set; }
 
-        public EffectShark(int life, int power)
+        public EffectDark(int duration, int enablingRounds, int disablingRounds)
         {
-            Status = EffectStatus.Alive;
-            Life = life;
-            Power = power;
+            Status = EffectStatus.Enabling;
+            DurationRounds = duration;
+            EnablingRoundsMax = enablingRounds;
+            EnablingRounds = enablingRounds;
+            DisablingRoundsMax = disablingRounds;
+            DisablingRounds = disablingRounds;
         }
 
-        public void DoBeforeAction() { }
-        public void DoAfterAction()
+        public void DoAfterRound()
         {
-            if (Status == EffectStatus.Alive)
+            switch (Status)
             {
-                Life--;
-                if (Life <= 0)
-                {
-                    End();
-                }
+                case EffectStatus.Enabling:
+                    if (EnablingRounds <= 0)
+                    {
+                        Status = EffectStatus.Enabled;
+                        goto case EffectStatus.Enabled;
+                    }
+                    EnablingRounds--;
+                    break;
+                case EffectStatus.Enabled:
+                    if (DurationRounds <= 0)
+                    {
+                        Break();
+                        goto case EffectStatus.Disabling;
+                    }
+                    DurationRounds--;
+                    break;
+                case EffectStatus.Disabling:
+                    if (DisablingRounds <= 0)
+                    {
+                        Status = EffectStatus.Disabled;
+                    }
+                    DisablingRounds--;
+                    break;
             }
         }
 
-        public void DoBeforeDraw(Graphics g)
+        public void DoBeforeDrawObject(Graphics g)
         {
-            int shakeX = Global.Rand.Next(-Power, Power);
-            int shakeY = Global.Rand.Next(-Power, Power);
-            g.TranslateTransform(shakeX, shakeY, System.Drawing.Drawing2D.MatrixOrder.Append);
+            switch (Status)
+            {
+                case EffectStatus.Enabling:
+                    if (EnablingRoundsMax > 0)
+                    {
+                        int alpha = (int)(EnablingRounds / EnablingRoundsMax * 255F);
+
+                        if (alpha < 0) alpha = 0;
+                        else if (alpha > 255) alpha = 255;
+                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, 0, 0, 0)))
+                        {
+                            g.FillRectangle(brush, Scene.ClientRectangle);
+                        }
+                    }
+                    break;
+                case EffectStatus.Enabled:
+                    g.FillRectangle(Brushes.Black, Scene.ClientRectangle);
+                    break;
+                case EffectStatus.Disabling:
+                    if (DisablingRoundsMax > 0)
+                    {
+                        int alpha = (int)((EnablingRoundsMax - DisablingRounds) / EnablingRoundsMax * 255F);
+
+                        if (alpha < 0) alpha = 0;
+                        else if (alpha > 255) alpha = 255;
+                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, 0, 0, 0)))
+                        {
+                            g.FillRectangle(brush, Scene.ClientRectangle);
+                        }
+                    }
+                    break;
+            }
         }
 
-        public void DoBeforeDrawObject(Graphics g) { }
+        public void Break()
+        {
+            Status = EffectStatus.Disabled;
+        }
+
+        public void DoBeforeRound() { }
+        public void DoBeforeDraw(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
-
-        public void End()
-        {
-            Status = EffectStatus.Dead;
-        }
     }
 }

@@ -16,8 +16,8 @@ namespace RunningBox
         public Point TrackPoint { get; set; }
 
         public ObjectPlayer PlayerObject { get; set; }
-        public ObservableCollection<ObjectBase> GameObjects { get; private set; }
-        public List<IEffect> EffectObjects { get; private set; }
+        public ObjectCollection GameObjects { get; private set; }
+        public EffectCollection EffectObjects { get; private set; }
         public Rectangle GameRectangle { get; set; }
 
         public int Score { get; set; }
@@ -36,7 +36,7 @@ namespace RunningBox
 
         private Pen _PenRectGaming = new Pen(Color.LightGreen, 2);
 
-        private Timer _TimerOfAction = new Timer() { Enabled = true, Interval = 25 };
+        private Timer _TimerOfRound = new Timer() { Enabled = true, Interval = 25 };
         public SceneBase()
         {
             SetStyle(ControlStyles.UserPaint, true);
@@ -44,68 +44,23 @@ namespace RunningBox
 
             WorldSpeed = 1;
 
-            GameObjects = new ObservableCollection<ObjectBase>();
-            GameObjects.CollectionChanged += (x, e) =>
-            {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                {
-                    (e.NewItems[0] as ObjectBase).Scene = this;
-                    (e.NewItems[0] as ObjectBase).Killed += OnObjectDead;
-                }
-            };
-            EffectObjects = new List<IEffect>();
+            GameObjects = new ObjectCollection(this);
+            EffectObjects = new EffectCollection(this);
 
-            _TimerOfAction.Tick += TimerOfAction_Tick;
+            GameObjects.ObjectDead += OnObjectDead;
+            _TimerOfRound.Tick += TimerOfRound_Tick;
         }
 
-        private void TimerOfAction_Tick(object sender, EventArgs e)
+        private void TimerOfRound_Tick(object sender, EventArgs e)
         {
             if (!IsStart) return;
 
-            foreach (IEffect effect in EffectObjects)
-            {
-                effect.DoBeforeAction();
-            }
+            EffectObjects.AllDoBeforeRound();
+            GameObjects.AllAction();
+            EffectObjects.AllDoAfterRound();
 
-            for (int i = 0; i < GameObjects.Count; i++)
-            {
-                GameObjects[i].Action();
-            }
-
-            foreach (IEffect effect in EffectObjects)
-            {
-                effect.DoAfterAction();
-            }
-
-            //Clear Dead Object
-            List<ObjectBase> deadObjects = new List<ObjectBase>();
-            for (int i = 0; i < GameObjects.Count; i++)
-            {
-                if (GameObjects[i].Status == ObjectStatus.Dead)
-                {
-                    deadObjects.Add(GameObjects[i]);
-                }
-            }
-
-            foreach (ObjectBase deadObject in deadObjects)
-            {
-                GameObjects.Remove(deadObject);
-            }
-
-            //Clear Dead Effect
-            List<IEffect> deadEffects = new List<IEffect>();
-            for (int i = 0; i < EffectObjects.Count; i++)
-            {
-                if (EffectObjects[i].Status == EffectStatus.Dead)
-                {
-                    deadEffects.Add(EffectObjects[i]);
-                }
-            }
-
-            foreach (IEffect deadEffect in deadEffects)
-            {
-                EffectObjects.Remove(deadEffect);
-            }
+            GameObjects.ClearAllDead();
+            EffectObjects.ClearAllDisabled();
 
             if (IsEnding)
             {
@@ -125,13 +80,19 @@ namespace RunningBox
         Font _fontFPS = new Font("Arial", 12);
         private void Drawing()
         {
-            _watchFPS.Restart();
+            _tickFPS--;
+            bool refreshFPS = false;
+            if (_tickFPS == 0)
+            {
+                _tickFPS = 10;
+                _watchFPS.Restart();
+                refreshFPS = true;
+            }
+
+
             _BackGraphics.Clear(Color.White);
 
-            foreach (IEffect effect in EffectObjects)
-            {
-                effect.DoBeforeDraw(_BackGraphics);
-            }
+            EffectObjects.AllDoBeforeDraw(_BackGraphics);
 
             if (GameRectangle != null)
             {
@@ -147,30 +108,17 @@ namespace RunningBox
             _BackGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
             _BackGraphics.DrawString(Score.ToString(), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
 
-            foreach (IEffect effect in EffectObjects)
-            {
-                effect.DoBeforeDrawObject(_BackGraphics);
-            }
-
-            foreach (ObjectBase activeObj in GameObjects)
-            {
-                activeObj.DrawSelf(_BackGraphics);
-            }
-
-            foreach (IEffect effect in EffectObjects)
-            {
-                effect.DoAfterDraw(_BackGraphics);
-            }
+            EffectObjects.AllDoBeforeDrawObject(_BackGraphics);
+            GameObjects.AllDrawSelf(_BackGraphics);
+            EffectObjects.AllDoAfterDraw(_BackGraphics);
 
             _BackGraphics.ResetTransform();
+
             _BackGraphics.DrawString(_txtFPS, _fontFPS, Brushes.Red, Width - 50, 5);
             _ThisGraphics.DrawImageUnscaled(_BackImage, 0, 0);
-
-            _watchFPS.Stop();
-            _tickFPS--;
-            if (_tickFPS <= 0)
+            if (refreshFPS)
             {
-                _tickFPS = 10;
+                _watchFPS.Stop();
                 _txtFPS = ((int)(1 / (_watchFPS.ElapsedTicks / (float)TimeSpan.TicksPerSecond))).ToString();
             }
         }
@@ -184,7 +132,6 @@ namespace RunningBox
             GameObjects.Clear();
             PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black);
             GameObjects.Add(PlayerObject);
-            IsStart = true;
             GameRectangle = new Rectangle(50, 50, Width - 100, Height - 100);
 
             if (_BackImage != null) _BackImage.Dispose();
@@ -194,14 +141,19 @@ namespace RunningBox
             _BackImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
             _BackGraphics = Graphics.FromImage(_BackImage);
             _ThisGraphics = CreateGraphics();
-
             _BackGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             Cursor.Hide();
+            IsStart = true;
         }
 
-        public virtual void OnObjectDead(object sender, EventArgs e)
+        /// <summary>
+        /// 物件死亡時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnObjectDead(ObjectBase sender, ObjectBase killer)
         {
-            if (sender is ObjectPlayer)
+            if (sender.Equals(PlayerObject))
             {
                 SetEnd();
             }
@@ -219,13 +171,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 秒轉換為Action
+        /// 秒轉換為Rounds
         /// </summary>
         /// <param name="sec"></param>
         /// <returns></returns>
-        public int SecToAction(float sec)
+        public int SecToRounds(float sec)
         {
-            return (int)(sec * 1000 / _TimerOfAction.Interval);
+            return (int)(sec * 1000 / _TimerOfRound.Interval);
         }
     }
 }

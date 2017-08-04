@@ -5,5 +5,5 @@ C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csproj.GenerateResource.Cache
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.exe
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneStand.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.PlayingBox2.resources

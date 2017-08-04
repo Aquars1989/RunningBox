@@ -1,26 +1,81 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 特效狀態
+    /// </summary>
     public enum EffectStatus
     {
-        Alive = 0,
-        Dead = 2,
+        /// <summary>
+        /// 生效中
+        /// </summary>
+        Enabling = 0,
+
+        /// <summary>
+        /// 生效
+        /// </summary>
+        Enabled = 1,
+
+        /// <summary>
+        /// 失效中
+        /// </summary>
+        Disabling = 2,
+
+        /// <summary>
+        /// 失效，等待回收
+        /// </summary>
+        Disabled = 3
     }
 
+    /// <summary>
+    /// 特效介面
+    /// </summary>
     public interface IEffect
     {
-        EffectStatus Status { get; set; }
-        void DoBeforeAction();
-        void DoAfterAction();
+        /// <summary>
+        /// 作用場景物件
+        /// </summary>
+        SceneBase Scene { get; set; }
+
+        /// <summary>
+        /// 特效狀態
+        /// </summary>
+        EffectStatus Status { get; }
+
+        /// <summary>
+        /// 持續時間
+        /// </summary>
+        int DurationRounds { get; set; }
+        
+        /// <summary>
+        /// 物件活動前執行動作
+        /// </summary>
+        void DoBeforeRound();
+
+        /// <summary>
+        /// 物件活動後執行動作
+        /// </summary>
+        void DoAfterRound();
+
+        /// <summary>
+        /// 背景繪製前執行動作
+        /// </summary>
         void DoBeforeDraw(Graphics g);
+
+        /// <summary>
+        /// 背景繪製後，物件繪製前執行動作
+        /// </summary>
         void DoBeforeDrawObject(Graphics g);
+
+        /// <summary>
+        /// 繪製後執行動作
+        /// </summary>
         void DoAfterDraw(Graphics g);
-        void End();
+
+        /// <summary>
+        /// 中斷特效
+        /// </summary>
+        void Break();
     }
 }

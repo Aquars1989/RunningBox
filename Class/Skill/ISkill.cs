@@ -9,9 +9,9 @@ namespace RunningBox
     interface ISkill
     {
         int CostEnargy { get; set; }
-        int CostEnargyPerAction { get; set; }
+        int CostEnargyPerRound { get; set; }
 
-        void DoWhenAction();
+        void DoWhenRound();
         void DoWhenDrawing();
         void Use();
         void Use(ObjectPlayer playerObject);

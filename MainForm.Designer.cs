@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.runningBox1 = new PlayingBox2();
+            this.runningBox1 = new SceneStand();
             this.SuspendLayout();
             // 
             // runningBox1
@@ -58,7 +58,7 @@
 
         #endregion
 
-        private PlayingBox2 runningBox1;
+        private SceneStand runningBox1;
     }
 }
 

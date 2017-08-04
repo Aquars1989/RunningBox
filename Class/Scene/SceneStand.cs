@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace RunningBox
 {
-    public partial class PlayingBox2 : SceneBase
+    public partial class SceneStand : SceneBase
     {
         private const int _DefaultGroupCount = 6;
         private const int _DefaultMineCount = 4;
@@ -19,16 +19,16 @@ namespace RunningBox
 
         private const int _EnergyForSprint = 350;
         private const int _EnergyForSlow = 350;
-        private const int _EnergyForSlowPerAction = 15;
+        private const int _EnergyForSlowPerRound = 15;
 
-        private const int _EndMaxActions = 30;
+        private const int _EndMaxRounds = 30;
 
-        private const int _DarkMaxActions = 100;
-        private const int _DarkFadeInActions = 20;
-        private const int _DarkFadeOutActions = 20;
+        private const int _DarkMaxRounds = 100;
+        private const int _DarkFadeInRounds = 20;
+        private const int _DarkFadeOutRounds = 20;
 
-        private const int _LimitedMaxActions = 100;
-        private const int _LimitedFadeActions = 20;
+        private const int _LimitedMaxRounds = 100;
+        private const int _LimitedFadeRounds = 20;
 
         private Timer _TimerOfBuild = new Timer() { Enabled = true, Interval = 1000 };
 
@@ -49,9 +49,9 @@ namespace RunningBox
         private Bitmap _BackImage;
 
         private int _TickOfLimited = 0;
-        private Padding _LimitedPerAction = new Padding();
+        private Padding _LimitedPerRound = new Padding();
 
-        public PlayingBox2()
+        public SceneStand()
         {
             InitializeComponent();
 
@@ -85,7 +85,7 @@ namespace RunningBox
             //    int limitRight = limitX - limitLeft;
             //    int limitDown = limitY - limitTop;
 
-            //    _LimitedPerAction = new Padding(limitLeft, limitTop, limitRight, limitDown);
+            //    _LimitedPerRound = new Padding(limitLeft, limitTop, limitRight, limitDown);
             //}
 
             //if (_LeveL % _LeveLOfMine == 0)
@@ -96,7 +96,7 @@ namespace RunningBox
             //        int movesCount = _Rand.Next(10, 15);
             //        float speed = _Rand.Next(850, 1000) - (size * 50) * speedLevel;
             //        float speedPerMove = speed / movesCount;
-            //        int life = SecToAction(_LeveLOfMine * 0.5F);// +_Rand.Next(0, 5);
+            //        int life = SecToRound(_LeveLOfMine * 0.5F);// +_Rand.Next(0, 5);
             //        int X = 0, Y = 0, lockPotX = 0, lockPotY = 0;
             //        switch (_Rand.Next(1, 4))
             //        {
@@ -142,7 +142,7 @@ namespace RunningBox
                     int movesCount = Global.Rand.Next(15, 30);
                     float speed = Global.Rand.Next(700, 850) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
-                    int life = SecToAction(6F * lifeLevel) + Global.Rand.Next(0, 5);
+                    int life = SecToRounds(6F * lifeLevel) + Global.Rand.Next(0, 5);
                     int X = 0, Y = 0;
                     switch (Global.Rand.Next(1, 4))
                     {
@@ -196,7 +196,7 @@ namespace RunningBox
                     int movesCount = Global.Rand.Next(6, 10);
                     float speed = Global.Rand.Next(250, 300) * speedLevel;
                     float speedPerMove = speed / movesCount;
-                    int life = SecToAction(7F * lifeLevel);
+                    int life = SecToRounds(7F * lifeLevel);
                     GameObjects.Add(new ObjectCatcherInterceptor(X, Y, movesCount, size, speedPerMove, life, Color.Fuchsia));
                 }
                 else if (Level % _LevelOfCatcherFaster == 0)
@@ -205,7 +205,7 @@ namespace RunningBox
                     int movesCount = Global.Rand.Next(8, 15);
                     float speed = Global.Rand.Next(800, 900) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
-                    int life = SecToAction(4.5F * lifeLevel);
+                    int life = SecToRounds(4.5F * lifeLevel);
                     GameObjects.Add(new ObjectCatcherFaster(X, Y, movesCount, size, speedPerMove, life, Color.Blue, PlayerObject));
                 }
                 else
@@ -214,7 +214,7 @@ namespace RunningBox
                     int movesCount = Global.Rand.Next(15, 30);
                     float speed = Global.Rand.Next(700, 850) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
-                    int life = SecToAction(3.5F * lifeLevel);
+                    int life = SecToRounds(3.5F * lifeLevel);
 
                     GameObjects.Add(new ObjectCatcher(X, Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
                 }
