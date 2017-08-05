@@ -9,6 +9,7 @@ namespace RunningBox
 {
     public class EffectShark : IEffect
     {
+        public bool CanBreak { get; set; }
         public SceneBase Scene { get; set; }
         public EffectStatus Status { get; private set; }
         public int DurationRounds { get; set; }
@@ -16,10 +17,10 @@ namespace RunningBox
 
         public EffectShark(int duration, int power)
         {
+            CanBreak = true;
             Status = EffectStatus.Enabled;
             DurationRounds = duration;
             Power = power;
-
         }
 
         public void DoAfterRound()
@@ -29,7 +30,7 @@ namespace RunningBox
                 DurationRounds--;
                 if (DurationRounds <= 0)
                 {
-                    Break();
+                    Status = EffectStatus.Disabled;
                 }
             }
         }
@@ -43,10 +44,14 @@ namespace RunningBox
 
         public void Break()
         {
-            Status = EffectStatus.Disabled;
+            if (CanBreak)
+            {
+                Status = EffectStatus.Disabled;
+            }
         }
 
         public void DoBeforeRound() { }
+        public void DoBeforeDrawUI(Graphics g) { }
         public void DoBeforeDrawObject(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
     }

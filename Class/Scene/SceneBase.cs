@@ -10,6 +10,14 @@ using System.Windows.Forms;
 
 namespace RunningBox
 {
+    public enum EnumDirection
+    {
+        Left = 0,
+        Right = 1,
+        Top = 2,
+        Bottom = 3
+    }
+
     public class SceneBase : UserControl
     {
         public float WorldSpeed { get; set; }
@@ -93,6 +101,7 @@ namespace RunningBox
             _BackGraphics.Clear(Color.White);
 
             EffectObjects.AllDoBeforeDraw(_BackGraphics);
+            EffectObjects.AllDoBeforeDrawUI(_BackGraphics);
 
             if (GameRectangle != null)
             {
@@ -130,6 +139,7 @@ namespace RunningBox
             Score = 0;
 
             GameObjects.Clear();
+            EffectObjects.Clear();
             PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black);
             GameObjects.Add(PlayerObject);
             GameRectangle = new Rectangle(50, 50, Width - 100, Height - 100);
@@ -164,6 +174,7 @@ namespace RunningBox
         /// </summary>
         private void SetEnd()
         {
+            EffectObjects.AllBreak();
             PlayerObject = null;
             IsEnding = true;
             EndDelay = 30;
@@ -178,6 +189,36 @@ namespace RunningBox
         public int SecToRounds(float sec)
         {
             return (int)(sec * 1000 / _TimerOfRound.Interval);
+        }
+
+        public Point GetEnterPoint()
+        {
+            return GetEnterPoint((EnumDirection)Global.Rand.Next(4));
+        }
+
+        public Point GetEnterPoint(EnumDirection enterSide)
+        {
+            int x = 0, y = 0;
+            switch (enterSide)
+            {
+                case  EnumDirection.Left:
+                    x = -Global.Rand.Next(20, 60);
+                    y = Global.Rand.Next(0, Height);
+                    break;
+                case EnumDirection.Right:
+                    x = Width + Global.Rand.Next(20, 60);
+                    y = Global.Rand.Next(0, Height);
+                    break;
+                case EnumDirection.Top:
+                    x = Global.Rand.Next(0, Width);
+                    y = -Global.Rand.Next(20, 60);
+                    break;
+                case EnumDirection.Bottom:
+                    x = Global.Rand.Next(0, Width);
+                    y = Height + Global.Rand.Next(20, 60);
+                    break;
+            }
+            return new Point(x, y);
         }
     }
 }

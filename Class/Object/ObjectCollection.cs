@@ -13,13 +13,18 @@ namespace RunningBox
     /// </summary>
     public class ObjectCollection
     {
+        private List<ObjectBase> _Collection;
+        private List<ObjectBase> _AddCollection;
+
         /// <summary>
         /// 發生於集合內物件死亡
         /// </summary>
         public ObjectDeadEventHandle ObjectDead;
 
-        private List<ObjectBase> _Collection;
-        private SceneBase _Scene;
+        /// <summary>
+        /// 歸屬的場景物件
+        /// </summary>
+        public SceneBase Scene { get; set; }
 
         /// <summary>
         /// 集合物件數量
@@ -35,7 +40,7 @@ namespace RunningBox
         /// <param name="scene">所屬場景物件</param>
         public ObjectCollection(SceneBase scene)
         {
-            _Scene = scene;
+            Scene = scene;
             _Collection = new List<ObjectBase>();
         }
 
@@ -55,7 +60,7 @@ namespace RunningBox
         /// <param name="item">活動物件</param>
         public void Add(ObjectBase item)
         {
-            item.Scene = _Scene;
+            item.Scene = Scene;
             item.Dead += OnObjectDead;
             _Collection.Add(item);
         }
@@ -98,24 +103,26 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 所有集合內活動物件執行Round方法
+        /// 所有集合內活動物件執行Action方法
         /// </summary>
         public void AllAction()
         {
-            foreach (ObjectBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                ObjectBase item = _Collection[i];
                 item.Action();
             }
         }
 
-       /// <summary>
+        /// <summary>
         /// 所有集合內活動物件執行DrawSelf方法
-       /// </summary>
+        /// </summary>
         /// <param name="g">Graphics物件</param>
         public void AllDrawSelf(Graphics g)
         {
-            foreach (ObjectBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                ObjectBase item = _Collection[i];
                 item.DrawSelf(g);
             }
         }

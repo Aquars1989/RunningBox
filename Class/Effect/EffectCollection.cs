@@ -126,6 +126,18 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 所有集合內特效物件執行DoBeforeDrawUI方法
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
+        public void AllDoBeforeDrawUI(Graphics g)
+        {
+            foreach (IEffect item in _Collection)
+            {
+                item.DoBeforeDrawUI(g);
+            }
+        }
+
+        /// <summary>
         /// 所有集合內特效物件執行DoBeforeDrawObject方法
         /// </summary>
         /// <param name="g">Graphics物件</param>

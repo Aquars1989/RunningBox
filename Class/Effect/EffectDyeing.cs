@@ -7,19 +7,23 @@ using System.Text;
 
 namespace RunningBox
 {
-    public class EffectDark : IEffect
+    public class EffectDyeing : IEffect
     {
+        public bool CanBreak { get; set; }
         public SceneBase Scene { get; set; }
         public EffectStatus Status { get; set; }
+        public Color Color { get; set; }
         public int DurationRounds { get; set; }
         public int EnablingRoundsMax { get; private set; }
         public int DisablingRoundsMax { get; private set; }
         public int EnablingRounds { get; set; }
         public int DisablingRounds { get; set; }
 
-        public EffectDark(int duration, int enablingRounds, int disablingRounds)
+        public EffectDyeing(Color color,int duration, int enablingRounds, int disablingRounds)
         {
+            CanBreak = true;
             Status = EffectStatus.Enabling;
+            Color = color;
             DurationRounds = duration;
             EnablingRoundsMax = enablingRounds;
             EnablingRounds = enablingRounds;
@@ -42,7 +46,7 @@ namespace RunningBox
                 case EffectStatus.Enabled:
                     if (DurationRounds <= 0)
                     {
-                        Break();
+                        Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
                     DurationRounds--;
@@ -57,34 +61,36 @@ namespace RunningBox
             }
         }
 
-        public void DoBeforeDrawObject(Graphics g)
+        public void DoBeforeDrawUI(Graphics g)
         {
             switch (Status)
             {
                 case EffectStatus.Enabling:
                     if (EnablingRoundsMax > 0)
                     {
-                        int alpha = (int)(EnablingRounds / EnablingRoundsMax * 255F);
-
+                        int alpha = (int)((float)(EnablingRoundsMax - EnablingRounds) / EnablingRoundsMax * Color.A);
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
-                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, 0, 0, 0)))
+                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
                         {
                             g.FillRectangle(brush, Scene.ClientRectangle);
                         }
                     }
                     break;
                 case EffectStatus.Enabled:
-                    g.FillRectangle(Brushes.Black, Scene.ClientRectangle);
+                    using (SolidBrush brush = new SolidBrush(Color))
+                    {
+                        g.FillRectangle(brush, Scene.ClientRectangle);
+                    }
                     break;
                 case EffectStatus.Disabling:
                     if (DisablingRoundsMax > 0)
                     {
-                        int alpha = (int)((EnablingRoundsMax - DisablingRounds) / EnablingRoundsMax * 255F);
+                        int alpha = (int)((float)(DisablingRounds) / DisablingRoundsMax * Color.A);
 
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
-                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, 0, 0, 0)))
+                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
                         {
                             g.FillRectangle(brush, Scene.ClientRectangle);
                         }
@@ -95,11 +101,15 @@ namespace RunningBox
 
         public void Break()
         {
-            Status = EffectStatus.Disabled;
+            if (CanBreak)
+            {
+                Status = EffectStatus.Disabling;
+            }
         }
 
         public void DoBeforeRound() { }
         public void DoBeforeDraw(Graphics g) { }
+        public void DoBeforeDrawObject(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
     }
 }

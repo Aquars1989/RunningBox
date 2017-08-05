@@ -34,6 +34,11 @@ namespace RunningBox
     public interface IEffect
     {
         /// <summary>
+        /// 是否可被中斷
+        /// </summary>
+        bool CanBreak { get; set; }
+
+        /// <summary>
         /// 作用場景物件
         /// </summary>
         SceneBase Scene { get; set; }
@@ -47,7 +52,7 @@ namespace RunningBox
         /// 持續時間
         /// </summary>
         int DurationRounds { get; set; }
-        
+
         /// <summary>
         /// 物件活動前執行動作
         /// </summary>
@@ -62,6 +67,11 @@ namespace RunningBox
         /// 背景繪製前執行動作
         /// </summary>
         void DoBeforeDraw(Graphics g);
+
+        /// <summary>
+        /// 繪製UI前執行動作
+        /// </summary>
+        void DoBeforeDrawUI(Graphics g);
 
         /// <summary>
         /// 背景繪製後，物件繪製前執行動作

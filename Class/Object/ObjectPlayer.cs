@@ -124,7 +124,7 @@ namespace RunningBox
                 double scrapDirection = direction + (Global.Rand.NextDouble() - 0.5) * 20;
                 Scene.GameObjects.Add(new ObjectScrap(X, Y, 1, speed, life, scrapDirection, Color));
             }
-            Scene.EffectObjects.Add(new EffectShark(20, 10));
+            Scene.EffectObjects.Add(new EffectShark(20, 10) { CanBreak = false });
 
             base.Kill(killer);
         }

@@ -21,24 +21,14 @@ namespace RunningBox
         private const int _EnergyForSlow = 350;
         private const int _EnergyForSlowPerRound = 15;
 
-        private const int _EndMaxRounds = 30;
-
-        private const int _DarkMaxRounds = 100;
-        private const int _DarkFadeInRounds = 20;
-        private const int _DarkFadeOutRounds = 20;
-
-        private const int _LimitedMaxRounds = 100;
-        private const int _LimitedFadeRounds = 20;
-
         private Timer _TimerOfBuild = new Timer() { Enabled = true, Interval = 1000 };
 
-        private int _DarkAni = 0;
         private int _LevelOfDark = 22;
         private int _LevelOfGroup = 15;
         private int _LevelOfInterceptor = 12;
         private int _LeveLOfMine = 8;
         private int _LevelOfCatcherFaster = 3;
-        private int _LevelOfLimited = 28;
+        private int _LevelOfShrink = 6;
 
         private int _GroupCount = 0;
         private int _MineCount = 0;
@@ -67,26 +57,28 @@ namespace RunningBox
             float lifeLevel = (100F + Level) / 100F;
             float speedLevel = (70F + Level) / 100F;
 
-            //if (_LeveL % _LevelOfDark == 0 && _DarkAni == 0)
-            //{
-            //    _DarkAni = 1;
-            //}
+            if (Level % _LevelOfDark == 0)
+            {
+                EffectObjects.Add(new EffectDyeing(Color.Black, 200, 20, 20));
+            }
 
-            //if (_LeveL % _LevelOfLimited == 0 && _TickOfLimited == 0)
-            //{
-            //    _TickOfLimited = 1;
-            //    double scaleX = _Rand.NextDouble();
-            //    double scaleY = 1 - scaleX;
-            //    int limitX = (int)(scaleX * _RectOfGaming.Width / 100);
-            //    int limitY = (int)(scaleY * _RectOfGaming.Height / 100);
+            if (Level % _LevelOfShrink == 0)
+            {
+                double scaleX = Global.Rand.NextDouble();
+                double scaleY = 1 - scaleX;
 
-            //    int limitLeft = _Rand.Next(0, limitX);
-            //    int limitTop = _Rand.Next(0, limitY);
-            //    int limitRight = limitX - limitLeft;
-            //    int limitDown = limitY - limitTop;
+                int shrinkRounds = 20;
+                int limitX = (int)(scaleX * GameRectangle.Width / 2 / shrinkRounds);
+                int limitY = (int)(scaleY * GameRectangle.Height / 2 / shrinkRounds);
 
-            //    _LimitedPerRound = new Padding(limitLeft, limitTop, limitRight, limitDown);
-            //}
+                int limitLeft = Global.Rand.Next(0, limitX);
+                int limitTop = Global.Rand.Next(0, limitY);
+                int limitRight = limitX - limitLeft;
+                int limitDown = limitY - limitTop;
+
+                Padding shrinkPerRound = new Padding(limitLeft, limitTop, limitRight, limitDown);
+                EffectObjects.Add(new EffectShrink(shrinkPerRound, 100, 20));
+            }
 
             //if (_LeveL % _LeveLOfMine == 0)
             //{
@@ -143,53 +135,14 @@ namespace RunningBox
                     float speed = Global.Rand.Next(700, 850) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(6F * lifeLevel) + Global.Rand.Next(0, 5);
-                    int X = 0, Y = 0;
-                    switch (Global.Rand.Next(1, 4))
-                    {
-                        case 1:
-                            X = -Global.Rand.Next(20, 60);
-                            Y = Global.Rand.Next(0, Height);
-                            break;
-                        case 2:
-                            X = Width + Global.Rand.Next(20, 60);
-                            Y = Global.Rand.Next(0, Height);
-                            break;
-                        case 3:
-                            X = Global.Rand.Next(0, Width);
-                            Y = -Global.Rand.Next(20, 60);
-                            break;
-                        case 4:
-                            X = Global.Rand.Next(0, Width);
-                            Y = Height + Global.Rand.Next(20, 60);
-                            break;
-                    }
-                    GameObjects.Add(new ObjectCatcher(X, Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
+                    Point enterPoint = GetEnterPoint();
+                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
                 }
                 _GroupCount++;
             }
             else
             {
-                int X = 0, Y = 0;
-                switch (Global.Rand.Next(1, 4))
-                {
-                    case 1:
-                        X = -Global.Rand.Next(20, 60);
-                        Y = Global.Rand.Next(0, Height);
-                        break;
-                    case 2:
-                        X = Width + Global.Rand.Next(20, 60);
-                        Y = Global.Rand.Next(0, Height);
-                        break;
-                    case 3:
-                        X = Global.Rand.Next(0, Width);
-                        Y = -Global.Rand.Next(20, 60);
-                        break;
-                    case 4:
-                        X = Global.Rand.Next(0, Width);
-                        Y = Height + Global.Rand.Next(20, 60);
-                        break;
-                }
-
+                Point enterPoint = GetEnterPoint();
                 if (Level % _LevelOfInterceptor == 0)
                 {
                     int size = Global.Rand.Next(6, 8);
@@ -197,7 +150,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(250, 300) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(7F * lifeLevel);
-                    GameObjects.Add(new ObjectCatcherInterceptor(X, Y, movesCount, size, speedPerMove, life, Color.Fuchsia));
+                    GameObjects.Add(new ObjectCatcherInterceptor(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Fuchsia));
                 }
                 else if (Level % _LevelOfCatcherFaster == 0)
                 {
@@ -206,7 +159,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(800, 900) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(4.5F * lifeLevel);
-                    GameObjects.Add(new ObjectCatcherFaster(X, Y, movesCount, size, speedPerMove, life, Color.Blue, PlayerObject));
+                    GameObjects.Add(new ObjectCatcherFaster(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Blue, PlayerObject));
                 }
                 else
                 {
@@ -216,7 +169,7 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(3.5F * lifeLevel);
 
-                    GameObjects.Add(new ObjectCatcher(X, Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
+                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
                 }
             }
         }

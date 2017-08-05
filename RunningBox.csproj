@@ -48,8 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\Effect\EffectCollection.cs" />
-    <Compile Include="Class\Effect\EffectDark.cs" />
+    <Compile Include="Class\Effect\EffectDyeing.cs" />
     <Compile Include="Class\Effect\EffectShark.cs" />
+    <Compile Include="Class\Effect\EffectShrink.cs" />
     <Compile Include="Class\Effect\IEffect.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
