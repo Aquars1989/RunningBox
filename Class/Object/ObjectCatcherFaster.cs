@@ -8,7 +8,7 @@ namespace RunningBox
 {
     public class ObjectCatcherFaster : ObjectBase
     {
-        public ObjectBase Target { get; set; }
+        public ITarget Target { get; set; }
         public int LifeTick { get; set; }
         public int LifeTickMax { get; set; }
 
@@ -36,7 +36,7 @@ namespace RunningBox
         public int SprintTime { get; set; }
         public int SprintCooldown { get; set; }
 
-        public ObjectCatcherFaster(float x, float y, int maxMoves, int size, float speed, int life, Color color, ObjectBase target)
+        public ObjectCatcherFaster(float x, float y, int maxMoves, int size, float speed, int life, Color color, ITarget target)
         {
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
@@ -56,7 +56,7 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        public override void Action()
+        protected override void ActionSelf()
         {
             LifeTick--;
             switch (Status)
@@ -142,7 +142,7 @@ namespace RunningBox
             }
         }
 
-        public override void DrawSelf(Graphics g)
+        protected override void DrawSelf(Graphics g)
         {
             switch (Status)
             {

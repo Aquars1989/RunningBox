@@ -6,12 +6,8 @@ using System.Text;
 
 namespace RunningBox
 {
-    public class ObjectPlayer : ObjectBase
+    public class ObjectPlayer : ObjectActive
     {
-        public int Energy { get; set; }
-        public int EnergyMax { get; set; }
-        public int EnergyGetPerRound { get; set; }
-
         private Pen _Pen;
         private Color _Color;
         public Color Color
@@ -51,17 +47,12 @@ namespace RunningBox
             DrawPool.BackPen(_Color);
         }
 
-        public override void Action()
+        protected override void ActionPlan()
         {
             Energy += EnergyGetPerRound;
             if (Energy > EnergyMax)
             {
                 Energy = EnergyMax;
-            }
-
-            if (Moves.Count >= MaxMoves)
-            {
-                Moves.RemoveAt(0);
             }
 
             Point trackPoint = Scene.TrackPoint;
@@ -89,18 +80,7 @@ namespace RunningBox
                 moveY = -Math.Abs(moveY) * 2;
             }
 
-
             Moves.Add(new PointF(moveX, moveY));
-            float moveTotalX = 0;
-            float moveTotalY = 0;
-            foreach (PointF pt in Moves)
-            {
-                moveTotalX += pt.X;
-                moveTotalY += pt.Y;
-            }
-
-            X += moveTotalX * Scene.WorldSpeed;
-            Y += moveTotalY * Scene.WorldSpeed;
         }
 
         public override void Kill(ObjectBase killer)
@@ -129,7 +109,7 @@ namespace RunningBox
             base.Kill(killer);
         }
 
-        public override void DrawSelf(Graphics g)
+        protected override void DrawSelf(Graphics g)
         {
             _Pen.Width = 2;
             g.DrawEllipse(_Pen, Rectangle);

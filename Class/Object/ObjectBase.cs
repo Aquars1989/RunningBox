@@ -6,6 +6,9 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 活動物件狀態
+    /// </summary>
     public enum ObjectStatus
     {
         Alive = 0,
@@ -20,7 +23,6 @@ namespace RunningBox
     /// <param name="killer">殺手物件</param>
     public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer);
 
-
     public abstract class ObjectBase
     {
         /// <summary>
@@ -28,6 +30,7 @@ namespace RunningBox
         /// </summary>
         public event ObjectDeadEventHandle Dead;
 
+        public ITarget Target { get; set; }
         public SceneBase Scene { get; set; }
         public ObjectStatus Status { get; set; }
         public List<PointF> Moves { get; set; }
@@ -105,6 +108,11 @@ namespace RunningBox
             OnDead(this, killer);
         }
 
+        /// <summary>
+        /// 發生在物件死亡時
+        /// </summary>
+        /// <param name="sender">死亡物件</param>
+        /// <param name="killer">殺手物件</param>
         protected void OnDead(ObjectBase sender, ObjectBase killer)
         {
             if (Dead != null)
@@ -117,12 +125,60 @@ namespace RunningBox
         /// <summary>
         /// 物件在1回合內進行的活動
         /// </summary>
-        public abstract void Action();
+        public virtual void Action()
+        {
+            ActionPlan();
+            ActionMove();
+        }
+
+        /// <summary>
+        /// 物件在回合內進行的規劃活動
+        /// </summary>
+        protected virtual void ActionPlan()
+        {
+            if (Target != null)
+            {
+                double direction = Function.PointRotation(X, Y, Target.X, Target.Y);
+                float moveX = (float)Math.Cos(direction / 180 * Math.PI) * (Speed / 100F);
+                float moveY = (float)Math.Sin(direction / 180 * Math.PI) * (Speed / 100F);
+                Moves.Add(new PointF(moveX, moveY));
+            }
+        }
+
+        /// <summary>
+        /// 物件在回合內進行的移動
+        /// </summary>
+        protected virtual void ActionMove()
+        {
+            if (Moves.Count > MaxMoves)
+            {
+                Moves.RemoveRange(0, Moves.Count - MaxMoves);
+            }
+
+            float moveTotalX = 0;
+            float moveTotalY = 0;
+            foreach (PointF pt in Moves)
+            {
+                moveTotalX += pt.X;
+                moveTotalY += pt.Y;
+            }
+
+            X += moveTotalX * Scene.WorldSpeed;
+            Y += moveTotalY * Scene.WorldSpeed;
+        }
+
+        /// <summary>
+        /// 繪製物件
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
+        public virtual void Draw(Graphics g)
+        {
+            DrawSelf(g);
+        }
 
         /// <summary>
         /// 繪製物件本身
         /// </summary>
-        /// <param name="g">Graphics物件</param>
-        public abstract void DrawSelf(Graphics g);
+        protected abstract void DrawSelf(Graphics g);
     }
 }

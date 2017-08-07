@@ -136,7 +136,7 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(6F * lifeLevel) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
-                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
+                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject)));
                 }
                 _GroupCount++;
             }
@@ -159,7 +159,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(800, 900) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(4.5F * lifeLevel);
-                    GameObjects.Add(new ObjectCatcherFaster(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Blue, PlayerObject));
+                    GameObjects.Add(new ObjectCatcherFaster(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Blue, new TargetObject(PlayerObject)));
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(3.5F * lifeLevel);
 
-                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, PlayerObject));
+                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject)));
                 }
             }
         }

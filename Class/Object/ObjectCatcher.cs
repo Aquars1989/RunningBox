@@ -8,7 +8,6 @@ namespace RunningBox
 {
     public class ObjectCatcher : ObjectBase
     {
-        public ObjectBase Target { get; set; }
         public int LifeTick { get; set; }
         public int LifeTickMax { get; set; }
 
@@ -36,7 +35,7 @@ namespace RunningBox
         public int SprintTime { get; set; }
         public int SprintCooldown { get; set; }
 
-        public ObjectCatcher(float x, float y, int maxMoves, int size, float speed, int life, Color color, ObjectBase target)
+        public ObjectCatcher(float x, float y, int maxMoves, int size, float speed, int life, Color color, ITarget target)
         {
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
@@ -56,93 +55,17 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        public override void Action()
+        protected override void ActionMove()
         {
+            base.ActionMove();
             LifeTick--;
-            switch (Status)
+            if (LifeTick <= 0)
             {
-                case ObjectStatus.Alive:
-                    ObjectBase playObject = Scene.PlayerObject;
-                    if (playObject != null && playObject.Rectangle.IntersectsWith(Rectangle))
-                    {
-                        playObject.Kill(this);
-                    }
-
-                    if (Target != null)
-                    {
-                        if (Moves.Count >= MaxMoves)
-                        {
-                            Moves.RemoveAt(0);
-                        }
-
-                        double direction = Function.PointRotation(X, Y, Target.X, Target.Y);
-                        float moveX = (float)Math.Cos(direction / 180 * Math.PI) * (Speed / 100F);
-                        float moveY = (float)Math.Sin(direction / 180 * Math.PI) * (Speed / 100F);
-
-                        if (SprintTime > 0)
-                        {
-                            Scene.GameObjects.Add(new ObjectSmoke(X, Y, Size, _SmokeColor, 3));
-                            SprintTime--;
-                            moveX *= 5;
-                            moveY *= 5;
-                        }
-
-                        if (SprintCooldown <= 0)
-                        {
-                            double randNum = Global.Rand.NextDouble() * 100;
-                            if (randNum < 0.5)
-                            {
-                                SprintTime = MaxMoves;
-                                SprintCooldown = MaxMoves * 2;
-                            }
-                            else if (randNum < 3)
-                            {
-                                SprintCooldown = MaxMoves / 2;
-                                moveX *= 15;
-                                moveY *= 15;
-                            }
-                        }
-                        else
-                        {
-                            SprintCooldown--;
-                        }
-
-                        Moves.Add(new PointF((float)moveX, (float)moveY));
-                    }
-
-                    float moveTotalX = 0;
-                    float moveTotalY = 0;
-                    foreach (PointF pt in Moves)
-                    {
-                        moveTotalX += pt.X;
-                        moveTotalY += pt.Y;
-                    }
-
-                    X += moveTotalX * Scene.WorldSpeed;
-                    Y += moveTotalY * Scene.WorldSpeed;
-
-                    if (playObject != null && playObject.Rectangle.IntersectsWith(Rectangle))
-                    {
-                        playObject.Kill(this);
-                    }
-
-                    if (LifeTick <= 0)
-                    {
-                        Status = ObjectStatus.Dying;
-                        LifeTick = 10;
-                        LifeTickMax = 10;
-                    }
-                    break;
-                case ObjectStatus.Dying:
-                    if (LifeTick <= 0)
-                    {
-                        Kill(null);
-                    }
-                    break;
+                Status = ObjectStatus.Dead;
             }
         }
 
-        public override void DrawSelf(Graphics g)
+        protected override void DrawSelf(Graphics g)
         {
             switch (Status)
             {

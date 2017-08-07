@@ -41,7 +41,7 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        public override void Action()
+        protected override void ActionMove()
         {
             LifeTick--;
             if (LifeTick == 0)
@@ -57,7 +57,7 @@ namespace RunningBox
             }
         }
 
-        public override void DrawSelf(Graphics g)
+        protected override void DrawSelf(Graphics g)
         {
             using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255F / LifeTickMax * LifeTick), Color.R, Color.G, Color.B)))
             {

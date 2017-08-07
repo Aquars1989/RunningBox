@@ -54,19 +54,23 @@
     <Compile Include="Class\Effect\IEffect.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
+    <Compile Include="Class\Object\ObjectActive.cs" />
     <Compile Include="Class\Object\ObjectCollection.cs" />
-    <Compile Include="Class\Object\ObjectCatcherInterceptor.cs" />
-    <Compile Include="Class\Object\ObjectCatcherFaster.cs" />
     <Compile Include="Class\Object\ObjectScrap.cs" />
     <Compile Include="Class\Object\ObjectSmoke.cs" />
     <Compile Include="Class\Object\ObjectCatcher.cs" />
     <Compile Include="Class\Object\ObjectPlayer.cs" />
     <Compile Include="Class\Object\ObjectBase.cs" />
+    <Compile Include="Class\Skill\SkillCollection.cs" />
+    <Compile Include="Class\Target\ITarget.cs" />
     <Compile Include="Class\Scene\SceneBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Class\Skill\ISkill.cs" />
     <Compile Include="Class\Skill\SkillSprint.cs" />
+    <Compile Include="Class\Target\TargetTrackPoint.cs" />
+    <Compile Include="Class\Target\TargetObject.cs" />
+    <Compile Include="Class\Target\TargetPoint.cs" />
     <Compile Include="DrawPool.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

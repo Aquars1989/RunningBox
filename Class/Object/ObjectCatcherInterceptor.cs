@@ -51,7 +51,7 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        public override void Action()
+        protected override void ActionSelf()
         {
             LifeTick--;
             switch (Status)
@@ -108,7 +108,7 @@ namespace RunningBox
             }
         }
 
-        public override void DrawSelf(Graphics g)
+        protected override void DrawSelf(Graphics g)
         {
             switch (Status)
             {

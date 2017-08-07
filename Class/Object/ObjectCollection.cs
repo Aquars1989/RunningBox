@@ -14,7 +14,6 @@ namespace RunningBox
     public class ObjectCollection
     {
         private List<ObjectBase> _Collection;
-        private List<ObjectBase> _AddCollection;
 
         /// <summary>
         /// 發生於集合內物件死亡
@@ -123,7 +122,7 @@ namespace RunningBox
             for (int i = 0; i < _Collection.Count; i++)
             {
                 ObjectBase item = _Collection[i];
-                item.DrawSelf(g);
+                item.Draw(g);
             }
         }
 
