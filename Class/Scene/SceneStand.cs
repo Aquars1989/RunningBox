@@ -150,7 +150,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(250, 300) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(7F * lifeLevel);
-                    GameObjects.Add(new ObjectCatcherInterceptor(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Fuchsia));
+                    //GameObjects.Add(new ObjectCatcherInterceptor(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Fuchsia));
                 }
                 else if (Level % _LevelOfCatcherFaster == 0)
                 {
@@ -159,7 +159,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(800, 900) - (size * 50) * speedLevel;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(4.5F * lifeLevel);
-                    GameObjects.Add(new ObjectCatcherFaster(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Blue, new TargetObject(PlayerObject)));
+                    //GameObjects.Add(new ObjectCatcherFaster(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Blue, new TargetObject(PlayerObject)));
                 }
                 else
                 {
@@ -169,7 +169,10 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(3.5F * lifeLevel);
 
-                    GameObjects.Add(new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject)));
+                    ObjectCatcher newObject = new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject));
+                    newObject.Propertys.Add(new PropertyCollision(1));
+
+                    GameObjects.Add(newObject);
                 }
             }
         }
@@ -182,6 +185,7 @@ namespace RunningBox
                 switch (e.Button)
                 {
                     case System.Windows.Forms.MouseButtons.Left:
+                        UsePlayerSkill(0);
                         break;
                     case System.Windows.Forms.MouseButtons.Right:
                         break;

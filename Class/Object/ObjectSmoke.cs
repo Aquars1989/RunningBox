@@ -47,7 +47,7 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        protected override void ActionSelf()
+        public override void Action()
         {
             FadeTick--;
             if (FadeTick == 0)

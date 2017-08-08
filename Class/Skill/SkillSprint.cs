@@ -6,48 +6,53 @@ using System.Text;
 
 namespace RunningBox
 {
-    class SkillSprint : ISkill
+    class SkillSprint : SkillBase
     {
-        public ObjectBase Owner { get; set; }
-        public SkillStatus Status { get; set; }
-        public int CostEnargy { get; set; }
-        public int CostEnargyPerRound { get; set; }
-
-        public float Activity { get; set; }
-
-
         public SkillSprint()
         {
-            CostEnargy = 300;
+            Status = SkillStatus.Disabled;
+            CostEnargy = 100;
+            CostEnargyPerRound = 0;
+            CooldownMax = 20;
+            ChanneledRoundMax = 20;
         }
 
-        public void DoWhenRound() { }
-        public void DoWhenDrawing() { }
-
-        public void Use() { }
-        public void Use(ObjectPlayer playerObject)
+        public override void DoBeforeActionMove()
         {
-            if (playerObject == null || playerObject.Energy < CostEnargy || playerObject.Moves.Count == 0) return;
-            playerObject.Energy -= CostEnargy;
+            if (Owner == null || Owner.Target == null)
+            {
+                Break();
+                return;
+            }
 
-            int lastIndex = playerObject.Moves.Count - 1;
-            playerObject.Moves[lastIndex] = new PointF(playerObject.Moves[lastIndex].X * 10, playerObject.Moves[lastIndex].Y * 10);
+            switch (Status)
+            {
+                case SkillStatus.Enabled:
+                    {
+                        int lastMove = Owner.Moves.Count - 1;
+                        if (lastMove < 0) return;
+
+                        double direction = Function.PointRotation(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
+                        float moveX = (float)Math.Cos(direction / 180 * Math.PI) * 25;
+                        float moveY = (float)Math.Sin(direction / 180 * Math.PI) * 25;
+                        Owner.Moves.Add(new PointF(moveX, moveY));
+
+                        Owner.Propertys.Add(new PropertySmoking(20, 10, 5));
+                        Status = SkillStatus.Cooldown;
+                        ChanneledRound = 0;
+                    }
+                    break;
+            }
         }
 
-        public void Reset()
-        {
-
-        }
-
-
-        public void DoBeforeAction(){}
-        public void DoBeforeActionPlan() { }
-        public void DoBeforeActionMove() { }
-        public void DoAfterAction() { }
-        public void DoBeforeDraw(Graphics g) { }
-        public void DoAfterDraw(Graphics g) { }
-        public void Break() { }
-        public void DoBeforeActionEnergyGet() { }
-        public void DoAfterDead(ObjectActive killer) { }
+        public override void DoBeforeAction() { }
+        public override void DoBeforeActionPlan() { }
+        public override void DoAfterAction() { }
+        public override void DoBeforeDraw(Graphics g) { }
+        public override void DoAfterDraw(Graphics g) { }
+        public override void DoBeforeActionEnergyGet() { }
+        public override void DoAfterDead(ObjectActive killer) { }
+        public override void DoUseWhenEfficacy(ITarget target) { }
+        public override void DoBeforeBreak() { }
     }
 }

@@ -61,12 +61,16 @@
     <Compile Include="Class\Object\ObjectCatcher.cs" />
     <Compile Include="Class\Object\ObjectPlayer.cs" />
     <Compile Include="Class\Object\ObjectBase.cs" />
+    <Compile Include="Class\Property\PropertyBase.cs" />
+    <Compile Include="Class\Property\PropertyCollection.cs" />
+    <Compile Include="Class\Property\PropertyCollision.cs" />
+    <Compile Include="Class\Property\PropertySmoking.cs" />
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
     <Compile Include="Class\Scene\SceneBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Class\Skill\ISkill.cs" />
+    <Compile Include="Class\Skill\SkillBase.cs" />
     <Compile Include="Class\Skill\SkillSprint.cs" />
     <Compile Include="Class\Target\TargetTrackPoint.cs" />
     <Compile Include="Class\Target\TargetObject.cs" />
@@ -86,6 +90,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Class\Scene\SceneBase.resx">
+      <DependentUpon>SceneBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

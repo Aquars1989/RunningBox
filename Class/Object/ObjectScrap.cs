@@ -6,10 +6,29 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 虛擬物件,朝特定方向移動並淡出
+    /// </summary>
     public class ObjectScrap : ObjectBase
     {
+        /// <summary>
+        /// 生命計時器
+        /// </summary>
         public int LifeTick { get; set; }
+
+        /// <summary>
+        /// 生命計時器最大值
+        /// </summary>
         public int LifeTickMax { get; set; }
+
+        /// <summary>
+        /// 移動速度
+        /// </summary>
+        public float Speed { get; set; }
+
+        /// <summary>
+        /// 方向
+        /// </summary>
         public double Direction { get; set; }
 
         private Color _Color;
@@ -41,7 +60,7 @@ namespace RunningBox
             DrawPool.BackBrush(_Color);
         }
 
-        protected override void ActionMove()
+        public override void Action()
         {
             LifeTick--;
             if (LifeTick == 0)

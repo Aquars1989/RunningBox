@@ -30,15 +30,25 @@ namespace RunningBox
         /// </summary>
         public event ObjectDeadEventHandle Dead;
 
-        public ITarget Target { get; set; }
-        public SceneBase Scene { get; set; }
+        /// <summary>
+        /// 物件歸屬場景
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Collection == null ? null : Collection.Scene; }
+        }
+
+        /// <summary>
+        /// 物件歸屬集合
+        /// </summary>
+        public ObjectCollection Collection { get; set; }
+
+        /// <summary>
+        /// 物件狀態
+        /// </summary>
         public ObjectStatus Status { get; set; }
-        public List<PointF> Moves { get; set; }
-        public int MaxMoves { get; set; }
-        public float Speed { get; set; }
 
         private bool BuildRect = false;
-
         private float _X;
         /// <summary>
         /// 物件位置X
@@ -83,7 +93,7 @@ namespace RunningBox
 
         private Rectangle _Rectangle;
         /// <summary>
-        /// 物件的實體範圍
+        /// 物件的碰撞位置
         /// </summary>
         public Rectangle Rectangle
         {
@@ -125,47 +135,7 @@ namespace RunningBox
         /// <summary>
         /// 物件在1回合內進行的活動
         /// </summary>
-        public virtual void Action()
-        {
-            ActionPlan();
-            ActionMove();
-        }
-
-        /// <summary>
-        /// 物件在回合內進行的規劃活動
-        /// </summary>
-        protected virtual void ActionPlan()
-        {
-            if (Target != null)
-            {
-                double direction = Function.PointRotation(X, Y, Target.X, Target.Y);
-                float moveX = (float)Math.Cos(direction / 180 * Math.PI) * (Speed / 100F);
-                float moveY = (float)Math.Sin(direction / 180 * Math.PI) * (Speed / 100F);
-                Moves.Add(new PointF(moveX, moveY));
-            }
-        }
-
-        /// <summary>
-        /// 物件在回合內進行的移動
-        /// </summary>
-        protected virtual void ActionMove()
-        {
-            if (Moves.Count > MaxMoves)
-            {
-                Moves.RemoveRange(0, Moves.Count - MaxMoves);
-            }
-
-            float moveTotalX = 0;
-            float moveTotalY = 0;
-            foreach (PointF pt in Moves)
-            {
-                moveTotalX += pt.X;
-                moveTotalY += pt.Y;
-            }
-
-            X += moveTotalX * Scene.WorldSpeed;
-            Y += moveTotalY * Scene.WorldSpeed;
-        }
+        public abstract void Action();
 
         /// <summary>
         /// 繪製物件

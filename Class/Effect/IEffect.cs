@@ -8,24 +8,24 @@ namespace RunningBox
     public enum EffectStatus
     {
         /// <summary>
+        /// 失效，等待回收
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
         /// 生效中
         /// </summary>
-        Enabling = 0,
+        Enabling = 1,
 
         /// <summary>
         /// 生效
         /// </summary>
-        Enabled = 1,
+        Enabled = 2,
 
         /// <summary>
         /// 失效中
         /// </summary>
-        Disabling = 2,
-
-        /// <summary>
-        /// 失效，等待回收
-        /// </summary>
-        Disabled = 3
+        Disabling = 3
     }
 
     /// <summary>

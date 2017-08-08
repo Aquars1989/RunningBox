@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RunningBox
 {
-    public class ObjectCatcher : ObjectBase
+    public class ObjectCatcher : ObjectActive
     {
         public int LifeTick { get; set; }
         public int LifeTickMax { get; set; }

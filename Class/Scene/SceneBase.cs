@@ -90,7 +90,7 @@ namespace RunningBox
         {
             _tickFPS--;
             bool refreshFPS = false;
-            if (_tickFPS == 0)
+            if (_tickFPS <= 0)
             {
                 _tickFPS = 10;
                 _watchFPS.Restart();
@@ -140,7 +140,9 @@ namespace RunningBox
 
             GameObjects.Clear();
             EffectObjects.Clear();
-            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black);
+            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black) { Target = new TargetTrackPoint(this) };
+            PlayerObject.Skills.Add(new SkillSprint());
+            PlayerObject.Propertys.Add(new PropertyCollision(0));
             GameObjects.Add(PlayerObject);
             GameRectangle = new Rectangle(50, 50, Width - 100, Height - 100);
 
@@ -201,7 +203,7 @@ namespace RunningBox
             int x = 0, y = 0;
             switch (enterSide)
             {
-                case  EnumDirection.Left:
+                case EnumDirection.Left:
                     x = -Global.Rand.Next(20, 60);
                     y = Global.Rand.Next(0, Height);
                     break;
@@ -219,6 +221,13 @@ namespace RunningBox
                     break;
             }
             return new Point(x, y);
+        }
+
+        public virtual void UsePlayerSkill(int index)
+        {
+            if (PlayerObject == null) return;
+
+            PlayerObject.Skills[index].Use(new TargetTrackPoint(this));
         }
     }
 }
