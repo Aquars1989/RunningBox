@@ -6,41 +6,57 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
+    /// </summary>
     class PropertyCollision : PropertyBase
     {
+        /// <summary>
+        /// 碰撞強度
+        /// </summary>
         public int CollisionPower { get; set; }
 
-        public PropertyCollision(int collisionPower)
+        /// <summary>
+        /// 新增碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
+        /// </summary>
+        /// <param name="collisionPower">碰撞強度</param>
+        /// <param name="target">鎖定目標,不為null時只針對特定目標碰撞</param>
+        public PropertyCollision(int collisionPower, TargetObject target)
         {
             Status = PropertyStatus.Enabled;
+            Target = target;
             CollisionPower = collisionPower;
             DurationRoundMax = 0;
         }
 
         public override void DoAfterAction()
         {
-            foreach (ObjectBase objectBase in Owner.Collection)
+            for (int i = 0; i < Owner.ParentCollection.Count; i++)
             {
-                ObjectActive objectActive = objectBase as ObjectActive;
+                ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
                 if (objectActive != null && objectActive.League != Owner.League && objectActive.Rectangle.IntersectsWith(Owner.Rectangle))
                 {
-                    int collisionPower = -1;
-                    foreach (PropertyBase properBase in objectActive.Propertys)
+                    int colliderPower = -1;
+                    for (int j = 0; j < objectActive.Propertys.Count; j++)
                     {
-                        PropertyCollision propertyCollision = properBase as PropertyCollision;
-                        if (propertyCollision != null)
+                        PropertyCollision colliderCollision = objectActive.Propertys[j] as PropertyCollision;
+                        if (colliderCollision != null)
                         {
-                            collisionPower = Math.Max(collisionPower, propertyCollision.CollisionPower);
+                            TargetObject target = colliderCollision.Target as TargetObject;
+                            if (target == null || target.Targer == Owner)
+                            {
+                                colliderPower = Math.Max(colliderPower, colliderCollision.CollisionPower);
+                            }
                         }
                     }
 
-                    if (collisionPower < 0) continue;
-                    if (collisionPower >= CollisionPower)
+                    if (colliderPower < 0) continue;
+                    if (colliderPower >= CollisionPower)
                     {
                         Owner.Kill(objectActive);
                     }
 
-                    if (CollisionPower >= collisionPower)
+                    if (CollisionPower >= colliderPower)
                     {
                         objectActive.Kill(Owner);
                     }

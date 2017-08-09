@@ -6,51 +6,42 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 虛擬物件,會逐漸縮小直到消失
+    /// </summary>
     public class ObjectSmoke : ObjectBase
     {
+        /// <summary>
+        /// 淡出計時器
+        /// </summary>
         public int FadeTick { get; set; }
+
+        /// <summary>
+        /// 淡出計時器最大值
+        /// </summary>
         public int FadeTickMax { get; set; }
 
-        private SolidBrush _Brush;
-        private Color _Color;
-        public Color Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color == value) return;
-
-                if (_Brush != null)
-                {
-                    DrawPool.BackBrush(_Color);
-                }
-
-                _Color = value;
-                _Brush = DrawPool.GetBrush(_Color);
-            }
-        }
-
-        public ObjectSmoke(float x, float y, int size, Color color, int fadeTick)
+        /// <summary>
+        /// 新增虛擬物件,會逐漸縮小直到消失
+        /// </summary>
+        /// <param name="x">物件位置X</param>
+        /// <param name="y">物件位置Y</param>
+        /// <param name="size">物件大小</param>
+        /// <param name="fadeTick">每次縮小的週期</param>
+        /// <param name="drawObject">繪製物件</param>
+        public ObjectSmoke(float x, float y, int size, int fadeTick, IDraw drawObject)
         {
             Status = ObjectStatus.Dying;
             X = x;
             Y = y;
             Size = size;
-            //Moves = new List<PointF>();
             FadeTickMax = fadeTick;
-            FadeTick = fadeTick;
-            Color = color;
-        }
-
-        ~ObjectSmoke()
-        {
-            DrawPool.BackBrush(_Color);
+            DrawObject = drawObject;
         }
 
         public override void Action()
         {
-            FadeTick--;
-            if (FadeTick == 0)
+            if (FadeTick >= FadeTickMax)
             {
                 Size--;
                 if (Size == 0)
@@ -59,14 +50,10 @@ namespace RunningBox
                 }
                 else
                 {
-                    FadeTick = FadeTickMax;
+                    FadeTick = 0;
                 }
             }
-        }
-
-        protected override void DrawSelf(Graphics g)
-        {
-            g.FillEllipse(_Brush, Rectangle);
+            FadeTick++;
         }
     }
 }

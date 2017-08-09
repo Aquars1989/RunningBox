@@ -78,8 +78,9 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.Owner = null;
             }
             _Collection.Clear();
@@ -100,8 +101,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeAction()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoBeforeAction();
             }
         }
@@ -111,8 +113,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionEnergyGet()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoBeforeActionEnergyGet();
             }
 
@@ -122,8 +125,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionPlan()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoBeforeActionPlan();
             }
         }
@@ -133,8 +137,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionMove()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoBeforeActionMove();
             }
         }
@@ -144,8 +149,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoAfterAction()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoAfterAction();
             }
         }
@@ -156,20 +162,22 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoBeforeDraw(Graphics g)
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoBeforeDraw(g);
             }
         }
-        
+
         /// <summary>
         /// 所有集合內特性物件執行DoAfterDraw方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
         public void AllDoAfterDraw(Graphics g)
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoAfterDraw(g);
             }
         }
@@ -180,8 +188,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoAfterDraw(ObjectActive killer)
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.DoAfterDead(killer);
             }
         }
@@ -191,9 +200,23 @@ namespace RunningBox
         /// </summary>
         public void AllSettlement()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.Settlement();
+            }
+        }
+
+        /// <summary>
+        /// 所有集合內特性物件執行DoAfterDead方法
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
+        public void AllDoAfterDead(ObjectActive killer)
+        {
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                PropertyBase item = _Collection[i];
+                item.DoAfterDead(killer);
             }
         }
 
@@ -202,8 +225,9 @@ namespace RunningBox
         /// </summary>
         public void AllBreak()
         {
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                PropertyBase item = _Collection[i];
                 item.Break();
             }
         }
@@ -214,9 +238,10 @@ namespace RunningBox
         public void ClearAllDisabled()
         {
             List<PropertyBase> disabledPropertys = new List<PropertyBase>();
-            foreach (PropertyBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
-                if (item.Status ==  PropertyStatus.Disabled)
+                PropertyBase item = _Collection[i];
+                if (item.Status == PropertyStatus.Disabled)
                 {
                     disabledPropertys.Add(item);
                 }
@@ -229,9 +254,10 @@ namespace RunningBox
             }
         }
 
-        public IEnumerator<PropertyBase> GetEnumerator()
-        {
-            return _Collection.GetEnumerator();
-        }
+        //禁用Foreach避免新增時錯誤
+        //public IEnumerator<PropertyBase> GetEnumerator()
+        //{
+        //    return _Collection.GetEnumerator();
+        //}
     }
 }

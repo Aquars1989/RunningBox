@@ -125,13 +125,13 @@ namespace RunningBox
 
             _BackGraphics.DrawString(_txtFPS, _fontFPS, Brushes.Red, Width - 50, 5);
             _ThisGraphics.DrawImageUnscaled(_BackImage, 0, 0);
+
             if (refreshFPS)
             {
                 _watchFPS.Stop();
-                _txtFPS = ((int)(1 / (_watchFPS.ElapsedTicks / (float)TimeSpan.TicksPerSecond))).ToString();
+                _txtFPS = (TimeSpan.TicksPerSecond / _watchFPS.Elapsed.Ticks).ToString();
             }
         }
-
 
         public void SetStart(int potX, int potY)
         {
@@ -140,9 +140,14 @@ namespace RunningBox
 
             GameObjects.Clear();
             EffectObjects.Clear();
-            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black) { Target = new TargetTrackPoint(this) };
-            PlayerObject.Skills.Add(new SkillSprint());
-            PlayerObject.Propertys.Add(new PropertyCollision(0));
+            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 0, Color.Black)
+            {
+                DrawObject = new DrawPen(Color.Black, DrawShape.Ellipse, 2),
+                Target = new TargetTrackPoint(this)
+            };
+            PlayerObject.Skills.Add(new SkillSprint(200, 100, 10, true));
+            PlayerObject.Propertys.Add(new PropertyDeadBroken(15));
+            PlayerObject.Propertys.Add(new PropertyCollision(1, null));
             GameObjects.Add(PlayerObject);
             GameRectangle = new Rectangle(50, 50, Width - 100, Height - 100);
 

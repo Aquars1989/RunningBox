@@ -8,42 +8,73 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 技能狀態
+    /// 技能基礎物件
     /// </summary>
-    public enum SkillStatus
-    {
-        /// <summary>
-        /// 失效
-        /// </summary>
-        Disabled = 0,
-
-        /// <summary>
-        /// 生效
-        /// </summary>
-        Enabled = 1,
-
-        /// <summary>
-        /// 引導中
-        /// </summary>
-        Channeled = 2,
-
-        /// <summary>
-        /// 冷卻中
-        /// </summary>
-        Cooldown = 3
-    }
-
     public abstract class SkillBase
     {
+        /// <summary>
+        /// 技能目標
+        /// </summary>
         public ITarget Target { get; set; }
+        
+        /// <summary>
+        /// 技能所有人
+        /// </summary>
         public ObjectActive Owner { get; set; }
-        public SkillStatus Status { get; set; }
-        public int CooldownMax { get; set; }
-        public int Cooldown { get; set; }
+        
+        /// <summary>
+        /// 技能冷卻回合數最大值
+        /// </summary>
+        public int CooldownRoundMax { get; set; }
+
+        /// <summary>
+        /// 技能冷卻回合數計數
+        /// </summary>
+        public int CooldownRound { get; set; }
+
+        /// <summary>
+        /// 技能耗費能量
+        /// </summary>
         public int CostEnargy { get; set; }
+
+        /// <summary>
+        /// 引導型技能每回合耗費能量
+        /// </summary>
         public int CostEnargyPerRound { get; set; }
+
+        /// <summary>
+        /// 引導型技能引導時間最大值
+        /// </summary>
         public int ChanneledRoundMax { get; set; }
+
+        /// <summary>
+        /// 引導型技能引導時間技數
+        /// </summary>
         public int ChanneledRound { get; set; }
+
+        private SkillStatus _Status;
+        /// <summary>
+        /// 技能狀態
+        /// </summary>
+        public SkillStatus Status
+        {
+            get { return _Status; }
+            set
+            {
+                if (_Status == value) return;
+
+                _Status = value;
+                switch (_Status)
+                {
+                    case SkillStatus.Cooldown:
+                        CooldownRound = 0;
+                        break;
+                    case SkillStatus.Channeled:
+                        ChanneledRound = 0;
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// 使用技能
@@ -87,7 +118,8 @@ namespace RunningBox
                     }
                     else
                     {
-                        Break();
+                        DoBeforeEnd(SkillEndType.Finish);
+                        Status = SkillStatus.Cooldown;
                         goto case SkillStatus.Cooldown;
                     }
 
@@ -97,16 +129,17 @@ namespace RunningBox
                     }
                     else
                     {
-                        Break();
+                        DoBeforeEnd(SkillEndType.ChanneledBreak);
+                        Status = SkillStatus.Cooldown;
                         goto case SkillStatus.Cooldown;
                     }
                     break;
                 case SkillStatus.Cooldown:
-                    if (Cooldown >= CooldownMax)
+                    if (CooldownRound >= CooldownRoundMax)
                     {
                         Status = SkillStatus.Disabled;
                     }
-                    Cooldown++;
+                    CooldownRound++;
                     break;
             }
         }
@@ -116,17 +149,16 @@ namespace RunningBox
         /// </summary>
         public virtual void Break()
         {
-            DoBeforeBreak();
             switch (Status)
             {
                 case SkillStatus.Enabled:
+                    DoBeforeEnd(SkillEndType.CastBreak);
                     Owner.Energy += CostEnargy;
                     Status = SkillStatus.Cooldown;
-                    Cooldown = 0;
                     break;
                 case SkillStatus.Channeled:
+                    DoBeforeEnd(SkillEndType.ChanneledBreak);
                     Status = SkillStatus.Cooldown;
-                    Cooldown = 0;
                     break;
             }
 
@@ -161,7 +193,7 @@ namespace RunningBox
         /// 物件活動後執行動作
         /// </summary>
         public abstract void DoAfterAction();
-        
+
         /// <summary>
         /// 繪製前執行動作
         /// </summary>
@@ -178,8 +210,56 @@ namespace RunningBox
         public abstract void DoAfterDead(ObjectActive killer);
 
         /// <summary>
-        /// 技能中斷前執行(未發動前中斷,引導時中斷)
+        /// 技能結束進入冷卻前執行
         /// </summary>
-        public abstract void DoBeforeBreak();
+        public abstract void DoBeforeEnd(SkillEndType endType);
+    }
+
+    /// <summary>
+    /// 技能狀態
+    /// </summary>
+    public enum SkillStatus
+    {
+        /// <summary>
+        /// 失效
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// 生效
+        /// </summary>
+        Enabled = 1,
+
+        /// <summary>
+        /// 引導中
+        /// </summary>
+        Channeled = 2,
+
+        /// <summary>
+        /// 冷卻中
+        /// </summary>
+        Cooldown = 3
+
+    }
+
+    /// <summary>
+    /// 技能結束類型
+    /// </summary>
+    public enum SkillEndType
+    {
+        /// <summary>
+        /// 持續時間結束
+        /// </summary>
+        Finish = 0,
+
+        /// <summary>
+        /// 施放前被中斷
+        /// </summary>
+        CastBreak = 1,
+
+        /// <summary>
+        /// 引導時被中斷
+        /// </summary>
+        ChanneledBreak = 1
     }
 }

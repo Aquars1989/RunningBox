@@ -32,6 +32,9 @@ namespace RunningBox
         public double Direction { get; set; }
 
         private Color _Color;
+        /// <summary>
+        /// 顏色
+        /// </summary>
         public Color Color
         {
             get { return _Color; }
@@ -42,6 +45,16 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 建立虛擬物件,朝特定方向移動並淡出
+        /// </summary>
+        /// <param name="x">物件位置X</param>
+        /// <param name="y">物件位置Y</param>
+        /// <param name="size">物件大小</param>
+        /// <param name="speed">速度</param>
+        /// <param name="life">持續回合數</param>
+        /// <param name="direction">方向</param>
+        /// <param name="color">顏色</param>
         public ObjectScrap(float x, float y, int size, float speed, int life, double direction, Color color)
         {
             Status = ObjectStatus.Dying;
@@ -50,20 +63,13 @@ namespace RunningBox
             Size = size;
             Speed = speed;
             LifeTickMax = life;
-            LifeTick = life;
             Direction = direction;
             Color = color;
         }
 
-        ~ObjectScrap()
-        {
-            DrawPool.BackBrush(_Color);
-        }
-
         public override void Action()
         {
-            LifeTick--;
-            if (LifeTick == 0)
+            if (LifeTick >= LifeTickMax)
             {
                 Kill(null);
             }
@@ -74,11 +80,12 @@ namespace RunningBox
                 X += moveX;
                 Y += moveY;
             }
+            LifeTick++;
         }
 
-        protected override void DrawSelf(Graphics g)
+        public override void Draw(Graphics g)
         {
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255F / LifeTickMax * LifeTick), Color.R, Color.G, Color.B)))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255F / LifeTickMax * (LifeTickMax - LifeTick)), Color.R, Color.G, Color.B)))
             {
                 g.FillEllipse(brush, Rectangle);
             }

@@ -43,6 +43,11 @@ namespace RunningBox
             }
         }
 
+        public static void BackBrush(SolidBrush brush)
+        {
+            BackBrush(brush.Color);
+        }
+
         public static void BackBrush(Color color)
         {
             DrawPoolBrush drawPoolBrush;
@@ -57,6 +62,11 @@ namespace RunningBox
             }
         }
 
+        public static void BackPen(Pen pen)
+        {
+            BackPen(pen.Color);
+
+        }
         public static void BackPen(Color color)
         {
             DrawPoolPen drawPoolPen;

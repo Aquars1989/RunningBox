@@ -74,8 +74,9 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.Scene = null;
             }
             _Collection.Clear();
@@ -96,8 +97,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeRound()
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoBeforeRound();
             }
         }
@@ -107,8 +109,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoAfterRound()
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoAfterRound();
             }
         }
@@ -119,8 +122,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoBeforeDraw(Graphics g)
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoBeforeDraw(g);
             }
         }
@@ -131,8 +135,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoBeforeDrawUI(Graphics g)
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoBeforeDrawUI(g);
             }
         }
@@ -143,8 +148,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoBeforeDrawObject(Graphics g)
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoBeforeDrawObject(g);
             }
         }
@@ -155,8 +161,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoAfterDraw(Graphics g)
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.DoAfterDraw(g);
             }
         }
@@ -167,8 +174,9 @@ namespace RunningBox
         /// </summary>
         public void AllBreak()
         {
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 item.Break();
             }
         }
@@ -179,8 +187,9 @@ namespace RunningBox
         public void ClearAllDisabled()
         {
             List<IEffect> disabledEffects = new List<IEffect>();
-            foreach (IEffect item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                IEffect item = _Collection[i];
                 if (item.Status == EffectStatus.Disabled)
                 {
                     disabledEffects.Add(item);
@@ -194,9 +203,10 @@ namespace RunningBox
             }
         }
 
-        public IEnumerator<IEffect> GetEnumerator()
-        {
-            return _Collection.GetEnumerator();
-        }
+        //禁用Foreach避免新增時錯誤
+        //public IEnumerator<IEffect> GetEnumerator()
+        //{
+        //    return _Collection.GetEnumerator();
+        //}
     }
 }

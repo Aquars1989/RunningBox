@@ -6,40 +6,62 @@ using System.Text;
 
 namespace RunningBox
 {
-    class SkillSprint : SkillBase
+    /// <summary>
+    /// 衝刺技能,提升最後一次移動距離
+    /// </summary>
+    public class SkillSprint : SkillBase
     {
-        public SkillSprint()
+        /// <summary>
+        /// 衝刺距離倍數
+        /// </summary>
+        public int Power { get; set; }
+
+        /// <summary>
+        /// 是否加上冒煙特效
+        /// </summary>
+        public bool Smoke { get; set; }
+
+        /// <summary>
+        /// 新增衝刺技能,提升最後一次移動距離
+        /// </summary>
+        /// <param name="costEnargy">耗費能量</param>
+        /// <param name="cooldown">冷卻回合數</param>
+        /// <param name="power">衝刺距離倍數</param>
+        /// <param name="smoke">是否加上冒煙特效</param>
+        public SkillSprint(int costEnargy, int cooldown, int power, bool smoke)
         {
             Status = SkillStatus.Disabled;
-            CostEnargy = 100;
-            CostEnargyPerRound = 0;
-            CooldownMax = 20;
-            ChanneledRoundMax = 20;
+            CostEnargy = costEnargy;
+            CooldownRoundMax = cooldown;
+            Power = power;
+            Smoke = smoke;
         }
 
         public override void DoBeforeActionMove()
         {
-            if (Owner == null || Owner.Target == null)
-            {
-                Break();
-                return;
-            }
-
             switch (Status)
             {
                 case SkillStatus.Enabled:
                     {
+                        if (Owner == null || Owner.Target == null)
+                        {
+                            Break();
+                            return;
+                        }
+
                         int lastMove = Owner.Moves.Count - 1;
                         if (lastMove < 0) return;
-
+                        
                         double direction = Function.PointRotation(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
                         float moveX = (float)Math.Cos(direction / 180 * Math.PI) * 25;
                         float moveY = (float)Math.Sin(direction / 180 * Math.PI) * 25;
                         Owner.Moves.Add(new PointF(moveX, moveY));
 
-                        Owner.Propertys.Add(new PropertySmoking(20, 10, 5));
+                        if (Smoke)
+                        {
+                            Owner.Propertys.Add(new PropertySmoking(20, 10, 5));
+                        }
                         Status = SkillStatus.Cooldown;
-                        ChanneledRound = 0;
                     }
                     break;
             }
@@ -53,6 +75,6 @@ namespace RunningBox
         public override void DoBeforeActionEnergyGet() { }
         public override void DoAfterDead(ObjectActive killer) { }
         public override void DoUseWhenEfficacy(ITarget target) { }
-        public override void DoBeforeBreak() { }
+        public override void DoBeforeEnd(SkillEndType endType) { }
     }
 }

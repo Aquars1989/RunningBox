@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\Draw\DrawPic.cs" />
+    <Compile Include="Class\Draw\DrawPen.cs" />
+    <Compile Include="Class\Draw\DrawBrush.cs" />
+    <Compile Include="Class\Draw\IDraw.cs" />
     <Compile Include="Class\Effect\EffectCollection.cs" />
     <Compile Include="Class\Effect\EffectDyeing.cs" />
     <Compile Include="Class\Effect\EffectShark.cs" />
@@ -64,6 +68,7 @@
     <Compile Include="Class\Property\PropertyBase.cs" />
     <Compile Include="Class\Property\PropertyCollection.cs" />
     <Compile Include="Class\Property\PropertyCollision.cs" />
+    <Compile Include="Class\Property\PropertyDeadBroken.cs" />
     <Compile Include="Class\Property\PropertySmoking.cs" />
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Target\ITarget.cs" />

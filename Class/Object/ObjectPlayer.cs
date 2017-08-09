@@ -83,36 +83,11 @@ namespace RunningBox
             Moves.Add(new PointF(moveX, moveY));
         }
 
-        public override void Kill(ObjectBase killer)
+        public override void Kill(ObjectActive killer)
         {
             if (Status != ObjectStatus.Alive) return;
-
-            float moveTotalX = 0;
-            float moveTotalY = 0;
-            foreach (PointF pt in Moves)
-            {
-                moveTotalX += pt.X;
-                moveTotalY += pt.Y;
-            }
-
-            double direction = Function.PointRotation(0, 0, moveTotalX, moveTotalY);
-            for (int i = 0; i < 15; i++)
-            {
-                int speed = Global.Rand.Next(300, 900);
-                int life = Global.Rand.Next(25, 40);
-                int size = Global.Rand.Next(1, 4) / 2;
-                double scrapDirection = direction + (Global.Rand.NextDouble() - 0.5) * 20;
-                Scene.GameObjects.Add(new ObjectScrap(X, Y, 1, speed, life, scrapDirection, Color));
-            }
             Scene.EffectObjects.Add(new EffectShark(20, 10) { CanBreak = false });
-
             base.Kill(killer);
-        }
-
-        protected override void DrawSelf(Graphics g)
-        {
-            _Pen.Width = 2;
-            g.DrawEllipse(_Pen, Rectangle);
         }
     }
 }

@@ -7,28 +7,76 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 逐漸改變畫面顏色的特效
+    /// </summary>
     public class EffectDyeing : IEffect
     {
+        /// <summary>
+        /// 特效是否可被中斷
+        /// </summary>
         public bool CanBreak { get; set; }
+
+        /// <summary>
+        /// 作用場景物件
+        /// </summary>
         public SceneBase Scene { get; set; }
+
+        /// <summary>
+        /// 特效狀態
+        /// </summary>
         public EffectStatus Status { get; set; }
+
+        /// <summary>
+        /// 渲染色彩
+        /// </summary>
         public Color Color { get; set; }
-        public int DurationRounds { get; set; }
+
+        /// <summary>
+        /// 渲染回合數最大值
+        /// </summary>
+        public int DurationRoundMax { get; set; }
+
+        /// <summary>
+        /// 渲染回合數計數
+        /// </summary>
+        public int DurationRound { get; set; }
+
+        /// <summary>
+        /// 渲染啟用回合數最大值
+        /// </summary>
         public int EnablingRoundsMax { get; private set; }
-        public int DisablingRoundsMax { get; private set; }
+
+        /// <summary>
+        /// 渲染啟用回合數計數
+        /// </summary>
         public int EnablingRounds { get; set; }
+
+        /// <summary>
+        /// 渲染消退回合數最大值
+        /// </summary>
+        public int DisablingRoundsMax { get; private set; }
+
+        /// <summary>
+        /// 渲染消退回合數計數
+        /// </summary>
         public int DisablingRounds { get; set; }
 
+        /// <summary>
+        /// 新增逐漸改變畫面顏色的特效
+        /// </summary>
+        /// <param name="color">要繪製的顏色</param>
+        /// <param name="duration">渲染回合數</param>
+        /// <param name="enablingRounds">渲染啟用回合數</param>
+        /// <param name="disablingRounds">渲染消退回合數</param>
         public EffectDyeing(Color color,int duration, int enablingRounds, int disablingRounds)
         {
             CanBreak = true;
             Status = EffectStatus.Enabling;
             Color = color;
-            DurationRounds = duration;
+            DurationRoundMax = duration;
             EnablingRoundsMax = enablingRounds;
-            EnablingRounds = enablingRounds;
             DisablingRoundsMax = disablingRounds;
-            DisablingRounds = disablingRounds;
         }
 
         public void DoAfterRound()
@@ -44,12 +92,12 @@ namespace RunningBox
                     EnablingRounds--;
                     break;
                 case EffectStatus.Enabled:
-                    if (DurationRounds <= 0)
+                    if (DurationRound <= 0)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationRounds--;
+                    DurationRound--;
                     break;
                 case EffectStatus.Disabling:
                     if (DisablingRounds <= 0)

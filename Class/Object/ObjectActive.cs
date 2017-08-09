@@ -110,13 +110,24 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 殺死此物件
+        /// </summary>
+        /// <param name="killer">殺手物件</param>
+        public override void Kill(ObjectActive killer)
+        {
+            Skills.AllDoAfterDead(killer);
+            Propertys.AllDoAfterDead(killer);
+            base.Kill(killer);
+        }
+
+        /// <summary>
         /// 繪製物件
         /// </summary>
         /// <param name="g">Graphics物件</param>
         public override void Draw(Graphics g)
         {
             Skills.AllDoBeforeDraw(g);
-            DrawSelf(g);
+            base.Draw(g);
             Skills.AllDoAfterDraw(g);
         }
     }

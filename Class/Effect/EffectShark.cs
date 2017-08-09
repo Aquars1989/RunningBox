@@ -7,19 +7,51 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 畫面震動的特效
+    /// </summary>
     public class EffectShark : IEffect
     {
+        /// <summary>
+        /// 特效是否可被中斷
+        /// </summary>
         public bool CanBreak { get; set; }
+
+        /// <summary>
+        /// 作用場景物件
+        /// </summary>
         public SceneBase Scene { get; set; }
+
+        /// <summary>
+        /// 特效狀態
+        /// </summary>
         public EffectStatus Status { get; private set; }
-        public int DurationRounds { get; set; }
+
+        /// <summary>
+        /// 震動持續的回合數最大值
+        /// </summary>
+        public int DurationRoundMax { get; set; }
+
+        /// <summary>
+        /// 震動持續的回合數計數
+        /// </summary>
+        public int DurationRound { get; set; }
+
+        /// <summary>
+        /// 震動的強度
+        /// </summary>
         public int Power { get; set; }
 
+        /// <summary>
+        /// 新增畫面震動的特效
+        /// </summary>
+        /// <param name="duration">震動持續的回合數</param>
+        /// <param name="power">震動的強度</param>
         public EffectShark(int duration, int power)
         {
             CanBreak = true;
             Status = EffectStatus.Enabled;
-            DurationRounds = duration;
+            DurationRoundMax = duration;
             Power = power;
         }
 
@@ -27,11 +59,11 @@ namespace RunningBox
         {
             if (Status == EffectStatus.Enabled)
             {
-                DurationRounds--;
-                if (DurationRounds <= 0)
+                if (DurationRound >= DurationRoundMax)
                 {
                     Status = EffectStatus.Disabled;
                 }
+                DurationRound++;
             }
         }
 

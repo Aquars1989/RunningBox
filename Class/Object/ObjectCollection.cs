@@ -59,7 +59,7 @@ namespace RunningBox
         /// <param name="item">活動物件</param>
         public void Add(ObjectBase item)
         {
-            item.Collection = this;
+            item.ParentCollection = this;
             item.Dead += OnObjectDead;
             _Collection.Add(item);
         }
@@ -74,7 +74,7 @@ namespace RunningBox
             bool result = _Collection.Remove(item);
             if (result)
             {
-                item.Collection = null;
+                item.ParentCollection = null;
             }
             return result;
         }
@@ -84,9 +84,10 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            foreach (ObjectBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
-                item.Collection = null;
+                ObjectBase item = _Collection[i];
+                item.ParentCollection = null;
             }
             _Collection.Clear();
         }
@@ -132,8 +133,9 @@ namespace RunningBox
         public void ClearAllDead()
         {
             List<ObjectBase> deadObjects = new List<ObjectBase>();
-            foreach (ObjectBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                ObjectBase item = _Collection[i];
                 if (item.Status == ObjectStatus.Dead)
                 {
                     deadObjects.Add(item);
@@ -155,9 +157,10 @@ namespace RunningBox
             }
         }
 
-        public IEnumerator<ObjectBase> GetEnumerator()
-        {
-            return _Collection.GetEnumerator();
-        }
+        //禁用Foreach避免新增時錯誤
+        //public IEnumerator<ObjectBase> GetEnumerator()
+        //{
+        //    return _Collection.GetEnumerator();
+        //}
     }
 }

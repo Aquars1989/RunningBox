@@ -7,22 +7,8 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 活動物件狀態
+    /// 基礎活動物件
     /// </summary>
-    public enum ObjectStatus
-    {
-        Alive = 0,
-        Dying = 1,
-        Dead = 2,
-    }
-
-    /// <summary>
-    /// 處理物件死亡事件
-    /// </summary>
-    /// <param name="sender">死亡物件</param>
-    /// <param name="killer">殺手物件</param>
-    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer);
-
     public abstract class ObjectBase
     {
         /// <summary>
@@ -35,18 +21,23 @@ namespace RunningBox
         /// </summary>
         public SceneBase Scene
         {
-            get { return Collection == null ? null : Collection.Scene; }
+            get { return ParentCollection == null ? null : ParentCollection.Scene; }
         }
 
         /// <summary>
         /// 物件歸屬集合
         /// </summary>
-        public ObjectCollection Collection { get; set; }
+        public ObjectCollection ParentCollection { get; set; }
 
         /// <summary>
         /// 物件狀態
         /// </summary>
         public ObjectStatus Status { get; set; }
+
+        /// <summary>
+        /// 繪製物件
+        /// </summary>
+        public IDraw DrawObject { get; set; }
 
         private bool BuildRect = false;
         private float _X;
@@ -112,7 +103,7 @@ namespace RunningBox
         /// 殺死此物件
         /// </summary>
         /// <param name="killer">殺手物件</param>
-        public virtual void Kill(ObjectBase killer)
+        public virtual void Kill(ObjectActive killer)
         {
             Status = ObjectStatus.Dead;
             OnDead(this, killer);
@@ -129,7 +120,6 @@ namespace RunningBox
             {
                 Dead(sender, killer);
             }
-
         }
 
         /// <summary>
@@ -143,12 +133,25 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public virtual void Draw(Graphics g)
         {
-            DrawSelf(g);
+            if (DrawObject == null) return;
+            DrawObject.Draw(g, Rectangle);
         }
-
-        /// <summary>
-        /// 繪製物件本身
-        /// </summary>
-        protected abstract void DrawSelf(Graphics g);
     }
+
+    /// <summary>
+    /// 活動物件狀態
+    /// </summary>
+    public enum ObjectStatus
+    {
+        Alive = 0,
+        Dying = 1,
+        Dead = 2,
+    }
+
+    /// <summary>
+    /// 處理物件死亡事件
+    /// </summary>
+    /// <param name="sender">死亡物件</param>
+    /// <param name="killer">殺手物件</param>
+    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer);
 }

@@ -3,32 +3,6 @@
 namespace RunningBox
 {
     /// <summary>
-    /// 特效狀態
-    /// </summary>
-    public enum EffectStatus
-    {
-        /// <summary>
-        /// 失效，等待回收
-        /// </summary>
-        Disabled = 0,
-
-        /// <summary>
-        /// 生效中
-        /// </summary>
-        Enabling = 1,
-
-        /// <summary>
-        /// 生效
-        /// </summary>
-        Enabled = 2,
-
-        /// <summary>
-        /// 失效中
-        /// </summary>
-        Disabling = 3
-    }
-
-    /// <summary>
     /// 特效介面
     /// </summary>
     public interface IEffect
@@ -51,7 +25,7 @@ namespace RunningBox
         /// <summary>
         /// 持續時間
         /// </summary>
-        int DurationRounds { get; set; }
+        int DurationRound { get; set; }
 
         /// <summary>
         /// 物件活動前執行動作
@@ -87,5 +61,31 @@ namespace RunningBox
         /// 中斷特效
         /// </summary>
         void Break();
+    }
+
+    /// <summary>
+    /// 特效狀態
+    /// </summary>
+    public enum EffectStatus
+    {
+        /// <summary>
+        /// 失效，等待回收
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// 生效中
+        /// </summary>
+        Enabling = 1,
+
+        /// <summary>
+        /// 生效
+        /// </summary>
+        Enabled = 2,
+
+        /// <summary>
+        /// 失效中
+        /// </summary>
+        Disabling = 3
     }
 }

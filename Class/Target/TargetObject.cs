@@ -11,20 +11,36 @@ namespace RunningBox
     /// </summary>
     public class TargetObject : ITarget
     {
+        private float _X = 0;
         /// <summary>
         /// 目標X座標
         /// </summary>
         public float X
         {
-            get { return Targer.X; }
+            get
+            {
+                if (Targer != null)
+                {
+                    _X = Targer.X;
+                }
+                return _X;
+            }
         }
 
+        private float _Y = 0;
         /// <summary>
         /// 目標Y座標
         /// </summary>
         public float Y
         {
-            get { return Targer.Y; }
+            get
+            {
+                if (Targer != null)
+                {
+                    _Y = Targer.Y;
+                }
+                return _Y;
+            }
         }
 
         private ObjectBase _Targer = null;
@@ -36,7 +52,6 @@ namespace RunningBox
             get { return _Targer; }
             set
             {
-                if (value == null) throw new ArgumentNullException();
                 _Targer = value;
             }
         }
@@ -56,7 +71,12 @@ namespace RunningBox
         /// <returns>物件的座標</returns>
         public PointF GetPoint()
         {
-            return new PointF(Targer.X, Targer.Y);
+            if (Targer != null)
+            {
+                _X = Targer.X;
+                _Y = Targer.Y;
+            }
+            return new PointF(_X, _Y);
         }
     }
 }

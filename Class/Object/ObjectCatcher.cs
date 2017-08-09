@@ -61,23 +61,7 @@ namespace RunningBox
             LifeTick--;
             if (LifeTick <= 0)
             {
-                Status = ObjectStatus.Dead;
-            }
-        }
-
-        protected override void DrawSelf(Graphics g)
-        {
-            switch (Status)
-            {
-                case ObjectStatus.Alive:
-                    g.FillEllipse(_Brush, Rectangle);
-                    break;
-                case ObjectStatus.Dying:
-                    using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255F / LifeTickMax * LifeTick), Color.R, Color.G, Color.B)))
-                    {
-                        g.FillEllipse(brush, Rectangle);
-                    }
-                    break;
+                Kill(null);
             }
         }
     }

@@ -78,8 +78,9 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.Owner = null;
             }
             _Collection.Clear();
@@ -100,8 +101,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeAction()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoBeforeAction();
             }
         }
@@ -111,8 +113,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionEnergyGet()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoBeforeActionEnergyGet();
             }
 
@@ -122,8 +125,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionPlan()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoBeforeActionPlan();
             }
         }
@@ -133,8 +137,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoBeforeActionMove()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoBeforeActionMove();
             }
         }
@@ -144,8 +149,9 @@ namespace RunningBox
         /// </summary>
         public void AllDoAfterAction()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoAfterAction();
             }
         }
@@ -156,20 +162,22 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoBeforeDraw(Graphics g)
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoBeforeDraw(g);
             }
         }
-        
+
         /// <summary>
         /// 所有集合內技能物件執行DoAfterDraw方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
         public void AllDoAfterDraw(Graphics g)
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoAfterDraw(g);
             }
         }
@@ -180,8 +188,9 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public void AllDoAfterDraw(ObjectActive killer)
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.DoAfterDead(killer);
             }
         }
@@ -191,9 +200,22 @@ namespace RunningBox
         /// </summary>
         public void AllSettlement()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.Settlement();
+            }
+        }
+
+        /// <summary>
+        /// 所有集合內技能物件執行DoAfterAction方法
+        /// </summary>
+        public void AllDoAfterDead(ObjectActive killer)
+        {
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                SkillBase item = _Collection[i];
+                item.DoAfterDead(killer);
             }
         }
 
@@ -202,15 +224,17 @@ namespace RunningBox
         /// </summary>
         public void AllBreak()
         {
-            foreach (SkillBase item in _Collection)
+            for (int i = 0; i < _Collection.Count; i++)
             {
+                SkillBase item = _Collection[i];
                 item.Break();
             }
         }
 
-        public IEnumerator<SkillBase> GetEnumerator()
-        {
-            return _Collection.GetEnumerator();
-        }
+        //禁用Foreach避免新增時錯誤
+        //public IEnumerator<SkillBase> GetEnumerator()
+        //{
+        //    return _Collection.GetEnumerator();
+        //}
     }
 }

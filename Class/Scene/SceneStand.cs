@@ -169,8 +169,13 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(3.5F * lifeLevel);
 
-                    ObjectCatcher newObject = new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject));
-                    newObject.Propertys.Add(new PropertyCollision(1));
+                    ObjectCatcher newObject = new ObjectCatcher(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, Color.Red, new TargetObject(PlayerObject))
+                    {
+                        DrawObject = new DrawBrush(Color.Red, DrawShape.Ellipse),
+                        League = League.Ememy
+                    };
+                    newObject.Propertys.Add(new PropertyDeadBroken(15));
+                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
 
                     GameObjects.Add(newObject);
                 }
