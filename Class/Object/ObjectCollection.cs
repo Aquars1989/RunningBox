@@ -149,11 +149,11 @@ namespace RunningBox
             }
         }
 
-        protected void OnObjectDead(ObjectBase sender, ObjectBase killer)
+        protected void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
         {
             if (ObjectDead != null)
             {
-                ObjectDead(sender, killer);
+                ObjectDead(sender, killer, deadType);
             }
         }
 

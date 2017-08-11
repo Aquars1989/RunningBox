@@ -56,7 +56,7 @@ namespace RunningBox
         /// 新增逐漸限縮場地範圍的特效
         /// </summary>
         /// <param name="shrinkPerRound">每回合縮小的邊界</param>
-        /// <param name="duration">縮小持續的回合數</param>
+        /// <param name="duration">縮小持續的回合數,小於0為永久</param>
         /// <param name="shrinkRounds">用來縮小的回合數量</param>
         public EffectShrink(Padding shrinkPerRound, int duration, int shrinkRounds)
         {
@@ -89,7 +89,7 @@ namespace RunningBox
                     ShrinkRound++;
                     break;
                 case EffectStatus.Enabled:
-                    if (DurationRound >= DurationRoundMax)
+                    if (DurationRoundMax >= 0 && DurationRound >= DurationRoundMax)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;

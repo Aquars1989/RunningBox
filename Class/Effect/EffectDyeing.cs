@@ -66,10 +66,10 @@ namespace RunningBox
         /// 新增逐漸改變畫面顏色的特效
         /// </summary>
         /// <param name="color">要繪製的顏色</param>
-        /// <param name="duration">渲染回合數</param>
+        /// <param name="duration">渲染回合數,小於0為永久</param>
         /// <param name="enablingRounds">渲染啟用回合數</param>
         /// <param name="disablingRounds">渲染消退回合數</param>
-        public EffectDyeing(Color color,int duration, int enablingRounds, int disablingRounds)
+        public EffectDyeing(Color color, int duration, int enablingRounds, int disablingRounds)
         {
             CanBreak = true;
             Status = EffectStatus.Enabling;
@@ -84,27 +84,27 @@ namespace RunningBox
             switch (Status)
             {
                 case EffectStatus.Enabling:
-                    if (EnablingRounds <= 0)
+                    if (EnablingRounds >= EnablingRoundsMax)
                     {
                         Status = EffectStatus.Enabled;
                         goto case EffectStatus.Enabled;
                     }
-                    EnablingRounds--;
+                    EnablingRounds++;
                     break;
                 case EffectStatus.Enabled:
-                    if (DurationRound <= 0)
+                    if (DurationRoundMax >= 0 && DurationRound >= DurationRoundMax)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationRound--;
+                    DurationRound++;
                     break;
                 case EffectStatus.Disabling:
-                    if (DisablingRounds <= 0)
+                    if (DisablingRounds >= DisablingRoundsMax)
                     {
                         Status = EffectStatus.Disabled;
                     }
-                    DisablingRounds--;
+                    DisablingRounds++;
                     break;
             }
         }
@@ -116,7 +116,7 @@ namespace RunningBox
                 case EffectStatus.Enabling:
                     if (EnablingRoundsMax > 0)
                     {
-                        int alpha = (int)((float)(EnablingRoundsMax - EnablingRounds) / EnablingRoundsMax * Color.A);
+                        int alpha = (int)((float)(EnablingRounds) / EnablingRoundsMax * Color.A);
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
                         using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
@@ -134,7 +134,7 @@ namespace RunningBox
                 case EffectStatus.Disabling:
                     if (DisablingRoundsMax > 0)
                     {
-                        int alpha = (int)((float)(DisablingRounds) / DisablingRoundsMax * Color.A);
+                        int alpha = (int)((float)(DisablingRoundsMax - DisablingRounds) / DisablingRoundsMax * Color.A);
 
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;

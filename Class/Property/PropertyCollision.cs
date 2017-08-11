@@ -31,34 +31,37 @@ namespace RunningBox
 
         public override void DoAfterAction()
         {
-            for (int i = 0; i < Owner.ParentCollection.Count; i++)
+            if (Owner.Status == ObjectStatus.Alive && Status == PropertyStatus.Enabled)
             {
-                ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
-                if (objectActive != null && objectActive.League != Owner.League && objectActive.Rectangle.IntersectsWith(Owner.Rectangle))
+                for (int i = 0; i < Owner.ParentCollection.Count; i++)
                 {
-                    int colliderPower = -1;
-                    for (int j = 0; j < objectActive.Propertys.Count; j++)
+                    ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
+                    if (objectActive != null && objectActive.Status == ObjectStatus.Alive && objectActive.League != Owner.League && objectActive.Rectangle.IntersectsWith(Owner.Rectangle))
                     {
-                        PropertyCollision colliderCollision = objectActive.Propertys[j] as PropertyCollision;
-                        if (colliderCollision != null)
+                        int colliderPower = -1;
+                        for (int j = 0; j < objectActive.Propertys.Count; j++)
                         {
-                            TargetObject target = colliderCollision.Target as TargetObject;
-                            if (target == null || target.Targer == Owner)
+                            PropertyCollision colliderCollision = objectActive.Propertys[j] as PropertyCollision;
+                            if (colliderCollision != null && colliderCollision.Status == PropertyStatus.Enabled)
                             {
-                                colliderPower = Math.Max(colliderPower, colliderCollision.CollisionPower);
+                                TargetObject target = colliderCollision.Target as TargetObject;
+                                if (target == null || target.Targer == Owner)
+                                {
+                                    colliderPower = Math.Max(colliderPower, colliderCollision.CollisionPower);
+                                }
                             }
                         }
-                    }
 
-                    if (colliderPower < 0) continue;
-                    if (colliderPower >= CollisionPower)
-                    {
-                        Owner.Kill(objectActive);
-                    }
+                        if (colliderPower < 0) continue;
+                        if (colliderPower >= CollisionPower)
+                        {
+                            Owner.Kill(objectActive, ObjectDeadType.Collision);
+                        }
 
-                    if (CollisionPower >= colliderPower)
-                    {
-                        objectActive.Kill(Owner);
+                        if (CollisionPower >= colliderPower)
+                        {
+                            objectActive.Kill(Owner, ObjectDeadType.Collision);
+                        }
                     }
                 }
             }
@@ -70,7 +73,6 @@ namespace RunningBox
         public override void DoBeforeDraw(Graphics g) { }
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer) { }
         public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

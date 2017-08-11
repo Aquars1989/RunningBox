@@ -14,12 +14,12 @@ namespace RunningBox
         /// <summary>
         /// 生命計時器
         /// </summary>
-        public int LifeTick { get; set; }
+        public int LifeRound { get; set; }
 
         /// <summary>
         /// 生命計時器最大值
         /// </summary>
-        public int LifeTickMax { get; set; }
+        public int LifeRoundMax { get; set; }
 
         /// <summary>
         /// 移動速度
@@ -52,26 +52,26 @@ namespace RunningBox
         /// <param name="y">物件位置Y</param>
         /// <param name="size">物件大小</param>
         /// <param name="speed">速度</param>
-        /// <param name="life">持續回合數</param>
+        /// <param name="life">持續回合數,小於0為永久</param>
         /// <param name="direction">方向</param>
         /// <param name="color">顏色</param>
         public ObjectScrap(float x, float y, int size, float speed, int life, double direction, Color color)
         {
-            Status = ObjectStatus.Dying;
+            Status = ObjectStatus.Alive;
             X = x;
             Y = y;
             Size = size;
             Speed = speed;
-            LifeTickMax = life;
+            LifeRoundMax = life;
             Direction = direction;
             Color = color;
         }
 
         public override void Action()
         {
-            if (LifeTick >= LifeTickMax)
+            if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)
             {
-                Kill(null);
+                Kill(null, ObjectDeadType.LifeEnd);
             }
             else
             {
@@ -80,12 +80,16 @@ namespace RunningBox
                 X += moveX;
                 Y += moveY;
             }
-            LifeTick++;
+            LifeRound++;
         }
 
         public override void Draw(Graphics g)
         {
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb((int)(255F / LifeTickMax * (LifeTickMax - LifeTick)), Color.R, Color.G, Color.B)))
+            int alpha = (int)(255F / LifeRoundMax * (LifeRoundMax - LifeRound));
+            //if (alpha < 0) alpha = 0;
+            //else if (alpha > 255) alpha = 255;
+
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
             {
                 g.FillEllipse(brush, Rectangle);
             }

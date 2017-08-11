@@ -30,13 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // RunningBox
+            // SceneStand
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.Name = "RunningBox";
-            this.Size = new System.Drawing.Size(446, 353);
+            this.Name = "SceneStand";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RunningBox_MouseDown);
             this.MouseEnter += new System.EventHandler(this.RunningBox_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.RunningBox_MouseLeave);

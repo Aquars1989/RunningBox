@@ -6,15 +6,50 @@ using System.Text;
 
 namespace RunningBox
 {
-    public abstract class ObjectActive : ObjectBase
+    /// <summary>
+    /// 基礎可互動活動物件
+    /// </summary>
+    public class ObjectActive : ObjectBase
     {
+        /// <summary>
+        /// 存活回合計數
+        /// </summary>
+        public int LifeRound { get; set; }
+
+        /// <summary>
+        /// 存活回合計數最大值,小於0為永久
+        /// </summary>
+        public int LifeRoundMax { get; set; }
+
+        /// <summary>
+        /// 物件所屬陣營,供技能或特性判定
+        /// </summary>
         public League League { get; set; }
+
+        /// <summary>
+        /// 追尋目標
+        /// </summary>
         public ITarget Target { get; set; }
+
+        /// <summary>
+        /// 移動調整值紀錄
+        /// </summary>
         public List<PointF> Moves { get; set; }
+
+        /// <summary>
+        /// 最大調整值紀錄數量
+        /// </summary>
         public int MaxMoves { get; set; }
+
+        /// <summary>
+        /// 移動速度,決定每個移動調整值的距離
+        /// </summary>
         public float Speed { get; set; }
 
         private int _Energy;
+        /// <summary>
+        /// 能量,使用技能用
+        /// </summary>
         public int Energy
         {
             get { return _Energy; }
@@ -25,19 +60,73 @@ namespace RunningBox
                 else if (_Energy > EnergyMax) _Energy = EnergyMax;
             }
         }
+
+        /// <summary>
+        /// 能量上限,能量不可高於此數值
+        /// </summary>
         public int EnergyMax { get; set; }
+
+        /// <summary>
+        /// 每回合自動恢復的能量數
+        /// </summary>
         public int EnergyGetPerRound { get; set; }
+
+
+        /// <summary>
+        /// 活動物件擁有的技能群組
+        /// </summary>
         public SkillCollection Skills { get; set; }
+
+        /// <summary>
+        /// 活動物件擁有的特性群組
+        /// </summary>
         public PropertyCollection Propertys { get; set; }
 
+        /// <summary>
+        /// 建立一個互動性活動物件
+        /// </summary>
+        /// <param name="x">物件位置X</param>
+        /// <param name="y">物件位置Y</param>
+        /// <param name="maxMoves">最大調整值紀錄數量</param>
+        /// <param name="size">物件大小</param>
+        /// <param name="speed">速度</param>
+        /// <param name="life">存活時間,小於0為永久</param>
+        /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
+        /// <param name="target">追蹤目標</param>
+        public ObjectActive(float x, float y, int maxMoves, int size, float speed, int life, League leage, TargetObject target)
+            : this()
+        {
+            Status = ObjectStatus.Alive;
+            MaxMoves = maxMoves;
+            X = x;
+            Y = y;
+            Size = size;
+            Speed = speed;
+            LifeRoundMax = life;
+            Target = target;
+            League = leage;
+        }
+
+        /// <summary>
+        /// 建立一個互動性活動物件
+        /// </summary>
         public ObjectActive()
         {
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
+            Moves = new List<PointF>();
+            EnergyMax = 1000;
+            Energy = 1000;
+            EnergyGetPerRound = 5;
         }
 
+        /// <summary>
+        /// 活動物件每回合動作
+        /// </summary>
         public override void Action()
         {
+            Skills.AllDoAutoCast();
+
             Skills.AllDoBeforeAction();
             Propertys.AllDoBeforeAction();
 
@@ -88,7 +177,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 物件在回合內進行的移動
+        /// 物件在回合內進行的移動活動
         /// </summary>
         protected virtual void ActionMove()
         {
@@ -107,17 +196,27 @@ namespace RunningBox
 
             X += moveTotalX * Scene.WorldSpeed;
             Y += moveTotalY * Scene.WorldSpeed;
+
+            LifeRound++;
+            if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)
+            {
+                Kill(null, ObjectDeadType.LifeEnd);
+            }
+
         }
 
         /// <summary>
         /// 殺死此物件
         /// </summary>
         /// <param name="killer">殺手物件</param>
-        public override void Kill(ObjectActive killer)
+        public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
-            Skills.AllDoAfterDead(killer);
-            Propertys.AllDoAfterDead(killer);
-            base.Kill(killer);
+            if (Status == ObjectStatus.Alive)
+            {
+                base.Kill(killer, deadType);
+                Skills.AllDoAfterDead(killer, deadType);
+                Propertys.AllDoAfterDead(killer, deadType);
+            }
         }
 
         /// <summary>
@@ -132,6 +231,9 @@ namespace RunningBox
         }
     }
 
+    /// <summary>
+    /// 活動物件所屬陣營
+    /// </summary>
     public enum League
     {
         Player,

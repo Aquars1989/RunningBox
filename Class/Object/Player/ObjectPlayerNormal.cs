@@ -6,20 +6,17 @@ using System.Text;
 
 namespace RunningBox
 {
-    /// <summary>
-    /// 基本玩家物件範本,不包含任何技能,特性
-    /// </summary>
-    public class ObjectPlayer : ObjectActive
+    public class ObjectPlayerNormal : ObjectActive
     {
         /// <summary>
-        /// 建立一個基本玩家物件範本
+        /// 建立一個正常玩家物件,
         /// </summary>
         /// <param name="x">物件位置X</param>
         /// <param name="y">物件位置Y</param>
         /// <param name="maxMoves">最大調整值紀錄數量</param>
         /// <param name="size">物件大小</param>
         /// <param name="speed">基本速度</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int size, float speed)
+        public ObjectPlayerNormal(float x, float y, int maxMoves, int size, float speed)
         {
             LifeRoundMax = -1;
             Status = ObjectStatus.Alive;
@@ -34,10 +31,16 @@ namespace RunningBox
 
         protected override void ActionPlan()
         {
+            Energy += EnergyGetPerRound;
+            if (Energy > EnergyMax)
+            {
+                Energy = EnergyMax;
+            }
+
             Point trackPoint = Scene.TrackPoint;
             Rectangle rectScene = Scene.GameRectangle;
             double direction = Function.PointRotation(X, Y, trackPoint.X, trackPoint.Y);
-            float move = ((Math.Abs(trackPoint.X - X) * 2 + Math.Abs(trackPoint.Y - Y) * 2) / 120) + 0.4F;
+            float move = ((Math.Abs(trackPoint.X - X) * 2 + Math.Abs(trackPoint.Y - Y) * 2) / 120) + Speed;
             float moveX = (float)Math.Cos(direction / 180 * Math.PI) * move;
             float moveY = (float)Math.Sin(direction / 180 * Math.PI) * move;
 

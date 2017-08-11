@@ -183,19 +183,6 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 所有集合內特性物件執行DoAfterDraw方法
-        /// </summary>
-        /// <param name="g">Graphics物件</param>
-        public void AllDoAfterDraw(ObjectActive killer)
-        {
-            for (int i = 0; i < _Collection.Count; i++)
-            {
-                PropertyBase item = _Collection[i];
-                item.DoAfterDead(killer);
-            }
-        }
-
-        /// <summary>
         /// 所有特性進入回合結算
         /// </summary>
         public void AllSettlement()
@@ -211,12 +198,12 @@ namespace RunningBox
         /// 所有集合內特性物件執行DoAfterDead方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
-        public void AllDoAfterDead(ObjectActive killer)
+        public void AllDoAfterDead(ObjectActive killer, ObjectDeadType deadType)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
                 PropertyBase item = _Collection[i];
-                item.DoAfterDead(killer);
+                item.DoAfterDead(killer,deadType);
             }
         }
 

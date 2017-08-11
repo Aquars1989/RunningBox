@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RunningBox
 {
@@ -13,15 +15,20 @@ namespace RunningBox
     public abstract class SkillBase
     {
         /// <summary>
+        /// 自動施放物件
+        /// </summary>
+        public AutoCastBase AutoCastObject { get; set; }
+
+        /// <summary>
         /// 技能目標
         /// </summary>
         public ITarget Target { get; set; }
-        
+
         /// <summary>
         /// 技能所有人
         /// </summary>
         public ObjectActive Owner { get; set; }
-        
+
         /// <summary>
         /// 技能冷卻回合數最大值
         /// </summary>
@@ -207,7 +214,7 @@ namespace RunningBox
         /// <summary>
         /// 死亡後執行動作
         /// </summary>
-        public abstract void DoAfterDead(ObjectActive killer);
+        public abstract void DoAfterDead(ObjectActive killer, ObjectDeadType deadType);
 
         /// <summary>
         /// 技能結束進入冷卻前執行

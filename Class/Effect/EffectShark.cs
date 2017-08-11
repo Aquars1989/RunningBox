@@ -45,7 +45,7 @@ namespace RunningBox
         /// <summary>
         /// 新增畫面震動的特效
         /// </summary>
-        /// <param name="duration">震動持續的回合數</param>
+        /// <param name="duration">震動持續的回合數,小於0為永久</param>
         /// <param name="power">震動的強度</param>
         public EffectShark(int duration, int power)
         {
@@ -59,7 +59,7 @@ namespace RunningBox
         {
             if (Status == EffectStatus.Enabled)
             {
-                if (DurationRound >= DurationRoundMax)
+                if (DurationRoundMax >= 0 && DurationRound >= DurationRoundMax)
                 {
                     Status = EffectStatus.Disabled;
                 }

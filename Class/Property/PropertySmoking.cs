@@ -29,7 +29,7 @@ namespace RunningBox
 
             IDraw drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
-            Owner.Scene.GameObjects.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, 3, drawSmoke));
+            Owner.ParentCollection.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, 3, drawSmoke));
         }
 
         public override void DoBeforeActionMove() { }
@@ -38,7 +38,6 @@ namespace RunningBox
         public override void DoBeforeDraw(Graphics g) { }
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer) { }
         public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

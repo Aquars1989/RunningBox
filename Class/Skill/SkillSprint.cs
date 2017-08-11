@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RunningBox
 {
@@ -35,6 +36,8 @@ namespace RunningBox
             CooldownRoundMax = cooldown;
             Power = power;
             Smoke = smoke;
+
+            
         }
 
         public override void DoBeforeActionMove()
@@ -51,15 +54,15 @@ namespace RunningBox
 
                         int lastMove = Owner.Moves.Count - 1;
                         if (lastMove < 0) return;
-                        
+
                         double direction = Function.PointRotation(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
-                        float moveX = (float)Math.Cos(direction / 180 * Math.PI) * 25;
-                        float moveY = (float)Math.Sin(direction / 180 * Math.PI) * 25;
+                        float moveX = (float)Math.Cos(direction / 180 * Math.PI) * Power;
+                        float moveY = (float)Math.Sin(direction / 180 * Math.PI) * Power;
                         Owner.Moves.Add(new PointF(moveX, moveY));
 
                         if (Smoke)
                         {
-                            Owner.Propertys.Add(new PropertySmoking(20, 10, 5));
+                            Owner.Propertys.Add(new PropertySmoking(Owner.MaxMoves, Owner.Size, 5));
                         }
                         Status = SkillStatus.Cooldown;
                     }
@@ -73,7 +76,7 @@ namespace RunningBox
         public override void DoBeforeDraw(Graphics g) { }
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer) { }
+        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
         public override void DoUseWhenEfficacy(ITarget target) { }
         public override void DoBeforeEnd(SkillEndType endType) { }
     }

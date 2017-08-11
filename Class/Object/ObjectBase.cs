@@ -103,10 +103,13 @@ namespace RunningBox
         /// 殺死此物件
         /// </summary>
         /// <param name="killer">殺手物件</param>
-        public virtual void Kill(ObjectActive killer)
+        public virtual void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
-            Status = ObjectStatus.Dead;
-            OnDead(this, killer);
+            if (Status == ObjectStatus.Alive)
+            {
+                Status = ObjectStatus.Dead;
+                OnDead(this, killer, deadType);
+            }
         }
 
         /// <summary>
@@ -114,11 +117,11 @@ namespace RunningBox
         /// </summary>
         /// <param name="sender">死亡物件</param>
         /// <param name="killer">殺手物件</param>
-        protected void OnDead(ObjectBase sender, ObjectBase killer)
+        protected void OnDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
         {
             if (Dead != null)
             {
-                Dead(sender, killer);
+                Dead(sender, killer, deadType);
             }
         }
 
@@ -149,9 +152,20 @@ namespace RunningBox
     }
 
     /// <summary>
+    /// 物件死亡類型
+    /// </summary>
+    [Flags]
+    public enum ObjectDeadType
+    {
+        Clear = 1,
+        LifeEnd = 2,
+        Collision = 4
+    }
+
+    /// <summary>
     /// 處理物件死亡事件
     /// </summary>
     /// <param name="sender">死亡物件</param>
     /// <param name="killer">殺手物件</param>
-    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer);
+    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType);
 }

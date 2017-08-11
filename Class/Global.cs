@@ -8,5 +8,6 @@ namespace RunningBox
     class Global
     {
         public static Random Rand = new Random();
+
     }
 }

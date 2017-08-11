@@ -97,6 +97,20 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 所有集合內技能物件檢查自動施放方法
+        /// </summary>
+        public void AllDoAutoCast()
+        {
+            if (_Collection.Find(x => { return x.Status == SkillStatus.Enabled || x.Status == SkillStatus.Channeled; }) != null) return;
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                SkillBase item = _Collection[i];
+                if (item.AutoCastObject == null) return;
+                if (item.AutoCastObject.Check(item)) return;
+            }
+        }
+
+        /// <summary>
         /// 所有集合內技能物件執行DoBeforeRound方法
         /// </summary>
         public void AllDoBeforeAction()
@@ -183,19 +197,6 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 所有集合內技能物件執行DoAfterDraw方法
-        /// </summary>
-        /// <param name="g">Graphics物件</param>
-        public void AllDoAfterDraw(ObjectActive killer)
-        {
-            for (int i = 0; i < _Collection.Count; i++)
-            {
-                SkillBase item = _Collection[i];
-                item.DoAfterDead(killer);
-            }
-        }
-
-        /// <summary>
         /// 所有技能進入回合結算
         /// </summary>
         public void AllSettlement()
@@ -210,12 +211,12 @@ namespace RunningBox
         /// <summary>
         /// 所有集合內技能物件執行DoAfterAction方法
         /// </summary>
-        public void AllDoAfterDead(ObjectActive killer)
+        public void AllDoAfterDead(ObjectActive killer, ObjectDeadType deadType)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
                 SkillBase item = _Collection[i];
-                item.DoAfterDead(killer);
+                item.DoAfterDead(killer, deadType);
             }
         }
 

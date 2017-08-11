@@ -12,14 +12,14 @@ namespace RunningBox
     public class ObjectSmoke : ObjectBase
     {
         /// <summary>
-        /// 淡出計時器
+        /// 縮小計時器
         /// </summary>
-        public int FadeTick { get; set; }
+        public int ShrinkRound { get; set; }
 
         /// <summary>
-        /// 淡出計時器最大值
+        /// 縮小計時器最大值
         /// </summary>
-        public int FadeTickMax { get; set; }
+        public int ShrinkRoundMax { get; set; }
 
         /// <summary>
         /// 新增虛擬物件,會逐漸縮小直到消失
@@ -27,33 +27,33 @@ namespace RunningBox
         /// <param name="x">物件位置X</param>
         /// <param name="y">物件位置Y</param>
         /// <param name="size">物件大小</param>
-        /// <param name="fadeTick">每次縮小的週期</param>
+        /// <param name="shrinkRound">每次縮小的週期,小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectSmoke(float x, float y, int size, int fadeTick, IDraw drawObject)
+        public ObjectSmoke(float x, float y, int size, int shrinkRound, IDraw drawObject)
         {
-            Status = ObjectStatus.Dying;
+            Status = ObjectStatus.Alive;
             X = x;
             Y = y;
             Size = size;
-            FadeTickMax = fadeTick;
+            ShrinkRoundMax = shrinkRound;
             DrawObject = drawObject;
         }
 
         public override void Action()
         {
-            if (FadeTick >= FadeTickMax)
+            if (ShrinkRoundMax >= 0 && ShrinkRound >= ShrinkRoundMax)
             {
                 Size--;
                 if (Size == 0)
                 {
-                    Kill(null);
+                    Kill(null, ObjectDeadType.LifeEnd);
                 }
                 else
                 {
-                    FadeTick = 0;
+                    ShrinkRound = 0;
                 }
             }
-            FadeTick++;
+            ShrinkRound++;
         }
     }
 }

@@ -61,8 +61,18 @@ namespace RunningBox
         /// </summary>
         public virtual void Break()
         {
+            if (Status == PropertyStatus.Disabled) return;
+
             DoBeforeEnd(PropertyEndType.Break);
             Status = PropertyStatus.Disabled;
+        }
+
+        /// <summary>
+        /// 所有者死亡後執行動作
+        /// </summary>
+        public virtual void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        {
+            Break();
         }
 
         /// <summary>
@@ -99,11 +109,6 @@ namespace RunningBox
         /// 繪製後執行動作
         /// </summary>
         public abstract void DoAfterDraw(Graphics g);
-
-        /// <summary>
-        /// 所有者死亡後執行動作
-        /// </summary>
-        public abstract void DoAfterDead(ObjectActive killer);
 
         /// <summary>
         /// 特性結束前執行

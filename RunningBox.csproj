@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\AutoCast\AutoCastNormal.cs" />
+    <Compile Include="Class\AutoCast\AutoCastBase.cs" />
+    <Compile Include="Class\SkillIDs.cs" />
     <Compile Include="Class\Draw\DrawPic.cs" />
     <Compile Include="Class\Draw\DrawPen.cs" />
     <Compile Include="Class\Draw\DrawBrush.cs" />
@@ -62,13 +65,15 @@
     <Compile Include="Class\Object\ObjectCollection.cs" />
     <Compile Include="Class\Object\ObjectScrap.cs" />
     <Compile Include="Class\Object\ObjectSmoke.cs" />
-    <Compile Include="Class\Object\ObjectCatcher.cs" />
     <Compile Include="Class\Object\ObjectPlayer.cs" />
     <Compile Include="Class\Object\ObjectBase.cs" />
+    <Compile Include="Class\Object\Player\ObjectPlayerNormal.cs" />
     <Compile Include="Class\Property\PropertyBase.cs" />
     <Compile Include="Class\Property\PropertyCollection.cs" />
     <Compile Include="Class\Property\PropertyCollision.cs" />
-    <Compile Include="Class\Property\PropertyDeadBroken.cs" />
+    <Compile Include="Class\Property\PropertyDead\PropertyDeadCollapse.cs" />
+    <Compile Include="Class\Property\PropertyDead\PropertyDeadBroken.cs" />
+    <Compile Include="Class\Property\PropertyScraping.cs" />
     <Compile Include="Class\Property\PropertySmoking.cs" />
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
