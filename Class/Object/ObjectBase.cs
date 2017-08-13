@@ -9,7 +9,7 @@ namespace RunningBox
     /// <summary>
     /// 基礎活動物件
     /// </summary>
-    public abstract class ObjectBase
+    public abstract class ObjectBase : IDisposable
     {
         /// <summary>
         /// 發生於物件死亡
@@ -139,6 +139,31 @@ namespace RunningBox
             if (DrawObject == null) return;
             DrawObject.Draw(g, Rectangle);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // 偵測多餘的呼叫
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (DrawObject != null)
+                    {
+                        DrawObject.Dispose();
+                    }
+                }
+                disposedValue = true;
+            }
+        }
+
+        // 加入這個程式碼的目的在正確實作可處置的模式。
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 
     /// <summary>

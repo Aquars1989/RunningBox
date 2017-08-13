@@ -9,7 +9,7 @@ namespace RunningBox
     /// <summary>
     /// 繪圖物件介面
     /// </summary>
-    public interface IDraw
+    public interface IDraw : IDisposable
     {
         /// <summary>
         /// 繪製顏色

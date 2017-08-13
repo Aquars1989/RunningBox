@@ -75,7 +75,7 @@ namespace RunningBox
                 drawPoolPen.UseCount--;
                 if (drawPoolPen.UseCount == 0)
                 {
-                    _BrushPool.Remove(color);
+                    _PenPool.Remove(color);
                     drawPoolPen.Dispose();
                 }
             }

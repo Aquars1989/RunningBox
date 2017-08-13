@@ -19,7 +19,9 @@ namespace RunningBox
         /// <param name="maxMoves">最大調整值紀錄數量</param>
         /// <param name="size">物件大小</param>
         /// <param name="speed">基本速度</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int size, float speed)
+        /// <param name="drawObject">繪製物件</param>
+        /// <param name="target">追蹤目標</param>
+        public ObjectPlayer(float x, float y, int maxMoves, int size, float speed, IDraw drawObject, ITarget target)
         {
             LifeRoundMax = -1;
             Status = ObjectStatus.Alive;
@@ -30,6 +32,8 @@ namespace RunningBox
             Speed = speed;
             EnergyMax = Energy = 1000;
             EnergyGetPerRound = 5;
+            DrawObject = drawObject;
+            Target = target;
         }
 
         protected override void ActionPlan()
@@ -43,20 +47,20 @@ namespace RunningBox
 
             if (X < rectScene.Left)
             {
-                moveX = Math.Abs(moveX) * 2;
+                moveX = Math.Abs(moveX) * 2 + 2;
             }
             else if (X > rectScene.Left + rectScene.Width)
             {
-                moveX = -Math.Abs(moveX) * 2;
+                moveX = -Math.Abs(moveX) * 2 - 2;
             }
 
             if (Y < rectScene.Top)
             {
-                moveY = Math.Abs(moveY) * 2;
+                moveY = Math.Abs(moveY) * 2 + 2;
             }
             else if (Y > rectScene.Top + rectScene.Height)
             {
-                moveY = -Math.Abs(moveY) * 2;
+                moveY = -Math.Abs(moveY) * 2 - 2;
             }
 
             Moves.Add(new PointF(moveX, moveY));

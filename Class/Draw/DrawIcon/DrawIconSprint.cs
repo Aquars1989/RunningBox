@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -9,14 +10,9 @@ namespace RunningBox
     /// <summary>
     /// 畫筆繪圖物件
     /// </summary>
-    public class DrawPen : IDraw
+    public class DrawIconSprint : IDraw
     {
-        /// <summary>
-        /// 畫筆寬度
-        /// </summary>
-        public int Width { get; set; }
-
-        private Pen _Pen;
+        private SolidBrush _Brush;
         private Color _Color;
         /// <summary>
         /// 繪製顏色
@@ -28,15 +24,14 @@ namespace RunningBox
             {
                 if (_Color == value) return;
                 _Color = value;
-                BackPen();
+                BackBrush();
             }
         }
 
-
         /// <summary>
-        /// 繪製圖形
+        /// 動畫進度
         /// </summary>
-        public DrawShape DrawShape { get; set; }
+        public int Animation { get; set; }
 
         private float _Opacity;
         /// <summary>
@@ -51,7 +46,7 @@ namespace RunningBox
                 _Opacity = value;
                 if (_Opacity > 1) _Opacity = 1;
                 else if (_Opacity < 0) _Opacity = 0;
-                BackPen();
+                BackBrush();
             }
         }
 
@@ -59,15 +54,12 @@ namespace RunningBox
         /// 新增畫筆繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="opacity">透明度0-1</param>
-        /// <param name="drawShape">繪製圖形</param>
         /// <param name="width">畫筆寬度</param>
-        public DrawPen(Color color, DrawShape drawShape, int width, float opacity = 1)
+        public DrawIconSprint(Color color, float opacity = 1)
         {
             Color = color;
             Opacity = opacity;
-            Width = width;
-            DrawShape = drawShape;
+            Animation = 0;
         }
 
         /// <summary>
@@ -77,19 +69,39 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public void Draw(Graphics g, Rectangle rectangle)
         {
-            if (Width < 1) return;
-
-            Pen pen = GetPen();
-            pen.Width = Width;
-            switch (DrawShape)
+           // using (Pen pen = new Pen(Color.Black, 2))
             {
-                case RunningBox.DrawShape.Rectangle:
-                    g.DrawRectangle(pen, rectangle);
-                    break;
-                case RunningBox.DrawShape.Ellipse:
-                    g.DrawEllipse(pen, rectangle);
-                    break;
+                if (Animation > 32)
+                {
+                    Animation %= 32;
+                }
+
+                int ani = Animation / 2 % 4;
+
+                g.DrawRectangle(Pens.Black, rectangle);
+
+                float drawX = rectangle.Left + (rectangle.Width * 0.1F), drawY = rectangle.Top + (rectangle.Height * 0.1F);
+                float size = rectangle.Width * 0.3F;
+                g.FillEllipse(Brushes.Black, drawX, drawY, size, size);
+
+
+                do
+                {
+                    size -= ani * rectangle.Width * 0.3F / 16F;
+                    drawX += ani * rectangle.Width * 0.7F / 16F;
+                    drawY += ani * rectangle.Width * 0.7F / 16F;
+                    if (size > 0)
+                    {
+                        g.FillEllipse(Brushes.Black, drawX, drawY, size, size);
+                    }
+                    ani = 4;
+                } while (size > 0);
+                Animation++;
             }
+
+
+
+
         }
 
         /// <summary>
@@ -98,32 +110,32 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public IDraw Copy()
         {
-            return new DrawPen(Color, DrawShape, Width, Opacity);
+            return new DrawIconSprint(Color, Opacity);
         }
 
         /// <summary>
         /// 取得畫筆物件
         /// </summary>
         /// <returns>畫筆物件</returns>
-        public Pen GetPen()
+        public Brush GetBrush()
         {
-            if (_Pen == null)
+            if (_Brush == null)
             {
-                Color penColor = Color.FromArgb((int)(Color.A * Opacity), Color.R, Color.G, Color.B);
-                _Pen = DrawPool.GetPen(penColor);
+                Color brushColor = Color.FromArgb((int)(Color.A * Opacity), Color.R, Color.G, Color.B);
+                _Brush = DrawPool.GetBrush(brushColor);
             }
-            return _Pen;
+            return _Brush;
         }
 
         /// <summary>
         /// 返還畫筆物件
         /// </summary>
-        public void BackPen()
+        public void BackBrush()
         {
-            if (_Pen != null)
+            if (_Brush != null)
             {
-                DrawPool.BackPen(_Pen);
-                _Pen = null;
+                DrawPool.BackBrush(_Brush);
+                _Brush = null;
             }
         }
 
@@ -136,7 +148,7 @@ namespace RunningBox
             {
                 if (disposing)
                 {
-                    BackPen();
+                    BackBrush();
                 }
                 disposedValue = true;
             }

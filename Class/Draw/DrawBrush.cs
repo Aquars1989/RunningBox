@@ -62,11 +62,6 @@ namespace RunningBox
             DrawShape = drawShape;
         }
 
-        ~DrawBrush()
-        {
-            BackBrush();
-        }
-
         /// <summary>
         /// 繪製到Graphics
         /// </summary>
@@ -120,5 +115,27 @@ namespace RunningBox
                 _Brush = null;
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // 偵測多餘的呼叫
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    BackBrush();
+                }
+                disposedValue = true;
+            }
+        }
+
+        // 加入這個程式碼的目的在正確實作可處置的模式。
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

@@ -17,3 +17,4 @@ E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.exe
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
+E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources

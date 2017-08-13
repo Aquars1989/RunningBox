@@ -1,11 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace RunningBox
 {
     /// <summary>
     /// 特效介面
     /// </summary>
-    public interface IEffect
+    public interface IEffect 
     {
         /// <summary>
         /// 是否可被中斷

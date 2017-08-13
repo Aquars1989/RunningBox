@@ -92,8 +92,9 @@ namespace RunningBox
         /// <param name="speed">速度</param>
         /// <param name="life">存活時間,小於0為永久</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
+        /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectActive(float x, float y, int maxMoves, int size, float speed, int life, League leage, TargetObject target)
+        public ObjectActive(float x, float y, int maxMoves, int size, float speed, int life, League leage, IDraw drawObject, ITarget target)
             : this()
         {
             Status = ObjectStatus.Alive;
@@ -105,6 +106,7 @@ namespace RunningBox
             LifeRoundMax = life;
             Target = target;
             League = leage;
+            DrawObject = drawObject;
         }
 
         /// <summary>

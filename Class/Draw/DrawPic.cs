@@ -49,10 +49,10 @@ namespace RunningBox
         /// <param name="drawShape">繪製圖片</param>
         public DrawImage(Color color, Image image, float opacity = 1)
         {
-            float[][] matrixArray ={ new float[] {1, 0, 0, 0, 0}, 
-                                     new float[] {0, 1, 0, 0, 0}, 
-                                     new float[] {0, 0, 1, 0, 0}, 
-                                     new float[] {0, 0, 0, 1, 0}, 
+            float[][] matrixArray ={ new float[] {1, 0, 0, 0, 0},
+                                     new float[] {0, 1, 0, 0, 0},
+                                     new float[] {0, 0, 1, 0, 0},
+                                     new float[] {0, 0, 0, 1, 0},
                                      new float[] {0, 0, 0, 0, 1}};
             _Matrix = new ColorMatrix(matrixArray);
 
@@ -90,5 +90,7 @@ namespace RunningBox
         {
             return new DrawImage(Color, Image, Opacity);
         }
+
+        public void Dispose() { }
     }
 }

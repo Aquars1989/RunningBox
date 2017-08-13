@@ -145,6 +145,7 @@ namespace RunningBox
             if (deadObjects.Count == 0) return;
             foreach (ObjectBase deadObject in deadObjects)
             {
+                deadObject.Dispose();
                 _Collection.Remove(deadObject);
             }
         }

@@ -93,7 +93,7 @@ namespace RunningBox
         /// <summary>
         /// 能量UI繪製區域
         /// </summary>
-        private Rectangle _RectOfEngery = new Rectangle(50, 10, 100, 10);
+        private Rectangle _RectOfEngery = new Rectangle(80, 30, 100, 10);
         public Rectangle RectOfEngery
         {
             get { return _RectOfEngery; }
@@ -125,11 +125,16 @@ namespace RunningBox
             EndDelayRoundMax = 30;
             GameObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
-            
+
             GameObjects.ObjectDead += OnObjectDead;
             _TimerOfRound.Tick += TimerOfRound_Tick;
         }
 
+        /// <summary>
+        /// 回合計時器運作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerOfRound_Tick(object sender, EventArgs e)
         {
             if (!IsStart) return;
@@ -151,12 +156,16 @@ namespace RunningBox
                 EndDelayRound++;
             }
             Drawing();
+            DoAfterRound();
         }
 
         Stopwatch _watchFPS = new Stopwatch();
         int _tickFPS = 0;
         string _txtFPS = "";
         Font _fontFPS = new Font("Arial", 12);
+        /// <summary>
+        /// 繪製畫面
+        /// </summary>
         private void Drawing()
         {
             _tickFPS--;
@@ -219,7 +228,7 @@ namespace RunningBox
 
             ObjectActive PlayerObject = CreatePlayerObject(potX, potY);
             GameObjects.Add(PlayerObject);
-            GameRectangle = new Rectangle(50, 50, Width - 100, Height - 100);
+            GameRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
 
             if (_SceneImage != null) _SceneImage.Dispose();
             if (_SceneGraphics != null) _SceneGraphics.Dispose();
@@ -231,6 +240,32 @@ namespace RunningBox
             _SceneGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             Cursor.Hide();
             IsStart = true;
+            DoAfterStart();
+        }
+
+        /// <summary>
+        /// 回合後執行動作
+        /// </summary>
+        public virtual void DoAfterRound()
+        {
+            if (!IsEnding)
+            {
+                Score += Level;
+            }
+        }
+
+        /// <summary>
+        /// 開始後執行動作
+        /// </summary>
+        public virtual void DoAfterStart()
+        {
+        }
+
+        /// <summary>
+        /// 結束後執行動作
+        /// </summary>
+        public virtual void DoAfterEnd()
+        {
         }
 
         /// <summary>
@@ -238,12 +273,9 @@ namespace RunningBox
         /// </summary>
         public virtual ObjectActive CreatePlayerObject(int potX, int potY)
         {
-            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 20)
-            {
-                DrawObject = new DrawPen(Color.Black, DrawShape.Ellipse, 2),
-                Target = new TargetTrackPoint(this)
-            };
-            PlayerObject.Skills.Add(new SkillSprint(200, 100, 5, true));
+            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 100, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
+            // PlayerObject = new ObjectPlayer(potX, potY, 8, 20, 100, new DrawIconSprint(Color.Black), new TargetTrackPoint(this));
+            PlayerObject.Skills.Add(new SkillSprint(200, 20, 15, true));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision));
             PlayerObject.Propertys.Add(new PropertyCollision(1, null));
             return PlayerObject;
@@ -272,6 +304,7 @@ namespace RunningBox
             IsEnding = true;
             EndDelayRound = 0;
             Cursor.Show();
+            DoAfterEnd();
         }
 
         /// <summary>
