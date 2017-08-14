@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace RunningBox
@@ -15,6 +16,23 @@ namespace RunningBox
     /// </summary>
     public class SceneBase : UserControl
     {
+        /// <summary>
+        /// 處理關卡事件
+        /// </summary>
+        /// <param name="value">事件參數值</param>
+        /// <returns>回傳是否引發事件</returns>
+        public delegate void WaveEventHandle(int value);
+
+        /// <summary>
+        /// 關卡波數設定
+        /// </summary>
+        public List<WaveLine> Waves { get; private set; }
+
+        /// <summary>
+        /// 關卡事件設定
+        /// </summary>
+        public Dictionary<string, WaveEventHandle> WaveEvents { get; private set; }
+
         /// <summary>
         /// 世界速度
         /// </summary>
@@ -34,6 +52,11 @@ namespace RunningBox
         /// 場景物件集合
         /// </summary>
         public ObjectCollection GameObjects { get; private set; }
+
+        /// <summary>
+        /// UI物件集合
+        /// </summary>
+        public ObjectCollection UIObjects { get; private set; }
 
         /// <summary>
         /// 場景特效集合
@@ -109,11 +132,20 @@ namespace RunningBox
 
         private Timer _TimerOfRound = new Timer() { Enabled = true, Interval = 25 };
         /// <summary>
-        /// 回合計時器器
+        /// 回合計時器
         /// </summary>
-        private Timer TimerOfRound
+        public Timer TimerOfRound
         {
             get { return _TimerOfRound; }
+        }
+
+        private Timer _TimerOfWave = new Timer() { Enabled = true, Interval = 1000 };
+        /// <summary>
+        /// 關卡計時器
+        /// </summary>
+        public Timer TimerOfWave
+        {
+            get { return _TimerOfWave; }
         }
 
         public SceneBase()
@@ -123,11 +155,17 @@ namespace RunningBox
 
             WorldSpeed = 1;
             EndDelayRoundMax = 30;
+            Waves = new List<WaveLine>();
+            WaveEvents = new Dictionary<string, WaveEventHandle>();
             GameObjects = new ObjectCollection(this);
+            UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
 
+            UIObjects.Add(new ObjectUIIcon(new DrawIconSprint(Color.Black)) { X = 300, Y = 35, Size = 25 });
+            UIObjects.Add(new ObjectUIIcon(new DrawIconSlow(Color.Black)) { X = 400, Y = 35, Size = 25 });
             GameObjects.ObjectDead += OnObjectDead;
             _TimerOfRound.Tick += TimerOfRound_Tick;
+            _TimerOfWave.Tick += TimerOfWave_Tick;
         }
 
         /// <summary>
@@ -144,6 +182,7 @@ namespace RunningBox
             EffectObjects.AllDoAfterRound();
 
             GameObjects.ClearAllDead();
+            UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
 
             if (IsEnding)
@@ -159,10 +198,41 @@ namespace RunningBox
             DoAfterRound();
         }
 
-        Stopwatch _watchFPS = new Stopwatch();
-        int _tickFPS = 0;
-        string _txtFPS = "";
-        Font _fontFPS = new Font("Arial", 12);
+        /// <summary>
+        /// 關卡計時器運作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerOfWave_Tick(object sender, EventArgs e)
+        {
+            if (!IsStart) return;
+
+            bool end = true;
+            int waveNo = Level - 1;
+            foreach (WaveLine waveLine in Waves)
+            {
+                if (waveLine.IsEnd) continue;
+                WaveEventHandle waveEvent;
+                if (WaveEvents.TryGetValue(waveLine.WaveID, out waveEvent))
+                {
+                    end = false;
+                    int value = waveLine.GetValue(waveNo);
+                    if (value >= 0)
+                    {
+                        waveEvent(value);
+                    }
+                }
+            }
+
+            Level++;
+            DoAfterWave();
+        }
+
+        private Stopwatch _watchFPS = new Stopwatch();
+        private int _tickFPS = 0;
+        private string _txtFPS = "";
+        private Font _fontFPS = new Font("Arial", 12);
+
         /// <summary>
         /// 繪製畫面
         /// </summary>
@@ -200,9 +270,9 @@ namespace RunningBox
             EffectObjects.AllDoBeforeDrawObject(_SceneGraphics);
             GameObjects.AllDrawSelf(_SceneGraphics);
             EffectObjects.AllDoAfterDraw(_SceneGraphics);
+            UIObjects.AllDrawSelf(_SceneGraphics);
 
             _SceneGraphics.ResetTransform();
-
             _SceneGraphics.DrawString(_txtFPS, _fontFPS, Brushes.Red, Width - 50, 5);
             _ThisGraphics.DrawImageUnscaled(_SceneImage, 0, 0);
 
@@ -225,6 +295,8 @@ namespace RunningBox
 
             GameObjects.Clear();
             EffectObjects.Clear();
+            Waves.Clear();
+            SetWave();
 
             ObjectActive PlayerObject = CreatePlayerObject(potX, potY);
             GameObjects.Add(PlayerObject);
@@ -255,6 +327,20 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 關卡設置
+        /// </summary>
+        public virtual void SetWave()
+        {
+        }
+
+        /// <summary>
+        /// 每波結束後執行動作
+        /// </summary>
+        public virtual void DoAfterWave()
+        {
+        }
+
+        /// <summary>
         /// 開始後執行動作
         /// </summary>
         public virtual void DoAfterStart()
@@ -275,7 +361,9 @@ namespace RunningBox
         {
             PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 100, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
             // PlayerObject = new ObjectPlayer(potX, potY, 8, 20, 100, new DrawIconSprint(Color.Black), new TargetTrackPoint(this));
-            PlayerObject.Skills.Add(new SkillSprint(200, 20, 15, true));
+            SkillSprint skill1 = new SkillSprint(200, SecToRounds(2), 15, true);
+            (UIObjects[0].DrawObject as DrawIconBase).BindingSkill = skill1;
+            PlayerObject.Skills.Add(skill1);
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision));
             PlayerObject.Propertys.Add(new PropertyCollision(1, null));
             return PlayerObject;
@@ -315,6 +403,16 @@ namespace RunningBox
         public int SecToRounds(float sec)
         {
             return (int)(sec * 1000 / _TimerOfRound.Interval);
+        }
+
+        /// <summary>
+        /// 波數時間轉換為Rounds
+        /// </summary>
+        /// <param name="sec"></param>
+        /// <returns></returns>
+        public int WaveToRounds(float sec)
+        {
+            return (int)(sec * _TimerOfWave.Interval / _TimerOfRound.Interval);
         }
 
         /// <summary>
@@ -377,6 +475,106 @@ namespace RunningBox
             this.Name = "SceneBase";
             this.ResumeLayout(false);
 
+        }
+
+        /// <summary>
+        /// 新增特定種類事件每波設定值
+        /// </summary>
+        public class WaveLine
+        {
+            /// <summary>
+            /// 此事件是否結束
+            /// </summary>
+            public bool IsEnd { get; private set; }
+
+            private string _Value;
+            /// <summary>
+            /// 每波設定值,有效字元為0-9和+號('+++ + '='3   1 '),其餘視為-1
+            /// </summary>
+            public string Value
+            {
+                get { return _Value; }
+                set
+                {
+                    _Value = value;
+                    IsEnd = _WaveNO >= _Value.Length;
+                }
+            }
+
+            private string _WaveID;
+            /// <summary>
+            /// 關卡事件ID
+            /// </summary>
+            public string WaveID
+            {
+                get { return _WaveID; }
+                set { _WaveID = value.Trim(); }
+            }
+
+            private int _WaveNO;
+            /// <summary>
+            /// 目前在第幾波
+            /// </summary>
+            public int WaveNO
+            {
+                get { return _WaveNO; }
+                set
+                {
+                    _WaveNO = value;
+                    IsEnd = _WaveNO >= _Value.Length;
+                }
+            }
+
+            /// <summary>
+            /// 新增特定種類事件每波設定值
+            /// </summary>
+            /// <param name="waveID">關卡事件ID</param>
+            /// <param name="value">每波設定值,有效字元為0-9和+號('+++ + '='3   1 '),其餘視為-1</param>
+            public WaveLine(string waveID, string value)
+            {
+                WaveID = waveID;
+                _Value = value;
+                _WaveNO = 0;
+                IsEnd = _Value.Length == 0;
+            }
+
+            /// <summary>
+            /// <para>如果輸入波數大於目前波數 取得輸入波數值並調整目前波數=輸入波數值+1</para>
+            /// <para>如為+號,回傳有幾個連續+號並調整目前波數=+號尾端</para>
+            /// </summary>
+            /// <param name="no"></param>
+            /// <returns></returns>
+            public int GetValue(int no)
+            {
+                if (IsEnd) return -1;
+
+                int result = -1;
+                if (no >= WaveNO)
+                {
+                    WaveNO = no + 1;
+
+                    char c = Value[no];
+                    if (c == '+')
+                    {
+                        result = 1;
+                        int i = WaveNO;
+                        for (; i < Value.Length && Value[i] == '+'; i++)
+                        {
+                            result++;
+                        }
+                        WaveNO = i;
+                    }
+                    else
+                    {
+                        int n = Value[no] - '0';
+                        if (n >= 0 && n <= 9)
+                        {
+                            result = n;
+                        }
+                    }
+                }
+                return result;
+            }
         }
     }
 
