@@ -59,14 +59,19 @@ namespace RunningBox
                 switch (BindingSkill.Status)
                 {
                     case SkillStatus.Disabled:
-                        g.FillRectangle(Brushes.LightYellow, rectangle);
+                        using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.FromArgb(255,255,200), Color.FromArgb(255, 255, 240), 315))
+                        {
+                            g.FillRectangle(brush2, rectangle);
+                        }
                         break;
                     case SkillStatus.Cooldown:
                         float cooldownSize = (float)(BindingSkill.CooldownRoundMax - BindingSkill.CooldownRound) / BindingSkill.CooldownRoundMax * rectangle.Height;
+                        g.FillRectangle(Brushes.White, rectangle);
                         g.FillRectangle(Brushes.LightSlateGray, rectangle.X, rectangle.Y + rectangle.Height - cooldownSize, rectangle.Width, cooldownSize);
                         break;
                     case SkillStatus.Channeled:
                         float channeledSize = (float)(BindingSkill.ChanneledRoundMax - BindingSkill.ChanneledRound) / BindingSkill.ChanneledRoundMax * rectangle.Height;
+                        g.FillRectangle(Brushes.White, rectangle);
                         g.FillRectangle(Brushes.LightGreen, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
                         break;
                 }
@@ -99,28 +104,28 @@ namespace RunningBox
             {
                 int width = rectangle.Width;
                 int height = rectangle.Height;
-                Rectangle rect = rectangle;
 
+                _BackRoundRectangle = rectangle;
                 _BackRound = new GraphicsPath();
 
                 int matrixRound = 8;
                 //頂端
-                _BackRound.AddLine(rect.Left + (matrixRound / 2), rect.Top, rect.Right - matrixRound, rect.Top);
+                _BackRound.AddLine(rectangle.Left + (matrixRound / 2), rectangle.Top, rectangle.Right - matrixRound, rectangle.Top);
                 //roundRect.AddLine(rect.Left + radius - 1, rect.Top - 1, rect.Right - radius, rect.Top - 1);
                 //右上角
-                _BackRound.AddArc(rect.Right - matrixRound, rect.Top, matrixRound, matrixRound, 270, 90);
+                _BackRound.AddArc(rectangle.Right - matrixRound, rectangle.Top, matrixRound, matrixRound, 270, 90);
                 //右邊
-                _BackRound.AddLine(rect.Right, rect.Top + matrixRound, rect.Right, rect.Bottom - matrixRound);
+                _BackRound.AddLine(rectangle.Right, rectangle.Top + matrixRound, rectangle.Right, rectangle.Bottom - matrixRound);
                 //右下角
-                _BackRound.AddArc(rect.Right - matrixRound, rect.Bottom - matrixRound, matrixRound, matrixRound, 0, 90);
+                _BackRound.AddArc(rectangle.Right - matrixRound, rectangle.Bottom - matrixRound, matrixRound, matrixRound, 0, 90);
                 //底邊
-                _BackRound.AddLine(rect.Right - matrixRound, rect.Bottom, rect.Left + matrixRound, rect.Bottom);
+                _BackRound.AddLine(rectangle.Right - matrixRound, rectangle.Bottom, rectangle.Left + matrixRound, rectangle.Bottom);
                 //左下角
-                _BackRound.AddArc(rect.Left, rect.Bottom - matrixRound, matrixRound, matrixRound, 90, 90);
+                _BackRound.AddArc(rectangle.Left, rectangle.Bottom - matrixRound, matrixRound, matrixRound, 90, 90);
                 //左邊
-                _BackRound.AddLine(rect.Left, rect.Bottom - matrixRound, rect.Left, rect.Top + matrixRound);
+                _BackRound.AddLine(rectangle.Left, rectangle.Bottom - matrixRound, rectangle.Left, rectangle.Top + matrixRound);
                 //左上角
-                _BackRound.AddArc(rect.Left, rect.Top, matrixRound, matrixRound, 180, 90);
+                _BackRound.AddArc(rectangle.Left, rectangle.Top, matrixRound, matrixRound, 180, 90);
             }
 
             return _BackRound;

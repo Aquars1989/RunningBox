@@ -52,7 +52,7 @@ namespace RunningBox
                 {
                     int size = Global.Rand.Next(3, 6);
                     int movesCount = Global.Rand.Next(15, 30);
-                    float speed = Global.Rand.Next(700, 850) - (size * 50) * _SpeedFix;
+                    float speed = (Global.Rand.Next(500, 650) - (size * 50)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(3.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
@@ -74,7 +74,7 @@ namespace RunningBox
                 {
                     int size = Global.Rand.Next(3, 4);
                     int movesCount = Global.Rand.Next(8, 15);
-                    float speed = Global.Rand.Next(800, 900) - (size * 50) * _SpeedFix;
+                    float speed = (Global.Rand.Next(600, 750) - (size * 50)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
@@ -96,7 +96,7 @@ namespace RunningBox
                 {
                     int size = Global.Rand.Next(3, 6);
                     int movesCount = Global.Rand.Next(15, 30);
-                    float speed = Global.Rand.Next(600, 700) - (size * 50) * _SpeedFix;
+                    float speed = (Global.Rand.Next(450, 550) - (size * 50)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(6 * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
@@ -117,7 +117,7 @@ namespace RunningBox
                 {
                     int size = Global.Rand.Next(6, 8);
                     int movesCount = Global.Rand.Next(6, 10);
-                    float speed = Global.Rand.Next(250, 300) * _SpeedFix;
+                    float speed = Global.Rand.Next(200, 250) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(7F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
@@ -138,7 +138,7 @@ namespace RunningBox
                 {
                     int size = Global.Rand.Next(8, 10);
                     int movesCount = Global.Rand.Next(10, 15);
-                    float speed = Global.Rand.Next(850, 1000) - (size * 50) * _SpeedFix;
+                    float speed = (Global.Rand.Next(850, 1000) - (size * 50)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = SecToRounds(4);
 

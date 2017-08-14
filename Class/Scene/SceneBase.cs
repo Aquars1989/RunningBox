@@ -361,11 +361,11 @@ namespace RunningBox
         {
             PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 100, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
             // PlayerObject = new ObjectPlayer(potX, potY, 8, 20, 100, new DrawIconSprint(Color.Black), new TargetTrackPoint(this));
-            SkillSprint skill1 = new SkillSprint(200, SecToRounds(2), 15, true);
+            SkillSprint skill1 = new SkillSprint(200, SecToRounds(1), 15, true);
             (UIObjects[0].DrawObject as DrawIconBase).BindingSkill = skill1;
             PlayerObject.Skills.Add(skill1);
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision));
-            PlayerObject.Propertys.Add(new PropertyCollision(1, null));
+            PlayerObject.Propertys.Add(new PropertyCollision(2, null));
             return PlayerObject;
         }
 
