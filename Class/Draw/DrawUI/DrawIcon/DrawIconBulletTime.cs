@@ -10,7 +10,7 @@ namespace RunningBox
     /// <summary>
     /// 技能:時間減緩繪圖物件
     /// </summary>
-    public class DrawIconSlow : DrawIconBase
+    public class DrawIconBulletTime : DrawIconBase
     {
         /// <summary>
         /// 動畫進度
@@ -21,10 +21,11 @@ namespace RunningBox
         /// 新增技能:時間減緩繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        public DrawIconSlow(Color color)
+        public DrawIconBulletTime(Color color, SkillButton drawButton)
         {
             Color = color;
             Animation = 0;
+            DrawButton = drawButton;
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override IDraw Copy()
         {
-            return new DrawIconSlow(Color);
+            return new DrawIconBulletTime(Color, DrawButton);
         }
     }
 }

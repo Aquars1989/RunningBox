@@ -10,4 +10,11 @@ namespace RunningBox
         public static Random Rand = new Random();
 
     }
+
+    public enum SkillButton
+    {
+        None = 0,
+        MouseButtonLeft = 1,
+        MouseButtonRight = 2
+    }
 }

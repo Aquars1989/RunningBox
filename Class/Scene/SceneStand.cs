@@ -170,7 +170,7 @@ namespace RunningBox
                     }
 
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawImage(Color.Black, Properties.Resources.Mine), new TargetPoint(targetX, targetY));
-                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, Color.Firebrick, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     GameObjects.Add(newObject);
                 }
@@ -189,18 +189,28 @@ namespace RunningBox
             Waves.Add(new WaveLine("@Shrink", "     +++     +++     +++     +++     +++     +++    "));
         }
 
+        public override ObjectActive CreatePlayerObject(int potX, int potY)
+        {
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 100, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
+            SkillSprint skill1 = new SkillSprint(350, SecToRounds(1), 15, true);
+            SkillBulletTime skill2 = new SkillBulletTime(200, 5, SecToRounds(3), SecToRounds(5), 1);
+            PlayerObject.Skills.Add(skill1);
+            PlayerObject.Skills.Add(skill2);
+            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision));
+            PlayerObject.Propertys.Add(new PropertyCollision(2, null));
+            return PlayerObject;
+        }
+
         public override void DoAfterStart()
         {
             _SpeedFix = 1;
             _LifeFix = 1;
-            base.DoAfterStart();
         }
 
         public override void DoAfterWave()
         {
             _SpeedFix = 1F + Level * 0.05F;
             _LifeFix = 1F + Level * 0.05F;
-            base.DoAfterWave();
         }
 
         private void RunningBox_MouseDown(object sender, MouseEventArgs e)
@@ -210,10 +220,10 @@ namespace RunningBox
                 switch (e.Button)
                 {
                     case System.Windows.Forms.MouseButtons.Left:
-                        UsePlayerSkill(0);
+                        UsePlayerSkill1();
                         break;
                     case System.Windows.Forms.MouseButtons.Right:
-                        UsePlayerSkill(1);
+                        UsePlayerSkill2();
                         break;
                 }
             }
@@ -242,6 +252,10 @@ namespace RunningBox
             {
                 Cursor.Show();
             }
+        }
+
+        public override void DoAfterEnd()
+        {
         }
     }
 }

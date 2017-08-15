@@ -49,16 +49,17 @@
   <ItemGroup>
     <Compile Include="Class\AutoCast\AutoCastNormal.cs" />
     <Compile Include="Class\AutoCast\AutoCastBase.cs" />
-    <Compile Include="Class\Draw\DrawIcon\DrawIconBase.cs" />
-    <Compile Include="Class\Draw\DrawIcon\DrawIconSlow.cs" />
-    <Compile Include="Class\Draw\DrawIcon\DrawIconSprint.cs">
+    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconBase.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconBulletTime.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconSprint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
     <Compile Include="Class\Object\UI\ObjectUIIcon.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
     <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
     <Compile Include="Class\Property\PropertySpeeded.cs" />
-    <Compile Include="Class\SkillIDs.cs" />
+    <Compile Include="Class\ColorFix.cs" />
     <Compile Include="Class\Draw\DrawPic.cs" />
     <Compile Include="Class\Draw\DrawPen.cs" />
     <Compile Include="Class\Draw\DrawBrush.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Class\Property\PropertyScraping.cs" />
     <Compile Include="Class\Property\PropertySmoking.cs" />
     <Compile Include="Class\Skill\SkillCollection.cs" />
+    <Compile Include="Class\Skill\SkillBulletTime.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
     <Compile Include="Class\Scene\SceneBase.cs">
       <SubType>UserControl</SubType>

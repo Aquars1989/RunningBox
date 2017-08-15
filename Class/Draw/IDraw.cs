@@ -17,9 +17,29 @@ namespace RunningBox
         Color Color { get; set; }
 
         /// <summary>
-        /// 不透明度
+        /// 不透明度(0~1)
         /// </summary>
         float Opacity { get; set; }
+
+        /// <summary>
+        /// 紅色值調整(-1~1)
+        /// </summary>
+        float RFix { get; set; }
+
+        /// <summary>
+        /// 綠色值調整(-1~1)
+        /// </summary>
+        float GFix { get; set; }
+
+        /// <summary>
+        /// 藍色值調整(-1~1)
+        /// </summary>
+        float BFix { get; set; }
+
+        /// <summary>
+        /// 縮放比例調整
+        /// </summary>
+        float Scale { get; set; }
 
         /// <summary>
         /// 繪製到Graphics

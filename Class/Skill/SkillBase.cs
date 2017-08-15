@@ -220,6 +220,14 @@ namespace RunningBox
         /// 技能結束進入冷卻前執行
         /// </summary>
         public abstract void DoBeforeEnd(SkillEndType endType);
+
+        /// <summary>
+        /// 取得繪圖物件
+        /// </summary>
+        /// <param name="color">繪製顏色</param>
+        /// <param name="drawButton">繪製熱鍵</param>
+        /// <returns>繪圖物件</returns>
+        public abstract DrawIconBase GetDrawObject(Color color, SkillButton drawButton);
     }
 
     /// <summary>

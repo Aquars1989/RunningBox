@@ -14,8 +14,43 @@ namespace RunningBox
     /// <summary>
     /// 基本場景物件
     /// </summary>
-    public class SceneBase : UserControl
+    public abstract class SceneBase : UserControl
     {
+        private ObjectUIIcon SkillIcon1 = new ObjectUIIcon(null) { X = 320, Y = 35, Size = 25 };
+        private ObjectUIIcon SkillIcon2 = new ObjectUIIcon(null) { X = 400, Y = 35, Size = 25 };
+
+        private SkillBase _Skill1;
+        public SkillBase Skill1
+        {
+            get { return _Skill1; }
+            set
+            {
+                _Skill1 = value;
+                if (SkillIcon1.DrawObject != null)
+                {
+                    SkillIcon1.DrawObject.Dispose();
+                }
+
+                SkillIcon1.DrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black, SkillButton.MouseButtonLeft);
+            }
+        }
+
+        private SkillBase _Skill2;
+        public SkillBase Skill2
+        {
+            get { return _Skill2; }
+            set
+            {
+                _Skill2 = value;
+                if (SkillIcon2.DrawObject != null)
+                {
+                    SkillIcon2.DrawObject.Dispose();
+                }
+
+                SkillIcon2.DrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black, SkillButton.MouseButtonRight);
+            }
+        }
+
         /// <summary>
         /// 處理關卡事件
         /// </summary>
@@ -34,9 +69,9 @@ namespace RunningBox
         public Dictionary<string, WaveEventHandle> WaveEvents { get; private set; }
 
         /// <summary>
-        /// 世界速度
+        /// 世界速度減慢值,只影響移動速度 speed=(old speed/WorldSpeedSlow)
         /// </summary>
-        public float WorldSpeed { get; set; }
+        public float WorldSpeedSlow { get; set; }
 
         /// <summary>
         /// 場景追蹤點
@@ -46,7 +81,7 @@ namespace RunningBox
         /// <summary>
         /// 玩家物件
         /// </summary>
-        public ObjectPlayer PlayerObject { get; set; }
+        public ObjectActive PlayerObject { get; set; }
 
         /// <summary>
         /// 場景物件集合
@@ -153,7 +188,7 @@ namespace RunningBox
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
-            WorldSpeed = 1;
+            WorldSpeedSlow = 1;
             EndDelayRoundMax = 30;
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
@@ -161,8 +196,9 @@ namespace RunningBox
             UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
 
-            UIObjects.Add(new ObjectUIIcon(new DrawIconSprint(Color.Black)) { X = 300, Y = 35, Size = 25 });
-            UIObjects.Add(new ObjectUIIcon(new DrawIconSlow(Color.Black)) { X = 400, Y = 35, Size = 25 });
+            UIObjects.Add(SkillIcon1);
+            UIObjects.Add(SkillIcon2);
+
             GameObjects.ObjectDead += OnObjectDead;
             _TimerOfRound.Tick += TimerOfRound_Tick;
             _TimerOfWave.Tick += TimerOfWave_Tick;
@@ -249,27 +285,30 @@ namespace RunningBox
 
 
             _SceneGraphics.Clear(Color.White);
-
             EffectObjects.AllDoBeforeDraw(_SceneGraphics);
-            EffectObjects.AllDoBeforeDrawUI(_SceneGraphics);
+            EffectObjects.AllDoBeforeDrawBack(_SceneGraphics);
 
             if (GameRectangle != null)
             {
                 _SceneGraphics.DrawRectangle(_PenRectGaming, GameRectangle);
             }
 
+            _SceneGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
             if (PlayerObject != null)
             {
                 float ratio = (float)PlayerObject.Energy / PlayerObject.EnergyMax;
                 Brush brush = ratio < 0.3 ? Brushes.Red : Brushes.Black;
                 _SceneGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
             }
+
             _SceneGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
             _SceneGraphics.DrawString(Score.ToString(), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
 
             EffectObjects.AllDoBeforeDrawObject(_SceneGraphics);
             GameObjects.AllDrawSelf(_SceneGraphics);
             EffectObjects.AllDoAfterDraw(_SceneGraphics);
+
+            EffectObjects.AllDoBeforeDrawUI(_SceneGraphics);
             UIObjects.AllDrawSelf(_SceneGraphics);
 
             _SceneGraphics.ResetTransform();
@@ -292,14 +331,18 @@ namespace RunningBox
         {
             Level = 0;
             Score = 0;
+            WorldSpeedSlow = 1;
 
             GameObjects.Clear();
             EffectObjects.Clear();
             Waves.Clear();
             SetWave();
 
-            ObjectActive PlayerObject = CreatePlayerObject(potX, potY);
+            PlayerObject = CreatePlayerObject(potX, potY);
             GameObjects.Add(PlayerObject);
+            Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
+            Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
+
             GameRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
 
             if (_SceneImage != null) _SceneImage.Dispose();
@@ -308,8 +351,9 @@ namespace RunningBox
 
             _SceneImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
             _SceneGraphics = Graphics.FromImage(_SceneImage);
-            _ThisGraphics = CreateGraphics();
             _SceneGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            _SceneGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            _ThisGraphics = CreateGraphics();
             Cursor.Hide();
             IsStart = true;
             DoAfterStart();
@@ -329,45 +373,27 @@ namespace RunningBox
         /// <summary>
         /// 關卡設置
         /// </summary>
-        public virtual void SetWave()
-        {
-        }
+        public abstract void SetWave();
 
         /// <summary>
         /// 每波結束後執行動作
         /// </summary>
-        public virtual void DoAfterWave()
-        {
-        }
+        public abstract void DoAfterWave();
 
         /// <summary>
         /// 開始後執行動作
         /// </summary>
-        public virtual void DoAfterStart()
-        {
-        }
+        public abstract void DoAfterStart();
 
         /// <summary>
         /// 結束後執行動作
         /// </summary>
-        public virtual void DoAfterEnd()
-        {
-        }
+        public abstract void DoAfterEnd();
 
         /// <summary>
         /// 建立玩家物件
         /// </summary>
-        public virtual ObjectActive CreatePlayerObject(int potX, int potY)
-        {
-            PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 100, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
-            // PlayerObject = new ObjectPlayer(potX, potY, 8, 20, 100, new DrawIconSprint(Color.Black), new TargetTrackPoint(this));
-            SkillSprint skill1 = new SkillSprint(200, SecToRounds(1), 15, true);
-            (UIObjects[0].DrawObject as DrawIconBase).BindingSkill = skill1;
-            PlayerObject.Skills.Add(skill1);
-            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision));
-            PlayerObject.Propertys.Add(new PropertyCollision(2, null));
-            return PlayerObject;
-        }
+        public abstract ObjectActive CreatePlayerObject(int potX, int potY);
 
         /// <summary>
         /// 物件死亡時
@@ -455,14 +481,25 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 使用玩家物件技能
+        /// 使用玩家物件技能1
         /// </summary>
-        /// <param name="index">技能索引</param>
-        public virtual void UsePlayerSkill(int index)
+        public virtual void UsePlayerSkill1()
         {
-            if (PlayerObject == null || index >= PlayerObject.Skills.Count) return;
+            if (Skill1 != null)
+            {
+                Skill1.Use(new TargetTrackPoint(this));
+            }
+        }
 
-            PlayerObject.Skills[index].Use(new TargetTrackPoint(this));
+        /// <summary>
+        /// 使用玩家物件技能2
+        /// </summary>
+        public virtual void UsePlayerSkill2()
+        {
+            if (Skill2 != null)
+            {
+                Skill2.Use(new TargetTrackPoint(this));
+            }
         }
 
         private void InitializeComponent()

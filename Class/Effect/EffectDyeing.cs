@@ -109,7 +109,7 @@ namespace RunningBox
             }
         }
 
-        public void DoBeforeDrawUI(Graphics g)
+        public void DoBeforeDrawBack(Graphics g)
         {
             switch (Status)
             {
@@ -159,5 +159,6 @@ namespace RunningBox
         public void DoBeforeDraw(Graphics g) { }
         public void DoBeforeDrawObject(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
+        public void DoBeforeDrawUI(Graphics g) { }
     }
 }

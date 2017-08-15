@@ -40,7 +40,7 @@ namespace RunningBox
 
         private float _Opacity;
         /// <summary>
-        /// 不透明度0-1
+        /// 不透明度(0~1)
         /// </summary>
         public float Opacity
         {
@@ -49,25 +49,73 @@ namespace RunningBox
             {
                 if (_Opacity == value) return;
                 _Opacity = value;
-                if (_Opacity > 1) _Opacity = 1;
-                else if (_Opacity < 0) _Opacity = 0;
+                BackPen();
+            }
+        }
+
+        private float _RFix;
+        /// <summary>
+        /// 紅色值調整(-1~1)
+        /// </summary>
+        public float RFix
+        {
+            get { return _RFix; }
+            set
+            {
+                if (_RFix == value) return;
+                _RFix = value;
+                BackPen();
+            }
+        }
+
+        private float _GFix;
+        /// <summary>
+        /// 綠色值調整(-1~1)
+        /// </summary>
+        public float GFix
+        {
+            get { return _GFix; }
+            set
+            {
+                if (_GFix == value) return;
+                _GFix = value;
+                BackPen();
+            }
+        }
+
+        private float _BFix;
+        /// <summary>
+        /// 藍色值調整(-1~1)
+        /// </summary>
+        public float BFix
+        {
+            get { return _BFix; }
+            set
+            {
+                if (_BFix == value) return;
+                _BFix = value;
                 BackPen();
             }
         }
 
         /// <summary>
+        /// 縮放比例調整
+        /// </summary>
+        public float Scale { get; set; }
+
+        /// <summary>
         /// 新增畫筆繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="opacity">透明度0-1</param>
         /// <param name="drawShape">繪製圖形</param>
         /// <param name="width">畫筆寬度</param>
-        public DrawPen(Color color, DrawShape drawShape, int width, float opacity = 1)
+        public DrawPen(Color color, DrawShape drawShape, int width)
         {
             Color = color;
-            Opacity = opacity;
             Width = width;
             DrawShape = drawShape;
+            _Opacity = 1;
+            Scale = 1;
         }
 
         /// <summary>
@@ -79,15 +127,23 @@ namespace RunningBox
         {
             if (Width < 1) return;
 
+            Rectangle drawRectangle = rectangle;
+            if (Scale != 1)
+            {
+                int scaleX = (int)(((drawRectangle.Width * Scale) - drawRectangle.Width) / 2);
+                int scaleY = (int)(((drawRectangle.Height * Scale) - drawRectangle.Height) / 2);
+                drawRectangle = new Rectangle(rectangle.Left - scaleX, rectangle.Top - scaleY, rectangle.Width + scaleX * 2, rectangle.Height + scaleY * 2);
+            }
+
             Pen pen = GetPen();
             pen.Width = Width;
             switch (DrawShape)
             {
                 case RunningBox.DrawShape.Rectangle:
-                    g.DrawRectangle(pen, rectangle);
+                    g.DrawRectangle(pen, drawRectangle);
                     break;
                 case RunningBox.DrawShape.Ellipse:
-                    g.DrawEllipse(pen, rectangle);
+                    g.DrawEllipse(pen, drawRectangle);
                     break;
             }
         }
@@ -98,7 +154,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public IDraw Copy()
         {
-            return new DrawPen(Color, DrawShape, Width, Opacity);
+            return new DrawPen(Color, DrawShape, Width) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
         }
 
         /// <summary>
@@ -109,7 +165,7 @@ namespace RunningBox
         {
             if (_Pen == null)
             {
-                Color penColor = Color.FromArgb((int)(Color.A * Opacity), Color.R, Color.G, Color.B);
+                Color penColor = ColorFix.GetColor(Color, Opacity, RFix, GFix, BFix);
                 _Pen = DrawPool.GetPen(penColor);
             }
             return _Pen;

@@ -11,6 +11,9 @@ namespace RunningBox
     /// </summary>
     class PropertyDeadExplosion : PropertyBase
     {
+        private float _OwnerScaleFix = 0;
+        private float _OwnerRFix = 0;
+
         /// <summary>
         /// 爆炸範圍倍數(以所有者大小為基準)
         /// </summary>
@@ -27,6 +30,17 @@ namespace RunningBox
         public Color Color { get; set; }
 
         /// <summary>
+        /// 快爆炸時的大小調整倍數
+        /// </summary>
+        public float OwnerScaleFix { get; set; }
+
+        /// <summary>
+        /// 快爆炸時的紅色調整倍數
+        /// </summary>
+        public float OwnerRFix { get; set; }
+
+
+        /// <summary>
         /// 符合指定的死亡方式才會觸發
         /// </summary>
         public ObjectDeadType DeadType { get; set; }
@@ -37,14 +51,18 @@ namespace RunningBox
         /// <param name="rangeMultiple">爆炸範圍倍數(以所有者大小為基準)</param>
         /// <param name="rangeConstant">爆炸範圍常數</param>
         /// <param name="color">爆炸顏色</param>
+        /// <param name="ownerScaleFix">快爆炸時的大小調整倍數</param>
+        /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
-        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, Color color, ObjectDeadType deadType)
+        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             RangeMultiple = rangeMultiple;
             RangeConstant = rangeConstant;
             Color = color;
+            OwnerScaleFix = ownerScaleFix;
+            OwnerRFix = ownerRFix;
         }
 
 
@@ -73,12 +91,42 @@ namespace RunningBox
             }
         }
 
+        public override void DoBeforeDraw(Graphics g)
+        {
+            _OwnerScaleFix = 0;
+            _OwnerRFix = 0;
+
+            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.LifeRoundMax >= 0 && Owner.DrawObject != null)
+            {
+                int life = Owner.LifeRoundMax - Owner.LifeRound;
+                if (life < 60)
+                {
+                    _OwnerScaleFix = ((life / 2) % 5) * OwnerScaleFix;
+                    _OwnerRFix = ((life / 2) % 5) * OwnerRFix;
+                    Owner.DrawObject.Scale += _OwnerScaleFix;
+                    Owner.DrawObject.RFix += _OwnerRFix;
+                }
+            }
+            else
+            {
+                _OwnerScaleFix = 0;
+                _OwnerRFix = 0;
+            }
+        }
+
+        public override void DoAfterDraw(Graphics g)
+        {
+            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.DrawObject != null)
+            {
+                Owner.DrawObject.Scale -= _OwnerScaleFix;
+                Owner.DrawObject.RFix -= _OwnerRFix;
+            }
+        }
+
         public override void DoBeforeActionMove() { }
         public override void DoBeforeAction() { }
         public override void DoBeforeActionPlan() { }
         public override void DoAfterAction() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
         public override void DoBeforeEnd(PropertyEndType endType) { }
     }

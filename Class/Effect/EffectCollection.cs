@@ -130,15 +130,15 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 所有集合內特效物件執行DoBeforeDrawUI方法
+        /// 所有集合內特效物件執行DoBeforeDrawBack方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
-        public void AllDoBeforeDrawUI(Graphics g)
+        public void AllDoBeforeDrawBack(Graphics g)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
                 IEffect item = _Collection[i];
-                item.DoBeforeDrawUI(g);
+                item.DoBeforeDrawBack(g);
             }
         }
 
@@ -168,6 +168,18 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 所有集合內特效物件執行DoBeforeDrawUI方法
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
+        public void AllDoBeforeDrawUI(Graphics g)
+        {
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                IEffect item = _Collection[i];
+                item.DoBeforeDrawUI(g);
+            }
+        }
 
         /// <summary>
         /// 中斷所有集合內特效

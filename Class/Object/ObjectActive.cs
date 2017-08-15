@@ -196,8 +196,8 @@ namespace RunningBox
                 moveTotalY += pt.Y;
             }
 
-            X += moveTotalX * Scene.WorldSpeed;
-            Y += moveTotalY * Scene.WorldSpeed;
+            X += moveTotalX / Scene.WorldSpeedSlow;
+            Y += moveTotalY / Scene.WorldSpeedSlow;
 
             LifeRound++;
             if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)
@@ -228,7 +228,9 @@ namespace RunningBox
         public override void Draw(Graphics g)
         {
             Skills.AllDoBeforeDraw(g);
+            Propertys.AllDoBeforeDraw(g);
             base.Draw(g);
+            Propertys.AllDoAfterDraw(g);
             Skills.AllDoAfterDraw(g);
         }
     }

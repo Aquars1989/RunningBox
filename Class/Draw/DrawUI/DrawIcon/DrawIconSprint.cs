@@ -8,7 +8,7 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 畫筆繪圖物件
+    /// 技能:衝刺繪圖物件
     /// </summary>
     public class DrawIconSprint : DrawIconBase
     {
@@ -18,13 +18,14 @@ namespace RunningBox
         public int Animation { get; set; }
 
         /// <summary>
-        /// 新增畫筆繪圖物件
+        /// 新增技能:衝刺繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        public DrawIconSprint(Color color)
+        public DrawIconSprint(Color color, SkillButton drawButton)
         {
             Color = color;
             Animation = 0;
+            DrawButton = drawButton;
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override IDraw Copy()
         {
-            return new DrawIconSprint(Color);
+            return new DrawIconSprint(Color, DrawButton);
         }
     }
 }

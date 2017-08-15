@@ -50,7 +50,7 @@
             this.runningBox1.Size = new System.Drawing.Size(584, 562);
             this.runningBox1.TabIndex = 0;
             this.runningBox1.TrackPoint = new System.Drawing.Point(0, 0);
-            this.runningBox1.WorldSpeed = 1F;
+            this.runningBox1.WorldSpeedSlow = 1F;
             // 
             // MainForm
             // 

@@ -44,14 +44,19 @@ namespace RunningBox
         void DoBeforeDraw(Graphics g);
 
         /// <summary>
-        /// 繪製UI前執行動作
+        /// 繪製背景前執行動作
         /// </summary>
-        void DoBeforeDrawUI(Graphics g);
+        void DoBeforeDrawBack(Graphics g);
 
         /// <summary>
         /// 背景繪製後，物件繪製前執行動作
         /// </summary>
         void DoBeforeDrawObject(Graphics g);
+
+        /// <summary>
+        /// 繪製UI前執行動作
+        /// </summary>
+        void DoBeforeDrawUI(Graphics g);
 
         /// <summary>
         /// 繪製後執行動作
