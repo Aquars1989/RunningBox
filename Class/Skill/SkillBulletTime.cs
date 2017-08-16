@@ -70,7 +70,7 @@ namespace RunningBox
         /// <param name="color">繪製顏色</param>
         /// <param name="drawButton">繪製熱鍵</param>
         /// <returns>繪圖物件</returns>
-        public override DrawIconBase GetDrawObject(Color color, SkillButton drawButton)
+        public override DrawIconBase GetDrawObject(Color color, EnumSkillButton drawButton)
         {
             DrawIconBulletTime drawObject = new DrawIconBulletTime(color, drawButton) { BindingSkill = this };
             return drawObject;

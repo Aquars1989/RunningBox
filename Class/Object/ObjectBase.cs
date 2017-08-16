@@ -19,7 +19,7 @@ namespace RunningBox
         /// <summary>
         /// 物件歸屬場景
         /// </summary>
-        public SceneBase Scene
+        public SceneGaming Scene
         {
             get { return ParentCollection == null ? null : ParentCollection.Scene; }
         }
@@ -138,6 +138,20 @@ namespace RunningBox
         {
             if (DrawObject == null) return;
             DrawObject.Draw(g, Rectangle);
+        }
+
+        /// <summary>
+        /// 取得位移值
+        /// </summary>
+        /// <param name="angle">位移角度</param>
+        /// <param name="speed">速度值</param>
+        /// <returns>位移點</returns>
+        public PointF GetMovePoint(double angle, float speed)
+        {
+            double ratioSecToRound = 1000 / Scene.TimerOfRound.Interval;
+            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / ratioSecToRound);
+            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / ratioSecToRound);
+            return new PointF(moveX, moveY);
         }
 
         #region IDisposable Support

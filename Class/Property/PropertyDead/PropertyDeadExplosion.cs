@@ -25,6 +25,16 @@ namespace RunningBox
         public int RangeConstant { get; set; }
 
         /// <summary>
+        /// 爆炸的撞擊力量,撞擊力量小於等於此值會被毀滅
+        /// </summary>
+        public int CollisionPower { get; set; }
+
+        /// <summary>
+        /// 爆炸的陣營判定,符合此陣營不會被傷害
+        /// </summary>
+        public League CollisionLeague { get; set; }
+
+        /// <summary>
         /// 爆炸顏色
         /// </summary>
         public Color Color { get; set; }
@@ -50,16 +60,20 @@ namespace RunningBox
         /// </summary>
         /// <param name="rangeMultiple">爆炸範圍倍數(以所有者大小為基準)</param>
         /// <param name="rangeConstant">爆炸範圍常數</param>
+        /// <param name="collisionPower">爆炸的撞擊力量,撞擊力量小於等於此值會被毀滅</param>
+        /// <param name="collisionLeague">爆炸的陣營判定,符合此陣營不會被傷害</param>
         /// <param name="color">爆炸顏色</param>
         /// <param name="ownerScaleFix">快爆炸時的大小調整倍數</param>
         /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
-        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
+        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, League collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             RangeMultiple = rangeMultiple;
             RangeConstant = rangeConstant;
+            CollisionPower = collisionPower;
+            CollisionLeague = collisionLeague;
             Color = color;
             OwnerScaleFix = ownerScaleFix;
             OwnerRFix = ownerRFix;
@@ -70,23 +84,33 @@ namespace RunningBox
         {
             if ((DeadType & deadType) != deadType) return;
 
-            int size = (int)(RangeMultiple * Owner.Size) + RangeConstant;
-            Rectangle explosionRect = new Rectangle((int)Owner.X - size, (int)Owner.Y - size, size * 2, size * 2);
-            Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, size, 0, 20, 0, Color));
+            int explosionSize = (int)(RangeMultiple * Owner.Size) + RangeConstant;
+            Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, explosionSize, 0, 20, 0, Color));
 
             for (int i = 0; i < Owner.ParentCollection.Count; i++)
             {
                 ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
-                if (objectActive != null && objectActive.Status == ObjectStatus.Alive && objectActive.Rectangle.IntersectsWith(explosionRect))
+                if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
+
+                //距離判定
+                double distance = Function.GetDistance(Owner, objectActive, false) - objectActive.Size - explosionSize;
+                if (distance >= 0) continue;
+
+                //檢查目標有無碰撞特性
+                int colliderPower = -1;
+                for (int j = 0; j < objectActive.Propertys.Count; j++)
                 {
-                    for (int j = 0; j < objectActive.Propertys.Count; j++)
+                    PropertyCollision checkCollision = objectActive.Propertys[j] as PropertyCollision;
+                    if (checkCollision != null && checkCollision.Status == PropertyStatus.Enabled)
                     {
-                        PropertyCollision colliderCollision = objectActive.Propertys[j] as PropertyCollision;
-                        if (colliderCollision != null && colliderCollision.Status == PropertyStatus.Enabled)
-                        {
-                            objectActive.Kill(Owner, ObjectDeadType.Collision);
-                        }
+                        colliderPower = Math.Max(colliderPower, checkCollision.CollisionPower);
                     }
+                }
+
+                if (colliderPower < 0) continue;
+                if (colliderPower <= CollisionPower)
+                {
+                    objectActive.Kill(Owner, ObjectDeadType.Collision);
                 }
             }
         }

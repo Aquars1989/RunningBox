@@ -74,12 +74,12 @@ namespace RunningBox
                 moveTotalY += pt.Y;
             }
 
-            double direction = Function.PointRotation(0, 0, moveTotalX, moveTotalY);
+            double angle = Function.GetAngle(0, 0, moveTotalX, moveTotalY);
             for (int i = 0; i < ScrapCount; i++)
             {
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
-                double scrapDirection = direction + (Global.Rand.NextDouble() - 0.5) * 20;
+                double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * 20;
                 Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }

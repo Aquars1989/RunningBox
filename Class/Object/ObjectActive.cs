@@ -171,10 +171,8 @@ namespace RunningBox
         {
             if (Target != null)
             {
-                double direction = Function.PointRotation(X, Y, Target.X, Target.Y);
-                float moveX = (float)Math.Cos(direction / 180 * Math.PI) * (Speed / 100F);
-                float moveY = (float)Math.Sin(direction / 180 * Math.PI) * (Speed / 100F);
-                Moves.Add(new PointF(moveX, moveY));
+                double direction = Function.GetAngle(X, Y, Target.X, Target.Y);
+                Moves.Add(GetMovePoint(direction, Speed));
             }
         }
 
@@ -240,6 +238,7 @@ namespace RunningBox
     /// </summary>
     public enum League
     {
+        None,
         Player,
         Ememy
     }

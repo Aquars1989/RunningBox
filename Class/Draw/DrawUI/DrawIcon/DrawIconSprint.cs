@@ -21,7 +21,7 @@ namespace RunningBox
         /// 新增技能:衝刺繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        public DrawIconSprint(Color color, SkillButton drawButton)
+        public DrawIconSprint(Color color, EnumSkillButton drawButton)
         {
             Color = color;
             Animation = 0;

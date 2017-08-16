@@ -16,7 +16,7 @@ namespace RunningBox
         /// <summary>
         /// 作用場景物件
         /// </summary>
-        SceneBase Scene { get; set; }
+        SceneGaming Scene { get; set; }
 
         /// <summary>
         /// 特效狀態

@@ -77,7 +77,6 @@
     <Compile Include="Class\Object\ObjectSmoke.cs" />
     <Compile Include="Class\Object\ObjectPlayer.cs" />
     <Compile Include="Class\Object\ObjectBase.cs" />
-    <Compile Include="Class\Object\Player\ObjectPlayerNormal.cs" />
     <Compile Include="Class\Property\PropertyBase.cs" />
     <Compile Include="Class\Property\PropertyCollection.cs" />
     <Compile Include="Class\Property\PropertyCollision.cs" />
@@ -85,6 +84,9 @@
     <Compile Include="Class\Property\PropertyDead\PropertyDeadBroken.cs" />
     <Compile Include="Class\Property\PropertyScraping.cs" />
     <Compile Include="Class\Property\PropertySmoking.cs" />
+    <Compile Include="Class\Scene\SceneGaming.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Skill\SkillBulletTime.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
@@ -111,6 +113,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
+      <DependentUpon>SceneGaming.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Class\Scene\SceneBase.resx">
       <DependentUpon>SceneBase.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,7 +149,9 @@
     <Content Include="ICON.ico" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Class\Object\Player\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

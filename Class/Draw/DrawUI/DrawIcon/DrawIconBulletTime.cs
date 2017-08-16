@@ -21,7 +21,7 @@ namespace RunningBox
         /// 新增技能:時間減緩繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        public DrawIconBulletTime(Color color, SkillButton drawButton)
+        public DrawIconBulletTime(Color color, EnumSkillButton drawButton)
         {
             Color = color;
             Animation = 0;
@@ -45,12 +45,13 @@ namespace RunningBox
             pen.Width = 1;
             g.DrawEllipse(pen, clockRect);
 
-            if (Animation > 1440)
+            if (Animation > 2880)
             {
-                Animation %= 1440;
+                Animation %= 2880;
             }
-            float h = Animation / 60F;
-            int m = Animation % 60;
+            int ani = Animation / 2;
+            float h = ani / 60F;
+            int m = ani % 60;
 
             PointF point1 = new PointF(rectangle.Left + rectangle.Width / 2, rectangle.Top + rectangle.Height / 2);
             float directionH = (h * 15) - 180;
@@ -66,7 +67,8 @@ namespace RunningBox
             float moveMY = (float)Math.Sin(directionM / 180 * Math.PI) * lengthM;
             PointF pointM = new PointF(point1.X + moveMX, point1.Y + moveMY);
             g.DrawLine(pen, point1, pointM);
-            Animation += 1;
+
+            Animation += BindingSkill != null && BindingSkill.Status == SkillStatus.Channeled ? 1 : 3;
         }
 
         /// <summary>

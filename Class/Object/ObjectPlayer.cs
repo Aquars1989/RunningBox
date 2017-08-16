@@ -19,9 +19,10 @@ namespace RunningBox
         /// <param name="maxMoves">最大調整值紀錄數量</param>
         /// <param name="size">物件大小</param>
         /// <param name="speed">基本速度</param>
+        /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int size, float speed, IDraw drawObject, ITarget target)
+        public ObjectPlayer(float x, float y, int maxMoves, int size, float speed, League leage, IDraw drawObject, ITarget target)
         {
             LifeRoundMax = -1;
             Status = ObjectStatus.Alive;
@@ -32,6 +33,7 @@ namespace RunningBox
             Speed = speed;
             EnergyMax = Energy = 1000;
             EnergyGetPerRound = 5;
+            League = leage;
             DrawObject = drawObject;
             Target = target;
         }
@@ -40,10 +42,14 @@ namespace RunningBox
         {
             Point trackPoint = Scene.TrackPoint;
             Rectangle rectScene = Scene.GameRectangle;
-            double direction = Function.PointRotation(X, Y, trackPoint.X, trackPoint.Y);
-            float move = ((Math.Abs(trackPoint.X - X) * 2 + Math.Abs(trackPoint.Y - Y) * 2) / 120) + 0.4F;
-            float moveX = (float)Math.Cos(direction / 180 * Math.PI) * move;
-            float moveY = (float)Math.Sin(direction / 180 * Math.PI) * move;
+            double direction = Function.GetAngle(X, Y, trackPoint.X, trackPoint.Y);
+            float speed = (Math.Abs(trackPoint.X - X) + Math.Abs(trackPoint.Y - Y))  + 10;
+            //float speed = (float)Function.GetDistance(trackPoint.X, trackPoint.Y, X, Y) * 10 + 5;
+            if (speed > Speed) speed = Speed;
+
+            PointF move = GetMovePoint(direction, speed);
+            float moveX = move.X;
+            float moveY = move.Y;
 
             if (X < rectScene.Left)
             {

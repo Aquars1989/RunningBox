@@ -27,11 +27,11 @@ namespace RunningBox
             get { return Targer.TrackPoint.Y; }
         }
 
-        private SceneBase _Targer = null;
+        private SceneGaming _Targer = null;
         /// <summary>
         /// 指定場景
         /// </summary>
-        public SceneBase Targer
+        public SceneGaming Targer
         {
             get { return _Targer; }
             set
@@ -45,7 +45,7 @@ namespace RunningBox
         /// 新增代表場景追蹤點的目標物件
         /// </summary>
         /// <param name="scene">場景物件</param>
-        public TargetTrackPoint(SceneBase scene)
+        public TargetTrackPoint(SceneGaming scene)
         {
             Targer = scene;
         }

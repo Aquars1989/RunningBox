@@ -7,7 +7,7 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 擁有此特性的物件每回合會在原位置產生四散的碎片
+    /// 擁有此特性的物件每回合速度會增加
     /// </summary>
     class PropertySpeeded : PropertyBase
     {
@@ -17,14 +17,10 @@ namespace RunningBox
         public float SpeededPerRound { get; set; }
 
         /// <summary>
-        /// 新增碎裂特性，擁有此特性的物件每回合會在原位置產生四散的碎片
+        /// 新增加速特性,擁有此特性的物件每回合速度會增加
         /// </summary>
         /// <param name="durationRound">持續回合數</param>
-        /// <param name="scrapCount">每回合產生碎片數量</param>
-        /// <param name="scrapSpeedMax">碎片移動速度最大值</param>
-        /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
-        /// <param name="scrapLifeMax">碎片生命週期最大值</param>
-        /// <param name="scrapLifeMin">碎片生命週期最小值</param>
+        /// <param name="speededPerRound">每回合移動速度增加</param>
         public PropertySpeeded(int durationRound, float speededPerRound)
         {
             Status = PropertyStatus.Enabled;

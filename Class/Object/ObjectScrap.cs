@@ -75,10 +75,9 @@ namespace RunningBox
             }
             else
             {
-                float moveX = (float)Math.Cos(Direction / 180 * Math.PI) * (Speed / 100F);
-                float moveY = (float)Math.Sin(Direction / 180 * Math.PI) * (Speed / 100F);
-                X += moveX;
-                Y += moveY;
+                PointF move = GetMovePoint(Direction, Speed);
+                X += move.X;
+                Y += move.Y;
             }
             LifeRound++;
         }

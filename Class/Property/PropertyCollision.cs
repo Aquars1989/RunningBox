@@ -36,32 +36,49 @@ namespace RunningBox
                 for (int i = 0; i < Owner.ParentCollection.Count; i++)
                 {
                     ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
-                    if (objectActive != null && objectActive.Status == ObjectStatus.Alive && objectActive.League != Owner.League && objectActive.Rectangle.IntersectsWith(Owner.Rectangle))
+
+                    //限定目標
+                    if (Target != null)
                     {
-                        int colliderPower = -1;
-                        for (int j = 0; j < objectActive.Propertys.Count; j++)
+                        if (objectActive == Target)
                         {
-                            PropertyCollision colliderCollision = objectActive.Propertys[j] as PropertyCollision;
-                            if (colliderCollision != null && colliderCollision.Status == PropertyStatus.Enabled)
+                            i = Owner.ParentCollection.Count;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
+
+                    //距離判定
+                    double distance = Function.GetDistance(Owner, objectActive, true);
+                    if (distance >= 0) continue;
+
+                    int colliderPower = -1;
+                    for (int j = 0; j < objectActive.Propertys.Count; j++)
+                    {
+                        PropertyCollision checkCollision = objectActive.Propertys[j] as PropertyCollision;
+                        if (checkCollision != null && checkCollision.Status == PropertyStatus.Enabled)
+                        {
+                            TargetObject checkTarget = checkCollision.Target as TargetObject;
+                            if (checkTarget == null || checkTarget.Targer == Owner)
                             {
-                                TargetObject target = colliderCollision.Target as TargetObject;
-                                if (target == null || target.Targer == Owner)
-                                {
-                                    colliderPower = Math.Max(colliderPower, colliderCollision.CollisionPower);
-                                }
+                                colliderPower = Math.Max(colliderPower, checkCollision.CollisionPower);
                             }
                         }
+                    }
 
-                        if (colliderPower < 0) continue;
-                        if (colliderPower >= CollisionPower)
-                        {
-                            Owner.Kill(objectActive, ObjectDeadType.Collision);
-                        }
+                    if (colliderPower < 0) continue;
+                    if (colliderPower >= CollisionPower)
+                    {
+                        Owner.Kill(objectActive, ObjectDeadType.Collision);
+                    }
 
-                        if (CollisionPower >= colliderPower)
-                        {
-                            objectActive.Kill(Owner, ObjectDeadType.Collision);
-                        }
+                    if (CollisionPower >= colliderPower)
+                    {
+                        objectActive.Kill(Owner, ObjectDeadType.Collision);
                     }
                 }
             }

@@ -13,9 +13,14 @@ namespace RunningBox
     public class SkillSprint : SkillBase
     {
         /// <summary>
-        /// 衝刺距離倍數
+        /// 衝刺距離倍數(以所有者速度為基準)
         /// </summary>
-        public int Power { get; set; }
+        public float SpeedMultiple { get; set; }
+
+        /// <summary>
+        /// 衝刺距離常數
+        /// </summary>
+        public int SpeedConstant { get; set; }
 
         /// <summary>
         /// 是否加上冒煙特效
@@ -27,14 +32,16 @@ namespace RunningBox
         /// </summary>
         /// <param name="costEnargy">耗費能量</param>
         /// <param name="cooldown">冷卻回合數</param>
-        /// <param name="power">衝刺距離倍數</param>
+        /// <param name="speedMultiple">衝刺距離倍數(以所有者速度為基準)</param>
+        /// <param name="speedConstant">衝刺距離常數</param>
         /// <param name="smoke">是否加上冒煙特效</param>
-        public SkillSprint(int costEnargy, int cooldown, int power, bool smoke)
+        public SkillSprint(int costEnargy, int cooldown, int speedMultiple, int speedConstant, bool smoke)
         {
             Status = SkillStatus.Disabled;
             CostEnargy = costEnargy;
             CooldownRoundMax = cooldown;
-            Power = power;
+            SpeedMultiple = speedMultiple;
+            SpeedConstant = speedConstant;
             Smoke = smoke;
         }
 
@@ -53,14 +60,13 @@ namespace RunningBox
                         int lastMove = Owner.Moves.Count - 1;
                         if (lastMove < 0) return;
 
-                        double direction = Function.PointRotation(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
-                        float moveX = (float)Math.Cos(direction / 180 * Math.PI) * Power;
-                        float moveY = (float)Math.Sin(direction / 180 * Math.PI) * Power;
-                        Owner.Moves.Add(new PointF(moveX, moveY));
+                        double direction = Function.GetAngle(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
+                        float speed = (Owner.Speed * SpeedMultiple) + SpeedConstant;
+                        Owner.Moves.Add(Owner.GetMovePoint(direction, speed));
 
                         if (Smoke)
                         {
-                            Owner.Propertys.Add(new PropertySmoking(Owner.MaxMoves, Owner.Size, 5));
+                            Owner.Propertys.Add(new PropertySmoking(Owner.MaxMoves, Owner.Size, Owner.Scene.SecToRounds(0.06F)));
                         }
                         Status = SkillStatus.Cooldown;
                     }
@@ -74,7 +80,7 @@ namespace RunningBox
         /// <param name="color">繪製顏色</param>
         /// <param name="drawButton">繪製熱鍵</param>
         /// <returns>繪圖物件</returns>
-        public override DrawIconBase GetDrawObject(Color color, SkillButton drawButton)
+        public override DrawIconBase GetDrawObject(Color color, EnumSkillButton drawButton)
         {
             DrawIconSprint drawObject = new DrawIconSprint(color, drawButton) { BindingSkill = this };
             return drawObject;

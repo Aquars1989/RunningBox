@@ -23,7 +23,7 @@ namespace RunningBox
         /// <summary>
         /// 是否顯示熱鍵圖示
         /// </summary>
-        public SkillButton DrawButton { get; set; }
+        public EnumSkillButton DrawButton { get; set; }
 
         /// <summary>
         /// 繪製到Graphics
@@ -79,7 +79,7 @@ namespace RunningBox
             g.DrawPath(pen, backRound);
             DrawIcon(pen, brush, g, rectangle);
 
-            if (DrawButton != RunningBox.SkillButton.None)
+            if (DrawButton != RunningBox.EnumSkillButton.None)
             {
                 pen.Width = 2;
                 Rectangle keyRectangle = new Rectangle(rectangle.Left + rectangle.Width - 15, rectangle.Top + rectangle.Height - 15, 20, 25);
@@ -87,11 +87,11 @@ namespace RunningBox
 
                 switch (DrawButton)
                 {
-                    case RunningBox.SkillButton.MouseButtonLeft:
+                    case RunningBox.EnumSkillButton.MouseButtonLeft:
                         g.FillPie(Brushes.SkyBlue, keyRectangle, 180, 90);
 
                         break;
-                    case RunningBox.SkillButton.MouseButtonRight:
+                    case RunningBox.EnumSkillButton.MouseButtonRight:
                         g.FillPie(Brushes.SkyBlue, keyRectangle, 270, 90);
 
                         break;

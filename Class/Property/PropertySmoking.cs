@@ -11,16 +11,19 @@ namespace RunningBox
     /// </summary>
     class PropertySmoking : PropertyBase
     {
+        public int ShrinkRound { get; set; }
+
         /// <summary>
         /// 新增冒煙特性，擁有此特性的物件每回合會在原位置留下smoke物件
         /// </summary>
         /// <param name="durationRound">持續回合數</param>
         /// <param name="size">smoke物件尺寸</param>
         /// <param name="life">smoke物件生命週期n,每n回合尺寸會-1直到消失</param>
-        public PropertySmoking(int durationRound, int size, int life)
+        public PropertySmoking(int durationRound, int size, int shrinkRound)
         {
             Status = PropertyStatus.Enabled;
             DurationRoundMax = durationRound;
+            ShrinkRound = shrinkRound;
         }
 
         public override void DoAfterAction()
@@ -29,7 +32,7 @@ namespace RunningBox
 
             IDraw drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
-            Owner.ParentCollection.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, 3, drawSmoke));
+            Owner.ParentCollection.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, ShrinkRound, drawSmoke));
         }
 
         public override void DoBeforeActionMove() { }

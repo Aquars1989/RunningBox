@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -15,7 +16,15 @@ namespace RunningBox
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            DeBugSet();
             Application.Run(new MainForm());
+        }
+
+        [Conditional("DEBUG")]
+        static void DebugSet()
+        {
+            Global.DebugMode = true;
         }
     }
 }
