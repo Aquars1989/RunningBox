@@ -41,6 +41,48 @@ namespace RunningBox
         /// </summary>
         private Bitmap _BufferImage;
 
+        #region ===== 事件 =====
+        /// <summary>
+        /// 回合時間變更
+        /// </summary>
+        public event EventHandler IntervalOfRoundChanged;
+
+        /// <summary>
+        /// 回合開始前執行
+        /// </summary>
+        public event EventHandler BeforeRound;
+
+        /// <summary>
+        /// 回合結束後執行
+        /// </summary>
+        public event EventHandler AfterRound;
+
+        /// <summary>
+        /// 繪製畫面前執行,在此設定繪製參數
+        /// </summary>
+        public event PaintEventHandler BeforeDraw;
+
+        /// <summary>
+        /// 繪製UI前執行
+        /// </summary>
+        public event PaintEventHandler BeforeDrawUI;
+
+        /// <summary>
+        /// 繪製UI後執行
+        /// </summary>
+        public event PaintEventHandler AfterDrawUI;
+
+        /// <summary>
+        /// 繪製結束前執行,在此重置畫布設定
+        /// </summary>
+        public event PaintEventHandler AfterDrawReset;
+
+        /// <summary>
+        /// 繪製畫面後執行
+        /// </summary>
+        public event PaintEventHandler AfterDraw;
+        #endregion
+
         #region===== 屬性 =====
         /// <summary>
         /// 每秒回合數
@@ -50,13 +92,13 @@ namespace RunningBox
         /// <summary>
         /// 每回合時間(以毫秒為單位)
         /// </summary>
-        public int IntervalOfRound
+        public virtual int IntervalOfRound
         {
             get { return _RoundTimer.Interval; }
             set
             {
                 _RoundTimer.Interval = value;
-                _RoundPerSec = 1000F / value;
+                OnIntervalOfRoundChanged();
             }
         }
 
@@ -71,6 +113,9 @@ namespace RunningBox
         public ObjectCollection UIObjects { get; private set; }
         #endregion
 
+        /// <summary>
+        /// 新增基本場景物件
+        /// </summary>
         public SceneBase()
         {
             SetStyle(ControlStyles.UserPaint, true);
@@ -82,13 +127,48 @@ namespace RunningBox
             _RoundTimer.Tick += RoundTimer_Tick;
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // SceneBase
+            // 
+            this.BackColor = System.Drawing.Color.White;
+            this.Name = "SceneBase";
+            this.Load += new System.EventHandler(this.SceneBase_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void SceneBase_Load(object sender, EventArgs e)
+        {
+            _BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
+            _BufferGraphics = Graphics.FromImage(_BufferImage);
+            _BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            _BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            _ThisGraphics = CreateGraphics();
+        }
+
         private void RoundTimer_Tick(object sender, EventArgs e)
         {
+            Round();
+        }
+
+        /// <summary>
+        /// 回合動作
+        /// </summary>
+        protected virtual void Round()
+        {
             UIObjects.ClearAllDead();
+            OnBeforeRound();
+            OnAfterRound();
             Drawing();
         }
 
-        private void Drawing()
+        /// <summary>
+        /// 繪製畫面
+        /// </summary>
+        protected virtual void Drawing()
         {
             _FPSTick--;
             bool refreshFPS = false;
@@ -100,8 +180,12 @@ namespace RunningBox
             }
 
             _BufferGraphics.Clear(Color.White);
+            OnBeforeDraw(_BufferGraphics);
+            OnBeforeDrawUI(_BufferGraphics);
             UIObjects.AllDrawSelf(_BufferGraphics);
-            _BufferGraphics.ResetTransform();
+            OnAfterDrawUI(_BufferGraphics);
+            OnAfterDrawReset(_BufferGraphics);
+            OnAfterDraw(_BufferGraphics);
 
             if (Global.DebugMode)
             {
@@ -116,11 +200,100 @@ namespace RunningBox
             }
         }
 
-        protected virtual void OnBeforeDraw()
+        /// <summary>
+        /// 回合時間變更
+        /// </summary>
+        protected virtual void OnIntervalOfRoundChanged()
         {
-
+            _RoundPerSec = 1000F / IntervalOfRound;
+            if (IntervalOfRoundChanged != null)
+            {
+                IntervalOfRoundChanged(this, new EventArgs());
+            }
         }
 
+        /// <summary>
+        /// 回合開始前執行,此方法應永遠在回合的開端
+        /// </summary>
+        protected virtual void OnBeforeRound()
+        {
+            if (BeforeRound != null)
+            {
+                BeforeRound(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 回合結束執行,此方法應永遠在回合的結尾
+        /// </summary>
+        protected virtual void OnAfterRound()
+        {
+            if (BeforeRound != null)
+            {
+                AfterRound(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 繪製畫面前執行,此方法應永遠在繪製流程的開端,在此設定繪製參數
+        /// </summary>
+        protected virtual void OnBeforeDraw(Graphics g)
+        {
+            if (BeforeDraw != null)
+            {
+                BeforeDraw(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 繪製UI前執行
+        /// </summary>
+        protected virtual void OnBeforeDrawUI(Graphics g)
+        {
+            if (BeforeDrawUI != null)
+            {
+                BeforeDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 繪製UI後執行
+        /// </summary>
+        protected virtual void OnAfterDrawUI(Graphics g)
+        {
+            if (AfterDrawUI != null)
+            {
+                AfterDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 繪製結束前執行,在OnAfterDraw前發生,在此重置畫布設定
+        /// </summary>
+        protected virtual void OnAfterDrawReset(Graphics g)
+        {
+            g.ResetTransform();
+            if (AfterDrawReset != null)
+            {
+                AfterDrawReset(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 繪製畫面後執行,此方法應永遠在繪製流程的結尾(畫布重置後)
+        /// </summary>
+        protected virtual void OnAfterDraw(Graphics g)
+        {
+            if (AfterDraw != null)
+            {
+                AfterDraw(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 滑鼠移動時更新追蹤點
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
             TrackPoint = e.Location;
@@ -135,17 +308,6 @@ namespace RunningBox
         public int SecToRounds(float sec)
         {
             return (int)(sec * _RoundPerSec);
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // SceneBase
-            // 
-            this.BackColor = System.Drawing.Color.White;
-            this.Name = "SceneBase";
-            this.ResumeLayout(false);
         }
     }
 }

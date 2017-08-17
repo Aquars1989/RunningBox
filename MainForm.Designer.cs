@@ -36,8 +36,8 @@
             // 
             this.runningBox1.BackColor = System.Drawing.Color.White;
             this.runningBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.runningBox1.EndDelayRound = 0;
-            this.runningBox1.EndDelayRoundMax = 30;
+            this.runningBox1.EndDelayTicks = 0;
+            this.runningBox1.EndDelayLimit = 30;
             this.runningBox1.GameRectangle = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.runningBox1.IsEnding = false;
             this.runningBox1.IsStart = false;

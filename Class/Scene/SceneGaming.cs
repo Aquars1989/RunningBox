@@ -25,6 +25,13 @@ namespace RunningBox
         public delegate void WaveEventHandle(int value);
         #endregion
 
+        #region ===== 事件 =====
+        /// <summary>
+        /// 每波時間變更
+        /// </summary>
+        public event EventHandler IntervalOfWaveChanged;
+        #endregion
+
         #region ===== UI物件 =====
         /// <summary>
         /// 技能1顯示物件
@@ -76,6 +83,31 @@ namespace RunningBox
             }
         }
         #endregion
+
+        #region ===== 屬性 =====
+        /// <summary>
+        /// 每波回合數
+        /// </summary>
+        public float _RoundPerWave { get; private set; }
+
+        /// <summary>
+        /// 波數技時器
+        /// </summary>
+        private int _WaveTicks;
+
+        private int _IntervalOfWave;
+        /// <summary>
+        /// 每波時間(以毫秒為單位)
+        /// </summary>
+        public int IntervalOfWave
+        {
+            get { return _IntervalOfWave; }
+            set
+            {
+                _IntervalOfWave = value;
+                OnIntervalOfWaveChanged();
+            }
+        }
 
         /// <summary>
         /// 關卡波數設定值
@@ -135,27 +167,12 @@ namespace RunningBox
         /// <summary>
         /// 遊戲結束延遲回合計數
         /// </summary>
-        public int EndDelayRound { get; set; }
+        public int EndDelayTicks { get; set; }
 
         /// <summary>
         /// 遊戲結束延遲回合最大值
         /// </summary>
-        public int EndDelayRoundMax { get; set; }
-
-        /// <summary>
-        /// 本物件的Graphics物件
-        /// </summary>
-        private Graphics _ThisGraphics;
-
-        /// <summary>
-        /// 緩衝畫布的Graphics物件
-        /// </summary>
-        private Graphics _SceneGraphics;
-
-        /// <summary>
-        /// 緩衝畫布
-        /// </summary>
-        private Bitmap _SceneImage;
+        public int EndDelayLimit { get; set; }
 
         /// <summary>
         /// 能量UI繪製區域
@@ -173,20 +190,12 @@ namespace RunningBox
             get { return _PenRectGaming; }
             set { _PenRectGaming = value; }
         }
-
-        private Timer _TimerOfWave = new Timer() { Enabled = true, Interval = 1000 };
-        /// <summary>
-        /// 關卡計時器
-        /// </summary>
-        public Timer TimerOfWave
-        {
-            get { return _TimerOfWave; }
-        }
+        #endregion
 
         public SceneGaming()
         {
             WorldSpeedSlow = 1;
-            EndDelayRoundMax = 30;
+            EndDelayLimit = 30;
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
             GameObjects = new ObjectCollection(this);
@@ -194,58 +203,59 @@ namespace RunningBox
 
             UIObjects.Add(SkillIcon1);
             UIObjects.Add(SkillIcon2);
-
             GameObjects.ObjectDead += OnObjectDead;
         }
 
-        /// <summary>
-        /// 回合計時器運作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimerOfRound_Tick(object sender, EventArgs e)
+        protected override void Round()
         {
-            if (!IsStart) return;
-
-            EffectObjects.AllDoBeforeRound();
-            GameObjects.AllAction();
-            EffectObjects.AllDoAfterRound();
-
-            GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
-            EffectObjects.ClearAllDisabled();
-
-            if (IsEnding)
+            if (IsStart)
             {
-                if (EndDelayRound >= EndDelayRoundMax)
+                OnBeforeRound();
+                EffectObjects.AllDoBeforeRound();
+                GameObjects.AllAction();
+                EffectObjects.AllDoAfterRound();
+                OnAfterRound();
+
+                GameObjects.ClearAllDead();
+                UIObjects.ClearAllDead();
+                EffectObjects.ClearAllDisabled();
+
+                //結束時停止波數增加但不立即停止遊戲
+                if (IsEnding)
                 {
-                    IsEnding = false;
-                    IsStart = false;
+                    if (EndDelayTicks >= EndDelayLimit)
+                    {
+                        IsEnding = false;
+                        IsStart = false;
+                    }
+                    EndDelayTicks += IntervalOfRound;
                 }
-                EndDelayRound++;
+                else
+                {
+                    if (EndDelayTicks >= EndDelayLimit)
+                    {
+                        EndDelayTicks = 0;
+                        Level++;
+                        GoWave(Level);
+                    }
+                    _WaveTicks += IntervalOfRound;
+                }
             }
             Drawing();
-            DoAfterRound();
         }
 
-        /// <summary>
-        /// 關卡計時器運作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimerOfWave_Tick(object sender, EventArgs e)
-        {
-            if (!IsStart) return;
 
-            bool end = true;
-            int waveNo = Level - 1;
+        protected virtual bool GoWave(int waveNo)
+        {
+            bool result = true;
             foreach (WaveLine waveLine in Waves)
             {
                 if (waveLine.IsEnd) continue;
                 WaveEventHandle waveEvent;
                 if (WaveEvents.TryGetValue(waveLine.WaveID, out waveEvent))
                 {
-                    end = false;
+                    result = false;
                     int value = waveLine.GetValue(waveNo);
                     if (value >= 0)
                     {
@@ -253,9 +263,8 @@ namespace RunningBox
                     }
                 }
             }
-
-            Level++;
             DoAfterWave();
+            return result;
         }
 
         private Stopwatch _watchFPS = new Stopwatch();
@@ -389,12 +398,34 @@ namespace RunningBox
         /// </summary>
         public abstract ObjectActive CreatePlayerObject(int potX, int potY);
 
+
+        /// <summary>
+        /// 每波時間變更
+        /// </summary>
+        protected virtual void OnIntervalOfWaveChanged()
+        {
+            _RoundPerWave = IntervalOfWave / IntervalOfRound;
+            if (IntervalOfWaveChanged != null)
+            {
+                IntervalOfWaveChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 回合時間變更
+        /// </summary>
+        protected override void OnIntervalOfRoundChanged()
+        {
+            _RoundPerWave = IntervalOfWave / IntervalOfRound;
+            base.OnIntervalOfRoundChanged();
+        }
+
         /// <summary>
         /// 物件死亡時
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
+        protected virtual void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
         {
             if (sender.Equals(PlayerObject))
             {
@@ -410,29 +441,19 @@ namespace RunningBox
             EffectObjects.AllBreak();
             PlayerObject = null;
             IsEnding = true;
-            EndDelayRound = 0;
+            EndDelayTicks = 0;
             Cursor.Show();
             DoAfterEnd();
         }
 
         /// <summary>
-        /// 秒轉換為Rounds
+        /// 波數時間轉換為Round數量
         /// </summary>
         /// <param name="sec"></param>
         /// <returns></returns>
-        public int SecToRounds(float sec)
+        public int WaveToRounds(float waves)
         {
-            return (int)(sec * 1000 / _RoundTimer.Interval);
-        }
-
-        /// <summary>
-        /// 波數時間轉換為Rounds
-        /// </summary>
-        /// <param name="sec"></param>
-        /// <returns></returns>
-        public int WaveToRounds(float sec)
-        {
-            return (int)(sec * _TimerOfWave.Interval / _RoundTimer.Interval);
+            return (int)(waves * _RoundPerWave);
         }
 
         /// <summary>
@@ -496,18 +517,6 @@ namespace RunningBox
             }
         }
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // SceneBase
-            // 
-            this.BackColor = System.Drawing.Color.White;
-            this.Name = "SceneBase";
-            this.ResumeLayout(false);
-
-        }
-
         /// <summary>
         /// 新增特定種類事件每波設定值
         /// </summary>
@@ -544,7 +553,7 @@ namespace RunningBox
 
             private int _WaveNO;
             /// <summary>
-            /// 目前在第幾波
+            /// 目前在第幾波(從1開始)
             /// </summary>
             public int WaveNO
             {
@@ -552,7 +561,7 @@ namespace RunningBox
                 set
                 {
                     _WaveNO = value;
-                    IsEnd = _WaveNO >= _Value.Length;
+                    IsEnd = _WaveNO > _Value.Length;
                 }
             }
 
@@ -573,35 +582,35 @@ namespace RunningBox
             /// <para>如果輸入波數大於目前波數 取得輸入波數值並調整目前波數=輸入波數值+1</para>
             /// <para>如為+號,回傳有幾個連續+號並調整目前波數=+號尾端</para>
             /// </summary>
-            /// <param name="no"></param>
+            /// <param name="waveNO">波數編號(從1開始)</param>
             /// <returns></returns>
-            public int GetValue(int no)
+            public int GetValue(int waveNO)
             {
                 if (IsEnd) return -1;
 
                 int result = -1;
-                if (no >= WaveNO)
+                if (waveNO >= WaveNO)
                 {
-                    WaveNO = no + 1;
-
+                    int no = waveNO - 1;
                     char c = Value[no];
                     if (c == '+')
                     {
                         result = 1;
-                        int i = WaveNO;
+                        int i = no;
                         for (; i < Value.Length && Value[i] == '+'; i++)
                         {
                             result++;
                         }
-                        WaveNO = i;
+                        WaveNO = i + 1;
                     }
                     else
                     {
-                        int n = Value[no] - '0';
+                        int n = c - '0';
                         if (n >= 0 && n <= 9)
                         {
                             result = n;
                         }
+                        WaveNO = waveNO + 1;
                     }
                 }
                 return result;
