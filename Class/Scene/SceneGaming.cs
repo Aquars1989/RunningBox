@@ -266,12 +266,7 @@ namespace RunningBox
             DoAfterWave();
             return result;
         }
-
-        private Stopwatch _watchFPS = new Stopwatch();
-        private int _tickFPS = 0;
-        private string _txtFPS = "";
-        private Font _fontFPS = new Font("Arial", 12);
-
+        
         /// <summary>
         /// 繪製畫面
         /// </summary>
