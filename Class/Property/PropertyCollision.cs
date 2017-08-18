@@ -33,16 +33,16 @@ namespace RunningBox
         {
             if (Owner.Status == ObjectStatus.Alive && Status == PropertyStatus.Enabled)
             {
-                for (int i = 0; i < Owner.ParentCollection.Count; i++)
+                for (int i = 0; i < Owner.Container.Count; i++)
                 {
-                    ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
+                    ObjectActive objectActive = Owner.Container[i] as ObjectActive;
 
                     //限定目標
                     if (Target != null)
                     {
                         if (objectActive == Target)
                         {
-                            i = Owner.ParentCollection.Count;
+                            i = Owner.Container.Count;
                         }
                         else
                         {

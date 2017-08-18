@@ -31,7 +31,7 @@ namespace RunningBox
         /// 新增衝刺技能,提升最後一次移動距離
         /// </summary>
         /// <param name="costEnargy">耗費能量</param>
-        /// <param name="cooldown">冷卻回合數</param>
+        /// <param name="cooldown">冷卻時間(毫秒)</param>
         /// <param name="speedMultiple">衝刺距離倍數(以所有者速度為基準)</param>
         /// <param name="speedConstant">衝刺距離常數</param>
         /// <param name="smoke">是否加上冒煙特效</param>
@@ -39,7 +39,7 @@ namespace RunningBox
         {
             Status = SkillStatus.Disabled;
             CostEnargy = costEnargy;
-            CooldownRoundMax = cooldown;
+            CooldownLimit = cooldown;
             SpeedMultiple = speedMultiple;
             SpeedConstant = speedConstant;
             Smoke = smoke;

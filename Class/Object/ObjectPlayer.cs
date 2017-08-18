@@ -41,9 +41,9 @@ namespace RunningBox
         protected override void ActionPlan()
         {
             Point trackPoint = Scene.TrackPoint;
-            Rectangle rectScene = Scene.GameRectangle;
+            Rectangle rectScene = Scene.MainRectangle;
             double direction = Function.GetAngle(X, Y, trackPoint.X, trackPoint.Y);
-            float speed = (Math.Abs(trackPoint.X - X) + Math.Abs(trackPoint.Y - Y))  + 10;
+            float speed = (Math.Abs(trackPoint.X - X) + Math.Abs(trackPoint.Y - Y)) + 10;
             //float speed = (float)Function.GetDistance(trackPoint.X, trackPoint.Y, X, Y) * 10 + 5;
             if (speed > Speed) speed = Speed;
 
@@ -75,7 +75,7 @@ namespace RunningBox
         public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
             if (Status != ObjectStatus.Alive) return;
-            Scene.EffectObjects.Add(new EffectShark(20, 10) { CanBreak = false });
+            Scene.EffectObjects.Add(new EffectShark(Scene.Sec(2), 10) { CanBreak = false });
             base.Kill(killer, deadType);
         }
     }

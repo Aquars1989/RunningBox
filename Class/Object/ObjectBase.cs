@@ -19,15 +19,15 @@ namespace RunningBox
         /// <summary>
         /// 物件歸屬場景
         /// </summary>
-        public SceneGaming Scene
+        public SceneBase Scene
         {
-            get { return ParentCollection == null ? null : ParentCollection.Scene; }
+            get { return Container == null ? null : Container.Scene; }
         }
 
         /// <summary>
         /// 物件歸屬集合
         /// </summary>
-        public ObjectCollection ParentCollection { get; set; }
+        public ObjectCollection Container { get; set; }
 
         /// <summary>
         /// 物件狀態
@@ -148,9 +148,8 @@ namespace RunningBox
         /// <returns>位移點</returns>
         public PointF GetMovePoint(double angle, float speed)
         {
-            double ratioSecToRound = 1000 / Scene.TimerOfRound.Interval;
-            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / ratioSecToRound);
-            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / ratioSecToRound);
+            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene._RoundPerSec);
+            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene._RoundPerSec);
             return new PointF(moveX, moveY);
         }
 

@@ -32,7 +32,7 @@ namespace RunningBox
 
             IDraw drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
-            Owner.ParentCollection.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, ShrinkRound, drawSmoke));
+            Owner.Container.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, ShrinkRound, drawSmoke));
         }
 
         public override void DoBeforeActionMove() { }

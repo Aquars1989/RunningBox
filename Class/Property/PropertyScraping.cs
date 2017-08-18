@@ -65,7 +65,7 @@ namespace RunningBox
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = Global.Rand.NextDouble() * 360 - 180;
-                Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
+                Owner.Container.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }
 

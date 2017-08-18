@@ -17,8 +17,8 @@ namespace RunningBox
         /// </summary>
         public SkillBase BindingSkill { get; set; }
 
-        private GraphicsPath _BackRound;
-        private Rectangle _BackRoundRectangle;
+        private GraphicsPath _BackFrame;
+        private Rectangle _BackFrameRectangle;
 
         /// <summary>
         /// 是否顯示熱鍵圖示
@@ -34,7 +34,7 @@ namespace RunningBox
         {
             Pen pen = GetPen();
             SolidBrush brush = GetBrush();
-            GraphicsPath backRound = GetBackRound(rectangle);
+            GraphicsPath backFrame = GetBackFrame(rectangle);
 
             pen.Width = 2;
             if (BindingSkill != null)
@@ -55,12 +55,12 @@ namespace RunningBox
                         }
                         break;
                     case SkillStatus.Cooldown:
-                        float cooldownSize = (float)(BindingSkill.CooldownRoundMax - BindingSkill.CooldownRound) / BindingSkill.CooldownRoundMax * rectangle.Height;
+                        float cooldownSize = (float)(BindingSkill.CooldownLimit - BindingSkill.CooldownTicks) / BindingSkill.CooldownLimit * rectangle.Height;
                         g.FillRectangle(Brushes.AliceBlue, rectangle);
                         g.FillRectangle(Brushes.LightSlateGray, rectangle.X, rectangle.Y + rectangle.Height - cooldownSize, rectangle.Width, cooldownSize);
                         break;
                     case SkillStatus.Channeled:
-                        if (BindingSkill.ChanneledRoundMax < 0)
+                        if (BindingSkill.ChanneledLimit < 0)
                         {
                             using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.AliceBlue, Color.FromArgb(240, 255, 240), 315))
                             {
@@ -69,14 +69,14 @@ namespace RunningBox
                         }
                         else
                         {
-                            float channeledSize = (float)(BindingSkill.ChanneledRoundMax - BindingSkill.ChanneledRound) / BindingSkill.ChanneledRoundMax * rectangle.Height;
+                            float channeledSize = (float)(BindingSkill.ChanneledLimit - BindingSkill.ChanneledTicks) / BindingSkill.ChanneledLimit * rectangle.Height;
                             g.FillRectangle(Brushes.White, rectangle);
                             g.FillRectangle(Brushes.LightSkyBlue, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
                         }
                         break;
                 }
             }
-            g.DrawPath(pen, backRound);
+            g.DrawPath(pen, backFrame);
             DrawIcon(pen, brush, g, rectangle);
 
             if (DrawButton != RunningBox.EnumSkillButton.None)
@@ -115,43 +115,42 @@ namespace RunningBox
         /// <summary>
         /// 產生圓角區域
         /// </summary>
-        private GraphicsPath GetBackRound(Rectangle rectangle)
+        private GraphicsPath GetBackFrame(Rectangle rectangle)
         {
-            if (_BackRoundRectangle != rectangle && _BackRound != null)
+            if (_BackFrameRectangle != rectangle && _BackFrame != null)
             {
-                _BackRound.Dispose();
-                _BackRound = null;
+                _BackFrame.Dispose();
+                _BackFrame = null;
             }
 
-            if (_BackRound == null)
+            if (_BackFrame == null)
             {
                 int width = rectangle.Width;
                 int height = rectangle.Height;
 
-                _BackRoundRectangle = rectangle;
-                _BackRound = new GraphicsPath();
+                _BackFrameRectangle = rectangle;
+                _BackFrame = new GraphicsPath();
 
-                int matrixRound = 8;
+                int radius = 8;
                 //頂端
-                _BackRound.AddLine(rectangle.Left + (matrixRound / 2), rectangle.Top, rectangle.Right - matrixRound, rectangle.Top);
-                //roundRect.AddLine(rect.Left + radius - 1, rect.Top - 1, rect.Right - radius, rect.Top - 1);
+                _BackFrame.AddLine(rectangle.Left + radius, rectangle.Top, rectangle.Right - radius, rectangle.Top);
                 //右上角
-                _BackRound.AddArc(rectangle.Right - matrixRound, rectangle.Top, matrixRound, matrixRound, 270, 90);
+                _BackFrame.AddArc(rectangle.Right - radius, rectangle.Top, radius, radius, 270, 90);
                 //右邊
-                _BackRound.AddLine(rectangle.Right, rectangle.Top + matrixRound, rectangle.Right, rectangle.Bottom - matrixRound);
+                _BackFrame.AddLine(rectangle.Right, rectangle.Top + radius, rectangle.Right, rectangle.Bottom - radius);
                 //右下角
-                _BackRound.AddArc(rectangle.Right - matrixRound, rectangle.Bottom - matrixRound, matrixRound, matrixRound, 0, 90);
+                _BackFrame.AddArc(rectangle.Right - radius, rectangle.Bottom - radius, radius, radius, 0, 90);
                 //底邊
-                _BackRound.AddLine(rectangle.Right - matrixRound, rectangle.Bottom, rectangle.Left + matrixRound, rectangle.Bottom);
+                _BackFrame.AddLine(rectangle.Right - radius, rectangle.Bottom, rectangle.Left + radius, rectangle.Bottom);
                 //左下角
-                _BackRound.AddArc(rectangle.Left, rectangle.Bottom - matrixRound, matrixRound, matrixRound, 90, 90);
+                _BackFrame.AddArc(rectangle.Left, rectangle.Bottom - radius, radius, radius, 90, 90);
                 //左邊
-                _BackRound.AddLine(rectangle.Left, rectangle.Bottom - matrixRound, rectangle.Left, rectangle.Top + matrixRound);
+                _BackFrame.AddLine(rectangle.Left, rectangle.Bottom - radius, rectangle.Left, rectangle.Top + radius);
                 //左上角
-                _BackRound.AddArc(rectangle.Left, rectangle.Top, matrixRound, matrixRound, 180, 90);
+                _BackFrame.AddArc(rectangle.Left, rectangle.Top, radius, radius, 180, 90);
+                _BackFrame.CloseAllFigures();
             }
-
-            return _BackRound;
+            return _BackFrame;
         }
     }
 }

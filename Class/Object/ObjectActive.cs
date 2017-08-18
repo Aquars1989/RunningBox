@@ -194,8 +194,8 @@ namespace RunningBox
                 moveTotalY += pt.Y;
             }
 
-            X += moveTotalX / Scene.WorldSpeedSlow;
-            Y += moveTotalY / Scene.WorldSpeedSlow;
+            X += moveTotalX / Scene.SceneSlow;
+            Y += moveTotalY / Scene.SceneSlow;
 
             LifeRound++;
             if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)

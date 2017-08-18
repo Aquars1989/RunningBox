@@ -113,11 +113,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
-      <DependentUpon>SceneGaming.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Class\Scene\SceneBase.resx">
       <DependentUpon>SceneBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
+      <DependentUpon>SceneGaming.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -149,9 +149,7 @@
     <Content Include="ICON.ico" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Class\Object\Player\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

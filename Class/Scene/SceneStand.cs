@@ -23,7 +23,7 @@ namespace RunningBox
             //場景:畫面變黑暗
             WaveEvents.Add("@Dark", (n) =>
                 {
-                    EffectObjects.Add(new EffectDyeing(Color.Black, WaveToRounds(n), 20, 20));
+                    EffectObjects.Add(new EffectDyeing(Color.Black, Sec(Math.Max(n - 1, 0)), Sec(0.5F), Sec(0.5F)));
                 });
 
             //場景:邊界縮小
@@ -32,17 +32,15 @@ namespace RunningBox
                 double scaleX = Global.Rand.NextDouble();
                 double scaleY = 1 - scaleX;
 
-                int shrinkRounds = 20;
-                int limitX = (int)(scaleX * GameRectangle.Width / 3 / shrinkRounds);
-                int limitY = (int)(scaleY * GameRectangle.Height / 3 / shrinkRounds);
-
+                int limitX = (int)(scaleX * MainRectangle.Width * 0.4F);
+                int limitY = (int)(scaleY * MainRectangle.Height * 0.4F);
                 int limitLeft = Global.Rand.Next(0, limitX);
                 int limitTop = Global.Rand.Next(0, limitY);
                 int limitRight = limitX - limitLeft;
                 int limitDown = limitY - limitTop;
 
                 Padding shrinkPerRound = new Padding(limitLeft, limitTop, limitRight, limitDown);
-                EffectObjects.Add(new EffectShrink(shrinkPerRound, WaveToRounds(n), shrinkRounds));
+                EffectObjects.Add(new EffectShrink(shrinkPerRound, Sec(Math.Max(n - 1, 0)), Sec(0.5F), Sec(0.5F)));
             });
 
             //物件:追捕者
@@ -149,23 +147,23 @@ namespace RunningBox
                     {
                         case 1:
                             enterPoint = GetEnterPoint(EnumDirection.Left);
-                            targetX = Global.Rand.Next(GameRectangle.Left + padding, GameRectangle.Left + GameRectangle.Width / 2);
-                            targetY = Global.Rand.Next(GameRectangle.Top + padding, GameRectangle.Top + GameRectangle.Height - padding);
+                            targetX = Global.Rand.Next(MainRectangle.Left + padding, MainRectangle.Left + MainRectangle.Width / 2);
+                            targetY = Global.Rand.Next(MainRectangle.Top + padding, MainRectangle.Top + MainRectangle.Height - padding);
                             break;
                         case 2:
                             enterPoint = GetEnterPoint(EnumDirection.Right);
-                            targetX = Global.Rand.Next(GameRectangle.Left + GameRectangle.Width / 2, GameRectangle.Left + GameRectangle.Width - padding);
-                            targetY = Global.Rand.Next(GameRectangle.Top + padding, GameRectangle.Top + GameRectangle.Height - padding);
+                            targetX = Global.Rand.Next(MainRectangle.Left + MainRectangle.Width / 2, MainRectangle.Left + MainRectangle.Width - padding);
+                            targetY = Global.Rand.Next(MainRectangle.Top + padding, MainRectangle.Top + MainRectangle.Height - padding);
                             break;
                         case 3:
                             enterPoint = GetEnterPoint(EnumDirection.Top);
-                            targetX = Global.Rand.Next(GameRectangle.Left + padding, GameRectangle.Left + GameRectangle.Width - padding);
-                            targetY = Global.Rand.Next(GameRectangle.Top + padding, GameRectangle.Top + GameRectangle.Height / 2);
+                            targetX = Global.Rand.Next(MainRectangle.Left + padding, MainRectangle.Left + MainRectangle.Width - padding);
+                            targetY = Global.Rand.Next(MainRectangle.Top + padding, MainRectangle.Top + MainRectangle.Height / 2);
                             break;
                         case 4:
                             enterPoint = GetEnterPoint(EnumDirection.Bottom);
-                            targetX = Global.Rand.Next(GameRectangle.Left + padding, GameRectangle.Left + GameRectangle.Width - padding);
-                            targetY = Global.Rand.Next(GameRectangle.Top + GameRectangle.Height / 2, GameRectangle.Height - padding);
+                            targetX = Global.Rand.Next(MainRectangle.Left + padding, MainRectangle.Left + MainRectangle.Width - padding);
+                            targetY = Global.Rand.Next(MainRectangle.Top + MainRectangle.Height / 2, MainRectangle.Height - padding);
                             break;
                     }
 
@@ -186,7 +184,7 @@ namespace RunningBox
             //Waves.Add(new WaveLine("Group  ", "     4           5           6         7       8    "));
             //Waves.Add(new WaveLine("Mine   ", " 3        4            5           6        7       "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++                 "));
-            //Waves.Add(new WaveLine("@Shrink", "     +++     +++     +++     +++     +++     +++    "));
+            Waves.Add(new WaveLine("@Shrink", "33   +++     +++     +++     +++     +++     +++    "));
         }
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)

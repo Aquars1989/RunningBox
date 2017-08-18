@@ -16,6 +16,11 @@ namespace RunningBox
     /// </summary>
     public abstract class SceneGaming : SceneBase
     {
+        private static Font _FPSFont = new Font("Arial", 12);
+        private Stopwatch _FPSWatch = new Stopwatch();
+        private int _FPSTick = 0;
+        private string _FPSText = "";
+
         #region ===== 委派 =====
         /// <summary>
         /// 處理關卡事件
@@ -120,11 +125,6 @@ namespace RunningBox
         public Dictionary<string, WaveEventHandle> WaveEvents { get; private set; }
 
         /// <summary>
-        /// 世界速度減慢值 speed=(old speed/WorldSpeedSlow)
-        /// </summary>
-        public float WorldSpeedSlow { get; set; }
-
-        /// <summary>
         /// 玩家物件
         /// </summary>
         public ObjectActive PlayerObject { get; set; }
@@ -133,16 +133,6 @@ namespace RunningBox
         /// 場景物件集合
         /// </summary>
         public ObjectCollection GameObjects { get; private set; }
-
-        /// <summary>
-        /// 場景特效集合
-        /// </summary>
-        public EffectCollection EffectObjects { get; private set; }
-
-        /// <summary>
-        /// 遊戲區域
-        /// </summary>
-        public Rectangle GameRectangle { get; set; }
 
         /// <summary>
         /// 分數
@@ -194,18 +184,21 @@ namespace RunningBox
 
         public SceneGaming()
         {
-            WorldSpeedSlow = 1;
-            EndDelayLimit = 30;
+            SceneSlow = 1;
+            EndDelayLimit = Global.DefaultEndDelayLimit;
+            IntervalOfWave = Global.DefaultIntervalOfWave;
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
             GameObjects = new ObjectCollection(this);
-            EffectObjects = new EffectCollection(this);
 
             UIObjects.Add(SkillIcon1);
             UIObjects.Add(SkillIcon2);
             GameObjects.ObjectDead += OnObjectDead;
         }
 
+        /// <summary>
+        /// 回合事件
+        /// </summary>
         protected override void Round()
         {
             UIObjects.ClearAllDead();
@@ -233,9 +226,9 @@ namespace RunningBox
                 }
                 else
                 {
-                    if (EndDelayTicks >= EndDelayLimit)
+                    if (_WaveTicks >= IntervalOfWave)
                     {
-                        EndDelayTicks = 0;
+                        _WaveTicks = 0;
                         Level++;
                         GoWave(Level);
                     }
@@ -245,7 +238,11 @@ namespace RunningBox
             Drawing();
         }
 
-
+        /// <summary>
+        /// 前往指定波數
+        /// </summary>
+        /// <param name="waveNo">波數號碼</param>
+        /// <returns>是否已達波數尾端</returns>
         protected virtual bool GoWave(int waveNo)
         {
             bool result = true;
@@ -266,57 +263,71 @@ namespace RunningBox
             DoAfterWave();
             return result;
         }
-        
+
         /// <summary>
         /// 繪製畫面
         /// </summary>
-        private void Drawing()
+        protected override void Drawing()
         {
-            _tickFPS--;
+            //計算FPS
+            _FPSTick--;
             bool refreshFPS = false;
-            if (_tickFPS <= 0)
+            if (_FPSTick <= 0)
             {
-                _tickFPS = 10;
-                _watchFPS.Restart();
+                _FPSTick = 10;
+                _FPSWatch.Restart();
                 refreshFPS = true;
             }
 
+            BufferGraphics.Clear(Color.White);
+            OnBeforeDraw(BufferGraphics);
+            EffectObjects.AllDoBeforeDraw(BufferGraphics);
 
-            _SceneGraphics.Clear(Color.White);
-            EffectObjects.AllDoBeforeDraw(_SceneGraphics);
-            EffectObjects.AllDoBeforeDrawBack(_SceneGraphics);
-
-            if (GameRectangle != null)
+            //繪製場地邊界
+            EffectObjects.AllDoBeforeDrawBack(BufferGraphics);
+            if (MainRectangle != null)
             {
-                _SceneGraphics.DrawRectangle(_PenRectGaming, GameRectangle);
+                BufferGraphics.DrawRectangle(_PenRectGaming, MainRectangle);
             }
 
-            _SceneGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
+            //繪製物件
+            EffectObjects.AllDoBeforeDrawObject(BufferGraphics);
+            GameObjects.AllDrawSelf(BufferGraphics);
+
+            //繪製UI
+            OnBeforeDrawUI(BufferGraphics);
+            EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
+
+            //xx
+            BufferGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
             if (PlayerObject != null)
             {
                 float ratio = (float)PlayerObject.Energy / PlayerObject.EnergyMax;
                 Brush brush = ratio < 0.3 ? Brushes.Red : Brushes.Black;
-                _SceneGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
+                BufferGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
             }
 
-            _SceneGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
-            _SceneGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
+            BufferGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
+            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
+            UIObjects.AllDrawSelf(BufferGraphics);
+            OnAfterDrawUI(BufferGraphics);
 
-            EffectObjects.AllDoBeforeDrawObject(_SceneGraphics);
-            GameObjects.AllDrawSelf(_SceneGraphics);
-            EffectObjects.AllDoAfterDraw(_SceneGraphics);
+            EffectObjects.AllDoAfterDraw(BufferGraphics);
+            OnAfterDrawReset(BufferGraphics);
+            OnAfterDraw(BufferGraphics);
 
-            EffectObjects.AllDoBeforeDrawUI(_SceneGraphics);
-            UIObjects.AllDrawSelf(_SceneGraphics);
+            //顯示FPS
+            if (Global.DebugMode)
+            {
+                BufferGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
+            }
+            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
 
-            _SceneGraphics.ResetTransform();
-            _SceneGraphics.DrawString(_txtFPS, _fontFPS, Brushes.Red, Width - 50, 5);
-            _ThisGraphics.DrawImageUnscaled(_SceneImage, 0, 0);
-
+            //計算FPS
             if (refreshFPS)
             {
-                _watchFPS.Stop();
-                _txtFPS = (TimeSpan.TicksPerSecond / _watchFPS.Elapsed.Ticks).ToString();
+                _FPSWatch.Stop();
+                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
             }
         }
 
@@ -329,7 +340,7 @@ namespace RunningBox
         {
             Level = 0;
             Score = 0;
-            WorldSpeedSlow = 1;
+            SceneSlow = 1;
 
             GameObjects.Clear();
             EffectObjects.Clear();
@@ -341,17 +352,17 @@ namespace RunningBox
             Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
             Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
 
-            GameRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
+            MainRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
 
-            if (_SceneImage != null) _SceneImage.Dispose();
-            if (_SceneGraphics != null) _SceneGraphics.Dispose();
-            if (_ThisGraphics != null) _ThisGraphics.Dispose();
+            //if (_SceneImage != null) _SceneImage.Dispose();
+            //if (_SceneGraphics != null) _SceneGraphics.Dispose();
+            //if (ThisGraphics != null) ThisGraphics.Dispose();
 
-            _SceneImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
-            _SceneGraphics = Graphics.FromImage(_SceneImage);
-            _SceneGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            _SceneGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            _ThisGraphics = CreateGraphics();
+            //BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
+            //BufferGraphics = Graphics.FromImage(BufferImage);
+            //BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            //BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            //ThisGraphics = CreateGraphics();
             Cursor.Hide();
             IsStart = true;
             DoAfterStart();
@@ -360,12 +371,14 @@ namespace RunningBox
         /// <summary>
         /// 回合後執行動作
         /// </summary>
-        public virtual void DoAfterRound()
+        protected override void OnAfterRound()
         {
             if (!IsEnding)
             {
                 Score += Level;
             }
+
+            base.OnAfterRound();
         }
 
         /// <summary>
@@ -591,12 +604,11 @@ namespace RunningBox
                     if (c == '+')
                     {
                         result = 1;
-                        int i = no;
-                        for (; i < Value.Length && Value[i] == '+'; i++)
+                        for (; no < Value.Length && Value[no] == '+'; ++no)
                         {
                             result++;
                         }
-                        WaveNO = i + 1;
+                        WaveNO = no + 1;
                     }
                     else
                     {

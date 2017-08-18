@@ -30,14 +30,14 @@ namespace RunningBox
         public ObjectActive Owner { get; set; }
 
         /// <summary>
-        /// 技能冷卻回合數最大值
+        /// 技能冷卻時間最大值(毫秒)
         /// </summary>
-        public int CooldownRoundMax { get; set; }
+        public int CooldownLimit { get; set; }
 
         /// <summary>
-        /// 技能冷卻回合數計數
+        /// 技能冷卻時間計數(毫秒)
         /// </summary>
-        public int CooldownRound { get; set; }
+        public int CooldownTicks { get; set; }
 
         /// <summary>
         /// 技能耗費能量
@@ -50,14 +50,14 @@ namespace RunningBox
         public int CostEnargyPerRound { get; set; }
 
         /// <summary>
-        /// 引導型技能引導時間最大值
+        /// 引導型技能引導時間最大值(毫秒)
         /// </summary>
-        public int ChanneledRoundMax { get; set; }
+        public int ChanneledLimit { get; set; }
 
         /// <summary>
-        /// 引導型技能引導時間技數
+        /// 引導型技能引導時間計數(毫秒)
         /// </summary>
-        public int ChanneledRound { get; set; }
+        public int ChanneledTicks { get; set; }
 
         private SkillStatus _Status;
         /// <summary>
@@ -74,10 +74,10 @@ namespace RunningBox
                 switch (_Status)
                 {
                     case SkillStatus.Cooldown:
-                        CooldownRound = 0;
+                        CooldownTicks = 0;
                         break;
                     case SkillStatus.Channeled:
-                        ChanneledRound = 0;
+                        ChanneledTicks = 0;
                         break;
                 }
             }
@@ -119,9 +119,9 @@ namespace RunningBox
             switch (Status)
             {
                 case SkillStatus.Channeled:
-                    if (ChanneledRoundMax <= 0 || ChanneledRound < ChanneledRoundMax)
+                    if (ChanneledLimit <= 0 || ChanneledTicks < ChanneledLimit)
                     {
-                        ChanneledRound++;
+                        ChanneledTicks += Owner.Scene.IntervalOfRound;
                     }
                     else
                     {
@@ -142,11 +142,11 @@ namespace RunningBox
                     }
                     break;
                 case SkillStatus.Cooldown:
-                    if (CooldownRound >= CooldownRoundMax)
+                    if (CooldownTicks >= CooldownLimit)
                     {
                         Status = SkillStatus.Disabled;
                     }
-                    CooldownRound++;
+                    CooldownTicks += Owner.Scene.IntervalOfRound;
                     break;
             }
         }
