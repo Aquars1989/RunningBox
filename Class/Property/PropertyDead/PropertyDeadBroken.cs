@@ -50,7 +50,7 @@ namespace RunningBox
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadBroken(int scrapCount, ObjectDeadType deadType, int scrapSpeedMax=900, int scrapSpeedMin=300, int scrapLifeMax=40, int scrapLifeMin=25)
+        public PropertyDeadBroken(int scrapCount, ObjectDeadType deadType, int scrapSpeedMax, int scrapSpeedMin, int scrapLifeMax, int scrapLifeMin)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
@@ -80,7 +80,7 @@ namespace RunningBox
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * 20;
-                Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
+                Owner.Container.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }
 

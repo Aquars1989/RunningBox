@@ -85,11 +85,11 @@ namespace RunningBox
             if ((DeadType & deadType) != deadType) return;
 
             int explosionSize = (int)(RangeMultiple * Owner.Size) + RangeConstant;
-            Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, explosionSize, 0, 20, 0, Color));
+            Owner.Container.Add(new ObjectScrap(Owner.X, Owner.Y, explosionSize, 0, 20, 0, Color));
 
-            for (int i = 0; i < Owner.ParentCollection.Count; i++)
+            for (int i = 0; i < Owner.Container.Count; i++)
             {
-                ObjectActive objectActive = Owner.ParentCollection[i] as ObjectActive;
+                ObjectActive objectActive = Owner.Container[i] as ObjectActive;
                 if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
 
                 //距離判定
@@ -120,9 +120,9 @@ namespace RunningBox
             _OwnerScaleFix = 0;
             _OwnerRFix = 0;
 
-            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.LifeRoundMax >= 0 && Owner.DrawObject != null)
+            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.LifeLimit >= 0 && Owner.DrawObject != null)
             {
-                int life = Owner.LifeRoundMax - Owner.LifeRound;
+                int life = Owner.LifeLimit - Owner.LifeTicks;
                 if (life < 60)
                 {
                     _OwnerScaleFix = ((life / 2) % 5) * OwnerScaleFix;

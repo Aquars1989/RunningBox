@@ -24,7 +24,7 @@ namespace RunningBox
         /// <param name="target">追蹤目標</param>
         public ObjectPlayer(float x, float y, int maxMoves, int size, float speed, League leage, IDraw drawObject, ITarget target)
         {
-            LifeRoundMax = -1;
+            LifeLimit = -1;
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
             X = x;
@@ -32,7 +32,7 @@ namespace RunningBox
             Size = size;
             Speed = speed;
             EnergyMax = Energy = 1000;
-            EnergyGetPerRound = 5;
+            EnergyGetPerSec = 5;
             League = leage;
             DrawObject = drawObject;
             Target = target;
@@ -41,9 +41,9 @@ namespace RunningBox
         protected override void ActionPlan()
         {
             Point trackPoint = Scene.TrackPoint;
-            Rectangle rectScene = Scene.GameRectangle;
+            Rectangle rectScene = Scene.MainRectangle;
             double direction = Function.GetAngle(X, Y, trackPoint.X, trackPoint.Y);
-            float speed = (Math.Abs(trackPoint.X - X) + Math.Abs(trackPoint.Y - Y))  + 10;
+            float speed = (Math.Abs(trackPoint.X - X) + Math.Abs(trackPoint.Y - Y)) + 10;
             //float speed = (float)Function.GetDistance(trackPoint.X, trackPoint.Y, X, Y) * 10 + 5;
             if (speed > Speed) speed = Speed;
 
@@ -75,7 +75,7 @@ namespace RunningBox
         public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
             if (Status != ObjectStatus.Alive) return;
-            Scene.EffectObjects.Add(new EffectShark(20, 10) { CanBreak = false });
+            Scene.EffectObjects.Add(new EffectShark(Scene.Sec(2), 10) { CanBreak = false });
             base.Kill(killer, deadType);
         }
     }

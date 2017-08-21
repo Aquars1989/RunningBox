@@ -12,14 +12,14 @@ namespace RunningBox
     public class ObjectScrap : ObjectBase
     {
         /// <summary>
-        /// 生命計時器
+        /// 存活時間計數(毫秒)
         /// </summary>
-        public int LifeRound { get; set; }
+        public int LifeTicks { get; set; }
 
         /// <summary>
-        /// 生命計時器最大值
+        /// 存活時間最大值(毫秒),小於0為永久
         /// </summary>
-        public int LifeRoundMax { get; set; }
+        public int LifeLimit { get; set; }
 
         /// <summary>
         /// 移動速度
@@ -52,7 +52,7 @@ namespace RunningBox
         /// <param name="y">物件位置Y</param>
         /// <param name="size">物件大小</param>
         /// <param name="speed">速度</param>
-        /// <param name="life">持續回合數,小於0為永久</param>
+        /// <param name="life">存活時間(毫秒),小於0為永久</param>
         /// <param name="direction">方向</param>
         /// <param name="color">顏色</param>
         public ObjectScrap(float x, float y, int size, float speed, int life, double direction, Color color)
@@ -62,14 +62,14 @@ namespace RunningBox
             Y = y;
             Size = size;
             Speed = speed;
-            LifeRoundMax = life;
+            LifeLimit = life;
             Direction = direction;
             Color = color;
         }
 
         public override void Action()
         {
-            if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)
+            if (LifeLimit >= 0 && LifeTicks >= LifeLimit)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }
@@ -79,14 +79,14 @@ namespace RunningBox
                 X += move.X;
                 Y += move.Y;
             }
-            LifeRound++;
+            LifeTicks += Scene.SceneIntervalOfRound;
         }
 
         public override void Draw(Graphics g)
         {
-            int alpha = (int)(255F / LifeRoundMax * (LifeRoundMax - LifeRound));
-            //if (alpha < 0) alpha = 0;
-            //else if (alpha > 255) alpha = 255;
+            int alpha = (int)(255F / LifeLimit * (LifeLimit - LifeTicks));
+            if (alpha < 0) alpha = 0;
+            else if (alpha > 255) alpha = 255;
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
             {

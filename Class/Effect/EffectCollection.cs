@@ -14,7 +14,7 @@ namespace RunningBox
     public class EffectCollection
     {
         private List<IEffect> _Collection;
-        private SceneGaming _Scene;
+        private SceneBase _Scene;
 
         /// <summary>
         /// 集合物件數量
@@ -28,7 +28,7 @@ namespace RunningBox
         /// 初始化特效物件集合
         /// </summary>
         /// <param name="scene">所屬場景物件</param>
-        public EffectCollection(SceneGaming scene)
+        public EffectCollection(SceneBase scene)
         {
             _Scene = scene;
             _Collection = new List<IEffect>();

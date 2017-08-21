@@ -32,7 +32,7 @@ namespace RunningBox
         /// <returns>是否施放技能</returns>
         public bool Check(SkillBase skill)
         {
-            if (Enabeld && skill.Status == SkillStatus.Disabled && skill.Owner.Energy >= skill.CostEnargy)
+            if (Enabeld && skill.Status == SkillStatus.Disabled && skill.Owner.Energy >= skill.CostEnergy)
             {
                 float n = (float)(Global.Rand.NextDouble() * 100);
                 if (n < Probability)

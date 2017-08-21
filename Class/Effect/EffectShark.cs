@@ -20,7 +20,7 @@ namespace RunningBox
         /// <summary>
         /// 作用場景物件
         /// </summary>
-        public SceneGaming Scene { get; set; }
+        public SceneBase Scene { get; set; }
 
         /// <summary>
         /// 特效狀態
@@ -28,14 +28,14 @@ namespace RunningBox
         public EffectStatus Status { get; private set; }
 
         /// <summary>
-        /// 震動持續的回合數最大值
+        /// 震動持續的時間最大值(毫秒)
         /// </summary>
-        public int DurationRoundMax { get; set; }
+        public int DurationLimit { get; set; }
 
         /// <summary>
-        /// 震動持續的回合數計數
+        /// 震動持續的時間計數(毫秒)
         /// </summary>
-        public int DurationRound { get; set; }
+        public int DurationTicks { get; set; }
 
         /// <summary>
         /// 震動的強度
@@ -45,13 +45,13 @@ namespace RunningBox
         /// <summary>
         /// 新增畫面震動的特效
         /// </summary>
-        /// <param name="duration">震動持續的回合數,小於0為永久</param>
+        /// <param name="duration">震動持續的時間(毫秒),小於0為永久</param>
         /// <param name="power">震動的強度</param>
         public EffectShark(int duration, int power)
         {
             CanBreak = true;
             Status = EffectStatus.Enabled;
-            DurationRoundMax = duration;
+            DurationLimit = duration;
             Power = power;
         }
 
@@ -59,11 +59,11 @@ namespace RunningBox
         {
             if (Status == EffectStatus.Enabled)
             {
-                if (DurationRoundMax >= 0 && DurationRound >= DurationRoundMax)
+                if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
                 {
                     Status = EffectStatus.Disabled;
                 }
-                DurationRound++;
+                DurationTicks += Scene.SceneIntervalOfRound;
             }
         }
 

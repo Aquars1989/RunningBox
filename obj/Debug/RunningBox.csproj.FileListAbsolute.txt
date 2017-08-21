@@ -17,6 +17,9 @@ E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.exe
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
+<<<<<<< HEAD
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
+=======
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
+>>>>>>> 93c2510e0db0e3d4344c325d4c5522af29e7f100

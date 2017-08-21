@@ -39,16 +39,16 @@ namespace RunningBox
         /// <summary>
         /// 新增碎裂特性，擁有此特性的物件每回合會在原位置產生四散的碎片
         /// </summary>
-        /// <param name="durationRound">持續回合數</param>
+        /// <param name="duration">持續回合數</param>
         /// <param name="scrapCount">每回合產生碎片數量</param>
         /// <param name="scrapSpeedMax">碎片移動速度最大值</param>
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyScraping(int durationRound, int scrapCount, int scrapSpeedMax = 200, int scrapSpeedMin = 100, int scrapLifeMax = 15, int scrapLifeMin = 10)
+        public PropertyScraping(int duration, int scrapCount, int scrapSpeedMax , int scrapSpeedMin , int scrapLifeMax , int scrapLifeMin)
         {
             Status = PropertyStatus.Enabled;
-            DurationRoundMax = durationRound;
+            DurationLimit = duration;
             ScrapCount = scrapCount;
             ScrapSpeedMax = scrapSpeedMax;
             ScrapSpeedMin = scrapSpeedMin;
@@ -65,7 +65,7 @@ namespace RunningBox
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = Global.Rand.NextDouble() * 360 - 180;
-                Owner.ParentCollection.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
+                Owner.Container.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }
 

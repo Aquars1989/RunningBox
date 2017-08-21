@@ -59,7 +59,7 @@ namespace RunningBox
         /// <param name="item">活動物件</param>
         public void Add(ObjectBase item)
         {
-            item.ParentCollection = this;
+            item.Container = this;
             item.Dead += OnObjectDead;
             _Collection.Add(item);
         }
@@ -74,7 +74,7 @@ namespace RunningBox
             bool result = _Collection.Remove(item);
             if (result)
             {
-                item.ParentCollection = null;
+                item.Container = null;
             }
             return result;
         }
@@ -87,7 +87,7 @@ namespace RunningBox
             for (int i = 0; i < _Collection.Count; i++)
             {
                 ObjectBase item = _Collection[i];
-                item.ParentCollection = null;
+                item.Container = null;
             }
             _Collection.Clear();
         }

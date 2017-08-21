@@ -16,17 +16,12 @@ namespace RunningBox
         /// <summary>
         /// 作用場景物件
         /// </summary>
-        SceneGaming Scene { get; set; }
+        SceneBase Scene { get; set; }
 
         /// <summary>
         /// 特效狀態
         /// </summary>
         EffectStatus Status { get; }
-
-        /// <summary>
-        /// 持續時間
-        /// </summary>
-        int DurationRound { get; set; }
 
         /// <summary>
         /// 物件活動前執行動作

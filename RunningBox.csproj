@@ -56,6 +56,11 @@
     </Compile>
     <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUiEnergyBar.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Class\Layout\LayoutAnchor.cs" />
+    <Compile Include="Class\Layout\LayoutCentral.cs" />
+>>>>>>> 93c2510e0db0e3d4344c325d4c5522af29e7f100
     <Compile Include="Class\Object\UI\ObjectUIIcon.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
     <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
@@ -90,6 +95,7 @@
     </Compile>
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Skill\SkillBulletTime.cs" />
+    <Compile Include="Class\Layout\LayoutBase.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
     <Compile Include="Class\Scene\SceneBase.cs">
       <SubType>UserControl</SubType>
@@ -114,11 +120,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
-      <DependentUpon>SceneGaming.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Class\Scene\SceneBase.resx">
       <DependentUpon>SceneBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
+      <DependentUpon>SceneGaming.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -150,9 +156,7 @@
     <Content Include="ICON.ico" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Class\Object\Player\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

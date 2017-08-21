@@ -12,14 +12,14 @@ namespace RunningBox
     public class ObjectActive : ObjectBase
     {
         /// <summary>
-        /// 存活回合計數
+        /// 存活時間計數(毫秒)
         /// </summary>
-        public int LifeRound { get; set; }
+        public int LifeTicks { get; set; }
 
         /// <summary>
-        /// 存活回合計數最大值,小於0為永久
+        /// 存活時間最大值(毫秒),小於0為永久
         /// </summary>
-        public int LifeRoundMax { get; set; }
+        public int LifeLimit { get; set; }
 
         /// <summary>
         /// 物件所屬陣營,供技能或特性判定
@@ -67,9 +67,9 @@ namespace RunningBox
         public int EnergyMax { get; set; }
 
         /// <summary>
-        /// 每回合自動恢復的能量數
+        /// 每秒自動恢復的能量數
         /// </summary>
-        public int EnergyGetPerRound { get; set; }
+        public int EnergyGetPerSec { get; set; }
 
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace RunningBox
             Y = y;
             Size = size;
             Speed = speed;
-            LifeRoundMax = life;
+            LifeLimit = life;
             Target = target;
             League = leage;
             DrawObject = drawObject;
@@ -117,9 +117,9 @@ namespace RunningBox
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
             Moves = new List<PointF>();
-            EnergyMax = 1000;
-            Energy = 1000;
-            EnergyGetPerRound = 5;
+            EnergyMax = 10000;
+            Energy = 10000;
+            EnergyGetPerSec = 200;
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace RunningBox
         /// </summary>
         protected virtual void ActionEnergyGet()
         {
-            Energy += EnergyGetPerRound;
+            Energy += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec);
         }
 
         /// <summary>
@@ -194,11 +194,11 @@ namespace RunningBox
                 moveTotalY += pt.Y;
             }
 
-            X += moveTotalX / Scene.WorldSpeedSlow;
-            Y += moveTotalY / Scene.WorldSpeedSlow;
+            X += moveTotalX / Scene.SceneSlow;
+            Y += moveTotalY / Scene.SceneSlow;
 
-            LifeRound++;
-            if (LifeRoundMax >= 0 && LifeRound >= LifeRoundMax)
+            LifeTicks++;
+            if (LifeLimit >= 0 && LifeTicks >= LifeLimit)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }

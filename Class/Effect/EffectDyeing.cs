@@ -20,7 +20,7 @@ namespace RunningBox
         /// <summary>
         /// 作用場景物件
         /// </summary>
-        public SceneGaming Scene { get; set; }
+        public SceneBase Scene { get; set; }
 
         /// <summary>
         /// 特效狀態
@@ -33,50 +33,50 @@ namespace RunningBox
         public Color Color { get; set; }
 
         /// <summary>
-        /// 渲染回合數最大值
+        /// 渲染的時間最大值(毫秒)
         /// </summary>
-        public int DurationRoundMax { get; set; }
+        public int DurationLimit { get; set; }
 
         /// <summary>
-        /// 渲染回合數計數
+        /// 渲染的時間計數(毫秒)
         /// </summary>
-        public int DurationRound { get; set; }
+        public int DurationTicks { get; set; }
 
         /// <summary>
-        /// 渲染啟用回合數最大值
+        /// 渲染啟用時間最大值(毫秒)
         /// </summary>
-        public int EnablingRoundsMax { get; private set; }
+        public int EnablingLimit { get; private set; }
 
         /// <summary>
-        /// 渲染啟用回合數計數
+        /// 渲染啟用時間計數(毫秒)
         /// </summary>
-        public int EnablingRounds { get; set; }
+        public int EnablingTicks { get; set; }
 
         /// <summary>
-        /// 渲染消退回合數最大值
+        /// 渲染消退時間最大值(毫秒)
         /// </summary>
-        public int DisablingRoundsMax { get; private set; }
+        public int DisablingLimit { get; private set; }
 
         /// <summary>
-        /// 渲染消退回合數計數
+        /// 渲染消退時間計數(毫秒)
         /// </summary>
-        public int DisablingRounds { get; set; }
+        public int DisablingTicks { get; set; }
 
         /// <summary>
         /// 新增逐漸改變畫面顏色的特效
         /// </summary>
         /// <param name="color">要繪製的顏色</param>
-        /// <param name="duration">渲染回合數,小於0為永久</param>
-        /// <param name="enablingRounds">渲染啟用回合數</param>
-        /// <param name="disablingRounds">渲染消退回合數</param>
-        public EffectDyeing(Color color, int duration, int enablingRounds, int disablingRounds)
+        /// <param name="duration">渲染時間(毫秒),小於0為永久</param>
+        /// <param name="enablingTime">渲染啟用時間(毫秒)</param>
+        /// <param name="disablingTime">渲染消退時間(毫秒)</param>
+        public EffectDyeing(Color color, int duration, int enablingTime, int disablingTime)
         {
             CanBreak = true;
             Status = EffectStatus.Enabling;
             Color = color;
-            DurationRoundMax = duration;
-            EnablingRoundsMax = enablingRounds;
-            DisablingRoundsMax = disablingRounds;
+            DurationLimit = duration;
+            EnablingLimit = enablingTime;
+            DisablingLimit = disablingTime;
         }
 
         public void DoAfterRound()
@@ -84,27 +84,27 @@ namespace RunningBox
             switch (Status)
             {
                 case EffectStatus.Enabling:
-                    if (EnablingRounds >= EnablingRoundsMax)
+                    if (EnablingTicks >= EnablingLimit)
                     {
                         Status = EffectStatus.Enabled;
                         goto case EffectStatus.Enabled;
                     }
-                    EnablingRounds++;
+                    EnablingTicks += Scene.SceneIntervalOfRound;
                     break;
                 case EffectStatus.Enabled:
-                    if (DurationRoundMax >= 0 && DurationRound >= DurationRoundMax)
+                    if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationRound++;
+                    DurationTicks += Scene.SceneIntervalOfRound;
                     break;
                 case EffectStatus.Disabling:
-                    if (DisablingRounds >= DisablingRoundsMax)
+                    if (DisablingTicks >= DisablingLimit)
                     {
                         Status = EffectStatus.Disabled;
                     }
-                    DisablingRounds++;
+                    DisablingTicks+= Scene.SceneIntervalOfRound;;
                     break;
             }
         }
@@ -114,9 +114,9 @@ namespace RunningBox
             switch (Status)
             {
                 case EffectStatus.Enabling:
-                    if (EnablingRoundsMax > 0)
+                    if (EnablingLimit > 0)
                     {
-                        int alpha = (int)((float)(EnablingRounds) / EnablingRoundsMax * Color.A);
+                        int alpha = (int)((float)(EnablingTicks) / EnablingLimit * Color.A);
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
                         using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
@@ -132,9 +132,9 @@ namespace RunningBox
                     }
                     break;
                 case EffectStatus.Disabling:
-                    if (DisablingRoundsMax > 0)
+                    if (DisablingLimit > 0)
                     {
-                        int alpha = (int)((float)(DisablingRoundsMax - DisablingRounds) / DisablingRoundsMax * Color.A);
+                        int alpha = (int)((float)(DisablingLimit - DisablingTicks) / DisablingLimit * Color.A);
 
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;

@@ -4,3 +4,7 @@ obj/Debug/CoreCompileInputs.cache
 *.cache
 *.txt
 *.csproj
+*.manifest
+*.Cache
+*.txt
+*.csproj

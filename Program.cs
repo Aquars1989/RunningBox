@@ -17,12 +17,12 @@ namespace RunningBox
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            DeBugSet();
+            SetDebug();
             Application.Run(new MainForm());
         }
 
         [Conditional("DEBUG")]
-        static void DebugSet()
+        static void SetDebug()
         {
             Global.DebugMode = true;
         }

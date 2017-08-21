@@ -12,14 +12,14 @@ namespace RunningBox
     public class ObjectSmoke : ObjectBase
     {
         /// <summary>
-        /// 縮小計時器
+        /// 縮小周期計數(毫秒)
         /// </summary>
-        public int ShrinkRound { get; set; }
+        public int ShrinkTicks { get; set; }
 
         /// <summary>
-        /// 縮小計時器最大值
+        /// 縮小周期最大值(毫秒),小於0為永久
         /// </summary>
-        public int ShrinkRoundMax { get; set; }
+        public int ShrinkLimit { get; set; }
 
         /// <summary>
         /// 新增虛擬物件,會逐漸縮小直到消失
@@ -27,7 +27,7 @@ namespace RunningBox
         /// <param name="x">物件位置X</param>
         /// <param name="y">物件位置Y</param>
         /// <param name="size">物件大小</param>
-        /// <param name="shrinkRound">每次縮小的週期,小於0為永久</param>
+        /// <param name="shrinkRound">縮小周期(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
         public ObjectSmoke(float x, float y, int size, int shrinkRound, IDraw drawObject)
         {
@@ -35,13 +35,13 @@ namespace RunningBox
             X = x;
             Y = y;
             Size = size;
-            ShrinkRoundMax = shrinkRound;
+            ShrinkLimit = shrinkRound;
             DrawObject = drawObject;
         }
 
         public override void Action()
         {
-            if (ShrinkRoundMax >= 0 && ShrinkRound >= ShrinkRoundMax)
+            if (ShrinkLimit >= 0 && ShrinkTicks >= ShrinkLimit)
             {
                 Size--;
                 if (Size == 0)
@@ -50,10 +50,10 @@ namespace RunningBox
                 }
                 else
                 {
-                    ShrinkRound = 0;
+                    ShrinkTicks = 0;
                 }
             }
-            ShrinkRound++;
+            ShrinkTicks += Scene.SceneIntervalOfRound;
         }
     }
 }

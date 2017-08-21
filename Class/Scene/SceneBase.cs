@@ -16,32 +16,32 @@ namespace RunningBox
     /// </summary>
     public class SceneBase : UserControl
     {
-        private static Font _FPSFont = new Font("Arial", 12);
-        private Stopwatch _FPSWatch = new Stopwatch();
-        private int _FPSTick = 0;
-        private string _FPSText = "";
-
         /// <summary>
         /// 回合計時器
         /// </summary>
-        private Timer _RoundTimer = new Timer();
+        protected Timer RoundTimer { get; private set; }
 
         /// <summary>
         /// 場景物件本身的Graphics物件
         /// </summary>
-        private Graphics _ThisGraphics;
+        protected Graphics ThisGraphics { get; set; }
 
         /// <summary>
         /// 緩衝畫布的Graphics物件
         /// </summary>
-        private Graphics _BufferGraphics;
+        protected Graphics BufferGraphics { get; set; }
 
         /// <summary>
         /// 緩衝畫布
         /// </summary>
-        private Bitmap _BufferImage;
+        protected Bitmap BufferImage { get; set; }
 
         #region ===== 事件 =====
+        /// <summary>
+        /// 場景速度減慢值變更
+        /// </summary>
+        public event EventHandler SceneSlowChanged;
+
         /// <summary>
         /// 回合時間變更
         /// </summary>
@@ -85,20 +85,44 @@ namespace RunningBox
 
         #region===== 屬性 =====
         /// <summary>
-        /// 每秒回合數
+        /// 場景每秒回合數(計入場景速度)
         /// </summary>
-        public float _RoundPerSec { get; private set; }
+        public float SceneRoundPerSec { get; private set; }
 
         /// <summary>
-        /// 每回合時間(以毫秒為單位)
+        /// 原始每秒回合數(不計場景速度)
+        /// </summary>
+        public float RoundPerSec { get; private set; }
+
+        /// <summary>
+        /// 場景每秒回合時間(以毫秒為單位,計入場景速度)
+        /// </summary>
+        public int SceneIntervalOfRound { get; private set; }
+
+        /// <summary>
+        /// 原始每回合時間(以毫秒為單位,不計場景速度)
         /// </summary>
         public virtual int IntervalOfRound
         {
-            get { return _RoundTimer.Interval; }
+            get { return RoundTimer.Interval; }
             set
             {
-                _RoundTimer.Interval = value;
+                RoundTimer.Interval = value;
                 OnIntervalOfRoundChanged();
+            }
+        }
+
+        private float _SceneSlow;
+        /// <summary>
+        /// 場景速度減慢值 speed=(speed/SceneSlow)
+        /// </summary>
+        public float SceneSlow
+        {
+            get { return _SceneSlow; }
+            set
+            {
+                _SceneSlow = value;
+                OnSceneSlowChanged();
             }
         }
 
@@ -108,9 +132,19 @@ namespace RunningBox
         public Point TrackPoint { get; set; }
 
         /// <summary>
+        /// 主要區域
+        /// </summary>
+        public Rectangle MainRectangle { get; set; }
+
+        /// <summary>
         /// UI物件集合
         /// </summary>
         public ObjectCollection UIObjects { get; private set; }
+
+        /// <summary>
+        /// 場景特效集合
+        /// </summary>
+        public EffectCollection EffectObjects { get; private set; }
         #endregion
 
         /// <summary>
@@ -122,9 +156,21 @@ namespace RunningBox
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
 
+            RoundTimer = new Timer();
+            MainRectangle = ClientRectangle;
             IntervalOfRound = Global.DefaultIntervalOfRound;
             UIObjects = new ObjectCollection(this);
-            _RoundTimer.Tick += RoundTimer_Tick;
+            EffectObjects = new EffectCollection(this);
+            RoundTimer.Tick += RoundTimer_Tick;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                RoundTimer.Enabled = false;
+            }
+            base.Dispose(disposing);
         }
 
         private void InitializeComponent()
@@ -142,11 +188,12 @@ namespace RunningBox
 
         private void SceneBase_Load(object sender, EventArgs e)
         {
-            _BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
-            _BufferGraphics = Graphics.FromImage(_BufferImage);
-            _BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            _BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            _ThisGraphics = CreateGraphics();
+            BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
+            BufferGraphics = Graphics.FromImage(BufferImage);
+            BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            ThisGraphics = CreateGraphics();
+            RoundTimer.Enabled = true;
         }
 
         private void RoundTimer_Tick(object sender, EventArgs e)
@@ -159,9 +206,13 @@ namespace RunningBox
         /// </summary>
         protected virtual void Round()
         {
-            UIObjects.ClearAllDead();
             OnBeforeRound();
+            EffectObjects.AllDoBeforeRound();
+            EffectObjects.AllDoAfterRound();
             OnAfterRound();
+
+            UIObjects.ClearAllDead();
+            EffectObjects.ClearAllDisabled();
             Drawing();
         }
 
@@ -170,34 +221,19 @@ namespace RunningBox
         /// </summary>
         protected virtual void Drawing()
         {
-            _FPSTick--;
-            bool refreshFPS = false;
-            if (_FPSTick <= 0)
-            {
-                _FPSTick = 10;
-                _FPSWatch.Restart();
-                refreshFPS = true;
-            }
-
-            _BufferGraphics.Clear(Color.White);
-            OnBeforeDraw(_BufferGraphics);
-            OnBeforeDrawUI(_BufferGraphics);
-            UIObjects.AllDrawSelf(_BufferGraphics);
-            OnAfterDrawUI(_BufferGraphics);
-            OnAfterDrawReset(_BufferGraphics);
-            OnAfterDraw(_BufferGraphics);
-
-            if (Global.DebugMode)
-            {
-                _BufferGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
-            }
-            _ThisGraphics.DrawImageUnscaled(_BufferImage, 0, 0);
-
-            if (refreshFPS)
-            {
-                _FPSWatch.Stop();
-                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
-            }
+            BufferGraphics.Clear(Color.White);
+            OnBeforeDraw(BufferGraphics);
+            EffectObjects.AllDoBeforeDraw(BufferGraphics);
+            EffectObjects.AllDoBeforeDrawBack(BufferGraphics);
+            EffectObjects.AllDoBeforeDrawObject(BufferGraphics);
+            OnBeforeDrawUI(BufferGraphics);
+            EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
+            UIObjects.AllDrawSelf(BufferGraphics);
+            OnAfterDrawUI(BufferGraphics);
+            EffectObjects.AllDoAfterDraw(BufferGraphics);
+            OnAfterDrawReset(BufferGraphics);
+            OnAfterDraw(BufferGraphics);
+            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
         }
 
         /// <summary>
@@ -205,10 +241,26 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnIntervalOfRoundChanged()
         {
-            _RoundPerSec = 1000F / IntervalOfRound;
+            RoundPerSec = 1000F / IntervalOfRound;
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+
             if (IntervalOfRoundChanged != null)
             {
                 IntervalOfRoundChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 場景速度減慢值變更
+        /// </summary>
+        protected virtual void OnSceneSlowChanged()
+        {
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+            if (SceneSlowChanged != null)
+            {
+                SceneSlowChanged(this, new EventArgs());
             }
         }
 
@@ -301,13 +353,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 秒轉換為Round數量
+        /// 秒轉換為毫秒
         /// </summary>
         /// <param name="sec"></param>
         /// <returns></returns>
-        public int SecToRounds(float sec)
+        public int Sec(float sec)
         {
-            return (int)(sec * _RoundPerSec);
+            return (int)(sec * 1000);
         }
     }
 }
