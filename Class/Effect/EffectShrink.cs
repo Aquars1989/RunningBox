@@ -91,7 +91,7 @@ namespace RunningBox
                     if (EnablingTicks < EnablingLimit)
                     {
                         //計算應該修改的比例
-                        float ratio = Scene.IntervalOfRound / (float)(EnablingLimit - EnablingTicks + Scene.IntervalOfRound);
+                        float ratio = Scene.SceneIntervalOfRound / (float)(EnablingLimit - EnablingTicks + Scene.SceneIntervalOfRound);
                         int left = (int)((ShrinkValue.Left - _Shrinked.Left) * ratio);
                         int right = (int)((ShrinkValue.Right - _Shrinked.Right) * ratio);
                         int top = (int)((ShrinkValue.Top - _Shrinked.Top) * ratio);
@@ -105,7 +105,7 @@ namespace RunningBox
                             Scene.MainRectangle.Height - top - bottom
                         );
                         _Shrinked = new Padding(_Shrinked.Left + left, _Shrinked.Top + top, _Shrinked.Right + right, _Shrinked.Bottom + bottom);
-                        EnablingTicks += Scene.IntervalOfRound;
+                        EnablingTicks += Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -129,13 +129,13 @@ namespace RunningBox
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationTicks += Scene.IntervalOfRound;
+                    DurationTicks += Scene.SceneIntervalOfRound;
                     break;
                 case EffectStatus.Disabling: //恢復階段
                     if (DisablingTicks < DisablingLimit)
                     {
                         //計算應該修改的比例
-                        float ratio = Scene.IntervalOfRound / (float)(DisablingLimit - DisablingTicks + Scene.IntervalOfRound);
+                        float ratio = Scene.SceneIntervalOfRound / (float)(DisablingLimit - DisablingTicks + Scene.SceneIntervalOfRound);
                         int left = (int)(_Shrinked.Left * ratio);
                         int right = (int)(_Shrinked.Right * ratio);
                         int top = (int)(_Shrinked.Top * ratio);
@@ -149,7 +149,7 @@ namespace RunningBox
                             Scene.MainRectangle.Height + top + botton
                         );
                         _Shrinked = new Padding(_Shrinked.Left - left, _Shrinked.Top - top, _Shrinked.Right - right, _Shrinked.Bottom - botton);
-                        DisablingTicks += Scene.IntervalOfRound;
+                        DisablingTicks += Scene.SceneIntervalOfRound;
                     }
                     else
                     {

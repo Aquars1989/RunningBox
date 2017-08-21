@@ -12,25 +12,26 @@ namespace RunningBox
     /// </summary>
     public class SkillBulletTime : SkillBase
     {
-        private float _SceneSlow = 0;
+        private float _SceneSlow = 0;//實際減慢的速度
+
         /// <summary>
-        /// 速度調整
+        /// 減慢程度(1為原速度的50%)
         /// </summary>
         public float SlowRate { get; set; }
 
         /// <summary>
-        /// 新增子彈時間技能 降低世界速度 不影響生命計時
+        /// 新增子彈時間技能 降低世界速度
         /// </summary>
-        /// <param name="costEnargy">耗費能量</param>
-        /// <param name="costEnargyPerRound">每回合耗費能量</param>
-        /// <param name="channeled">最大引導時間</param>
+        /// <param name="costEnergy">耗費能量</param>
+        /// <param name="costEnergyPerSec">每秒耗費能量</param>
+        /// <param name="channeled">最大引導時間(毫秒</param>
         /// <param name="cooldown">冷卻時間(毫秒)</param>
-        /// <param name="slowRate">減慢程度</param>
-        public SkillBulletTime(int costEnargy, int costEnargyPerRound, int channeled, int cooldown, float slowRate)
+        /// <param name="slowRate">減慢程度(1為原速度的50%</param>
+        public SkillBulletTime(int costEnergy, int costEnergyPerSec, int channeled, int cooldown, float slowRate)
         {
             Status = SkillStatus.Disabled;
-            CostEnargy = costEnargy;
-            CostEnargyPerRound = costEnargyPerRound;
+            CostEnergy = costEnergy;
+            CostEnergyPerSec = costEnergyPerSec;
             ChanneledLimit = channeled;
             CooldownLimit = cooldown;
             SlowRate = slowRate;

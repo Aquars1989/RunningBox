@@ -42,7 +42,7 @@ namespace RunningBox
                 switch (BindingSkill.Status)
                 {
                     case SkillStatus.Disabled:
-                        if (BindingSkill.Owner != null && BindingSkill.Owner.Energy < BindingSkill.CostEnargy)
+                        if (BindingSkill.Owner != null && BindingSkill.Owner.Energy < BindingSkill.CostEnergy)
                         {
                             g.FillRectangle(Brushes.AliceBlue, rectangle);
                         }

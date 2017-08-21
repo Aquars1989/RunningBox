@@ -17,14 +17,14 @@ namespace RunningBox
         public int ScrapCount { get; set; }
 
         /// <summary>
-        /// 縮小計時器
+        /// 縮小週期計數(毫秒)
         /// </summary>
-        public int ShrinkRound { get; set; }
+        public int ShrinkTicks { get; set; }
 
         /// <summary>
-        /// 縮小計時器最大值
+        /// 縮小週期最大值(毫秒),小於0為永久
         /// </summary>
-        public int ShrinkRoundMax { get; set; }
+        public int ShrinkLimit { get; set; }
 
         /// <summary>
         /// 符合指定的死亡方式才會觸發
@@ -35,14 +35,14 @@ namespace RunningBox
         /// 新增崩塌特性,擁有此特性的物件死亡時會逐漸縮小並碎裂
         /// </summary>
         /// <param name="scrapCount">每回合產生碎片數量</param>
-        /// <param name="shrinkRound">每次縮小的週期</param>
+        /// <param name="shrinkRound">縮小週期(毫秒),小於0為永久</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
         public PropertyDeadCollapse(int scrapCount, int shrinkRound, ObjectDeadType deadType)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
-            ShrinkRoundMax = shrinkRound;
+            ShrinkLimit = shrinkRound;
         }
 
 
@@ -51,16 +51,16 @@ namespace RunningBox
             if (Owner.DrawObject == null || (DeadType & deadType) != deadType) return;
 
             Owner.Status = ObjectStatus.Dying;
-            Owner.Propertys.Add(new PropertyScraping(0, ScrapCount));
+            Owner.Propertys.Add(new PropertyScraping(0, ScrapCount, 200, 300, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
         }
 
         public override void DoAfterAction()
         {
             if (Owner.Status == ObjectStatus.Dying)
             {
-                if (ShrinkRound == ShrinkRoundMax)
+                if (ShrinkTicks == ShrinkLimit)
                 {
-                    ShrinkRound = 0;
+                    ShrinkTicks = 0;
                     if (Owner.Size > 1)
                     {
                         Owner.Size--;
@@ -70,7 +70,7 @@ namespace RunningBox
                         Owner.Status = ObjectStatus.Dead;
                     }
                 }
-                ShrinkRound++;
+                ShrinkTicks++;
             }
         }
 

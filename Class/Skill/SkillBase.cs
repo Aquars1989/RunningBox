@@ -42,12 +42,12 @@ namespace RunningBox
         /// <summary>
         /// 技能耗費能量
         /// </summary>
-        public int CostEnargy { get; set; }
+        public int CostEnergy { get; set; }
 
         /// <summary>
-        /// 引導型技能每回合耗費能量
+        /// 引導型技能每秒耗費能量
         /// </summary>
-        public int CostEnargyPerRound { get; set; }
+        public int CostEnergyPerSec { get; set; }
 
         /// <summary>
         /// 引導型技能引導時間最大值(毫秒)
@@ -100,9 +100,9 @@ namespace RunningBox
                         Status = SkillStatus.Enabled;
                         Target = target;
                     }
-                    else if (Owner.Energy > CostEnargy)
+                    else if (Owner.Energy > CostEnergy)
                     {
-                        Owner.Energy -= CostEnargy;
+                        Owner.Energy -= CostEnergy;
                         Status = SkillStatus.Enabled;
                         Target = target;
                     }
@@ -121,7 +121,7 @@ namespace RunningBox
                 case SkillStatus.Channeled:
                     if (ChanneledLimit <= 0 || ChanneledTicks < ChanneledLimit)
                     {
-                        ChanneledTicks += Owner.Scene.IntervalOfRound;
+                        ChanneledTicks += Owner.Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -130,9 +130,10 @@ namespace RunningBox
                         goto case SkillStatus.Cooldown;
                     }
 
-                    if (Owner.Energy >= CostEnargyPerRound)
+                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec);
+                    if (Owner.Energy >= costEnergy)
                     {
-                        Owner.Energy -= CostEnargyPerRound;
+                        Owner.Energy -= costEnergy;
                     }
                     else
                     {
@@ -146,7 +147,7 @@ namespace RunningBox
                     {
                         Status = SkillStatus.Disabled;
                     }
-                    CooldownTicks += Owner.Scene.IntervalOfRound;
+                    CooldownTicks += Owner.Scene.SceneIntervalOfRound;
                     break;
             }
         }
@@ -160,7 +161,7 @@ namespace RunningBox
             {
                 case SkillStatus.Enabled:
                     DoBeforeEnd(SkillEndType.CastBreak);
-                    Owner.Energy += CostEnargy;
+                    Owner.Energy += CostEnergy;
                     Status = SkillStatus.Cooldown;
                     break;
                 case SkillStatus.Channeled:

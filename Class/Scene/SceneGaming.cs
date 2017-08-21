@@ -39,6 +39,11 @@ namespace RunningBox
 
         #region ===== UI物件 =====
         /// <summary>
+        /// 能量條物件
+        /// </summary>
+        //private ObjectUI EnergyBar = new ObjectUI() { 80, 30, 100, 10 };
+
+        /// <summary>
         /// 技能1顯示物件
         /// </summary>
         private ObjectUIIcon SkillIcon1 = new ObjectUIIcon(null) { X = 320, Y = 35, Size = 25 };
@@ -93,12 +98,17 @@ namespace RunningBox
         /// <summary>
         /// 每波回合數
         /// </summary>
-        public float _RoundPerWave { get; private set; }
+        public float RoundPerWave { get; private set; }
 
         /// <summary>
         /// 波數技時器
         /// </summary>
         private int _WaveTicks;
+
+        /// <summary>
+        /// 每波時間(以毫秒為單位,計入場景速度)
+        /// </summary>
+        public int SceneIntervalOfWave { get; private set; }
 
         private int _IntervalOfWave;
         /// <summary>
@@ -164,16 +174,6 @@ namespace RunningBox
         /// </summary>
         public int EndDelayLimit { get; set; }
 
-        /// <summary>
-        /// 能量UI繪製區域
-        /// </summary>
-        private Rectangle _RectOfEngery = new Rectangle(80, 30, 100, 10);
-        public Rectangle RectOfEngery
-        {
-            get { return _RectOfEngery; }
-            set { _RectOfEngery = value; }
-        }
-
         private Pen _PenRectGaming = new Pen(Color.LightGreen, 2);
         public Pen PenRectGaming
         {
@@ -222,7 +222,7 @@ namespace RunningBox
                         IsEnding = false;
                         IsStart = false;
                     }
-                    EndDelayTicks += IntervalOfRound;
+                    EndDelayTicks += SceneIntervalOfRound;
                 }
                 else
                 {
@@ -232,7 +232,7 @@ namespace RunningBox
                         Level++;
                         GoWave(Level);
                     }
-                    _WaveTicks += IntervalOfRound;
+                    _WaveTicks += SceneIntervalOfRound;
                 }
             }
             Drawing();
@@ -299,16 +299,16 @@ namespace RunningBox
             EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
 
             //xx
-            BufferGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
-            if (PlayerObject != null)
-            {
-                float ratio = (float)PlayerObject.Energy / PlayerObject.EnergyMax;
-                Brush brush = ratio < 0.3 ? Brushes.Red : Brushes.Black;
-                BufferGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
-            }
+            //BufferGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
+            //if (PlayerObject != null)
+            //{
+            //    float ratio = (float)PlayerObject.Energy / PlayerObject.EnergyMax;
+            //    Brush brush = ratio < 0.3 ? Brushes.Red : Brushes.Black;
+            //    BufferGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
+            //}
 
-            BufferGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
-            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
+            //BufferGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
+            //BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
             UIObjects.AllDrawSelf(BufferGraphics);
             OnAfterDrawUI(BufferGraphics);
 
@@ -412,7 +412,8 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnIntervalOfWaveChanged()
         {
-            _RoundPerWave = IntervalOfWave / IntervalOfRound;
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            RoundPerWave = IntervalOfWave / IntervalOfRound;
             if (IntervalOfWaveChanged != null)
             {
                 IntervalOfWaveChanged(this, new EventArgs());
@@ -424,8 +425,15 @@ namespace RunningBox
         /// </summary>
         protected override void OnIntervalOfRoundChanged()
         {
-            _RoundPerWave = IntervalOfWave / IntervalOfRound;
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            RoundPerWave = IntervalOfWave / IntervalOfRound;
             base.OnIntervalOfRoundChanged();
+        }
+
+        protected override void OnSceneSlowChanged()
+        {
+
+            base.OnSceneSlowChanged();
         }
 
         /// <summary>
@@ -452,16 +460,6 @@ namespace RunningBox
             EndDelayTicks = 0;
             Cursor.Show();
             DoAfterEnd();
-        }
-
-        /// <summary>
-        /// 波數時間轉換為Round數量
-        /// </summary>
-        /// <param name="sec"></param>
-        /// <returns></returns>
-        public int WaveToRounds(float waves)
-        {
-            return (int)(waves * _RoundPerWave);
         }
 
         /// <summary>

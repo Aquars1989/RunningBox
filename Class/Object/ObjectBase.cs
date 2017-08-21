@@ -148,8 +148,8 @@ namespace RunningBox
         /// <returns>位移點</returns>
         public PointF GetMovePoint(double angle, float speed)
         {
-            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene._RoundPerSec);
-            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene._RoundPerSec);
+            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene.SceneRoundPerSec);
+            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene.SceneRoundPerSec);
             return new PointF(moveX, moveY);
         }
 

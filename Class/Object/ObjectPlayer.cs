@@ -24,7 +24,7 @@ namespace RunningBox
         /// <param name="target">追蹤目標</param>
         public ObjectPlayer(float x, float y, int maxMoves, int size, float speed, League leage, IDraw drawObject, ITarget target)
         {
-            LifeRoundMax = -1;
+            LifeLimit = -1;
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
             X = x;
@@ -32,7 +32,7 @@ namespace RunningBox
             Size = size;
             Speed = speed;
             EnergyMax = Energy = 1000;
-            EnergyGetPerRound = 5;
+            EnergyGetPerSec = 5;
             League = leage;
             DrawObject = drawObject;
             Target = target;

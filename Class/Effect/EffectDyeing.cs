@@ -89,7 +89,7 @@ namespace RunningBox
                         Status = EffectStatus.Enabled;
                         goto case EffectStatus.Enabled;
                     }
-                    EnablingTicks += Scene.IntervalOfRound;
+                    EnablingTicks += Scene.SceneIntervalOfRound;
                     break;
                 case EffectStatus.Enabled:
                     if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
@@ -97,14 +97,14 @@ namespace RunningBox
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationTicks += Scene.IntervalOfRound;
+                    DurationTicks += Scene.SceneIntervalOfRound;
                     break;
                 case EffectStatus.Disabling:
                     if (DisablingTicks >= DisablingLimit)
                     {
                         Status = EffectStatus.Disabled;
                     }
-                    DisablingTicks+= Scene.IntervalOfRound;;
+                    DisablingTicks+= Scene.SceneIntervalOfRound;;
                     break;
             }
         }

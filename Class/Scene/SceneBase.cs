@@ -38,6 +38,11 @@ namespace RunningBox
 
         #region ===== 事件 =====
         /// <summary>
+        /// 場景速度減慢值變更
+        /// </summary>
+        public event EventHandler SceneSlowChanged;
+
+        /// <summary>
         /// 回合時間變更
         /// </summary>
         public event EventHandler IntervalOfRoundChanged;
@@ -80,12 +85,22 @@ namespace RunningBox
 
         #region===== 屬性 =====
         /// <summary>
-        /// 每秒回合數
+        /// 場景每秒回合數(計入場景速度)
         /// </summary>
-        public float _RoundPerSec { get; private set; }
+        public float SceneRoundPerSec { get; private set; }
 
         /// <summary>
-        /// 每回合時間(以毫秒為單位)
+        /// 原始每秒回合數(不計場景速度)
+        /// </summary>
+        public float RoundPerSec { get; private set; }
+
+        /// <summary>
+        /// 場景每秒回合時間(以毫秒為單位,計入場景速度)
+        /// </summary>
+        public int SceneIntervalOfRound { get; private set; }
+
+        /// <summary>
+        /// 原始每回合時間(以毫秒為單位,不計場景速度)
         /// </summary>
         public virtual int IntervalOfRound
         {
@@ -97,10 +112,19 @@ namespace RunningBox
             }
         }
 
+        private float _SceneSlow;
         /// <summary>
         /// 場景速度減慢值 speed=(speed/SceneSlow)
         /// </summary>
-        public float SceneSlow { get; set; }
+        public float SceneSlow
+        {
+            get { return _SceneSlow; }
+            set
+            {
+                _SceneSlow = value;
+                OnSceneSlowChanged();
+            }
+        }
 
         /// <summary>
         /// 場景追蹤點
@@ -217,10 +241,26 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnIntervalOfRoundChanged()
         {
-            _RoundPerSec = 1000F / IntervalOfRound;
+            RoundPerSec = 1000F / IntervalOfRound;
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+
             if (IntervalOfRoundChanged != null)
             {
                 IntervalOfRoundChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 場景速度減慢值變更
+        /// </summary>
+        protected virtual void OnSceneSlowChanged()
+        {
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+            if (SceneSlowChanged != null)
+            {
+                SceneSlowChanged(this, new EventArgs());
             }
         }
 
@@ -310,16 +350,6 @@ namespace RunningBox
         {
             TrackPoint = e.Location;
             base.OnMouseMove(e);
-        }
-
-        /// <summary>
-        /// 秒轉換為Round數量
-        /// </summary>
-        /// <param name="sec"></param>
-        /// <returns></returns>
-        public int SecToRounds(float sec)
-        {
-            return (int)(sec * _RoundPerSec);
         }
 
         /// <summary>

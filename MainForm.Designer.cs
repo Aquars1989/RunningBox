@@ -45,7 +45,6 @@
             this.runningBox1.Location = new System.Drawing.Point(0, 0);
             this.runningBox1.Name = "runningBox1";
             this.runningBox1.PlayerObject = null;
-            this.runningBox1.RectOfEngery = new System.Drawing.Rectangle(80, 30, 100, 10);
             this.runningBox1.Score = 0;
             this.runningBox1.Size = new System.Drawing.Size(584, 562);
             this.runningBox1.TabIndex = 0;

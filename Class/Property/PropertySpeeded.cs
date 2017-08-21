@@ -12,30 +12,38 @@ namespace RunningBox
     class PropertySpeeded : PropertyBase
     {
         /// <summary>
-        /// 每回合速度提升
+        /// 已提升的速度
         /// </summary>
-        public float SpeededPerRound { get; set; }
+        private float _SpeededToatl;
 
         /// <summary>
-        /// 新增加速特性,擁有此特性的物件每回合速度會增加
+        /// 每秒速度提升
         /// </summary>
-        /// <param name="durationRound">持續回合數</param>
-        /// <param name="speededPerRound">每回合移動速度增加</param>
-        public PropertySpeeded(int durationRound, float speededPerRound)
+        public float SpeededPerSec { get; set; }
+
+        /// <summary>
+        /// 新增加速特性,擁有此特性的物件速度會逐漸增加
+        /// </summary>
+        /// <param name="durationRound">持續時間(毫秒),小於0為永久</param>
+        /// <param name="speededPerSec">每秒速度增加</param>
+        public PropertySpeeded(int durationRound, float speededPerSec)
         {
             Status = PropertyStatus.Enabled;
-            DurationRoundMax = durationRound;
-            SpeededPerRound = speededPerRound;
+            DurationLimit = durationRound;
+            SpeededPerSec = speededPerSec;
+            _SpeededToatl = 0;
         }
 
         public override void DoAfterAction()
         {
-            Owner.Speed += SpeededPerRound;
+            float speeded = SpeededPerSec / Owner.Scene.SceneRoundPerSec;
+            Owner.Speed += speeded;
+            _SpeededToatl += speeded;
         }
 
         public override void DoBeforeEnd(PropertyEndType endType)
         {
-            Owner.Speed -= DurationRound * SpeededPerRound;
+            Owner.Speed -= _SpeededToatl;
         }
 
         public override void DoBeforeActionMove() { }

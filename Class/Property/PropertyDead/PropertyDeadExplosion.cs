@@ -120,9 +120,9 @@ namespace RunningBox
             _OwnerScaleFix = 0;
             _OwnerRFix = 0;
 
-            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.LifeRoundMax >= 0 && Owner.DrawObject != null)
+            if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.LifeLimit >= 0 && Owner.DrawObject != null)
             {
-                int life = Owner.LifeRoundMax - Owner.LifeRound;
+                int life = Owner.LifeLimit - Owner.LifeTicks;
                 if (life < 60)
                 {
                     _OwnerScaleFix = ((life / 2) % 5) * OwnerScaleFix;

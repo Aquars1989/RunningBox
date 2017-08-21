@@ -26,7 +26,7 @@ namespace RunningBox
             Status = PropertyStatus.Enabled;
             Target = target;
             CollisionPower = collisionPower;
-            DurationRoundMax = 0;
+            DurationLimit = 0;
         }
 
         public override void DoAfterAction()

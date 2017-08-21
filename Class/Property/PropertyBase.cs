@@ -28,14 +28,14 @@ namespace RunningBox
         public PropertyStatus Status { get; set; }
 
         /// <summary>
-        /// 特性持續時間最大值
+        /// 特性持續時間最大值(毫秒)
         /// </summary>
-        public int DurationRoundMax { get; set; }
+        public int DurationLimit { get; set; }
 
         /// <summary>
-        /// 特性持續時間計數
+        /// 特性持續時間計數(毫秒)
         /// </summary>
-        public int DurationRound { get; set; }
+        public int DurationTicks { get; set; }
 
         /// <summary>
         /// 在回合動作最後執行
@@ -44,15 +44,12 @@ namespace RunningBox
         {
             if (Status == PropertyStatus.Enabled)
             {
-                if (DurationRoundMax <= 0 || DurationRound < DurationRoundMax)
-                {
-                    DurationRound++;
-                }
-                else
+                if (DurationLimit > 0 && DurationTicks >= DurationLimit)
                 {
                     DoBeforeEnd(PropertyEndType.Finish);
                     Status = PropertyStatus.Disabled;
                 }
+                DurationTicks += Owner.Scene.SceneIntervalOfRound;
             }
         }
 

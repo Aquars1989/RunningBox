@@ -63,7 +63,7 @@ namespace RunningBox
                 {
                     Status = EffectStatus.Disabled;
                 }
-                DurationTicks += Scene.IntervalOfRound;
+                DurationTicks += Scene.SceneIntervalOfRound;
             }
         }
 
