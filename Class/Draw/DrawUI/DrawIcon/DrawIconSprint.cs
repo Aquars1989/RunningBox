@@ -21,11 +21,14 @@ namespace RunningBox
         /// 新增技能:衝刺繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        public DrawIconSprint(Color color, EnumSkillButton drawButton)
+        /// <param name="drawButton">繪製技能熱鍵</param>
+        /// <param name="bindSkill">綁定技能</param>
+        public DrawIconSprint(Color color, EnumSkillButton drawButton, SkillBase bindSkill = null)
         {
             Color = color;
             Animation = 0;
             DrawButton = drawButton;
+            BindingSkill = bindSkill;
         }
 
         /// <summary>
