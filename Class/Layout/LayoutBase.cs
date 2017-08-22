@@ -9,38 +9,113 @@ namespace RunningBox
     /// <summary>
     /// 物件實體位置配置介面
     /// </summary>
-    public abstract class LayoutBase
+    public class LayoutBase
     {
         /// <summary>
-        /// 是否需要重新產生實體位置
+        /// 左上角座標X
         /// </summary>
-        protected bool RectangleBuild { get; set; }
+        private float _LeftTopX;
+        
+        /// <summary>
+        /// 左上角座標Y
+        /// </summary>
+        private float _LeftTopY;
+
+        /// <summary>
+        /// 定位點位於寬度的位置
+        /// </summary>
+        private float _AnchorOfWidth;
+
+        /// <summary>
+        /// 定位點位於高度的位置
+        /// </summary>
+        private float _AnchorOfHeight;
+
+        private ContentAlignment _Anchor;
+        /// <summary>
+        /// 設定物件定位位置
+        /// </summary>
+        public ContentAlignment Anchor
+        {
+            get { return _Anchor; }
+            set
+            {
+                if (_Anchor == value) return;
+
+                switch (_Anchor)
+                {
+                    case ContentAlignment.TopCenter:
+                        _AnchorOfWidth = 0.5F;
+                        _AnchorOfHeight = 0;
+                        break;
+                    case ContentAlignment.TopLeft:
+                        _AnchorOfWidth = 0;
+                        _AnchorOfHeight = 0;
+                        break;
+                    case ContentAlignment.TopRight:
+                        _AnchorOfWidth = 1;
+                        _AnchorOfHeight = 0;
+                        break;
+                    case ContentAlignment.MiddleCenter:
+                        _AnchorOfWidth = 0.5F;
+                        _AnchorOfHeight = 0.5F;
+                        break;
+                    case ContentAlignment.MiddleLeft:
+                        _AnchorOfWidth = 0;
+                        _AnchorOfHeight = 0.5F;
+                        break;
+                    case ContentAlignment.MiddleRight:
+                        _AnchorOfWidth = 1;
+                        _AnchorOfHeight = 0.5F;
+                        break;
+                    case ContentAlignment.BottomCenter:
+                        _AnchorOfWidth = 0.5F;
+                        _AnchorOfHeight = 1;
+                        break;
+                    case ContentAlignment.BottomLeft:
+                        _AnchorOfWidth = 0;
+                        _AnchorOfHeight = 1;
+                        break;
+                    case ContentAlignment.BottomRight:
+                        _AnchorOfWidth = 1;
+                        _AnchorOfHeight = 1;
+                        break;
+                }
+                _X = _LeftTopX + Width * _AnchorOfWidth;
+                _Y = _LeftTopY + Height * _AnchorOfHeight;
+            }
+        }
+
 
         private float _X;
         /// <summary>
-        /// 物件的位置X
+        /// 物件的定位點座標X
         /// </summary>
         public float X
         {
             get { return _X; }
             set
             {
+                if (_X == value) return;
                 _X = value;
-                RectangleBuild = false;
+                _LeftTopX = _X - Width * _AnchorOfWidth;
+                OnLocationChanged();
             }
         }
 
         private float _Y;
         /// <summary>
-        /// 物件的位置Y
+        /// 物件的定位點座標Y
         /// </summary>
         public float Y
         {
             get { return _Y; }
             set
             {
+                if (_Y == value) return;
                 _Y = value;
-                RectangleBuild = false;
+                _LeftTopY = _Y - Height * _AnchorOfHeight;
+                OnLocationChanged();
             }
         }
 
@@ -54,7 +129,7 @@ namespace RunningBox
             set
             {
                 _Width = value;
-                RectangleBuild = false;
+                OnSizeChanged();
             }
         }
 
@@ -68,7 +143,7 @@ namespace RunningBox
             set
             {
                 _Height = value;
-                RectangleBuild = false;
+                OnSizeChanged();
             }
         }
 
@@ -82,18 +157,33 @@ namespace RunningBox
             set
             {
                 _Scale = value;
-                RectangleBuild = false;
+                OnSizeChanged();
             }
         }
 
         /// <summary>
-        /// 取得物件中心點
+        /// 取得物件中心點X座標
         /// </summary>
-        public abstract PointF Center { get; }
+        public abstract float CenterX { get; }
+
+        /// <summary>
+        /// 取得物件中心點Y座標
+        /// </summary>
+        public abstract float CenterY { get; }
 
         /// <summary>
         /// 取得物件實體位置
         /// </summary>
         public abstract Rectangle Rectangle { get; }
+
+        /// <summary>
+        /// 發生於尺寸變化時
+        /// </summary>
+        protected abstract void OnSizeChanged();
+
+        /// <summary>
+        /// 發生於定位點變化時
+        /// </summary>
+        protected abstract void OnLocationChanged();
     }
 }

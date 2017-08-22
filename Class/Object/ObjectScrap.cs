@@ -60,7 +60,7 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             X = x;
             Y = y;
-            Size = size;
+            //Size = size;
             Speed = speed;
             LifeLimit = life;
             Direction = direction;

@@ -101,7 +101,7 @@ namespace RunningBox
             MaxMoves = maxMoves;
             X = x;
             Y = y;
-            Size = size;
+            //Size = size;
             Speed = speed;
             LifeLimit = life;
             Target = target;

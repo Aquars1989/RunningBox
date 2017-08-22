@@ -39,47 +39,61 @@ namespace RunningBox
         /// </summary>
         public IDraw DrawObject { get; set; }
 
-        private bool BuildRect = false;
-        private float _X;
+        /// <summary>
+        /// 物件配置方式
+        /// </summary>
+        public abstract LayoutBase Layout { get; set; }
+
         /// <summary>
         /// 物件位置X
         /// </summary>
         public float X
         {
-            get { return _X; }
-            set
-            {
-                _X = value;
-                BuildRect = false;
-            }
+            get { return Layout.X; }
+            set { Layout.X = value; }
         }
 
-        private float _Y;
         /// <summary>
         /// 物件位置Y
         /// </summary>
         public float Y
         {
-            get { return _Y; }
-            set
-            {
-                _Y = value;
-                BuildRect = false;
-            }
+            get { return Layout.Y; }
+            set { Layout.Y = value; }
         }
 
-        private int _Size;
         /// <summary>
-        /// 物件大小
+        /// 取得物件中心點X座標
         /// </summary>
-        public int Size
+        public float CenterX
         {
-            get { return _Size; }
-            set
-            {
-                _Size = value;
-                BuildRect = false;
-            }
+            get { return Layout.CenterX; }
+        }
+
+        /// <summary>
+        /// 取得物件中心點Y座標
+        /// </summary>
+        public float CenterY
+        {
+            get { return Layout.CenterY; }
+        }
+
+        /// <summary>
+        /// 物件寬度
+        /// </summary>
+        public int Width
+        {
+            get { return Layout.Width; }
+            set { Layout.Width = value; }
+        }
+
+        /// <summary>
+        /// 物件高度
+        /// </summary>
+        public int Height
+        {
+            get { return Layout.Height; }
+            set { Layout.Height = value; }
         }
 
         private Rectangle _Rectangle;
@@ -88,15 +102,7 @@ namespace RunningBox
         /// </summary>
         public Rectangle Rectangle
         {
-            get
-            {
-                if (!BuildRect)
-                {
-                    _Rectangle = new Rectangle((int)X - Size, (int)Y - Size, Size * 2, Size * 2);
-                    BuildRect = true;
-                }
-                return _Rectangle;
-            }
+            get { return Layout.Rectangle; }
         }
 
         /// <summary>
