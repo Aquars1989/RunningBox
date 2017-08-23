@@ -60,13 +60,13 @@ namespace RunningBox
                         int lastMove = Owner.Moves.Count - 1;
                         if (lastMove < 0) return;
 
-                        double direction = Function.GetAngle(Owner.X, Owner.Y, Owner.Target.X, Owner.Target.Y);
+                        double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.Target.X, Owner.Target.Y);
                         float speed = (Owner.Speed * SpeedMultiple) + SpeedConstant;
                         Owner.Moves.Add(Owner.GetMovePoint(direction, speed));
 
                         if (Smoking)
                         {
-                            Owner.Propertys.Add(new PropertySmoking(Owner.MaxMoves, Owner.Size, Owner.Scene.Sec(0.1F)));
+                            Owner.Propertys.Add(new PropertySmoking(Owner.Scene.Round(Owner.MaxMoves), Owner.Scene.Sec(0.2F)));
                         }
                         Status = SkillStatus.Cooldown;
                     }

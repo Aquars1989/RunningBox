@@ -85,23 +85,27 @@ namespace RunningBox
         /// <summary>
         /// 建立一個互動性活動物件
         /// </summary>
-        /// <param name="x">物件位置X</param>
-        /// <param name="y">物件位置Y</param>
+        /// <param name="x">物件中心位置X</param>
+        /// <param name="y">物件中心位置Y</param>
         /// <param name="maxMoves">最大調整值紀錄數量</param>
-        /// <param name="size">物件大小</param>
+        /// <param name="width">物件寬度</param>
+        /// <param name="height">物件高度</param>
         /// <param name="speed">速度</param>
         /// <param name="life">存活時間,小於0為永久</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectActive(float x, float y, int maxMoves, int size, float speed, int life, League leage, IDraw drawObject, ITarget target)
+        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, IDraw drawObject, ITarget target)
             : this()
         {
+            Layout.Anchor = ContentAlignment.MiddleCenter;
+            Layout.X = x;
+            Layout.Y = y;
+            Layout.Width = width;
+            Layout.Height = height;
+
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
-            X = x;
-            Y = y;
-            //Size = size;
             Speed = speed;
             LifeLimit = life;
             Target = target;
@@ -119,7 +123,7 @@ namespace RunningBox
             Moves = new List<PointF>();
             EnergyMax = 10000;
             Energy = 10000;
-            EnergyGetPerSec = 200;
+            EnergyGetPerSec = 2000;
         }
 
         /// <summary>
@@ -161,7 +165,7 @@ namespace RunningBox
         /// </summary>
         protected virtual void ActionEnergyGet()
         {
-            Energy += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec);
+            Energy += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
         }
 
         /// <summary>
@@ -171,7 +175,7 @@ namespace RunningBox
         {
             if (Target != null)
             {
-                double direction = Function.GetAngle(X, Y, Target.X, Target.Y);
+                double direction = Function.GetAngle(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
                 Moves.Add(GetMovePoint(direction, Speed));
             }
         }
@@ -194,10 +198,10 @@ namespace RunningBox
                 moveTotalY += pt.Y;
             }
 
-            X += moveTotalX / Scene.SceneSlow;
-            Y += moveTotalY / Scene.SceneSlow;
+            Layout.X += moveTotalX / Scene.SceneSlow;
+            Layout.Y += moveTotalY / Scene.SceneSlow;
 
-            LifeTicks++;
+            LifeTicks += Scene.SceneIntervalOfRound;
             if (LifeLimit >= 0 && LifeTicks >= LifeLimit)
             {
                 Kill(null, ObjectDeadType.LifeEnd);

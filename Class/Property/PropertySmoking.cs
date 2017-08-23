@@ -12,7 +12,7 @@ namespace RunningBox
     class PropertySmoking : PropertyBase
     {
         /// <summary>
-        /// 縮小周期最大值(毫秒),小於0為永久
+        /// 縮小時間(毫秒),小於0為永久
         /// </summary>
         public int ShrinkLimit { get; set; }
 
@@ -20,9 +20,8 @@ namespace RunningBox
         /// 新增冒煙特性，擁有此特性的物件每回合會在原位置留下smoke物件
         /// </summary>
         /// <param name="duration">持續時間(毫秒),小於0為永久</param>
-        /// <param name="size">smoke物件尺寸</param>
-        /// <param name="shrinkTime">smoke縮小周期最大值(毫秒),小於0為永久</param>
-        public PropertySmoking(int duration, int size, int shrinkTime)
+        /// <param name="shrinkTime">smoke縮小時間(毫秒),小於0為永久</param>
+        public PropertySmoking(int duration, int shrinkTime)
         {
             Status = PropertyStatus.Enabled;
             DurationLimit = duration;
@@ -35,7 +34,7 @@ namespace RunningBox
 
             IDraw drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
-            Owner.Container.Add(new ObjectSmoke(Owner.X, Owner.Y, Owner.Size, ShrinkLimit, drawSmoke));
+            Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke));
         }
 
         public override void DoBeforeActionMove() { }
@@ -45,5 +44,6 @@ namespace RunningBox
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
         public override void DoBeforeEnd(PropertyEndType endType) { }
+        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
     }
 }

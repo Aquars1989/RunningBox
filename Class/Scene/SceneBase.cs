@@ -361,5 +361,15 @@ namespace RunningBox
         {
             return (int)(sec * 1000);
         }
+
+        /// <summary>
+        /// 回合數轉換為毫秒
+        /// </summary>
+        /// <param name="sec"></param>
+        /// <returns></returns>
+        public int Round(float round)
+        {
+            return (int)(round * IntervalOfRound);
+        }
     }
 }

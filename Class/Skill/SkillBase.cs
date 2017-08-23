@@ -130,7 +130,7 @@ namespace RunningBox
                         goto case SkillStatus.Cooldown;
                     }
 
-                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec);
+                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec + 0.5F);
                     if (Owner.Energy >= costEnergy)
                     {
                         Owner.Energy -= costEnergy;

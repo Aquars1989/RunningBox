@@ -17,12 +17,12 @@ namespace RunningBox
         public int ScrapCount { get; set; }
 
         /// <summary>
-        /// 縮小週期計數(毫秒)
+        /// 縮小時間計數(毫秒)
         /// </summary>
         public int ShrinkTicks { get; set; }
 
         /// <summary>
-        /// 縮小週期最大值(毫秒),小於0為永久
+        /// 縮小時間最大值(毫秒)
         /// </summary>
         public int ShrinkLimit { get; set; }
 
@@ -35,14 +35,14 @@ namespace RunningBox
         /// 新增崩塌特性,擁有此特性的物件死亡時會逐漸縮小並碎裂
         /// </summary>
         /// <param name="scrapCount">每回合產生碎片數量</param>
-        /// <param name="shrinkRound">縮小週期(毫秒),小於0為永久</param>
+        /// <param name="shrinkTime">縮小時間(毫秒)</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
-        public PropertyDeadCollapse(int scrapCount, int shrinkRound, ObjectDeadType deadType)
+        public PropertyDeadCollapse(int scrapCount, int shrinkTime, ObjectDeadType deadType)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
-            ShrinkLimit = shrinkRound;
+            ShrinkLimit = shrinkTime;
         }
 
 
@@ -51,26 +51,22 @@ namespace RunningBox
             if (Owner.DrawObject == null || (DeadType & deadType) != deadType) return;
 
             Owner.Status = ObjectStatus.Dying;
-            Owner.Propertys.Add(new PropertyScraping(0, ScrapCount, 200, 300, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
+            Owner.Propertys.Add(new PropertyScraping((int)(ShrinkLimit * 0.7F + 0.5F), ScrapCount, 2, 2, 50, 100, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
         }
 
         public override void DoAfterAction()
         {
             if (Owner.Status == ObjectStatus.Dying)
             {
-                if (ShrinkTicks == ShrinkLimit)
+                if (ShrinkTicks >= ShrinkLimit)
                 {
-                    ShrinkTicks = 0;
-                    if (Owner.Size > 1)
-                    {
-                        Owner.Size--;
-                    }
-                    else
-                    {
-                        Owner.Status = ObjectStatus.Dead;
-                    }
+                    Owner.Status = ObjectStatus.Dead;
                 }
-                ShrinkTicks++;
+                else
+                {
+                    Owner.Layout.Scale = (float)(ShrinkLimit - ShrinkTicks) / ShrinkLimit;
+                }
+                ShrinkTicks += Owner.Scene.SceneIntervalOfRound;
             }
         }
 

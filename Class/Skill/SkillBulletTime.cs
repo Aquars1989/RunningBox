@@ -37,6 +37,11 @@ namespace RunningBox
             SlowRate = slowRate;
         }
 
+        public override void DoUseWhenEfficacy(ITarget target)
+        {
+            Break();
+        }
+
         public override void DoBeforeAction()
         {
             switch (Status)
@@ -83,7 +88,6 @@ namespace RunningBox
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
-        public override void DoUseWhenEfficacy(ITarget target) { }
         public override void DoBeforeActionMove() { }
     }
 }

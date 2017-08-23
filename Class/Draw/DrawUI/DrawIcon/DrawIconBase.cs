@@ -12,13 +12,14 @@ namespace RunningBox
     /// </summary>
     public abstract class DrawIconBase : DrawUI
     {
+        private SolidBrush _BrushChanneled = new SolidBrush(Color.FromArgb(200, 230, 140));
+        private GraphicsPath _BackFrame;
+        private Rectangle _BackFrameRectangle;
+        private int _Animation;
         /// <summary>
         /// 綁定技能物件
         /// </summary>
         public SkillBase BindingSkill { get; set; }
-
-        private GraphicsPath _BackFrame;
-        private Rectangle _BackFrameRectangle;
 
         /// <summary>
         /// 是否顯示熱鍵圖示
@@ -44,11 +45,11 @@ namespace RunningBox
                     case SkillStatus.Disabled:
                         if (BindingSkill.Owner != null && BindingSkill.Owner.Energy < BindingSkill.CostEnergy)
                         {
-                            g.FillRectangle(Brushes.AliceBlue, rectangle);
+                            g.FillRectangle(Brushes.LightPink, rectangle);
                         }
                         else
                         {
-                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.LightYellow, Color.FromArgb(255, 255, 240), 315))
+                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.FromArgb(255, 255, 200), Color.FromArgb(255, 255, 240), 315))
                             {
                                 g.FillRectangle(brush2, rectangle);
                             }
@@ -62,16 +63,22 @@ namespace RunningBox
                     case SkillStatus.Channeled:
                         if (BindingSkill.ChanneledLimit < 0)
                         {
-                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.AliceBlue, Color.FromArgb(240, 255, 240), 315))
+                            if (_Animation > 20)
+                            {
+                                _Animation %= 20;
+                            }
+                            int angle = _Animation * 18;
+                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.FromArgb(140, 200, 255), Color.FromArgb(245, 255, 240), angle))
                             {
                                 g.FillRectangle(brush2, rectangle);
                             }
+                            _Animation++;
                         }
                         else
                         {
                             float channeledSize = (float)(BindingSkill.ChanneledLimit - BindingSkill.ChanneledTicks) / BindingSkill.ChanneledLimit * rectangle.Height;
                             g.FillRectangle(Brushes.White, rectangle);
-                            g.FillRectangle(Brushes.LightSkyBlue, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
+                            g.FillRectangle(_BrushChanneled, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
                         }
                         break;
                 }

@@ -48,18 +48,18 @@ namespace RunningBox
             {
                 for (int i = 0; i < n; i++)
                 {
-                    int size = Global.Rand.Next(3, 6);
+                    int size = Global.Rand.Next(6, 10);
                     int movesCount = Global.Rand.Next(15, 30);
-                    float speed = (Global.Rand.Next(500, 650) - (size * 50)) * _SpeedFix;
+                    float speed = (Global.Rand.Next(500, 650) - (size * 30)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = Sec(3.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, DrawShape.Ellipse), new TargetObject(PlayerObject));
-                    newObject.Skills.Add(new SkillSprint(0, 120, 10, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
-                    newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, DrawShape.Ellipse), new TargetObject(PlayerObject));
+                    newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 10, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
+                    newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1,Sec(0.6F), ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     GameObjects.Add(newObject);
                 }
@@ -77,10 +77,10 @@ namespace RunningBox
                     int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Blue, DrawShape.Ellipse), new TargetObject(PlayerObject));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Blue, DrawShape.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, 70, 8, 0, true) { AutoCastObject = new AutoCastNormal(1F) });
                     newObject.Skills.Add(new SkillSprint(0, 40, 4, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     GameObjects.Add(newObject);
@@ -99,9 +99,9 @@ namespace RunningBox
                     int life = Sec(6 * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, DrawShape.Ellipse), new TargetObject(PlayerObject));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, DrawShape.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     GameObjects.Add(newObject);
@@ -120,8 +120,8 @@ namespace RunningBox
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Fuchsia, DrawShape.Ellipse), new TargetTrackPoint(this));
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Fuchsia, DrawShape.Ellipse), new TargetTrackPoint(this));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 1));
@@ -167,7 +167,7 @@ namespace RunningBox
                             break;
                     }
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, speedPerMove, life, League.Ememy, new DrawImage(Color.Black, Properties.Resources.Mine), new TargetPoint(targetX, targetY));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawImage(Color.Black, Properties.Resources.Mine), new TargetPoint(targetX, targetY));
                     newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, League.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
                     GameObjects.Add(newObject);
@@ -189,13 +189,12 @@ namespace RunningBox
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
-            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 3, 150, League.Player, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
-            SkillSprint skill1 = new SkillSprint(350, Sec(1), 0, 1000, true);
-            SkillBulletTime skill2 = new SkillBulletTime(200, 5, Sec(3), Sec(5), 1);
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 6, 6, 150, League.Player, new DrawPen(Color.Black, DrawShape.Ellipse, 2), new TargetTrackPoint(this));
+            SkillSprint skill1 = new SkillSprint(3500, Sec(1), 0, 1000, true);
+            SkillBulletTime skill2 = new SkillBulletTime(2000, 5000, -1, Sec(5), 1);
             PlayerObject.Skills.Add(skill1);
             PlayerObject.Skills.Add(skill2);
-            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
-            //PlayerObject.Propertys.Add(new PropertyCollision(1, null));
+            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
             return PlayerObject;
         }
 

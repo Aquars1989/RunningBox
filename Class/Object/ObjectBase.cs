@@ -42,67 +42,11 @@ namespace RunningBox
         /// <summary>
         /// 物件配置方式
         /// </summary>
-        public abstract LayoutBase Layout { get; set; }
+        public Layout Layout { get; private set; }
 
-        /// <summary>
-        /// 物件位置X
-        /// </summary>
-        public float X
+        public ObjectBase()
         {
-            get { return Layout.X; }
-            set { Layout.X = value; }
-        }
-
-        /// <summary>
-        /// 物件位置Y
-        /// </summary>
-        public float Y
-        {
-            get { return Layout.Y; }
-            set { Layout.Y = value; }
-        }
-
-        /// <summary>
-        /// 取得物件中心點X座標
-        /// </summary>
-        public float CenterX
-        {
-            get { return Layout.CenterX; }
-        }
-
-        /// <summary>
-        /// 取得物件中心點Y座標
-        /// </summary>
-        public float CenterY
-        {
-            get { return Layout.CenterY; }
-        }
-
-        /// <summary>
-        /// 物件寬度
-        /// </summary>
-        public int Width
-        {
-            get { return Layout.Width; }
-            set { Layout.Width = value; }
-        }
-
-        /// <summary>
-        /// 物件高度
-        /// </summary>
-        public int Height
-        {
-            get { return Layout.Height; }
-            set { Layout.Height = value; }
-        }
-
-        private Rectangle _Rectangle;
-        /// <summary>
-        /// 物件的碰撞位置
-        /// </summary>
-        public Rectangle Rectangle
-        {
-            get { return Layout.Rectangle; }
+            Layout = new Layout();
         }
 
         /// <summary>
@@ -143,19 +87,19 @@ namespace RunningBox
         public virtual void Draw(Graphics g)
         {
             if (DrawObject == null) return;
-            DrawObject.Draw(g, Rectangle);
+            DrawObject.Draw(g, Layout.Rectangle);
         }
 
         /// <summary>
-        /// 取得位移值
+        /// 取得位移值(不計入場景速度)
         /// </summary>
         /// <param name="angle">位移角度</param>
         /// <param name="speed">速度值</param>
         /// <returns>位移點</returns>
         public PointF GetMovePoint(double angle, float speed)
         {
-            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene.SceneRoundPerSec);
-            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene.SceneRoundPerSec);
+            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
+            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
             return new PointF(moveX, moveY);
         }
 

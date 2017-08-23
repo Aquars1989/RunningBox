@@ -65,7 +65,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 取得兩物件間的距離
+        /// 取得兩物件間的中心距離
         /// </summary>
         /// <param name="point1">物件1</param>
         /// <param name="point2">物件2</param>
@@ -73,10 +73,11 @@ namespace RunningBox
         /// <returns>距離</returns>
         public static double GetDistance(ObjectBase object1, ObjectBase object2, bool deductSize)
         {
-            double result = Math.Sqrt(Math.Pow(object1.X - object2.X, 2) + Math.Pow(object1.Y - object2.Y, 2));
+            //todo
+            double result = Math.Sqrt(Math.Pow(object1.Layout.CenterX - object2.Layout.CenterY, 2) + Math.Pow(object1.Layout.CenterX - object2.Layout.CenterY, 2));
             if (deductSize)
             {
-                result -= object1.Size + object2.Size;
+                result -= object1.Layout.Width + object2.Layout.Width;
             }
             return result;
         }

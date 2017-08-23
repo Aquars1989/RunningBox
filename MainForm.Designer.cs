@@ -36,26 +36,30 @@
             // 
             this.runningBox1.BackColor = System.Drawing.Color.White;
             this.runningBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.runningBox1.EndDelayTicks = 0;
             this.runningBox1.EndDelayLimit = 30;
-            this.runningBox1.MainRectangle = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.runningBox1.EndDelayTicks = 0;
+            this.runningBox1.IntervalOfRound = 20;
+            this.runningBox1.IntervalOfWave = 1000;
             this.runningBox1.IsEnding = false;
             this.runningBox1.IsStart = false;
             this.runningBox1.Level = 0;
             this.runningBox1.Location = new System.Drawing.Point(0, 0);
+            this.runningBox1.MainRectangle = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.runningBox1.Name = "runningBox1";
             this.runningBox1.PlayerObject = null;
+            this.runningBox1.SceneSlow = 1F;
             this.runningBox1.Score = 0;
-            this.runningBox1.Size = new System.Drawing.Size(584, 562);
+            this.runningBox1.Size = new System.Drawing.Size(584, 561);
+            this.runningBox1.Skill1 = null;
+            this.runningBox1.Skill2 = null;
             this.runningBox1.TabIndex = 0;
             this.runningBox1.TrackPoint = new System.Drawing.Point(0, 0);
-            this.runningBox1.SceneSlow = 1F;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 562);
+            this.ClientSize = new System.Drawing.Size(584, 561);
             this.Controls.Add(this.runningBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

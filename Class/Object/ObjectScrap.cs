@@ -50,17 +50,21 @@ namespace RunningBox
         /// </summary>
         /// <param name="x">物件位置X</param>
         /// <param name="y">物件位置Y</param>
-        /// <param name="size">物件大小</param>
+        /// <param name="width">物件寬度</param>
+        /// <param name="height">物件高度</param>
         /// <param name="speed">速度</param>
         /// <param name="life">存活時間(毫秒),小於0為永久</param>
         /// <param name="direction">方向</param>
         /// <param name="color">顏色</param>
-        public ObjectScrap(float x, float y, int size, float speed, int life, double direction, Color color)
+        public ObjectScrap(float x, float y, int width, int height, float speed, int life, double direction, Color color)
         {
+            Layout.Anchor = ContentAlignment.MiddleCenter;
+            Layout.X = x;
+            Layout.Y = y;
+            Layout.Width = width;
+            Layout.Height = height;
+
             Status = ObjectStatus.Alive;
-            X = x;
-            Y = y;
-            //Size = size;
             Speed = speed;
             LifeLimit = life;
             Direction = direction;
@@ -76,8 +80,8 @@ namespace RunningBox
             else
             {
                 PointF move = GetMovePoint(Direction, Speed);
-                X += move.X;
-                Y += move.Y;
+                Layout.X += move.X;
+                Layout.Y += move.Y;
             }
             LifeTicks += Scene.SceneIntervalOfRound;
         }
@@ -90,7 +94,7 @@ namespace RunningBox
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
             {
-                g.FillEllipse(brush, Rectangle);
+                g.FillEllipse(brush, Layout.Rectangle);
             }
         }
     }

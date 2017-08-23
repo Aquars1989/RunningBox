@@ -7,19 +7,88 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 物件實體位置配置介面
+    /// 物件實體位置配置
     /// </summary>
-    public class LayoutBase
+    public class Layout
     {
+        private bool SizeChange = false;
+        private bool LocationChange = false;
+
+        private float _LeftTopX;
         /// <summary>
         /// 左上角座標X
         /// </summary>
-        private float _LeftTopX;
-        
+        public float LeftTopX
+        {
+            get { return _LeftTopX; }
+            set
+            {
+                if (_LeftTopX == value) return;
+
+                float fix = value - _LeftTopX;
+                _X += fix;
+                _CenterX += fix;
+                _LeftTopX = value;
+                OnLocationChanged();
+            }
+        }
+
+        private float _LeftTopY;
         /// <summary>
         /// 左上角座標Y
         /// </summary>
-        private float _LeftTopY;
+        public float LeftTopY
+        {
+            get { return _LeftTopY; }
+            set
+            {
+                if (_LeftTopY == value) return;
+
+                float fix = value - _LeftTopY;
+                _Y += fix;
+                _CenterY += fix;
+                _LeftTopY = value;
+                OnLocationChanged();
+            }
+        }
+
+        private float _CenterX;
+        /// <summary>
+        /// 取得物件中心點X座標
+        /// </summary>
+        public float CenterX
+        {
+            get { return _CenterX; }
+            set
+            {
+                if (_CenterX == value) return;
+
+                float fix = value - _CenterX;
+                _X += fix;
+                _LeftTopX += fix;
+                _CenterX = value;
+                OnLocationChanged();
+            }
+        }
+
+        private float _CenterY;
+        /// <summary>
+        /// 取得物件中心點Y座標
+        /// </summary>
+        public float CenterY
+        {
+            get { return _CenterY; }
+            set
+            {
+                if (_CenterY == value) return;
+
+                float fix = value - _CenterY;
+                _Y += fix;
+                _LeftTopY += fix;
+                _CenterY = value;
+                OnLocationChanged();
+            }
+        }
 
         /// <summary>
         /// 定位點位於寬度的位置
@@ -31,7 +100,7 @@ namespace RunningBox
         /// </summary>
         private float _AnchorOfHeight;
 
-        private ContentAlignment _Anchor;
+        private ContentAlignment _Anchor = ContentAlignment.TopLeft;
         /// <summary>
         /// 設定物件定位位置
         /// </summary>
@@ -42,6 +111,7 @@ namespace RunningBox
             {
                 if (_Anchor == value) return;
 
+                _Anchor = value;
                 switch (_Anchor)
                 {
                     case ContentAlignment.TopCenter:
@@ -81,11 +151,10 @@ namespace RunningBox
                         _AnchorOfHeight = 1;
                         break;
                 }
-                _X = _LeftTopX + Width * _AnchorOfWidth;
-                _Y = _LeftTopY + Height * _AnchorOfHeight;
+                _X = LeftTopX + RectWidth * _AnchorOfWidth;
+                _Y = LeftTopY + RectHeight * _AnchorOfHeight;
             }
         }
-
 
         private float _X;
         /// <summary>
@@ -97,8 +166,11 @@ namespace RunningBox
             set
             {
                 if (_X == value) return;
+
+                float fix = value - _X;
+                _LeftTopX += fix;
+                _CenterX += fix;
                 _X = value;
-                _LeftTopX = _X - Width * _AnchorOfWidth;
                 OnLocationChanged();
             }
         }
@@ -113,77 +185,149 @@ namespace RunningBox
             set
             {
                 if (_Y == value) return;
+
+                float fix = value - _Y;
+                _LeftTopY += fix;
+                _CenterY += fix;
                 _Y = value;
-                _LeftTopY = _Y - Height * _AnchorOfHeight;
                 OnLocationChanged();
+            }
+        }
+
+        private int _RectWidth;
+        /// <summary>
+        /// 取得物件的實際寬度
+        /// </summary>
+        public int RectWidth
+        {
+            get { return _RectWidth; }
+            private set
+            {
+                //value = Math.Max(value, 1);
+                if (_RectWidth == value) return;
+
+                _RectWidth = value;
+                _LeftTopX = _X - _RectWidth * _AnchorOfWidth;
+                _CenterX = _LeftTopX + _RectWidth * 0.5F;
+                OnSizeChanged();
+            }
+        }
+
+        private int _RectHeight;
+        /// <summary>
+        /// 取得物件的實際高度
+        /// </summary>
+        public int RectHeight
+        {
+            get { return _RectHeight; }
+            private set
+            {
+                //value = Math.Max(value, 1);
+                if (_RectHeight == value) return;
+
+                _RectHeight = value;
+                _LeftTopY = _Y - _RectHeight * _AnchorOfHeight;
+                _CenterY = _LeftTopY + _RectHeight * 0.5F;
+                OnSizeChanged();
             }
         }
 
         private int _Width;
         /// <summary>
-        /// 物件的寬度
+        /// 取得或設定物件的設定寬度
         /// </summary>
         public int Width
         {
             get { return _Width; }
             set
             {
+                if (_Width == value) return;
+
                 _Width = value;
-                OnSizeChanged();
+                RectWidth = (int)(_Width * _Scale);
             }
         }
 
         private int _Height;
         /// <summary>
-        /// 物件的高度
+        /// 取得或設定物件的設定高度
         /// </summary>
         public int Height
         {
             get { return _Height; }
             set
             {
+                if (_Height == value) return;
+
                 _Height = value;
-                OnSizeChanged();
+                RectHeight = (int)(_Height * _Scale);
             }
         }
 
         private float _Scale;
         /// <summary>
-        /// 物件的縮放值
+        /// 取得或設定物件的縮放值
         /// </summary>
         public float Scale
         {
             get { return _Scale; }
             set
             {
+                if (_Scale == value) return;
+
                 _Scale = value;
+                RectWidth = (int)(_Width * _Scale);
+                RectHeight = (int)(_Height * _Scale);
                 OnSizeChanged();
             }
         }
 
-        /// <summary>
-        /// 取得物件中心點X座標
-        /// </summary>
-        public abstract float CenterX { get; }
 
-        /// <summary>
-        /// 取得物件中心點Y座標
-        /// </summary>
-        public abstract float CenterY { get; }
-
+        private Rectangle _Rectangle;
         /// <summary>
         /// 取得物件實體位置
         /// </summary>
-        public abstract Rectangle Rectangle { get; }
+        public Rectangle Rectangle
+        {
+            get
+            {
+                if (SizeChange)
+                {
+                    _Rectangle.Size = new Size(RectWidth, RectHeight);
+                    _Rectangle.Location = new Point((int)(LeftTopX + 0.5F), (int)(LeftTopY + 0.5F));
+                    SizeChange = false;
+                    LocationChange = false;
+                }
+
+                if (LocationChange)
+                {
+                    _Rectangle.Location = new Point((int)(LeftTopX + 0.5F), (int)(LeftTopY + 0.5F));
+                    LocationChange = false;
+                }
+                return _Rectangle;
+            }
+        }
+
+        public Layout()
+        {
+            Anchor = ContentAlignment.TopLeft;
+            Scale = 1;
+        }
 
         /// <summary>
         /// 發生於尺寸變化時
         /// </summary>
-        protected abstract void OnSizeChanged();
+        protected void OnSizeChanged()
+        {
+            SizeChange = true;
+        }
 
         /// <summary>
         /// 發生於定位點變化時
         /// </summary>
-        protected abstract void OnLocationChanged();
+        protected void OnLocationChanged()
+        {
+            LocationChange = true;
+        }
     }
 }

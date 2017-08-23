@@ -21,7 +21,7 @@ namespace RunningBox
             {
                 if (Targer != null)
                 {
-                    _X = Targer.X;
+                    _X = Targer.Layout.CenterX;
                 }
                 return _X;
             }
@@ -37,7 +37,7 @@ namespace RunningBox
             {
                 if (Targer != null)
                 {
-                    _Y = Targer.Y;
+                    _Y = Targer.Layout.CenterY;
                 }
                 return _Y;
             }
@@ -73,8 +73,8 @@ namespace RunningBox
         {
             if (Targer != null)
             {
-                _X = Targer.X;
-                _Y = Targer.Y;
+                _X = Targer.Layout.CenterX;
+                _Y = Targer.Layout.CenterY;
             }
             return new PointF(_X, _Y);
         }

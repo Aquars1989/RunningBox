@@ -41,17 +41,17 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        //private ObjectUI EnergyBar = new ObjectUI() { 80, 30, 100, 10 };
+        private ObjectUI EnergyBar = new ObjectUI(80, 30, 100, 10, new DrawUiEnergyBar(Color.FromArgb(255,200,0)));
 
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUIIcon SkillIcon1 = new ObjectUIIcon(null) { X = 320, Y = 35, Size = 25 };
+        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, null);
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUIIcon SkillIcon2 = new ObjectUIIcon(null) { X = 400, Y = 35, Size = 25 };
+        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, null);
         #endregion
 
         #region ===== 技能物件 =====
@@ -193,6 +193,7 @@ namespace RunningBox
 
             UIObjects.Add(SkillIcon1);
             UIObjects.Add(SkillIcon2);
+            UIObjects.Add(EnergyBar);
             GameObjects.ObjectDead += OnObjectDead;
         }
 
@@ -298,17 +299,7 @@ namespace RunningBox
             OnBeforeDrawUI(BufferGraphics);
             EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
 
-            //xx
-            //BufferGraphics.FillRectangle(Brushes.AliceBlue, _RectOfEngery);
-            //if (PlayerObject != null)
-            //{
-            //    float ratio = (float)PlayerObject.Energy / PlayerObject.EnergyMax;
-            //    Brush brush = ratio < 0.3 ? Brushes.Red : Brushes.Black;
-            //    BufferGraphics.FillRectangle(brush, _RectOfEngery.X + 2, _RectOfEngery.Y + 2, (_RectOfEngery.Width - 4) * ratio, _RectOfEngery.Height - 4);
-            //}
-
-            //BufferGraphics.DrawRectangle(Pens.Black, _RectOfEngery);
-            //BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, _RectOfEngery.X + _RectOfEngery.Width + 10, _RectOfEngery.Y);
+            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, 85, 50);
             UIObjects.AllDrawSelf(BufferGraphics);
             OnAfterDrawUI(BufferGraphics);
 
@@ -351,18 +342,9 @@ namespace RunningBox
             GameObjects.Add(PlayerObject);
             Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
             Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
-
+            (EnergyBar.DrawObject as DrawUiEnergyBar).BindingObject = PlayerObject;
             MainRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
 
-            //if (_SceneImage != null) _SceneImage.Dispose();
-            //if (_SceneGraphics != null) _SceneGraphics.Dispose();
-            //if (ThisGraphics != null) ThisGraphics.Dispose();
-
-            //BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
-            //BufferGraphics = Graphics.FromImage(BufferImage);
-            //BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            //BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            //ThisGraphics = CreateGraphics();
             Cursor.Hide();
             IsStart = true;
             DoAfterStart();

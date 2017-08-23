@@ -10,7 +10,7 @@ namespace RunningBox
     /// <summary>
     /// 能量條繪圖物件
     /// </summary>
-    public abstract class DrawUiEnergyBar : DrawUI
+    public class DrawUiEnergyBar : DrawUI
     {
         /// <summary>
         /// 綁定物件
@@ -45,6 +45,11 @@ namespace RunningBox
                 int widthInside = (int)((rectangle.Width - 4) * Math.Min(ratio, 1));
                 g.FillRectangle(brush, rectangle.Left + 2, rectangle.Top + 2, widthInside, rectangle.Height - 4);
             }
+        }
+
+        public override IDraw Copy()
+        {
+            return new DrawUiEnergyBar(Color, this.BindingObject);
         }
     }
 }

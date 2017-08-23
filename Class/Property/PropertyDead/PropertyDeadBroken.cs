@@ -12,6 +12,16 @@ namespace RunningBox
     class PropertyDeadBroken : PropertyBase
     {
         /// <summary>
+        /// 碎片寬度
+        /// </summary>
+        public int ScrapWidth { get; set; }
+
+        /// <summary>
+        /// 碎片高度
+        /// </summary>
+        public int ScrapHeight { get; set; }
+
+        /// <summary>
         /// 產生碎片數量
         /// </summary>
         public int ScrapCount { get; set; }
@@ -45,16 +55,20 @@ namespace RunningBox
         /// 新增破碎特性,擁有此特性的物件死亡時會造成碎片飛散
         /// </summary>
         /// <param name="scrapCount">產生碎片數量</param>
+        /// <param name="scrapWidth">碎片寬度</param>
+        /// <param name="scrapHeight">碎片高度</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
         /// <param name="scrapSpeedMax">碎片移動速度最大值</param>
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadBroken(int scrapCount, ObjectDeadType deadType, int scrapSpeedMax, int scrapSpeedMin, int scrapLifeMax, int scrapLifeMin)
+        public PropertyDeadBroken(int scrapCount, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMax, int scrapSpeedMin, int scrapLifeMax, int scrapLifeMin)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
+            ScrapWidth = scrapWidth;
+            ScrapHeight = scrapHeight;
             ScrapSpeedMax = scrapSpeedMax;
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
@@ -80,7 +94,7 @@ namespace RunningBox
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * 20;
-                Owner.Container.Add(new ObjectScrap(Owner.X, Owner.Y, 1, speed, life, scrapDirection, Owner.DrawObject.Color));
+                Owner.Container.Add(new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }
 
