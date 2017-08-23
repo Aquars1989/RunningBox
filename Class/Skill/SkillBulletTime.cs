@@ -50,6 +50,10 @@ namespace RunningBox
                     {
                         _SceneSlow = SlowRate;
                         Owner.Scene.SceneSlow += _SceneSlow;
+                        Owner.Scene.UIObjects.Add(new ObjectUI(0,10,25,5,new DrawUiEnergyBar(Color.Black, )))
+                        {
+
+                        });
                         Status = SkillStatus.Channeled;
                     }
                     break;

@@ -14,35 +14,15 @@ namespace RunningBox
         private bool SizeChange = false;
         private bool LocationChange = false;
 
-        /// <summary>
-        /// 定位點位於寬度的位置
-        /// </summary>
-        private float _AnchorOfWidth;
-
-        /// <summary>
-        /// 定位點位於高度的位置
-        /// </summary>
-        private float _AnchorOfHeight;
-
-        private ITarget _DependTarget;
-        /// <summary>
-        /// 依附目標,有值時會以此目標為原點而非(0,0)
-        /// </summary>
-        public ITarget DependTarget { get; set; }
-
         private float _LeftTopX;
         /// <summary>
         /// 左上角座標X
         /// </summary>
         public float LeftTopX
         {
-            get { return DependTarget == null ? _LeftTopX : _LeftTopX + DependTarget.X; }
-
+            get { return _LeftTopX; }
             set
             {
-                if (DependTarget != null)
-                    value -= DependTarget.X;
-
                 if (_LeftTopX == value) return;
 
                 float fix = value - _LeftTopX;
@@ -59,12 +39,9 @@ namespace RunningBox
         /// </summary>
         public float LeftTopY
         {
-            get { return DependTarget == null ? _LeftTopY : _LeftTopY + DependTarget.Y; }
+            get { return _LeftTopY; }
             set
             {
-                if (DependTarget != null)
-                    value -= DependTarget.Y;
-
                 if (_LeftTopY == value) return;
 
                 float fix = value - _LeftTopY;
@@ -81,12 +58,9 @@ namespace RunningBox
         /// </summary>
         public float CenterX
         {
-            get { return DependTarget == null ? _CenterX : _CenterX + DependTarget.X; }
+            get { return _CenterX; }
             set
             {
-                if (DependTarget != null)
-                    value -= DependTarget.X;
-
                 if (_CenterX == value) return;
 
                 float fix = value - _CenterX;
@@ -103,12 +77,9 @@ namespace RunningBox
         /// </summary>
         public float CenterY
         {
-            get { return DependTarget == null ? _CenterY : _CenterY + DependTarget.Y; }
+            get { return _CenterY; }
             set
             {
-                if (DependTarget != null)
-                    value -= DependTarget.Y;
-
                 if (_CenterY == value) return;
 
                 float fix = value - _CenterY;
@@ -118,6 +89,16 @@ namespace RunningBox
                 OnLocationChanged();
             }
         }
+
+        /// <summary>
+        /// 定位點位於寬度的位置
+        /// </summary>
+        private float _AnchorOfWidth;
+
+        /// <summary>
+        /// 定位點位於高度的位置
+        /// </summary>
+        private float _AnchorOfHeight;
 
         private ContentAlignment _Anchor = ContentAlignment.TopLeft;
         /// <summary>
@@ -310,11 +291,6 @@ namespace RunningBox
         {
             get
             {
-                if (DependTarget != null)
-                {
-                    LocationChange = true;
-                }
-
                 if (SizeChange)
                 {
                     _Rectangle.Size = new Size(RectWidth, RectHeight);

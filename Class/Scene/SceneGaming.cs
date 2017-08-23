@@ -41,7 +41,7 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 30, 100, 10, new DrawUiEnergyBar(Color.FromArgb(255,200,0)));
+        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUiEnergyBar(Color.FromArgb(255, 200, 0)));
 
         /// <summary>
         /// 技能1顯示物件
@@ -202,6 +202,16 @@ namespace RunningBox
         /// </summary>
         protected override void Round()
         {
+            //計算FPS
+            _FPSTick--;
+            bool refreshFPS = false;
+            if (_FPSTick <= 0)
+            {
+                _FPSTick = 10;
+                _FPSWatch.Restart();
+                refreshFPS = true;
+            }
+
             UIObjects.ClearAllDead();
             if (IsStart)
             {
@@ -237,6 +247,20 @@ namespace RunningBox
                 }
             }
             Drawing();
+
+            //顯示FPS
+            if (Global.DebugMode)
+            {
+                BufferGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
+            }
+            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
+
+            //計算FPS
+            if (refreshFPS)
+            {
+                _FPSWatch.Stop();
+                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
+            }
         }
 
         /// <summary>
@@ -270,16 +294,6 @@ namespace RunningBox
         /// </summary>
         protected override void Drawing()
         {
-            //計算FPS
-            _FPSTick--;
-            bool refreshFPS = false;
-            if (_FPSTick <= 0)
-            {
-                _FPSTick = 10;
-                _FPSWatch.Restart();
-                refreshFPS = true;
-            }
-
             BufferGraphics.Clear(Color.White);
             OnBeforeDraw(BufferGraphics);
             EffectObjects.AllDoBeforeDraw(BufferGraphics);
@@ -306,20 +320,6 @@ namespace RunningBox
             EffectObjects.AllDoAfterDraw(BufferGraphics);
             OnAfterDrawReset(BufferGraphics);
             OnAfterDraw(BufferGraphics);
-
-            //顯示FPS
-            if (Global.DebugMode)
-            {
-                BufferGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
-            }
-            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
-
-            //計算FPS
-            if (refreshFPS)
-            {
-                _FPSWatch.Stop();
-                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
-            }
         }
 
         /// <summary>
