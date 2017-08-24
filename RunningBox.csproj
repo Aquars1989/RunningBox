@@ -49,11 +49,14 @@
   <ItemGroup>
     <Compile Include="Class\AutoCast\AutoCastNormal.cs" />
     <Compile Include="Class\AutoCast\AutoCastBase.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconBase.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconBulletTime.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawIcon\DrawIconSprint.cs">
+    <Compile Include="Class\Colors.cs" />
+    <Compile Include="Class\Draw\DrawPolygon.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillFrame.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Class\Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUiEnergyBar.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
@@ -90,6 +93,7 @@
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Skill\SkillBulletTime.cs" />
     <Compile Include="Class\Layout\LayoutBase.cs" />
+    <Compile Include="Class\Skill\SkillShield.cs" />
     <Compile Include="Class\Target\ITarget.cs" />
     <Compile Include="Class\Scene\SceneBase.cs">
       <SubType>UserControl</SubType>
@@ -100,6 +104,12 @@
     <Compile Include="Class\Target\TargetObject.cs" />
     <Compile Include="Class\Target\TargetPoint.cs" />
     <Compile Include="Class\Draw\DrawPool.cs" />
+    <Compile Include="TestCollision.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestCollision.Designer.cs">
+      <DependentUpon>TestCollision.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +146,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TestCollision.resx">
+      <DependentUpon>TestCollision.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -8,23 +8,38 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 圖示繪圖基本物件
+    /// 技能框架繪圖物件
     /// </summary>
-    public abstract class DrawIconBase : DrawUI
+    public class DrawSkillFrame : DrawUI
     {
-        private SolidBrush _BrushChanneled = new SolidBrush(Color.FromArgb(200, 230, 140));
+        private static Pen _PenDrawButton = new Pen(Color.Black);
+        private static SolidBrush _BrushChanneled = new SolidBrush(Color.FromArgb(200, 230, 140));
         private GraphicsPath _BackFrame;
         private Rectangle _BackFrameRectangle;
         private int _Animation;
+
         /// <summary>
-        /// 綁定技能物件
+        /// 內部的圖示繪圖物件
         /// </summary>
-        public SkillBase BindingSkill { get; set; }
+        public IDrawSkill IconDrawObject { get; set; }
 
         /// <summary>
         /// 是否顯示熱鍵圖示
         /// </summary>
         public EnumSkillButton DrawButton { get; set; }
+
+        /// <summary>
+        /// 新增技能框架繪圖物件
+        /// </summary>
+        /// <param name="color">繪製顏色</param>
+        /// <param name="drawButton">繪製技能熱鍵</param>
+        /// <param name="iconDrawObject">技能繪製物件</param>
+        public DrawSkillFrame(Color color, EnumSkillButton drawButton, IDrawSkill iconDrawObject = null)
+        {
+            Color = color;
+            DrawButton = drawButton;
+            IconDrawObject = iconDrawObject;
+        }
 
         /// <summary>
         /// 繪製到Graphics
@@ -38,12 +53,14 @@ namespace RunningBox
             GraphicsPath backFrame = GetBackFrame(rectangle);
 
             pen.Width = 2;
-            if (BindingSkill != null)
+
+            SkillBase bindingSkill = IconDrawObject == null ? null : IconDrawObject.BindingSkill;
+            if (bindingSkill != null)
             {
-                switch (BindingSkill.Status)
+                switch (bindingSkill.Status)
                 {
                     case SkillStatus.Disabled:
-                        if (BindingSkill.Owner != null && BindingSkill.Owner.Energy < BindingSkill.CostEnergy)
+                        if (bindingSkill.Owner != null && bindingSkill.Owner.Energy < bindingSkill.CostEnergy)
                         {
                             g.FillRectangle(Brushes.LightPink, rectangle);
                         }
@@ -56,12 +73,12 @@ namespace RunningBox
                         }
                         break;
                     case SkillStatus.Cooldown:
-                        float cooldownSize = (float)(BindingSkill.CooldownLimit - BindingSkill.CooldownTicks) / BindingSkill.CooldownLimit * rectangle.Height;
+                        float cooldownSize = (float)(bindingSkill.CooldownLimit - bindingSkill.CooldownTicks) / bindingSkill.CooldownLimit * rectangle.Height;
                         g.FillRectangle(Brushes.AliceBlue, rectangle);
                         g.FillRectangle(Brushes.LightSlateGray, rectangle.X, rectangle.Y + rectangle.Height - cooldownSize, rectangle.Width, cooldownSize);
                         break;
                     case SkillStatus.Channeled:
-                        if (BindingSkill.ChanneledLimit < 0)
+                        if (bindingSkill.ChanneledLimit < 0)
                         {
                             if (_Animation > 20)
                             {
@@ -76,7 +93,7 @@ namespace RunningBox
                         }
                         else
                         {
-                            float channeledSize = (float)(BindingSkill.ChanneledLimit - BindingSkill.ChanneledTicks) / BindingSkill.ChanneledLimit * rectangle.Height;
+                            float channeledSize = (float)(bindingSkill.ChanneledLimit - bindingSkill.ChanneledTicks) / bindingSkill.ChanneledLimit * rectangle.Height;
                             g.FillRectangle(Brushes.White, rectangle);
                             g.FillRectangle(_BrushChanneled, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
                         }
@@ -84,11 +101,13 @@ namespace RunningBox
                 }
             }
             g.DrawPath(pen, backFrame);
-            DrawIcon(pen, brush, g, rectangle);
-
+            if (IconDrawObject != null)
+            {
+                IconDrawObject.Draw(g, rectangle);
+            }
             if (DrawButton != RunningBox.EnumSkillButton.None)
             {
-                pen.Width = 2;
+                _PenDrawButton.Width = 2;
                 Rectangle keyRectangle = new Rectangle(rectangle.Left + rectangle.Width - 15, rectangle.Top + rectangle.Height - 15, 20, 25);
                 g.FillEllipse(Brushes.White, keyRectangle);
 
@@ -103,21 +122,12 @@ namespace RunningBox
 
                         break;
                 }
-                g.DrawEllipse(pen, keyRectangle);
-                pen.Width = 1;
-                g.DrawLine(pen, keyRectangle.Left, keyRectangle.Top + keyRectangle.Height / 2, keyRectangle.Left + keyRectangle.Width, keyRectangle.Top + keyRectangle.Height / 2);
-                g.DrawLine(pen, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top + keyRectangle.Height / 2);
+                g.DrawEllipse(_PenDrawButton, keyRectangle);
+                _PenDrawButton.Width = 1;
+                g.DrawLine(_PenDrawButton, keyRectangle.Left, keyRectangle.Top + keyRectangle.Height / 2, keyRectangle.Left + keyRectangle.Width, keyRectangle.Top + keyRectangle.Height / 2);
+                g.DrawLine(_PenDrawButton, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top + keyRectangle.Height / 2);
             }
         }
-
-        /// <summary>
-        /// 繪製圖示內容
-        /// </summary>
-        /// <param name="pen">畫筆物件</param>
-        /// <param name="brush">筆刷物件</param>
-        /// <param name="g">Graphics物件</param>
-        /// <param name="rectangle">繪製區域</param>
-        protected abstract void DrawIcon(Pen pen, SolidBrush brush, Graphics g, Rectangle rectangle);
 
         /// <summary>
         /// 產生圓角區域
@@ -158,6 +168,11 @@ namespace RunningBox
                 _BackFrame.CloseAllFigures();
             }
             return _BackFrame;
+        }
+
+        public override IDraw Copy()
+        {
+            return new DrawSkillFrame(Color, DrawButton, IconDrawObject);
         }
     }
 }

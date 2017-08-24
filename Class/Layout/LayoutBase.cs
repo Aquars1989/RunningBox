@@ -15,6 +15,11 @@ namespace RunningBox
         private bool LocationChange = false;
 
         /// <summary>
+        /// 碰撞形狀
+        /// </summary>
+        public ShapeType CollisonShape { get; set; }
+
+        /// <summary>
         /// 定位點位於寬度的位置
         /// </summary>
         private float _AnchorOfWidth;

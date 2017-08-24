@@ -162,7 +162,7 @@ namespace RunningBox
                 case SkillStatus.Enabled:
                     DoBeforeEnd(SkillEndType.CastBreak);
                     Owner.Energy += CostEnergy;
-                    Status = SkillStatus.Cooldown;
+                    Status = SkillStatus.Disabled;
                     break;
                 case SkillStatus.Channeled:
                     DoBeforeEnd(SkillEndType.ChanneledBreak);
@@ -226,9 +226,8 @@ namespace RunningBox
         /// 取得繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="drawButton">繪製熱鍵</param>
         /// <returns>繪圖物件</returns>
-        public abstract DrawIconBase GetDrawObject(Color color, EnumSkillButton drawButton);
+        public abstract IDrawSkill GetDrawObject(Color color);
     }
 
     /// <summary>
@@ -276,6 +275,6 @@ namespace RunningBox
         /// <summary>
         /// 引導時被中斷
         /// </summary>
-        ChanneledBreak = 1
+        ChanneledBreak = 2
     }
 }

@@ -85,17 +85,17 @@ namespace RunningBox
             if ((DeadType & deadType) != deadType) return;
 
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
-            Owner.Container.Add(new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, 20, 0, Color));
+
+            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, 20, 0, Color);
+            Owner.Container.Add(explosionObject);
 
             for (int i = 0; i < Owner.Container.Count; i++)
             {
                 ObjectActive objectActive = Owner.Container[i] as ObjectActive;
                 if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
 
-                //距離判定
-                //todo
-                double distance = Function.GetDistance(Owner, objectActive, false) - objectActive.Layout.Width/2 - explosionSize;
-                if (distance >= 0) continue;
+                //碰撞判定
+                if (!Function.IsCollison(Owner.Layout, explosionObject.Layout)) continue;
 
                 //檢查目標有無碰撞特性
                 int colliderPower = -1;

@@ -18,13 +18,20 @@ namespace RunningBox
         public ObjectActive BindingObject { get; set; }
 
         /// <summary>
+        /// 線條粗細
+        /// </summary>
+        public int LineWidth { get; set; }
+
+        /// <summary>
         /// 新增能量條繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
+        /// <param name="lineWidth">線條粗細</param>
         /// <param name="bindObject">綁定物件</param>
-        public DrawUiEnergyBar(Color color, ObjectActive bindObject = null)
+        public DrawUiEnergyBar(Color color, int lineWidth, ObjectActive bindObject = null)
         {
             Color = color;
+            LineWidth = lineWidth;
             BindingObject = bindObject;
         }
 
@@ -35,6 +42,9 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public override void Draw(Graphics g, Rectangle rectangle)
         {
+            //SmoothingMode smooth = g.SmoothingMode;
+            //g.SmoothingMode = SmoothingMode.None;
+
             g.FillRectangle(Brushes.AliceBlue, rectangle);
             g.DrawRectangle(Pens.Black, rectangle);
 
@@ -42,14 +52,16 @@ namespace RunningBox
             if (BindingObject != null && BindingObject.EnergyMax > 0)
             {
                 float ratio = BindingObject.Energy / (float)BindingObject.EnergyMax;
-                int widthInside = (int)((rectangle.Width - 4) * Math.Min(ratio, 1));
-                g.FillRectangle(brush, rectangle.Left + 2, rectangle.Top + 2, widthInside, rectangle.Height - 4);
+                int widthInside = (int)((rectangle.Width - LineWidth * 2) * Math.Min(ratio, 1));
+                g.FillRectangle(brush, rectangle.Left + LineWidth, rectangle.Top + LineWidth, widthInside, rectangle.Height - LineWidth * 2);
             }
+
+            //g.SmoothingMode = smooth;
         }
 
         public override IDraw Copy()
         {
-            return new DrawUiEnergyBar(Color, this.BindingObject);
+            return new DrawUiEnergyBar(Color, LineWidth, this.BindingObject);
         }
     }
 }

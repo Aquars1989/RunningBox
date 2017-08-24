@@ -77,7 +77,7 @@ namespace RunningBox
         public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
             if (Status != ObjectStatus.Alive) return;
-            Scene.EffectObjects.Add(new EffectShark(Scene.Sec(2), 10) { CanBreak = false });
+            Scene.EffectObjects.Add(new EffectShark(Scene.Sec(0.6F), 10) { CanBreak = false });
             base.Kill(killer, deadType);
         }
     }

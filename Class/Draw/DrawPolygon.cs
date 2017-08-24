@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
 namespace RunningBox
 {
     /// <summary>
-    /// 畫筆繪圖物件
+    /// 多邊型繪圖物件
     /// </summary>
-    public class DrawPen : IDraw
+    public class DrawPolygon : IDraw
     {
         /// <summary>
         /// 畫筆寬度
@@ -19,7 +20,7 @@ namespace RunningBox
         private Pen _Pen;
         private Color _Color;
         /// <summary>
-        /// 繪製顏色
+        /// 框架顏色
         /// </summary>
         public Color Color
         {
@@ -32,11 +33,26 @@ namespace RunningBox
             }
         }
 
+        private SolidBrush _Brush;
+        private Color _Color2;
+        /// <summary>
+        /// 填滿顏色
+        /// </summary>
+        public Color Color2
+        {
+            get { return _Color2; }
+            set
+            {
+                if (_Color2 == value) return;
+                _Color2 = value;
+                BackBrush();
+            }
+        }
 
         /// <summary>
-        /// 繪製圖形
+        /// 多邊形邊數
         /// </summary>
-        public ShapeType DrawShape { get; set; }
+        public int NumberOfSides { get; set; }
 
         private float _Opacity;
         /// <summary>
@@ -50,6 +66,7 @@ namespace RunningBox
                 if (_Opacity == value) return;
                 _Opacity = value;
                 BackPen();
+                BackBrush();
             }
         }
 
@@ -65,6 +82,7 @@ namespace RunningBox
                 if (_RFix == value) return;
                 _RFix = value;
                 BackPen();
+                BackBrush();
             }
         }
 
@@ -80,6 +98,7 @@ namespace RunningBox
                 if (_GFix == value) return;
                 _GFix = value;
                 BackPen();
+                BackBrush();
             }
         }
 
@@ -95,6 +114,7 @@ namespace RunningBox
                 if (_BFix == value) return;
                 _BFix = value;
                 BackPen();
+                BackBrush();
             }
         }
 
@@ -106,14 +126,16 @@ namespace RunningBox
         /// <summary>
         /// 新增畫筆繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
-        /// <param name="drawShape">繪製圖形</param>
+        /// <param name="color">框架顏色</param>
+        /// <param name="color">填滿顏色</param>
+        /// <param name="numberOfSides">多邊形邊數</param>
         /// <param name="width">畫筆寬度</param>
-        public DrawPen(Color color, ShapeType drawShape, int width)
+        public DrawPolygon(Color color, Color color2, int numberOfSides, int width)
         {
             Color = color;
+            Color2 = color2;
             Width = width;
-            DrawShape = drawShape;
+            NumberOfSides = numberOfSides;
             _Opacity = 1;
             Scale = 1;
         }
@@ -125,7 +147,7 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public void Draw(Graphics g, Rectangle rectangle)
         {
-            if (Width < 1) return;
+            if (Width < 1 || NumberOfSides < 3) return;
 
             Rectangle drawRectangle = rectangle;
             if (Scale != 1)
@@ -136,16 +158,25 @@ namespace RunningBox
             }
 
             Pen pen = GetPen();
+            Brush brush = GetBrush();
             pen.Width = Width;
-            switch (DrawShape)
+
+            int helfWidth = drawRectangle.Width / 2;
+            int helfHeight = drawRectangle.Width / 2;
+            int midX = drawRectangle.Left + helfWidth;
+            int midY = drawRectangle.Top + helfHeight;
+
+            Point[] pots = new Point[NumberOfSides];
+            float partAngle = 360F / NumberOfSides;
+            for (int i = 0; i < NumberOfSides; i++)
             {
-                case RunningBox.ShapeType.Rectangle:
-                    g.DrawRectangle(pen, drawRectangle);
-                    break;
-                case RunningBox.ShapeType.Ellipse:
-                    g.DrawEllipse(pen, drawRectangle);
-                    break;
+                float ang = 180 - i * partAngle + 0.5F;
+                int x = (int)(Math.Sin(ang / 180F * Math.PI) * helfWidth);
+                int y = (int)(Math.Cos(ang / 180F * Math.PI) * helfHeight);
+                pots[i] = new Point(midX + x, midY + y);
             }
+            g.FillPolygon(brush, pots);
+            g.DrawPolygon(pen, pots);
         }
 
         /// <summary>
@@ -154,7 +185,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public IDraw Copy()
         {
-            return new DrawPen(Color, DrawShape, Width) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
+            return new DrawPolygon(Color, Color2, NumberOfSides, Width) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
         }
 
         /// <summary>
@@ -172,6 +203,20 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得筆刷物件
+        /// </summary>
+        /// <returns>筆刷物件</returns>
+        public SolidBrush GetBrush()
+        {
+            if (_Brush == null)
+            {
+                Color brushColor = ColorFix.GetColor(Color2, Opacity, RFix, GFix, BFix);
+                _Brush = DrawPool.GetBrush(brushColor);
+            }
+            return _Brush;
+        }
+
+        /// <summary>
         /// 返還畫筆物件
         /// </summary>
         public void BackPen()
@@ -183,16 +228,29 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 返還筆刷物件
+        /// </summary>
+        public void BackBrush()
+        {
+            if (_Brush != null)
+            {
+                DrawPool.BackBrush(_Brush);
+                _Brush = null;
+            }
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // 偵測多餘的呼叫
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
                     BackPen();
+                    BackBrush();
                 }
                 disposedValue = true;
             }

@@ -78,11 +78,10 @@ namespace RunningBox
         /// 取得繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="drawButton">繪製熱鍵</param>
         /// <returns>繪圖物件</returns>
-        public override DrawIconBase GetDrawObject(Color color, EnumSkillButton drawButton)
+        public override IDrawSkill GetDrawObject(Color color)
         {
-            DrawIconSprint drawObject = new DrawIconSprint(color, drawButton) { BindingSkill = this };
+            DrawSkillSprint drawObject = new DrawSkillSprint(color, this);
             return drawObject;
         }
 

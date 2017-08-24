@@ -52,9 +52,8 @@ namespace RunningBox
 
                     if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
 
-                    //距離判定
-                    double distance = Function.GetDistance(Owner, objectActive, true);
-                    if (distance >= 0) continue;
+                    //碰撞判定
+                    if (!Function.IsCollison(Owner.Layout, objectActive.Layout)) continue;
 
                     int colliderPower = -1;
                     for (int j = 0; j < objectActive.Propertys.Count; j++)

@@ -30,7 +30,7 @@ namespace RunningBox
         /// <summary>
         /// 繪製圖形
         /// </summary>
-        public DrawShape DrawShape { get; set; }
+        public ShapeType DrawShape { get; set; }
 
         private float _Opacity;
         /// <summary>
@@ -102,7 +102,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <param name="drawShape">繪製圖形</param>
-        public DrawBrush(Color color, DrawShape drawShape)
+        public DrawBrush(Color color, ShapeType drawShape)
         {
             Color = color;
             DrawShape = drawShape;
@@ -128,10 +128,10 @@ namespace RunningBox
             Brush brush = GetBrush();
             switch (DrawShape)
             {
-                case RunningBox.DrawShape.Rectangle:
+                case RunningBox.ShapeType.Rectangle:
                     g.FillRectangle(brush, drawRectangle);
                     break;
-                case RunningBox.DrawShape.Ellipse:
+                case RunningBox.ShapeType.Ellipse:
                     g.FillEllipse(brush, drawRectangle);
                     break;
             }

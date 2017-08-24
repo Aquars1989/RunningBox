@@ -36,12 +36,8 @@
             // 
             this.runningBox1.BackColor = System.Drawing.Color.White;
             this.runningBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.runningBox1.EndDelayLimit = 30;
-            this.runningBox1.EndDelayTicks = 0;
             this.runningBox1.IntervalOfRound = 20;
             this.runningBox1.IntervalOfWave = 1000;
-            this.runningBox1.IsEnding = false;
-            this.runningBox1.IsStart = false;
             this.runningBox1.Level = 0;
             this.runningBox1.Location = new System.Drawing.Point(0, 0);
             this.runningBox1.MainRectangle = new System.Drawing.Rectangle(0, 0, 0, 0);

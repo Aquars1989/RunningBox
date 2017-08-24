@@ -10,8 +10,13 @@ namespace RunningBox
     /// <summary>
     /// 技能:時間減緩繪圖物件
     /// </summary>
-    public class DrawIconBulletTime : DrawIconBase
+    public class DrawSkillBulletTime : DrawUI, IDrawSkill
     {
+        /// <summary>
+        /// 綁定技能
+        /// </summary>
+        public SkillBase BindingSkill { get; set; }
+
         /// <summary>
         /// 動畫進度
         /// </summary>
@@ -21,23 +26,20 @@ namespace RunningBox
         /// 新增技能:時間減緩繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="drawButton">繪製技能熱鍵</param>
-        /// <param name="bindSkill">綁定技能</param>
-        public DrawIconBulletTime(Color color, EnumSkillButton drawButton, SkillBase bindSkill = null)
+        /// <param name="bindingSkill">綁定技能</param>
+        public DrawSkillBulletTime(Color color, SkillBase bindingSkill = null)
         {
             Color = color;
             Animation = 0;
-            DrawButton = drawButton;
-            BindingSkill = bindSkill;
+            BindingSkill = bindingSkill;
         }
 
         /// <summary>
-        /// 繪製圖示
+        /// 繪製到Graphics
         /// </summary>
-        /// <param name="g">畫筆物件</param>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        protected override void DrawIcon(Pen pen, SolidBrush brush, Graphics g, Rectangle rectangle)
+        public override void Draw(Graphics g, Rectangle rectangle)
         {
             int width = rectangle.Width;
             int height = rectangle.Height;
@@ -45,6 +47,7 @@ namespace RunningBox
             int paddingY = (int)(height * 0.1F);
             Rectangle clockRect = new Rectangle(rectangle.Left + paddingX, rectangle.Top + paddingY, width - paddingX * 2, height - paddingY * 2);
 
+            Pen pen = GetPen();
             pen.Width = 1;
             g.DrawEllipse(pen, clockRect);
 
@@ -80,7 +83,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override IDraw Copy()
         {
-            return new DrawIconBulletTime(Color, DrawButton);
+            return new DrawSkillBulletTime(Color, BindingSkill);
         }
     }
 }

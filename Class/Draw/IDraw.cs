@@ -12,7 +12,7 @@ namespace RunningBox
     public interface IDraw : IDisposable
     {
         /// <summary>
-        /// 繪製顏色
+        /// 主要繪製顏色
         /// </summary>
         Color Color { get; set; }
 
@@ -58,7 +58,7 @@ namespace RunningBox
     /// <summary>
     /// 繪製型狀
     /// </summary>
-    public enum DrawShape
+    public enum ShapeType
     {
         /// <summary>
         /// 矩形

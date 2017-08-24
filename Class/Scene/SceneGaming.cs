@@ -41,17 +41,17 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUiEnergyBar(Color.FromArgb(255, 200, 0)));
+        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUiEnergyBar(Colors.EnergyBar, 2));
 
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, null);
+        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawSkillFrame(Color.Black, EnumSkillButton.MouseButtonLeft));
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, null);
+        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawSkillFrame(Color.Black, EnumSkillButton.MouseButtonRight));
         #endregion
 
         #region ===== 技能物件 =====
@@ -70,7 +70,7 @@ namespace RunningBox
                     SkillIcon1.DrawObject.Dispose();
                 }
 
-                SkillIcon1.DrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black, EnumSkillButton.MouseButtonLeft);
+                (SkillIcon1.DrawObject as DrawSkillFrame).IconDrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black);
             }
         }
 
@@ -89,7 +89,7 @@ namespace RunningBox
                     SkillIcon2.DrawObject.Dispose();
                 }
 
-                SkillIcon2.DrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black, EnumSkillButton.MouseButtonRight);
+                (SkillIcon2.DrawObject as DrawSkillFrame).IconDrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black);
             }
         }
         #endregion
@@ -157,22 +157,22 @@ namespace RunningBox
         /// <summary>
         /// 是否開始遊戲
         /// </summary>
-        public bool IsStart { get; set; }
+        protected bool IsStart { get; set; }
 
         /// <summary>
         /// 遊戲是否已結束
         /// </summary>
-        public bool IsEnding { get; set; }
+        protected bool IsEnding { get; set; }
 
         /// <summary>
         /// 遊戲結束延遲回合計數
         /// </summary>
-        public int EndDelayTicks { get; set; }
+        protected int EndDelayTicks { get; set; }
 
         /// <summary>
         /// 遊戲結束延遲回合最大值
         /// </summary>
-        public int EndDelayLimit { get; set; }
+        protected int EndDelayLimit { get; set; }
 
         private Pen _PenRectGaming = new Pen(Color.LightGreen, 2);
         public Pen PenRectGaming
@@ -213,18 +213,21 @@ namespace RunningBox
             }
 
             UIObjects.ClearAllDead();
+            EffectObjects.AllDoBeforeRound();
             if (IsStart)
             {
                 OnBeforeRound();
-                EffectObjects.AllDoBeforeRound();
                 GameObjects.AllAction();
-                EffectObjects.AllDoAfterRound();
                 OnAfterRound();
+            }
 
-                GameObjects.ClearAllDead();
-                UIObjects.ClearAllDead();
-                EffectObjects.ClearAllDisabled();
+            EffectObjects.AllDoAfterRound();
+            GameObjects.ClearAllDead();
+            UIObjects.ClearAllDead();
+            EffectObjects.ClearAllDisabled();
 
+            if (IsStart)
+            {
                 //結束時停止波數增加但不立即停止遊戲
                 if (IsEnding)
                 {
@@ -233,7 +236,7 @@ namespace RunningBox
                         IsEnding = false;
                         IsStart = false;
                     }
-                    EndDelayTicks += SceneIntervalOfRound;
+                    EndDelayTicks += IntervalOfRound;
                 }
                 else
                 {

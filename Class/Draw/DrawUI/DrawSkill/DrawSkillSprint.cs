@@ -10,8 +10,13 @@ namespace RunningBox
     /// <summary>
     /// 技能:衝刺繪圖物件
     /// </summary>
-    public class DrawIconSprint : DrawIconBase
+    public class DrawSkillSprint : DrawUI, IDrawSkill
     {
+        /// <summary>
+        /// 綁定技能
+        /// </summary>
+        public SkillBase BindingSkill { get; set; }
+
         /// <summary>
         /// 動畫進度
         /// </summary>
@@ -21,23 +26,20 @@ namespace RunningBox
         /// 新增技能:衝刺繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
-        /// <param name="drawButton">繪製技能熱鍵</param>
-        /// <param name="bindSkill">綁定技能</param>
-        public DrawIconSprint(Color color, EnumSkillButton drawButton, SkillBase bindSkill = null)
+        /// <param name="bindingSkill">綁定技能</param>
+        public DrawSkillSprint(Color color, SkillBase bindingSkill = null)
         {
             Color = color;
             Animation = 0;
-            DrawButton = drawButton;
-            BindingSkill = bindSkill;
+            BindingSkill = bindingSkill;
         }
 
         /// <summary>
-        /// 繪製圖示
+        /// 繪製到Graphics
         /// </summary>
-        /// <param name="g">畫筆物件</param>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        protected override void DrawIcon(Pen pen, SolidBrush brush, Graphics g, Rectangle rectangle)
+        public override void Draw(Graphics g, Rectangle rectangle)
         {
             if (Animation > 32)
             {
@@ -46,6 +48,7 @@ namespace RunningBox
 
             int ani = Animation / 2 % 4;
 
+            Brush brush = GetBrush();
             float drawX = rectangle.Left + (rectangle.Width * 0.1F), drawY = rectangle.Top + (rectangle.Height * 0.1F);
             float size = rectangle.Width * 0.3F;
             g.FillEllipse(brush, drawX, drawY, size, size);
@@ -71,7 +74,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override IDraw Copy()
         {
-            return new DrawIconSprint(Color, DrawButton);
+            return new DrawSkillSprint(Color, BindingSkill);
         }
     }
 }
