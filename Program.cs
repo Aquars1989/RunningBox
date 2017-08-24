@@ -18,7 +18,7 @@ namespace RunningBox
             Application.SetCompatibleTextRenderingDefault(false);
 
             SetDebug();
-            Application.Run(new TestCollision());
+            Application.Run(new MainForm());
         }
 
         [Conditional("DEBUG")]

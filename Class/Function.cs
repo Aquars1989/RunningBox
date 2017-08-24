@@ -86,10 +86,10 @@ namespace RunningBox
                 switch (type1)
                 {
                     case ShapeType.Ellipse:  //圓型碰撞檢測
-                        float halfWidth1 = rect1.Width / 2;
-                        float halfHeight1 = rect1.Height / 2;
-                        float halfWidth2 = rect2.Width / 2;
-                        float halfHeight2 = rect2.Height / 2;
+                        float halfWidth1 = rect1.Width / 2F;
+                        float halfHeight1 = rect1.Height / 2F;
+                        float halfWidth2 = rect2.Width / 2F;
+                        float halfHeight2 = rect2.Height / 2F;
                         float centerX1 = rect1.Left + halfWidth1;
                         float centerY1 = rect1.Top + halfHeight1;
                         float centerX2 = rect2.Left + halfWidth2;
@@ -100,7 +100,7 @@ namespace RunningBox
 
                         double roation = Math.Atan2(distanceY, distanceX);
                         double radius1 = halfWidth1 == halfHeight1 ? halfWidth1 : Math.Sqrt(Math.Pow(halfWidth1 * Math.Cos(roation), 2) + Math.Pow(halfHeight1 * Math.Sin(roation), 2)); //圓半徑1
-                        double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth1 * Math.Cos(roation), 2) + Math.Pow(halfHeight1 * Math.Sin(roation), 2)); //圓半徑2
+                        double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth2 * Math.Cos(roation), 2) + Math.Pow(halfHeight2 * Math.Sin(roation), 2)); //圓半徑2
                         return distance < radius1 + radius2;
                     case ShapeType.Rectangle://矩形碰撞檢測,已做
                         return true;
@@ -123,24 +123,24 @@ namespace RunningBox
                     ellipse = rect1;
                 }
 
-                float halfWidth1 = rect1.Width / 2;
-                float halfHeight1 = rect1.Height / 2;
-                float halfWidth2 = rect2.Width / 2;
-                float halfHeight2 = rect2.Height / 2;
-                float centerX1 = rect1.Left + halfWidth1;
-                float centerY1 = rect1.Top + halfHeight1;
-                float centerX2 = rect2.Left + halfWidth2;
-                float centerY2 = rect2.Top + halfHeight2;
+                float halfWidth1 = rectangle.Width / 2F;
+                float halfHeight1 = rectangle.Height / 2F;
+                float halfWidth2 = ellipse.Width / 2F;
+                float halfHeight2 = ellipse.Height / 2F;
+                float centerX1 = rectangle.Left + halfWidth1;
+                float centerY1 = rectangle.Top + halfHeight1;
+                float centerX2 = ellipse.Left + halfWidth2;
+                float centerY2 = ellipse.Top + halfHeight2;
                 float distanceX = centerX2 - centerX1;
                 float distanceY = centerY2 - centerY1;
 
-                float dX = Math.Abs(centerX1 - centerX2);
-                float dY = Math.Abs(centerY1 - centerY2);
+                float dX = Math.Abs(distanceX);
+                float dY = Math.Abs(distanceY);
                 float uX = dX > halfWidth1 ? dX - halfWidth1 : 0;
                 float uY = dY > halfHeight1 ? dY - halfHeight1 : 0;
 
                 double roation = Math.Atan2(distanceY, distanceX);
-                double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth1 * Math.Cos(roation), 2) + Math.Pow(halfHeight1 * Math.Sin(roation), 2)); //圓半徑2
+                double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth2 * Math.Cos(roation), 2) + Math.Pow(halfHeight2 * Math.Sin(roation), 2)); //圓半徑2
                 return (uX * uX + uY * uY) < (radius2 * radius2);
             }
         }

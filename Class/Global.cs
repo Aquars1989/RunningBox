@@ -11,7 +11,7 @@ namespace RunningBox
         public static Random Rand = new Random();
         public static int DefaultIntervalOfRound = 20;
         public static int DefaultIntervalOfWave = 1000;
-        public static int DefaultEndDelayLimit = 30000;
+        public static int DefaultEndDelayLimit = 1000;
     }
 
     /// <summary>

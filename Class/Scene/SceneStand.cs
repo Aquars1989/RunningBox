@@ -48,7 +48,7 @@ namespace RunningBox
             {
                 for (int i = 0; i < n; i++)
                 {
-                    int size = Global.Rand.Next(6, 10);
+                    int size = Global.Rand.Next(7, 13);
                     int movesCount = Global.Rand.Next(15, 30);
                     float speed = (Global.Rand.Next(500, 650) - (size * 30)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
@@ -58,9 +58,9 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
-                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
+                    newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
             });
@@ -70,9 +70,9 @@ namespace RunningBox
             {
                 for (int i = 0; i < n; i++)
                 {
-                    int size = Global.Rand.Next(6, 8);
+                    int size = Global.Rand.Next(6, 9);
                     int movesCount = Global.Rand.Next(8, 12);
-                    float speed = (Global.Rand.Next(600, 750) - (size * 30)) * _SpeedFix;
+                    float speed = (Global.Rand.Next(600, 700) - (size * 30)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
@@ -80,9 +80,9 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Blue, ShapeType.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, Sec(1F), 10, 0, true) { AutoCastObject = new AutoCastNormal(1F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
-                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
+                    newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
             });
@@ -101,9 +101,9 @@ namespace RunningBox
 
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
-                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
+                    newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
             });
@@ -121,9 +121,9 @@ namespace RunningBox
                     Point enterPoint = GetEnterPoint();
 
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawBrush(Color.Fuchsia, ShapeType.Ellipse), new TargetTrackPoint(this));
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
-                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
+                    newObject.Propertys.Add(new PropertyCollision(1, null));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 1));
                     GameObjects.Add(newObject);
                 }
@@ -169,7 +169,7 @@ namespace RunningBox
 
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, new DrawImage(Color.Black, Properties.Resources.Mine), new TargetPoint(targetX, targetY));
                     newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, League.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
-                    newObject.Propertys.Add(new PropertyCollision(1, new TargetObject(PlayerObject)));
+                    newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
             });
@@ -179,7 +179,7 @@ namespace RunningBox
         {
             //                                 12345678901234567890123456789012345678901234567890
             //Waves.Add(new WaveLine("Catcher", "111 11111 1111 1111  111 1111 1111 1111   11 11111  "));
-            Waves.Add(new WaveLine("Faster ", "   1    1    1    11   1    1    1    111  1        "));
+            Waves.Add(new WaveLine("Faster ", "1  1    1    1    11   1    1    1    111  1        "));
             //Waves.Add(new WaveLine("Blocker", "             1             1             11         "));
             //Waves.Add(new WaveLine("Group  ", "     4           5           6         7       8    "));
             //Waves.Add(new WaveLine("Mine   ", " 3        4            5           6        7       "));
@@ -189,14 +189,14 @@ namespace RunningBox
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
-            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 6, 6, 150, League.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), new TargetTrackPoint(this));
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, League.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), new TargetTrackPoint(this));
             //SkillSprint skill1 = new SkillSprint(3500, Sec(1), 0, 1000, true);
             SkillShield skill1 = new SkillShield(2000, 0, Sec(1.5F), Sec(2));
             SkillBulletTime skill2 = new SkillBulletTime(1000, 8000, -1, Sec(5), 1);
             PlayerObject.Skills.Add(skill1);
             PlayerObject.Skills.Add(skill2);
             PlayerObject.Propertys.Add(new PropertyCollision(1, null));
-            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 900, 300, Sec(0.2F), Sec(0.5F)));
+            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 200, 600, Sec(0.2F), Sec(0.5F)));
             return PlayerObject;
         }
 

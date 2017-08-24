@@ -42,9 +42,6 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public override void Draw(Graphics g, Rectangle rectangle)
         {
-            //SmoothingMode smooth = g.SmoothingMode;
-            //g.SmoothingMode = SmoothingMode.None;
-
             g.FillRectangle(Brushes.AliceBlue, rectangle);
             g.DrawRectangle(Pens.Black, rectangle);
 
@@ -55,8 +52,6 @@ namespace RunningBox
                 int widthInside = (int)((rectangle.Width - LineWidth * 2) * Math.Min(ratio, 1));
                 g.FillRectangle(brush, rectangle.Left + LineWidth, rectangle.Top + LineWidth, widthInside, rectangle.Height - LineWidth * 2);
             }
-
-            //g.SmoothingMode = smooth;
         }
 
         public override IDraw Copy()

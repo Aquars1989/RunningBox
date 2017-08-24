@@ -35,9 +35,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(506, 352);
+            this.DoubleBuffered = true;
             this.Name = "TestCollision";
             this.Text = "Collision";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.TestCollision_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TestCollision_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TestCollision_MouseMove);
             this.ResumeLayout(false);
 

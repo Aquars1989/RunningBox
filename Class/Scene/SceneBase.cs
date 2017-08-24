@@ -191,7 +191,7 @@ namespace RunningBox
             BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
             BufferGraphics = Graphics.FromImage(BufferImage);
             BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             ThisGraphics = CreateGraphics();
             RoundTimer.Enabled = true;
         }

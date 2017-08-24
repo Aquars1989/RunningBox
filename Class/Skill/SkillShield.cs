@@ -13,7 +13,7 @@ namespace RunningBox
     public class SkillShield : SkillBase
     {
         private PropertyCollision _Collision;
-        private ObjectUI _Effect;
+        private ObjectActive _Effect;
 
         public SkillShield(int costEnergy, int costEnergyPerSec, int channeled, int cooldown)
         {
@@ -52,9 +52,14 @@ namespace RunningBox
                         }
                         _Collision.CollisionPower += 1;
 
-                        _Effect = new ObjectUI(ContentAlignment.MiddleCenter, 0, 0, Owner.Layout.RectWidth + 6, Owner.Layout.RectHeight + 6, new DrawPolygon(Color.Black, Color.FromArgb(150, 255, 255, 200), 6, 1));
+                        int effectWidth = Owner.Layout.RectWidth + 12;
+                        int effectHeight = Owner.Layout.RectHeight + 12;
+                        effectWidth += effectWidth % 2;
+                        effectHeight += effectHeight % 2;
+                        _Effect = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, new DrawPolygon(Color.Black, Color.FromArgb(200, 255, 255, 200), 6, 1), null);
+                        _Effect.Propertys.Add(new PropertyCollision(10, null));
                         _Effect.Layout.DependTarget = new TargetObject(Owner);
-                        Owner.Scene.UIObjects.Add(_Effect);
+                        Owner.Container.Add(_Effect);
                         Status = SkillStatus.Channeled;
                     }
                     break;
