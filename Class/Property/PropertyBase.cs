@@ -28,7 +28,7 @@ namespace RunningBox
         public PropertyStatus Status { get; set; }
 
         /// <summary>
-        /// 特性持續時間最大值(毫秒)
+        /// 特性持續時間最大值(毫秒),小於0為永久
         /// </summary>
         public int DurationLimit { get; set; }
 
@@ -37,6 +37,11 @@ namespace RunningBox
         /// </summary>
         public int DurationTicks { get; set; }
 
+        public PropertyBase()
+        {
+            DurationLimit = -1;
+        }
+
         /// <summary>
         /// 在回合動作最後執行
         /// </summary>
@@ -44,7 +49,7 @@ namespace RunningBox
         {
             if (Status == PropertyStatus.Enabled)
             {
-                if (DurationLimit > 0 && DurationTicks >= DurationLimit)
+                if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
                 {
                     DoBeforeEnd(PropertyEndType.Finish);
                     Status = PropertyStatus.Disabled;

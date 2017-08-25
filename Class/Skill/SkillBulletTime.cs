@@ -13,7 +13,7 @@ namespace RunningBox
     public class SkillBulletTime : SkillBase
     {
         private float _SceneSlow;//實際減慢的速度
-        private ObjectUI _MiniBar;
+        private PropertyUI _MiniBar;
 
         /// <summary>
         /// 減慢程度(1為原速度的50%)
@@ -51,9 +51,8 @@ namespace RunningBox
                     {
                         _SceneSlow = SlowRate;
                         Owner.Scene.SceneSlow += _SceneSlow;
-                        _MiniBar = new ObjectUI(ContentAlignment.MiddleCenter, 0, 20, 30, 6, new DrawUiEnergyBar(Colors.EnergyBar, 1, Owner));
-                        _MiniBar.Layout.DependTarget = new TargetObject(Owner);
-                        Owner.Scene.UIObjects.Add(_MiniBar);
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUIEnergyBar(Colors.EnergyBar, 1, Owner));
+                        Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }
                     break;
@@ -69,7 +68,7 @@ namespace RunningBox
                 case SkillEndType.Finish:
                     {
                         Owner.Scene.SceneSlow -= _SceneSlow;
-                        _MiniBar.Status = ObjectStatus.Dead;
+                        _MiniBar.Status = PropertyStatus.Disabled;
                     }
                     break;
             }
@@ -82,7 +81,7 @@ namespace RunningBox
         /// <returns>繪圖物件</returns>
         public override IDrawSkill GetDrawObject(Color color)
         {
-            DrawSkillBulletTime drawObject = new DrawSkillBulletTime(color, this );
+            DrawSkillBulletTime drawObject = new DrawSkillBulletTime(color, this);
             return drawObject;
         }
 

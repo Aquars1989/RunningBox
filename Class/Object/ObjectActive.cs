@@ -83,6 +83,11 @@ namespace RunningBox
         public PropertyCollection Propertys { get; set; }
 
         /// <summary>
+        /// 給UI特性使用
+        /// </summary>
+        public int UIOffSetY { get; set; }
+
+        /// <summary>
         /// 建立一個互動性活動物件
         /// </summary>
         /// <param name="x">物件中心位置X</param>
@@ -131,6 +136,7 @@ namespace RunningBox
         /// </summary>
         public override void Action()
         {
+            UIOffSetY = 0;
             Skills.AllDoAutoCast();
 
             Skills.AllDoBeforeAction();

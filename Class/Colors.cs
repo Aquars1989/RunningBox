@@ -9,6 +9,7 @@ namespace RunningBox
 {
     class Colors
     {
+        public static Color Channeled = Color.FromArgb(200, 230, 140);
         public static Color EnergyBar = Color.SteelBlue;
     }
 }

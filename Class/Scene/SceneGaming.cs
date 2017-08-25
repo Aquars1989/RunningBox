@@ -41,7 +41,7 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUiEnergyBar(Colors.EnergyBar, 2));
+        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUIEnergyBar(Colors.EnergyBar, 2));
 
         /// <summary>
         /// 技能1顯示物件
@@ -345,7 +345,7 @@ namespace RunningBox
             GameObjects.Add(PlayerObject);
             Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
             Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
-            (EnergyBar.DrawObject as DrawUiEnergyBar).BindingObject = PlayerObject;
+            (EnergyBar.DrawObject as DrawUIEnergyBar).BindingObject = PlayerObject;
             MainRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
 
             Cursor.Hide();

@@ -13,7 +13,7 @@ namespace RunningBox
     public class DrawSkillFrame : DrawUI
     {
         private static Pen _PenDrawButton = new Pen(Color.Black);
-        private static SolidBrush _BrushChanneled = new SolidBrush(Color.FromArgb(200, 230, 140));
+        private static SolidBrush _BrushChanneled = new SolidBrush(Colors.Channeled);
         private GraphicsPath _BackFrame;
         private Rectangle _BackFrameRectangle;
         private int _Animation;
@@ -85,7 +85,7 @@ namespace RunningBox
                                 _Animation %= 20;
                             }
                             int angle = _Animation * 18;
-                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Color.FromArgb(140, 200, 255), Color.FromArgb(245, 255, 240), angle))
+                            using (LinearGradientBrush brush2 = new LinearGradientBrush(rectangle, Colors.Channeled, Color.FromArgb(245, 255, 240), angle))
                             {
                                 g.FillRectangle(brush2, rectangle);
                             }

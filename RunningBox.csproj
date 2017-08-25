@@ -58,8 +58,10 @@
     </Compile>
     <Compile Include="Class\Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawUiEnergyBar.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawUIChanneledBar.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawUIEnergyBar.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
+    <Compile Include="Class\Property\PropertyUI.cs" />
     <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
     <Compile Include="Class\Property\PropertySpeeded.cs" />
     <Compile Include="Class\ColorFix.cs" />

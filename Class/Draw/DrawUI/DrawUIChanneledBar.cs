@@ -8,14 +8,14 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 能量條繪圖物件
+    /// 引導能量條
     /// </summary>
-    public class DrawUIEnergyBar : DrawUI
+    public class DrawUIChanneledBar : DrawUI
     {
         /// <summary>
-        /// 綁定物件
+        /// 綁定技能物件
         /// </summary>
-        public ObjectActive BindingObject { get; set; }
+        public SkillBase BindingSkill { get; set; }
 
         /// <summary>
         /// 線條粗細
@@ -27,12 +27,12 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <param name="lineWidth">線條粗細</param>
-        /// <param name="bindObject">綁定物件</param>
-        public DrawUIEnergyBar(Color color, int lineWidth, ObjectActive bindObject = null)
+        /// <param name="bindObject">綁定技能物件</param>
+        public DrawUIChanneledBar(Color color, int lineWidth, SkillBase bindingSkill = null)
         {
             Color = color;
             LineWidth = lineWidth;
-            BindingObject = bindObject;
+            BindingSkill = bindingSkill;
         }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace RunningBox
             g.DrawRectangle(Pens.Black, rectangle);
 
             SolidBrush brush = GetBrush();
-            if (BindingObject != null && BindingObject.EnergyMax > 0)
+            if (BindingSkill != null && BindingSkill.CooldownLimit > 0)
             {
-                float ratio = BindingObject.Energy / (float)BindingObject.EnergyMax;
+                float ratio = (BindingSkill.ChanneledLimit - BindingSkill.ChanneledTicks) / (float)BindingSkill.ChanneledLimit;
                 int widthInside = (int)((rectangle.Width - LineWidth * 2) * Math.Min(ratio, 1));
                 g.FillRectangle(brush, rectangle.Left + LineWidth, rectangle.Top + LineWidth, widthInside, rectangle.Height - LineWidth * 2);
             }
@@ -56,7 +56,7 @@ namespace RunningBox
 
         public override IDraw Copy()
         {
-            return new DrawUIEnergyBar(Color, LineWidth, this.BindingObject);
+            return new DrawUIChanneledBar(Color, LineWidth, BindingSkill);
         }
     }
 }

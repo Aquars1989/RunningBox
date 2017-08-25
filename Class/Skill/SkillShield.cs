@@ -13,7 +13,8 @@ namespace RunningBox
     public class SkillShield : SkillBase
     {
         private PropertyCollision _Collision;
-        private ObjectActive _Effect;
+        private ObjectActive _ShieldObject;
+        private PropertyUI _MiniBar;
 
         public SkillShield(int costEnergy, int costEnergyPerSec, int channeled, int cooldown)
         {
@@ -56,10 +57,13 @@ namespace RunningBox
                         int effectHeight = Owner.Layout.RectHeight + 12;
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
-                        _Effect = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, new DrawPolygon(Color.Black, Color.FromArgb(200, 255, 255, 200), 6, 1), null);
-                        _Effect.Propertys.Add(new PropertyCollision(10, null));
-                        _Effect.Layout.DependTarget = new TargetObject(Owner);
-                        Owner.Container.Add(_Effect);
+                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, new DrawPolygon(Color.Black, Color.FromArgb(200, 255, 255, 200), 6, 1), null);
+                        _ShieldObject.Propertys.Add(new PropertyCollision(10, null));
+                        _ShieldObject.Layout.DependTarget = new TargetObject(Owner);
+                        Owner.Container.Add(_ShieldObject);
+
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUIChanneledBar(Color.FromArgb(160, 210, 100), 1, this));
+                        Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }
                     break;
@@ -75,7 +79,8 @@ namespace RunningBox
                     {
                         _Collision.CollisionPower -= 1;
                         _Collision = null;
-                        _Effect.Status = ObjectStatus.Dead;
+                        _ShieldObject.Status = ObjectStatus.Dead;
+                        _MiniBar.Status = PropertyStatus.Disabled;
                     }
                     break;
             }
