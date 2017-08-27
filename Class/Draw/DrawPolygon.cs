@@ -54,6 +54,16 @@ namespace RunningBox
         /// </summary>
         public int NumberOfSides { get; set; }
 
+        /// <summary>
+        /// 旋轉角度
+        /// </summary>
+        public float Angle { get; set; }
+
+        /// <summary>
+        /// 每次旋轉角度
+        /// </summary>
+        public float Rotating { get; set; }
+
         private float _Opacity;
         /// <summary>
         /// 不透明度(0~1)
@@ -130,7 +140,9 @@ namespace RunningBox
         /// <param name="color">填滿顏色</param>
         /// <param name="numberOfSides">多邊形邊數</param>
         /// <param name="width">畫筆寬度</param>
-        public DrawPolygon(Color color, Color color2, int numberOfSides, int width)
+        /// <param name="angle">旋轉角度</param>
+        /// <param name="rotating">每次旋轉角度</param>
+        public DrawPolygon(Color color, Color color2, int numberOfSides, int width, float angle, float rotating)
         {
             Color = color;
             Color2 = color2;
@@ -138,6 +150,8 @@ namespace RunningBox
             NumberOfSides = numberOfSides;
             _Opacity = 1;
             Scale = 1;
+            Angle = angle;
+            Rotating = rotating;
         }
 
         /// <summary>
@@ -170,13 +184,14 @@ namespace RunningBox
             float partAngle = 360F / NumberOfSides;
             for (int i = 0; i < NumberOfSides; i++)
             {
-                float ang = 180 - i * partAngle + 0.5F;
-                int x = (int)(Math.Sin(ang / 180F * Math.PI) * helfWidth);
-                int y = (int)(Math.Cos(ang / 180F * Math.PI) * helfHeight);
+                float angle = 180 - i * partAngle + Angle;
+                int x = (int)(Math.Sin(angle / 180F * Math.PI) * helfWidth);
+                int y = (int)(Math.Cos(angle / 180F * Math.PI) * helfHeight);
                 pots[i] = new Point(midX + x, midY + y);
             }
             g.FillPolygon(brush, pots);
             g.DrawPolygon(pen, pots);
+            Angle += Rotating;
         }
 
         /// <summary>
@@ -185,7 +200,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public IDraw Copy()
         {
-            return new DrawPolygon(Color, Color2, NumberOfSides, Width) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
+            return new DrawPolygon(Color, Color2, NumberOfSides, Width, Angle, Rotating) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
         }
 
         /// <summary>
