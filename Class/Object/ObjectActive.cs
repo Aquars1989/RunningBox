@@ -164,10 +164,13 @@ namespace RunningBox
                 double direction = Function.GetAngle(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
 
                 float speed = Speed;
-                if (distance < 100)
+                if (distance < 50)
                 {
-                    speed = (float)(Speed * distance / 100);
+                    distance -= 1;
+                    if (distance < 0) distance = 0;
+                     speed = (float)(Speed * distance / 50);
                 }
+
                 Moves.Add(GetMovePoint(direction, speed));
             }
         }

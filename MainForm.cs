@@ -16,6 +16,7 @@ namespace RunningBox
             InitializeComponent();
 
             Controls.Add(new SceneWelcome() { Dock = DockStyle.Fill });
+            //Controls.Add(new SceneStand() { Dock = DockStyle.Fill });
         }
     }
 }

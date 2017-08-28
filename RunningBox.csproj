@@ -61,6 +61,7 @@
     <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUICounterBar.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
+    <Compile Include="Class\Property\PropertyFreeze.cs" />
     <Compile Include="Class\Property\PropertyUI.cs" />
     <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
     <Compile Include="Class\Property\PropertySpeeded.cs" />
