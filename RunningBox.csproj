@@ -50,6 +50,7 @@
     <Compile Include="Class\AutoCast\AutoCastNormal.cs" />
     <Compile Include="Class\AutoCast\AutoCastBase.cs" />
     <Compile Include="Class\Colors.cs" />
+    <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Class\Draw\DrawPolygon.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillFrame.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
@@ -58,8 +59,7 @@
     </Compile>
     <Compile Include="Class\Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
     <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawUIChanneledBar.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawUIEnergyBar.cs" />
+    <Compile Include="Class\Draw\DrawUI\DrawUICounterBar.cs" />
     <Compile Include="Class\Object\UI\ObjectUI.cs" />
     <Compile Include="Class\Property\PropertyUI.cs" />
     <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
@@ -91,6 +91,12 @@
     <Compile Include="Class\Property\PropertySmoking.cs" />
     <Compile Include="Class\Scene\SceneGaming.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Class\Scene\SceneWelcome.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Class\Scene\SceneWelcome.Designer.cs">
+      <DependentUpon>SceneWelcome.cs</DependentUpon>
     </Compile>
     <Compile Include="Class\Skill\SkillCollection.cs" />
     <Compile Include="Class\Skill\SkillBulletTime.cs" />
@@ -131,6 +137,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
       <DependentUpon>SceneGaming.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Class\Scene\SceneWelcome.resx">
+      <DependentUpon>SceneWelcome.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

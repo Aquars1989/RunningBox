@@ -39,7 +39,7 @@ namespace RunningBox
         {
             Status = SkillStatus.Disabled;
             CostEnergy = costEnergy;
-            CooldownLimit = cooldown;
+            Cooldown = new CounterObject(cooldown);
             SpeedMultiple = speedMultiple;
             SpeedConstant = speedConstant;
             Smoking = smoking;

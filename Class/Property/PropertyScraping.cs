@@ -60,7 +60,7 @@ namespace RunningBox
         public PropertyScraping(int duration, int scrapCount, int scrapWidth, int scrapHeight, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
         {
             Status = PropertyStatus.Enabled;
-            DurationLimit = duration;
+            DurationTime.Limit = duration;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;
             ScrapHeight = scrapHeight;

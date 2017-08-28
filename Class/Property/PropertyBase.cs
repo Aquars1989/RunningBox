@@ -28,18 +28,13 @@ namespace RunningBox
         public PropertyStatus Status { get; set; }
 
         /// <summary>
-        /// 特性持續時間最大值(毫秒),小於0為永久
+        /// 特性持續時間計時器(毫秒)
         /// </summary>
-        public int DurationLimit { get; set; }
-
-        /// <summary>
-        /// 特性持續時間計數(毫秒)
-        /// </summary>
-        public int DurationTicks { get; set; }
+        public CounterObject DurationTime { get; private set; }
 
         public PropertyBase()
         {
-            DurationLimit = -1;
+            DurationTime = new CounterObject(-1);
         }
 
         /// <summary>
@@ -49,12 +44,15 @@ namespace RunningBox
         {
             if (Status == PropertyStatus.Enabled)
             {
-                if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
+                if (DurationTime.IsFull)
                 {
                     DoBeforeEnd(PropertyEndType.Finish);
                     Status = PropertyStatus.Disabled;
                 }
-                DurationTicks += Owner.Scene.SceneIntervalOfRound;
+                else
+                {
+                    DurationTime.Value += Owner.Scene.SceneIntervalOfRound;
+                }
             }
         }
 

@@ -30,14 +30,14 @@ namespace RunningBox
         public ObjectActive Owner { get; set; }
 
         /// <summary>
-        /// 技能冷卻時間最大值(毫秒)
+        /// 技能冷卻時間計數器(毫秒)
         /// </summary>
-        public int CooldownLimit { get; set; }
+        public CounterObject Cooldown { get; protected set; }
 
         /// <summary>
-        /// 技能冷卻時間計數(毫秒)
+        /// 引導型技能引導時間計數器(毫秒)
         /// </summary>
-        public int CooldownTicks { get; set; }
+        public CounterObject Channeled { get; protected set; }
 
         /// <summary>
         /// 技能耗費能量
@@ -48,16 +48,6 @@ namespace RunningBox
         /// 引導型技能每秒耗費能量
         /// </summary>
         public int CostEnergyPerSec { get; set; }
-
-        /// <summary>
-        /// 引導型技能引導時間最大值(毫秒)
-        /// </summary>
-        public int ChanneledLimit { get; set; }
-
-        /// <summary>
-        /// 引導型技能引導時間計數(毫秒)
-        /// </summary>
-        public int ChanneledTicks { get; set; }
 
         private SkillStatus _Status;
         /// <summary>
@@ -74,10 +64,10 @@ namespace RunningBox
                 switch (_Status)
                 {
                     case SkillStatus.Cooldown:
-                        CooldownTicks = 0;
+                        Cooldown.Value = 0;
                         break;
                     case SkillStatus.Channeled:
-                        ChanneledTicks = 0;
+                        Channeled.Value = 0;
                         break;
                 }
             }
@@ -100,9 +90,9 @@ namespace RunningBox
                         Status = SkillStatus.Enabled;
                         Target = target;
                     }
-                    else if (Owner.Energy > CostEnergy)
+                    else if (Owner.Energy.Value > CostEnergy)
                     {
-                        Owner.Energy -= CostEnergy;
+                        Owner.Energy.Value -= CostEnergy;
                         Status = SkillStatus.Enabled;
                         Target = target;
                     }
@@ -119,21 +109,21 @@ namespace RunningBox
             switch (Status)
             {
                 case SkillStatus.Channeled:
-                    if (ChanneledLimit <= 0 || ChanneledTicks < ChanneledLimit)
-                    {
-                        ChanneledTicks += Owner.Scene.SceneIntervalOfRound;
-                    }
-                    else
+                    if (Channeled.IsFull)
                     {
                         DoBeforeEnd(SkillEndType.Finish);
                         Status = SkillStatus.Cooldown;
                         goto case SkillStatus.Cooldown;
                     }
+                    else
+                    {
+                        Channeled.Value += Owner.Scene.SceneIntervalOfRound;
+                    }
 
                     int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec + 0.5F);
-                    if (Owner.Energy >= costEnergy)
+                    if (Owner.Energy.Value >= costEnergy)
                     {
-                        Owner.Energy -= costEnergy;
+                        Owner.Energy.Value -= costEnergy;
                     }
                     else
                     {
@@ -143,11 +133,14 @@ namespace RunningBox
                     }
                     break;
                 case SkillStatus.Cooldown:
-                    if (CooldownTicks >= CooldownLimit)
+                    if (Cooldown.IsFull)
                     {
                         Status = SkillStatus.Disabled;
                     }
-                    CooldownTicks += Owner.Scene.SceneIntervalOfRound;
+                    else
+                    {
+                        Cooldown.Value += Owner.Scene.SceneIntervalOfRound;
+                    }
                     break;
             }
         }
@@ -161,7 +154,7 @@ namespace RunningBox
             {
                 case SkillStatus.Enabled:
                     DoBeforeEnd(SkillEndType.CastBreak);
-                    Owner.Energy += CostEnergy;
+                    Owner.Energy.Value += CostEnergy;
                     Status = SkillStatus.Disabled;
                     break;
                 case SkillStatus.Channeled:

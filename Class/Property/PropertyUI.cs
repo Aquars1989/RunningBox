@@ -37,7 +37,7 @@ namespace RunningBox
             Status = PropertyStatus.Enabled;
             Size = size;
             DrawObject = drawObject;
-            DurationLimit = duration;
+            DurationTime.Limit = duration;
         }
 
         public override void DoAfterDraw(Graphics g)

@@ -31,7 +31,6 @@ namespace RunningBox
             Layout.Width = width;
             Layout.Height = height;
 
-            LifeLimit = -1;
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
             Speed = speed;

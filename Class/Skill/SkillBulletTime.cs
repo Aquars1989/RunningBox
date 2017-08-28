@@ -33,8 +33,8 @@ namespace RunningBox
             Status = SkillStatus.Disabled;
             CostEnergy = costEnergy;
             CostEnergyPerSec = costEnergyPerSec;
-            ChanneledLimit = channeled;
-            CooldownLimit = cooldown;
+            Channeled = new CounterObject(channeled);
+            Cooldown = new CounterObject(cooldown);
             SlowRate = slowRate;
         }
 
@@ -51,7 +51,7 @@ namespace RunningBox
                     {
                         _SceneSlow = SlowRate;
                         Owner.Scene.SceneSlow += _SceneSlow;
-                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUIEnergyBar(Colors.EnergyBar, 1, Owner));
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Colors.EnergyBar, 1, false, Owner.Energy));
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }

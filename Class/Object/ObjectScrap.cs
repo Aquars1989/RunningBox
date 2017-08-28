@@ -12,14 +12,9 @@ namespace RunningBox
     public class ObjectScrap : ObjectBase
     {
         /// <summary>
-        /// 存活時間計數(毫秒)
+        /// 存活時間計數器(毫秒)
         /// </summary>
-        public int LifeTicks { get; set; }
-
-        /// <summary>
-        /// 存活時間最大值(毫秒),小於0為永久
-        /// </summary>
-        public int LifeLimit { get; set; }
+        public CounterObject Life { get; private set; }
 
         /// <summary>
         /// 移動速度
@@ -66,14 +61,14 @@ namespace RunningBox
 
             Status = ObjectStatus.Alive;
             Speed = speed;
-            LifeLimit = life;
+            Life = new CounterObject(life);
             Direction = direction;
             Color = color;
         }
 
         public override void Action()
         {
-            if (LifeLimit >= 0 && LifeTicks >= LifeLimit)
+            if (Life.IsFull)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }
@@ -82,13 +77,13 @@ namespace RunningBox
                 PointF move = GetMovePoint(Direction, Speed);
                 Layout.X += move.X;
                 Layout.Y += move.Y;
+                Life.Value += Scene.SceneIntervalOfRound;
             }
-            LifeTicks += Scene.SceneIntervalOfRound;
         }
 
         public override void Draw(Graphics g)
         {
-            int alpha = (int)(255F / LifeLimit * (LifeLimit - LifeTicks));
+            int alpha = (int)((1F - Life.GetRatio()) * 255F + 0.5F);
             if (alpha < 0) alpha = 0;
             else if (alpha > 255) alpha = 255;
 

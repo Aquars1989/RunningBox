@@ -158,6 +158,24 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 取得指定類型的物件
+        /// </summary>
+        /// <param name="item">活動物件</param>
+        public List<T> GetObjectByType<T>() where T : ObjectBase
+        {
+            List<T> result = new List<T>();
+            foreach (ObjectBase property in _Collection)
+            {
+                T converted = property as T;
+                if (converted != null)
+                {
+                    result.Add(converted);
+                }
+            }
+            return result;
+        }
+
         //禁用Foreach避免新增時錯誤
         //public IEnumerator<ObjectBase> GetEnumerator()
         //{

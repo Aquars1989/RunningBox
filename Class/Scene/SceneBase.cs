@@ -16,10 +16,11 @@ namespace RunningBox
     /// </summary>
     public class SceneBase : UserControl
     {
+        private Timer _RoundTimer = new Timer();
         /// <summary>
         /// 回合計時器
         /// </summary>
-        protected Timer RoundTimer { get; private set; }
+        protected Timer RoundTimer { get { return _RoundTimer; } }
 
         /// <summary>
         /// 場景物件本身的Graphics物件
@@ -61,6 +62,11 @@ namespace RunningBox
         /// 繪製畫面前執行,在此設定繪製參數
         /// </summary>
         public event PaintEventHandler BeforeDraw;
+
+        /// <summary>
+        /// 繪製地板
+        /// </summary>
+        public event PaintEventHandler DrawFloor;
 
         /// <summary>
         /// 繪製UI前執行
@@ -142,6 +148,11 @@ namespace RunningBox
         public ObjectCollection UIObjects { get; private set; }
 
         /// <summary>
+        /// 場景物件集合
+        /// </summary>
+        public ObjectCollection GameObjects { get; private set; }
+
+        /// <summary>
         /// 場景特效集合
         /// </summary>
         public EffectCollection EffectObjects { get; private set; }
@@ -156,11 +167,11 @@ namespace RunningBox
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
 
-            RoundTimer = new Timer();
-            MainRectangle = ClientRectangle;
+            SceneSlow = 1;
             IntervalOfRound = Global.DefaultIntervalOfRound;
             UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
+            GameObjects = new ObjectCollection(this);
             RoundTimer.Tick += RoundTimer_Tick;
         }
 
@@ -188,6 +199,7 @@ namespace RunningBox
 
         private void SceneBase_Load(object sender, EventArgs e)
         {
+            MainRectangle = ClientRectangle;
             BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
             BufferGraphics = Graphics.FromImage(BufferImage);
             BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -208,9 +220,11 @@ namespace RunningBox
         {
             OnBeforeRound();
             EffectObjects.AllDoBeforeRound();
+            GameObjects.AllAction();
             EffectObjects.AllDoAfterRound();
             OnAfterRound();
 
+            GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
             Drawing();
@@ -219,13 +233,15 @@ namespace RunningBox
         /// <summary>
         /// 繪製畫面
         /// </summary>
-        protected virtual void Drawing()
+        protected void Drawing()
         {
             BufferGraphics.Clear(Color.White);
             OnBeforeDraw(BufferGraphics);
             EffectObjects.AllDoBeforeDraw(BufferGraphics);
-            EffectObjects.AllDoBeforeDrawBack(BufferGraphics);
+            EffectObjects.AllDoBeforeDrawFloor(BufferGraphics);
+            OnDrawFloor(BufferGraphics);
             EffectObjects.AllDoBeforeDrawObject(BufferGraphics);
+            GameObjects.AllDrawSelf(BufferGraphics);
             OnBeforeDrawUI(BufferGraphics);
             EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
             UIObjects.AllDrawSelf(BufferGraphics);
@@ -294,6 +310,17 @@ namespace RunningBox
             if (BeforeDraw != null)
             {
                 BeforeDraw(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 繪製地板
+        /// </summary>
+        protected virtual void OnDrawFloor(Graphics g)
+        {
+            if (DrawFloor != null)
+            {
+                DrawFloor(this, new PaintEventArgs(g, this.ClientRectangle));
             }
         }
 
@@ -370,6 +397,45 @@ namespace RunningBox
         public int Round(float round)
         {
             return (int)(round * IntervalOfRound);
+        }
+
+        /// <summary>
+        /// 取得隨機的物件進入點
+        /// </summary>
+        /// <returns>物件進入點</returns>
+        public Point GetEnterPoint()
+        {
+            return GetEnterPoint((EnumDirection)Global.Rand.Next(4));
+        }
+
+        /// <summary>
+        /// 取得特定方向的物件進入點
+        /// </summary>
+        /// <param name="enterSide">進入方向</param>
+        /// <returns>物件進入點</returns>
+        public Point GetEnterPoint(EnumDirection enterSide)
+        {
+            int x = 0, y = 0;
+            switch (enterSide)
+            {
+                case EnumDirection.Left:
+                    x = -Global.Rand.Next(20, 60);
+                    y = Global.Rand.Next(0, Height);
+                    break;
+                case EnumDirection.Right:
+                    x = Width + Global.Rand.Next(20, 60);
+                    y = Global.Rand.Next(0, Height);
+                    break;
+                case EnumDirection.Top:
+                    x = Global.Rand.Next(0, Width);
+                    y = -Global.Rand.Next(20, 60);
+                    break;
+                case EnumDirection.Bottom:
+                    x = Global.Rand.Next(0, Width);
+                    y = Height + Global.Rand.Next(20, 60);
+                    break;
+            }
+            return new Point(x, y);
         }
     }
 }

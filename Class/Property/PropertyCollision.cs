@@ -35,6 +35,7 @@ namespace RunningBox
                 for (int i = 0; i < Owner.Container.Count; i++)
                 {
                     ObjectActive objectActive = Owner.Container[i] as ObjectActive;
+                    if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
 
                     //限定目標
                     if (Target != null)
@@ -48,8 +49,6 @@ namespace RunningBox
                             continue;
                         }
                     }
-
-                    if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
 
                     //碰撞判定
                     if (!Function.IsCollison(Owner.Layout, objectActive.Layout)) continue;

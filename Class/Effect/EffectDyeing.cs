@@ -25,7 +25,7 @@ namespace RunningBox
         /// <summary>
         /// 特效狀態
         /// </summary>
-        public EffectStatus Status { get; set; }
+        public EffectStatus Status { get; private set; }
 
         /// <summary>
         /// 渲染色彩
@@ -33,50 +33,35 @@ namespace RunningBox
         public Color Color { get; set; }
 
         /// <summary>
-        /// 渲染的時間最大值(毫秒)
+        /// 渲染時間計時器(毫秒)
         /// </summary>
-        public int DurationLimit { get; set; }
+        public CounterObject DurationTime { get; private set; }
 
         /// <summary>
-        /// 渲染的時間計數(毫秒)
+        /// 渲染啟用時間計時器(毫秒)
         /// </summary>
-        public int DurationTicks { get; set; }
+        public CounterObject EnablingTime { get; private set; }
 
         /// <summary>
-        /// 渲染啟用時間最大值(毫秒)
+        /// 渲染消退時間計時器(毫秒)
         /// </summary>
-        public int EnablingLimit { get; private set; }
-
-        /// <summary>
-        /// 渲染啟用時間計數(毫秒)
-        /// </summary>
-        public int EnablingTicks { get; set; }
-
-        /// <summary>
-        /// 渲染消退時間最大值(毫秒)
-        /// </summary>
-        public int DisablingLimit { get; private set; }
-
-        /// <summary>
-        /// 渲染消退時間計數(毫秒)
-        /// </summary>
-        public int DisablingTicks { get; set; }
+        public CounterObject DisablingTime { get; private set; }
 
         /// <summary>
         /// 新增逐漸改變畫面顏色的特效
         /// </summary>
         /// <param name="color">要繪製的顏色</param>
-        /// <param name="duration">渲染時間(毫秒),小於0為永久</param>
+        /// <param name="durationTime">渲染時間(毫秒),小於0為永久</param>
         /// <param name="enablingTime">渲染啟用時間(毫秒)</param>
         /// <param name="disablingTime">渲染消退時間(毫秒)</param>
-        public EffectDyeing(Color color, int duration, int enablingTime, int disablingTime)
+        public EffectDyeing(Color color, int durationTime, int enablingTime, int disablingTime)
         {
             CanBreak = true;
             Status = EffectStatus.Enabling;
             Color = color;
-            DurationLimit = duration;
-            EnablingLimit = enablingTime;
-            DisablingLimit = disablingTime;
+            DurationTime = new CounterObject(durationTime);
+            EnablingTime = new CounterObject(enablingTime);
+            DisablingTime = new CounterObject(disablingTime);
         }
 
         public void DoAfterRound()
@@ -84,39 +69,48 @@ namespace RunningBox
             switch (Status)
             {
                 case EffectStatus.Enabling:
-                    if (EnablingTicks >= EnablingLimit)
+                    if (EnablingTime.IsFull)
                     {
                         Status = EffectStatus.Enabled;
                         goto case EffectStatus.Enabled;
                     }
-                    EnablingTicks += Scene.SceneIntervalOfRound;
+                    else
+                    {
+                        EnablingTime.Value += Scene.SceneIntervalOfRound;
+                    }
                     break;
                 case EffectStatus.Enabled:
-                    if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
+                    if (DurationTime.IsFull)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationTicks += Scene.SceneIntervalOfRound;
+                    else
+                    {
+                        DurationTime.Value += Scene.SceneIntervalOfRound;
+                    }
                     break;
                 case EffectStatus.Disabling:
-                    if (DisablingTicks >= DisablingLimit)
+                    if (DisablingTime.IsFull)
                     {
                         Status = EffectStatus.Disabled;
                     }
-                    DisablingTicks+= Scene.SceneIntervalOfRound;;
+                    else
+                    {
+                        DisablingTime.Value += Scene.SceneIntervalOfRound;
+                    }
                     break;
             }
         }
 
-        public void DoBeforeDrawBack(Graphics g)
+        public void DoBeforeDrawFloor(Graphics g)
         {
             switch (Status)
             {
                 case EffectStatus.Enabling:
-                    if (EnablingLimit > 0)
+                    if (EnablingTime.Value > 0)
                     {
-                        int alpha = (int)((float)(EnablingTicks) / EnablingLimit * Color.A);
+                        int alpha = (int)(EnablingTime.GetRatio() * Color.A + 0.5F);
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
                         using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color.R, Color.G, Color.B)))
@@ -132,9 +126,9 @@ namespace RunningBox
                     }
                     break;
                 case EffectStatus.Disabling:
-                    if (DisablingLimit > 0)
+                    if (DisablingTime.Value > 0)
                     {
-                        int alpha = (int)((float)(DisablingLimit - DisablingTicks) / DisablingLimit * Color.A);
+                        int alpha = (int)((1 - DisablingTime.GetRatio()) * Color.A + 0.5F);
 
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;

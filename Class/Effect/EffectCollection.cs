@@ -130,15 +130,15 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 所有集合內特效物件執行DoBeforeDrawBack方法
+        /// 所有集合內特效物件執行DoBeforeDrawFloor方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
-        public void AllDoBeforeDrawBack(Graphics g)
+        public void AllDoBeforeDrawFloor(Graphics g)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
                 IEffect item = _Collection[i];
-                item.DoBeforeDrawBack(g);
+                item.DoBeforeDrawFloor(g);
             }
         }
 

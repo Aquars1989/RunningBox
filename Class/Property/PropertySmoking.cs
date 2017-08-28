@@ -24,7 +24,7 @@ namespace RunningBox
         public PropertySmoking(int duration, int shrinkTime)
         {
             Status = PropertyStatus.Enabled;
-            DurationLimit = duration;
+            DurationTime.Limit = duration;
             ShrinkLimit = shrinkTime;
         }
 

@@ -29,7 +29,7 @@ namespace RunningBox
         public PropertySpeeded(int durationRound, float speededPerSec)
         {
             Status = PropertyStatus.Enabled;
-            DurationLimit = durationRound;
+            DurationTime.Limit = durationRound;
             SpeededPerSec = speededPerSec;
             _SpeededToatl = 0;
         }

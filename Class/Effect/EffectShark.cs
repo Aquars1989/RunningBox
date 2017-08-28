@@ -28,14 +28,9 @@ namespace RunningBox
         public EffectStatus Status { get; private set; }
 
         /// <summary>
-        /// 震動持續的時間最大值(毫秒)
+        /// 震動持續的時間計時器(毫秒)
         /// </summary>
-        public int DurationLimit { get; set; }
-
-        /// <summary>
-        /// 震動持續的時間計數(毫秒)
-        /// </summary>
-        public int DurationTicks { get; set; }
+        public CounterObject DurationTime { get; private set; }
 
         /// <summary>
         /// 震動的強度
@@ -45,13 +40,13 @@ namespace RunningBox
         /// <summary>
         /// 新增畫面震動的特效
         /// </summary>
-        /// <param name="duration">震動持續的時間(毫秒),小於0為永久</param>
+        /// <param name="durationTime">震動持續的時間(毫秒),小於0為永久</param>
         /// <param name="power">震動的強度</param>
-        public EffectShark(int duration, int power)
+        public EffectShark(int durationTime, int power)
         {
             CanBreak = true;
             Status = EffectStatus.Enabled;
-            DurationLimit = duration;
+            DurationTime = new CounterObject(durationTime);
             Power = power;
         }
 
@@ -59,11 +54,14 @@ namespace RunningBox
         {
             if (Status == EffectStatus.Enabled)
             {
-                if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
+                if (DurationTime.IsFull)
                 {
                     Status = EffectStatus.Disabled;
                 }
-                DurationTicks += Scene.SceneIntervalOfRound;
+                else
+                {
+                    DurationTime.Value += Scene.SceneIntervalOfRound;
+                }
             }
         }
 
@@ -83,7 +81,7 @@ namespace RunningBox
         }
 
         public void DoBeforeRound() { }
-        public void DoBeforeDrawBack(Graphics g) { }
+        public void DoBeforeDrawFloor(Graphics g) { }
         public void DoBeforeDrawObject(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
         public void DoBeforeDrawUI(Graphics g) { }

@@ -203,7 +203,7 @@ namespace RunningBox
             for (int i = 0; i < _Collection.Count; i++)
             {
                 PropertyBase item = _Collection[i];
-                item.DoAfterDead(killer,deadType);
+                item.DoAfterDead(killer, deadType);
             }
         }
 
@@ -239,6 +239,24 @@ namespace RunningBox
             {
                 _Collection.Remove(disabledEffect);
             }
+        }
+
+        /// <summary>
+        /// 取得指定類型的特性
+        /// </summary>
+        /// <param name="item">特性物件</param>
+        public List<T> GetPropertyByType<T>() where T : PropertyBase
+        {
+            List<T> result = new List<T>();
+            foreach (PropertyBase property in _Collection)
+            {
+                T converted = property as T;
+                if (converted != null)
+                {
+                    result.Add(converted);
+                }
+            }
+            return result;
         }
 
         //禁用Foreach避免新增時錯誤

@@ -14,6 +14,8 @@ namespace RunningBox
         public MainForm()
         {
             InitializeComponent();
+
+            Controls.Add(new SceneWelcome() { Dock = DockStyle.Fill });
         }
     }
 }

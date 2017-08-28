@@ -12,14 +12,9 @@ namespace RunningBox
     public class ObjectSmoke : ObjectBase
     {
         /// <summary>
-        /// 縮小時間計數(毫秒)
+        /// 縮小時間計時器(毫秒)
         /// </summary>
-        public int ShrinkTicks { get; set; }
-
-        /// <summary>
-        /// 縮小時間最大值(毫秒),小於0為永久
-        /// </summary>
-        public int ShrinkLimit { get; set; }
+        public CounterObject ShrinkTime { get; private set; }
 
         /// <summary>
         /// 新增虛擬物件,會逐漸縮小直到消失
@@ -39,7 +34,7 @@ namespace RunningBox
             Layout.Height = height;
 
             Status = ObjectStatus.Alive;
-            ShrinkLimit = shrinkTime;
+            ShrinkTime = new CounterObject(shrinkTime);
             DrawObject = drawObject;
         }
 
@@ -58,21 +53,21 @@ namespace RunningBox
             Layout.Height = layout.RectHeight;
 
             Status = ObjectStatus.Alive;
-            ShrinkLimit = shrinkTime;
+            ShrinkTime = new CounterObject(shrinkTime);
             DrawObject = drawObject;
         }
 
         public override void Action()
         {
-            if (ShrinkLimit >= 0 && ShrinkTicks >= ShrinkLimit)
+            if (ShrinkTime.IsFull)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }
             else
             {
-                Layout.Scale = ((float)(ShrinkLimit - ShrinkTicks) / ShrinkLimit);
+                Layout.Scale = 1F - ShrinkTime.GetRatio();
+                ShrinkTime.Value += Scene.SceneIntervalOfRound;
             }
-            ShrinkTicks += Scene.SceneIntervalOfRound;
         }
     }
 }

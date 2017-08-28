@@ -41,7 +41,7 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUIEnergyBar(Colors.EnergyBar, 2));
+        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, 2, false));
 
         /// <summary>
         /// 技能1顯示物件
@@ -101,25 +101,20 @@ namespace RunningBox
         public float RoundPerWave { get; private set; }
 
         /// <summary>
-        /// 波數技時器
-        /// </summary>
-        private int _WaveTicks;
-
-        /// <summary>
         /// 每波時間(以毫秒為單位,計入場景速度)
         /// </summary>
         public int SceneIntervalOfWave { get; private set; }
 
-        private int _IntervalOfWave;
+        private CounterObject _WaveCounter = new CounterObject(0);
         /// <summary>
         /// 每波時間(以毫秒為單位)
         /// </summary>
         public int IntervalOfWave
         {
-            get { return _IntervalOfWave; }
+            get { return _WaveCounter.Limit; }
             set
             {
-                _IntervalOfWave = value;
+                _WaveCounter.Limit = value;
                 OnIntervalOfWaveChanged();
             }
         }
@@ -138,11 +133,6 @@ namespace RunningBox
         /// 玩家物件
         /// </summary>
         public ObjectActive PlayerObject { get; set; }
-
-        /// <summary>
-        /// 場景物件集合
-        /// </summary>
-        public ObjectCollection GameObjects { get; private set; }
 
         /// <summary>
         /// 分數
@@ -165,14 +155,10 @@ namespace RunningBox
         protected bool IsEnding { get; set; }
 
         /// <summary>
-        /// 遊戲結束延遲回合計數
+        /// 遊戲結束延遲回合計時器
         /// </summary>
-        protected int EndDelayTicks { get; set; }
+        protected CounterObject EndDelay { get; private set; }
 
-        /// <summary>
-        /// 遊戲結束延遲回合最大值
-        /// </summary>
-        protected int EndDelayLimit { get; set; }
 
         private Pen _PenRectGaming = new Pen(Color.LightGreen, 2);
         public Pen PenRectGaming
@@ -184,12 +170,10 @@ namespace RunningBox
 
         public SceneGaming()
         {
-            SceneSlow = 1;
-            EndDelayLimit = Global.DefaultEndDelayLimit;
+            EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
-            GameObjects = new ObjectCollection(this);
 
             UIObjects.Add(SkillIcon1);
             UIObjects.Add(SkillIcon2);
@@ -213,15 +197,16 @@ namespace RunningBox
             }
 
             UIObjects.ClearAllDead();
+
+            OnBeforeRound();
             EffectObjects.AllDoBeforeRound();
             if (IsStart)
             {
-                OnBeforeRound();
                 GameObjects.AllAction();
-                OnAfterRound();
             }
-
             EffectObjects.AllDoAfterRound();
+            OnAfterRound();
+
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
@@ -231,22 +216,25 @@ namespace RunningBox
                 //結束時停止波數增加但不立即停止遊戲
                 if (IsEnding)
                 {
-                    if (EndDelayTicks >= EndDelayLimit)
+                    if (EndDelay.IsFull)
                     {
                         IsEnding = false;
                         IsStart = false;
                     }
-                    EndDelayTicks += IntervalOfRound;
+                    else
+                    {
+                        EndDelay.Value += IntervalOfRound;
+                    }
                 }
                 else
                 {
-                    if (_WaveTicks >= IntervalOfWave)
+                    if (_WaveCounter.IsFull)
                     {
-                        _WaveTicks = 0;
+                        _WaveCounter.Value = 0;
                         Level++;
                         GoWave(Level);
                     }
-                    _WaveTicks += SceneIntervalOfRound;
+                    _WaveCounter.Value += SceneIntervalOfRound;
                 }
             }
             Drawing();
@@ -293,39 +281,6 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 繪製畫面
-        /// </summary>
-        protected override void Drawing()
-        {
-            BufferGraphics.Clear(Color.White);
-            OnBeforeDraw(BufferGraphics);
-            EffectObjects.AllDoBeforeDraw(BufferGraphics);
-
-            //繪製場地邊界
-            EffectObjects.AllDoBeforeDrawBack(BufferGraphics);
-            if (MainRectangle != null)
-            {
-                BufferGraphics.DrawRectangle(_PenRectGaming, MainRectangle);
-            }
-
-            //繪製物件
-            EffectObjects.AllDoBeforeDrawObject(BufferGraphics);
-            GameObjects.AllDrawSelf(BufferGraphics);
-
-            //繪製UI
-            OnBeforeDrawUI(BufferGraphics);
-            EffectObjects.AllDoBeforeDrawUI(BufferGraphics);
-
-            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, 85, 50);
-            UIObjects.AllDrawSelf(BufferGraphics);
-            OnAfterDrawUI(BufferGraphics);
-
-            EffectObjects.AllDoAfterDraw(BufferGraphics);
-            OnAfterDrawReset(BufferGraphics);
-            OnAfterDraw(BufferGraphics);
-        }
-
-        /// <summary>
         /// 開始遊戲
         /// </summary>
         /// <param name="potX">玩家起始點X</param>
@@ -345,12 +300,29 @@ namespace RunningBox
             GameObjects.Add(PlayerObject);
             Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
             Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
-            (EnergyBar.DrawObject as DrawUIEnergyBar).BindingObject = PlayerObject;
-            MainRectangle = new Rectangle(80, 80, Width - 160, Height - 160);
+            (EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
+
+            Padding padding = Global.DefaultMainRectanglePadding;
+            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
 
             Cursor.Hide();
             IsStart = true;
             DoAfterStart();
+        }
+
+        protected override void OnDrawFloor(Graphics g)
+        {
+            if (MainRectangle != null)
+            {
+                BufferGraphics.DrawRectangle(_PenRectGaming, MainRectangle);
+            }
+            base.OnDrawFloor(g);
+        }
+
+        protected override void OnBeforeDraw(Graphics g)
+        {
+            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, 85, 50);
+            base.OnBeforeDraw(g);
         }
 
         /// <summary>
@@ -358,7 +330,7 @@ namespace RunningBox
         /// </summary>
         protected override void OnAfterRound()
         {
-            if (!IsEnding)
+            if (IsStart && !IsEnding)
             {
                 Score += Level;
             }
@@ -390,7 +362,6 @@ namespace RunningBox
         /// 建立玩家物件
         /// </summary>
         public abstract ObjectActive CreatePlayerObject(int potX, int potY);
-
 
         /// <summary>
         /// 每波時間變更
@@ -442,48 +413,9 @@ namespace RunningBox
             EffectObjects.AllBreak();
             PlayerObject = null;
             IsEnding = true;
-            EndDelayTicks = 0;
+            EndDelay.Value = 0;
             Cursor.Show();
             DoAfterEnd();
-        }
-
-        /// <summary>
-        /// 取得隨機的物件進入點
-        /// </summary>
-        /// <returns>物件進入點</returns>
-        public Point GetEnterPoint()
-        {
-            return GetEnterPoint((EnumDirection)Global.Rand.Next(4));
-        }
-
-        /// <summary>
-        /// 取得特定方向的物件進入點
-        /// </summary>
-        /// <param name="enterSide">進入方向</param>
-        /// <returns>物件進入點</returns>
-        public Point GetEnterPoint(EnumDirection enterSide)
-        {
-            int x = 0, y = 0;
-            switch (enterSide)
-            {
-                case EnumDirection.Left:
-                    x = -Global.Rand.Next(20, 60);
-                    y = Global.Rand.Next(0, Height);
-                    break;
-                case EnumDirection.Right:
-                    x = Width + Global.Rand.Next(20, 60);
-                    y = Global.Rand.Next(0, Height);
-                    break;
-                case EnumDirection.Top:
-                    x = Global.Rand.Next(0, Width);
-                    y = -Global.Rand.Next(20, 60);
-                    break;
-                case EnumDirection.Bottom:
-                    x = Global.Rand.Next(0, Width);
-                    y = Height + Global.Rand.Next(20, 60);
-                    break;
-            }
-            return new Point(x, y);
         }
 
         /// <summary>
@@ -605,6 +537,25 @@ namespace RunningBox
                 }
                 return result;
             }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // SceneGaming
+            // 
+            this.MainRectangle = new System.Drawing.Rectangle(0, 0, 150, 150);
+            this.Name = "SceneGaming";
+            this.Load += new System.EventHandler(this.SceneGaming_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void SceneGaming_Load(object sender, EventArgs e)
+        {
+            Padding padding = Global.DefaultMainRectanglePadding;
+            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
         }
     }
 }

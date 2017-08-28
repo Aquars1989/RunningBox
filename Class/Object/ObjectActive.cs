@@ -12,14 +12,14 @@ namespace RunningBox
     public class ObjectActive : ObjectBase
     {
         /// <summary>
-        /// 存活時間計數(毫秒)
+        /// 存活時間計數器(毫秒)
         /// </summary>
-        public int LifeTicks { get; set; }
+        public CounterObject Life { get; private set; }
 
         /// <summary>
-        /// 存活時間最大值(毫秒),小於0為永久
+        /// 能量計數物件
         /// </summary>
-        public int LifeLimit { get; set; }
+        public CounterObject Energy { get; private set; }
 
         /// <summary>
         /// 物件所屬陣營,供技能或特性判定
@@ -46,31 +46,10 @@ namespace RunningBox
         /// </summary>
         public float Speed { get; set; }
 
-        private int _Energy;
-        /// <summary>
-        /// 能量,使用技能用
-        /// </summary>
-        public int Energy
-        {
-            get { return _Energy; }
-            set
-            {
-                _Energy = value;
-                if (_Energy < 0) _Energy = 0;
-                else if (_Energy > EnergyMax) _Energy = EnergyMax;
-            }
-        }
-
-        /// <summary>
-        /// 能量上限,能量不可高於此數值
-        /// </summary>
-        public int EnergyMax { get; set; }
-
         /// <summary>
         /// 每秒自動恢復的能量數
         /// </summary>
         public int EnergyGetPerSec { get; set; }
-
 
         /// <summary>
         /// 活動物件擁有的技能群組
@@ -112,9 +91,9 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             MaxMoves = maxMoves;
             Speed = speed;
-            LifeLimit = life;
             Target = target;
             League = leage;
+            Life.Limit = life;
             DrawObject = drawObject;
         }
 
@@ -126,8 +105,8 @@ namespace RunningBox
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
             Moves = new List<PointF>();
-            EnergyMax = 10000;
-            Energy = 10000;
+            Life = new CounterObject(-1);
+            Energy = new CounterObject(10000, 10000, false);
             EnergyGetPerSec = 2000;
         }
 
@@ -171,7 +150,7 @@ namespace RunningBox
         /// </summary>
         protected virtual void ActionEnergyGet()
         {
-            Energy += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
+            Energy.Value += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
         }
 
         /// <summary>
@@ -181,8 +160,15 @@ namespace RunningBox
         {
             if (Target != null)
             {
+                double distance = Function.GetDistance(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
                 double direction = Function.GetAngle(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
-                Moves.Add(GetMovePoint(direction, Speed));
+
+                float speed = Speed;
+                if (distance < 100)
+                {
+                    speed = (float)(Speed * distance / 100);
+                }
+                Moves.Add(GetMovePoint(direction, speed));
             }
         }
 
@@ -207,8 +193,8 @@ namespace RunningBox
             Layout.X += moveTotalX / Scene.SceneSlow;
             Layout.Y += moveTotalY / Scene.SceneSlow;
 
-            LifeTicks += Scene.SceneIntervalOfRound;
-            if (LifeLimit >= 0 && LifeTicks >= LifeLimit)
+            Life.Value += Scene.SceneIntervalOfRound;
+            if (Life.IsFull)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }

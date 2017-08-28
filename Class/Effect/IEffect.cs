@@ -6,7 +6,7 @@ namespace RunningBox
     /// <summary>
     /// 特效介面
     /// </summary>
-    public interface IEffect 
+    public interface IEffect
     {
         /// <summary>
         /// 是否可被中斷
@@ -21,7 +21,7 @@ namespace RunningBox
         /// <summary>
         /// 特效狀態
         /// </summary>
-        EffectStatus Status { get; }
+        EffectStatus Status { get;}
 
         /// <summary>
         /// 物件活動前執行動作
@@ -41,7 +41,7 @@ namespace RunningBox
         /// <summary>
         /// 繪製背景前執行動作
         /// </summary>
-        void DoBeforeDrawBack(Graphics g);
+        void DoBeforeDrawFloor(Graphics g);
 
         /// <summary>
         /// 背景繪製後，物件繪製前執行動作

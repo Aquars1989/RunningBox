@@ -8,14 +8,14 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 能量條繪圖物件
+    /// 計數器繪圖物件
     /// </summary>
-    public class DrawUIEnergyBar : DrawUI
+    public class DrawUICounterBar : DrawUI
     {
         /// <summary>
-        /// 綁定物件
+        /// 綁定計數器
         /// </summary>
-        public ObjectActive BindingObject { get; set; }
+        public CounterObject BindingCounter { get; set; }
 
         /// <summary>
         /// 線條粗細
@@ -23,16 +23,23 @@ namespace RunningBox
         public int LineWidth { get; set; }
 
         /// <summary>
+        /// 是否反向顯示
+        /// </summary>
+        public bool Reverse { get; set; }
+
+        /// <summary>
         /// 新增能量條繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <param name="lineWidth">線條粗細</param>
+        /// <param name="reverse">是否反向顯示</param>
         /// <param name="bindObject">綁定物件</param>
-        public DrawUIEnergyBar(Color color, int lineWidth, ObjectActive bindObject = null)
+        public DrawUICounterBar(Color color, int lineWidth, bool reverse, CounterObject bindingCounter = null)
         {
             Color = color;
             LineWidth = lineWidth;
-            BindingObject = bindObject;
+            Reverse = reverse;
+            BindingCounter = bindingCounter;
         }
 
         /// <summary>
@@ -46,17 +53,21 @@ namespace RunningBox
             g.DrawRectangle(Pens.Black, rectangle);
 
             SolidBrush brush = GetBrush();
-            if (BindingObject != null && BindingObject.EnergyMax > 0)
+            if (BindingCounter != null && BindingCounter.Value > 0)
             {
-                float ratio = BindingObject.Energy / (float)BindingObject.EnergyMax;
-                int widthInside = (int)((rectangle.Width - LineWidth * 2) * Math.Min(ratio, 1));
-                g.FillRectangle(brush, rectangle.Left + LineWidth, rectangle.Top + LineWidth, widthInside, rectangle.Height - LineWidth * 2);
+                float ratio = Math.Min(BindingCounter.GetRatio(), 1);
+                if (Reverse) ratio = 1 - ratio;
+                int widthInside = (int)((rectangle.Width - LineWidth * 2) * ratio + 0.5F);
+                if (widthInside > 0)
+                {
+                    g.FillRectangle(brush, rectangle.Left + LineWidth, rectangle.Top + LineWidth, widthInside, rectangle.Height - LineWidth * 2);
+                }
             }
         }
 
         public override IDraw Copy()
         {
-            return new DrawUIEnergyBar(Color, LineWidth, this.BindingObject);
+            return new DrawUICounterBar(Color, LineWidth, Reverse, BindingCounter);
         }
     }
 }

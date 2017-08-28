@@ -17,14 +17,9 @@ namespace RunningBox
         public int ScrapCount { get; set; }
 
         /// <summary>
-        /// 縮小時間計數(毫秒)
+        /// 縮小時間計時器(毫秒)
         /// </summary>
-        public int ShrinkTicks { get; set; }
-
-        /// <summary>
-        /// 縮小時間最大值(毫秒)
-        /// </summary>
-        public int ShrinkLimit { get; set; }
+        public CounterObject ShrinkTime { get; private set; }
 
         /// <summary>
         /// 符合指定的死亡方式才會觸發
@@ -42,7 +37,7 @@ namespace RunningBox
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
-            ShrinkLimit = shrinkTime;
+            ShrinkTime = new CounterObject(shrinkTime);
         }
 
 
@@ -51,22 +46,22 @@ namespace RunningBox
             if (Owner.DrawObject == null || (DeadType & deadType) != deadType) return;
 
             Owner.Status = ObjectStatus.Dying;
-            Owner.Propertys.Add(new PropertyScraping((int)(ShrinkLimit * 0.7F + 0.5F), ScrapCount, 2, 2, 50, 100, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
+            Owner.Propertys.Add(new PropertyScraping((int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, 2, 2, 50, 100, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
         }
 
         public override void DoAfterAction()
         {
             if (Owner.Status == ObjectStatus.Dying)
             {
-                if (ShrinkTicks >= ShrinkLimit)
+                if (ShrinkTime.IsFull)
                 {
                     Owner.Status = ObjectStatus.Dead;
                 }
                 else
                 {
-                    Owner.Layout.Scale = (float)(ShrinkLimit - ShrinkTicks) / ShrinkLimit;
+                    Owner.Layout.Scale = 1F - ShrinkTime.GetRatio();
+                    ShrinkTime.Value += Owner.Scene.SceneIntervalOfRound;
                 }
-                ShrinkTicks += Owner.Scene.SceneIntervalOfRound;
             }
         }
 

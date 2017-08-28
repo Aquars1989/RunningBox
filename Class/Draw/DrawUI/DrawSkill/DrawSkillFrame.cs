@@ -60,7 +60,7 @@ namespace RunningBox
                 switch (bindingSkill.Status)
                 {
                     case SkillStatus.Disabled:
-                        if (bindingSkill.Owner != null && bindingSkill.Owner.Energy < bindingSkill.CostEnergy)
+                        if (bindingSkill.Owner != null && bindingSkill.Owner.Energy.Value < bindingSkill.CostEnergy)
                         {
                             g.FillRectangle(Brushes.LightPink, rectangle);
                         }
@@ -73,12 +73,12 @@ namespace RunningBox
                         }
                         break;
                     case SkillStatus.Cooldown:
-                        float cooldownSize = (float)(bindingSkill.CooldownLimit - bindingSkill.CooldownTicks) / bindingSkill.CooldownLimit * rectangle.Height;
+                        float cooldownSize = (1F - bindingSkill.Cooldown.GetRatio()) * rectangle.Height;
                         g.FillRectangle(Brushes.AliceBlue, rectangle);
                         g.FillRectangle(Brushes.LightSlateGray, rectangle.X, rectangle.Y + rectangle.Height - cooldownSize, rectangle.Width, cooldownSize);
                         break;
                     case SkillStatus.Channeled:
-                        if (bindingSkill.ChanneledLimit < 0)
+                        if (bindingSkill.Channeled.Limit < 0)
                         {
                             if (_Animation > 20)
                             {
@@ -93,7 +93,7 @@ namespace RunningBox
                         }
                         else
                         {
-                            float channeledSize = (float)(bindingSkill.ChanneledLimit - bindingSkill.ChanneledTicks) / bindingSkill.ChanneledLimit * rectangle.Height;
+                            float channeledSize = (1F - bindingSkill.Channeled.GetRatio()) * rectangle.Height;
                             g.FillRectangle(Brushes.White, rectangle);
                             g.FillRectangle(_BrushChanneled, rectangle.X, rectangle.Y + rectangle.Height - channeledSize, rectangle.Width, channeledSize);
                         }

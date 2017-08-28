@@ -30,57 +30,40 @@ namespace RunningBox
         public EffectStatus Status { get; private set; }
 
         /// <summary>
-        /// 縮小持續的時間最大值(毫秒)
+        /// 縮小持續的時間計時器(毫秒)
         /// </summary>
-        public int DurationLimit { get; set; }
+        public CounterObject DurationTime { get; private set; }
 
         /// <summary>
-        /// 縮小持續的時間計數(毫秒)
+        /// 用來縮小的時間計時器(毫秒)
         /// </summary>
-        public int DurationTicks { get; set; }
+        public CounterObject EnablingTime { get; private set; }
 
         /// <summary>
-        /// 用來縮小的時間最大值(毫秒)
+        /// 用來還原的時間計時器(毫秒)
         /// </summary>
-        public int EnablingLimit { get; private set; }
-
-        /// <summary>
-        /// 用來縮小的時間計數(毫秒)
-        /// </summary>
-        public int EnablingTicks { get; set; }
-
-        /// <summary>
-        /// 用來還原的時間最大值(毫秒)
-        /// </summary>
-        public int DisablingLimit { get; private set; }
-
-        /// <summary>
-        /// 用來還原的時間計數(毫秒)
-        /// </summary>
-        public int DisablingTicks { get; set; }
+        public CounterObject DisablingTime { get; private set; }
 
         /// <summary>
         /// 各邊界縮小值
         /// </summary>
-        public Padding ShrinkValue { get; set; }
+        public Padding ShrinkValue { get; private set; }
 
         /// <summary>
         /// 新增逐漸限縮場地範圍的特效
         /// </summary>
         /// <param name="shrinkValue">各邊界縮小值</param>
-        /// <param name="duration">縮小持續的時間(毫秒),小於0為永久</param>
+        /// <param name="durationTime">縮小持續的時間(毫秒),小於0為永久</param>
         /// <param name="enablingTime">用來縮小的時間(毫秒)</param>
         /// <param name="disablingTime">用來恢復的時間(毫秒)</param>
-        public EffectShrink(Padding shrinkValue, int duration, int enablingTime, int disablingTime)
+        public EffectShrink(Padding shrinkValue, int durationTime, int enablingTime, int disablingTime)
         {
             CanBreak = true;
             Status = EffectStatus.Enabling;
             ShrinkValue = shrinkValue;
-            DurationLimit = duration;
-            EnablingLimit = enablingTime;
-            DisablingLimit = disablingTime;
-            EnablingTicks = 0;
-            DisablingTicks = 0;
+            DurationTime = new CounterObject(durationTime);
+            EnablingTime = new CounterObject(enablingTime);
+            DisablingTime = new CounterObject(disablingTime);
         }
 
         public void DoAfterRound()
@@ -88,10 +71,10 @@ namespace RunningBox
             switch (Status)
             {
                 case EffectStatus.Enabling: //縮小階段
-                    if (EnablingTicks < EnablingLimit)
+                    if (!EnablingTime.IsFull)
                     {
                         //計算應該修改的比例
-                        float ratio = Scene.SceneIntervalOfRound / (float)(EnablingLimit - EnablingTicks + Scene.SceneIntervalOfRound);
+                        float ratio = Scene.SceneIntervalOfRound / (float)(EnablingTime.Limit - EnablingTime.Value + Scene.SceneIntervalOfRound);
                         int left = (int)((ShrinkValue.Left - _Shrinked.Left) * ratio);
                         int right = (int)((ShrinkValue.Right - _Shrinked.Right) * ratio);
                         int top = (int)((ShrinkValue.Top - _Shrinked.Top) * ratio);
@@ -105,7 +88,7 @@ namespace RunningBox
                             Scene.MainRectangle.Height - top - bottom
                         );
                         _Shrinked = new Padding(_Shrinked.Left + left, _Shrinked.Top + top, _Shrinked.Right + right, _Shrinked.Bottom + bottom);
-                        EnablingTicks += Scene.SceneIntervalOfRound;
+                        EnablingTime.Value += Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -124,18 +107,21 @@ namespace RunningBox
                     }
                     break;
                 case EffectStatus.Enabled: //維持階段
-                    if (DurationLimit >= 0 && DurationTicks >= DurationLimit)
+                    if (DurationTime.IsFull)
                     {
                         Status = EffectStatus.Disabling;
                         goto case EffectStatus.Disabling;
                     }
-                    DurationTicks += Scene.SceneIntervalOfRound;
+                    else
+                    {
+                        DurationTime.Value += Scene.SceneIntervalOfRound;
+                    }
                     break;
                 case EffectStatus.Disabling: //恢復階段
-                    if (DisablingTicks < DisablingLimit)
+                    if (!DisablingTime.IsFull)
                     {
                         //計算應該修改的比例
-                        float ratio = Scene.SceneIntervalOfRound / (float)(DisablingLimit - DisablingTicks + Scene.SceneIntervalOfRound);
+                        float ratio = Scene.SceneIntervalOfRound / (float)(DisablingTime.Limit - DisablingTime.Value + Scene.SceneIntervalOfRound);
                         int left = (int)(_Shrinked.Left * ratio);
                         int right = (int)(_Shrinked.Right * ratio);
                         int top = (int)(_Shrinked.Top * ratio);
@@ -149,7 +135,7 @@ namespace RunningBox
                             Scene.MainRectangle.Height + top + botton
                         );
                         _Shrinked = new Padding(_Shrinked.Left - left, _Shrinked.Top - top, _Shrinked.Right - right, _Shrinked.Bottom - botton);
-                        DisablingTicks += Scene.SceneIntervalOfRound;
+                        DisablingTime.Value += Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -179,7 +165,7 @@ namespace RunningBox
 
         public void DoBeforeDraw(Graphics g) { }
         public void DoBeforeDrawObject(Graphics g) { }
-        public void DoBeforeDrawBack(Graphics g) { }
+        public void DoBeforeDrawFloor(Graphics g) { }
         public void DoAfterDraw(Graphics g) { }
         public void DoBeforeRound() { }
         public void DoBeforeDrawUI(Graphics g) { }
