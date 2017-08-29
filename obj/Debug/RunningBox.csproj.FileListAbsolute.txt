@@ -22,5 +22,5 @@ E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache

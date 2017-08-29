@@ -69,6 +69,19 @@ namespace RunningBox
         /// <summary>
         /// 建立一個互動性活動物件
         /// </summary>
+        public ObjectActive()
+        {
+            Skills = new SkillCollection(this);
+            Propertys = new PropertyCollection(this);
+            Moves = new List<PointF>();
+            Life = new CounterObject(-1);
+            Energy = new CounterObject(10000, 10000, false);
+            EnergyGetPerSec = 2000;
+        }
+
+        /// <summary>
+        /// 建立一個互動性活動物件
+        /// </summary>
         /// <param name="x">物件中心位置X</param>
         /// <param name="y">物件中心位置Y</param>
         /// <param name="maxMoves">最大調整值紀錄數量</param>
@@ -76,12 +89,14 @@ namespace RunningBox
         /// <param name="height">物件高度</param>
         /// <param name="speed">速度</param>
         /// <param name="life">存活時間,小於0為永久</param>
+        /// <param name="collisonShape">碰撞形狀</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, IDraw drawObject, ITarget target)
+        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, IDraw drawObject, ITarget target)
             : this()
         {
+            Layout.CollisonShape = collisonShape;
             Layout.Anchor = ContentAlignment.MiddleCenter;
             Layout.X = x;
             Layout.Y = y;
@@ -95,19 +110,6 @@ namespace RunningBox
             League = leage;
             Life.Limit = life;
             DrawObject = drawObject;
-        }
-
-        /// <summary>
-        /// 建立一個互動性活動物件
-        /// </summary>
-        public ObjectActive()
-        {
-            Skills = new SkillCollection(this);
-            Propertys = new PropertyCollection(this);
-            Moves = new List<PointF>();
-            Life = new CounterObject(-1);
-            Energy = new CounterObject(10000, 10000, false);
-            EnergyGetPerSec = 2000;
         }
 
         /// <summary>
@@ -166,7 +168,7 @@ namespace RunningBox
                 float speed = Speed;
                 if (distance < 50)
                 {
-                    distance -= 1;
+                    distance -= 0.1;
                     if (distance < 0) distance = 0;
                      speed = (float)(Speed * distance / 50);
                 }

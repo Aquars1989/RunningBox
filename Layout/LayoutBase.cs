@@ -29,7 +29,6 @@ namespace RunningBox
         /// </summary>
         private float _AnchorOfHeight;
 
-        private ITarget _DependTarget;
         /// <summary>
         /// 依附目標,有值時會以此目標為原點而非(0,0)
         /// </summary>
@@ -288,7 +287,7 @@ namespace RunningBox
             }
         }
 
-        private float _Scale;
+        private float _Scale = 1;
         /// <summary>
         /// 取得或設定物件的縮放值
         /// </summary>
@@ -339,8 +338,7 @@ namespace RunningBox
 
         public Layout()
         {
-            Anchor = ContentAlignment.TopLeft;
-            Scale = 1;
+            CollisonShape = ShapeType.Ellipse;
         }
 
         /// <summary>

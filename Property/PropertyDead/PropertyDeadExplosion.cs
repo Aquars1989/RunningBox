@@ -86,7 +86,7 @@ namespace RunningBox
 
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
 
-            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, 20, 0, Color);
+            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, Owner.Scene.Sec(0.6F), 0, Color);
             Owner.Container.Add(explosionObject);
 
             for (int i = 0; i < Owner.Container.Count; i++)
@@ -95,7 +95,7 @@ namespace RunningBox
                 if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
 
                 //碰撞判定
-                if (!Function.IsCollison(Owner.Layout, explosionObject.Layout)) continue;
+                if (!Function.IsCollison(objectActive.Layout, explosionObject.Layout)) continue;
 
                 //檢查目標有無碰撞特性
                 int colliderPower = -1;
@@ -124,10 +124,11 @@ namespace RunningBox
             if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.Life.Limit >= 0 && Owner.DrawObject != null)
             {
                 int life = Owner.Life.Limit - Owner.Life.Value;
-                if (life < 60)
+                if (life < Owner.Scene.Sec(1F))
                 {
-                    _OwnerScaleFix = ((life / 2) % 5) * OwnerScaleFix;
-                    _OwnerRFix = ((life / 2) % 5) * OwnerRFix;
+                    int animation = (life / Owner.Scene.Sec(0.05F)) % 5;
+                    _OwnerScaleFix = animation * OwnerScaleFix;
+                    _OwnerRFix = animation * OwnerRFix;
                     Owner.DrawObject.Scale += _OwnerScaleFix;
                     Owner.DrawObject.RFix += _OwnerRFix;
                 }

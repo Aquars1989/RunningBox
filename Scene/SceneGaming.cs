@@ -140,9 +140,9 @@ namespace RunningBox
         public int Score { get; set; }
 
         /// <summary>
-        /// 難度等級
+        /// 波數
         /// </summary>
-        public int Level { get; set; }
+        public int Wave { get; set; }
 
         /// <summary>
         /// 是否開始遊戲
@@ -231,8 +231,8 @@ namespace RunningBox
                     if (_WaveCounter.IsFull)
                     {
                         _WaveCounter.Value = 0;
-                        Level++;
-                        GoWave(Level);
+                        Wave++;
+                        GoWave(Wave);
                     }
                     _WaveCounter.Value += SceneIntervalOfRound;
                 }
@@ -287,7 +287,7 @@ namespace RunningBox
         /// <param name="potY">玩家起始點Y</param>
         public void SetStart(int potX, int potY)
         {
-            Level = 0;
+            Wave = 0;
             Score = 0;
             SceneSlow = 1;
 
@@ -321,7 +321,7 @@ namespace RunningBox
 
         protected override void OnBeforeDraw(Graphics g)
         {
-            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Level, Score), Font, Brushes.Black, 85, 50);
+            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Wave, Score), Font, Brushes.Black, 85, 50);
             base.OnBeforeDraw(g);
         }
 
@@ -332,7 +332,7 @@ namespace RunningBox
         {
             if (IsStart && !IsEnding)
             {
-                Score += Level;
+                Score += Wave;
             }
 
             base.OnAfterRound();

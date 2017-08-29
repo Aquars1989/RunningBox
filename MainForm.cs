@@ -15,8 +15,19 @@ namespace RunningBox
         {
             InitializeComponent();
 
-            Controls.Add(new SceneWelcome() { Dock = DockStyle.Fill });
-            //Controls.Add(new SceneStand() { Dock = DockStyle.Fill });
+            SceneWelcome senceWelcome = new SceneWelcome() { Dock = DockStyle.Fill };
+            senceWelcome.GoSence += (x, e) =>
+            {
+                Controls.Remove(senceWelcome);
+                SceneStand SceneStand = new SceneStand() { Dock = DockStyle.Fill };
+                Controls.Add(SceneStand);
+                senceWelcome.Dispose();
+            };
+            Controls.Add(senceWelcome);
+        }
+
+        void senceWelcome_GoSence(object sender, EventArgs e)
+        {
         }
     }
 }

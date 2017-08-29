@@ -41,6 +41,21 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得位移後位置
+        /// </summary>
+        /// <param name="originX">原點座標X</param>
+        /// <param name="originY">原點座標Y</param>
+        /// <param name="angle">角度</param>
+        /// <param name="speed">距離</param>
+        /// <returns>位移後點位置</returns>
+        public static PointF GetOffsetPoint(float originX, float originY, double angle, float distance)
+        {
+            float moveX = originX + (float)(Math.Cos(angle / 180 * Math.PI) * distance);
+            float moveY = originY + (float)(Math.Sin(angle / 180 * Math.PI) * distance);
+            return new PointF(moveX, moveY);
+        }
+
+        /// <summary>
         /// 取得兩點間的距離
         /// </summary>
         /// <param name="point1">點A</param>

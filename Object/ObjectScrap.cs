@@ -53,6 +53,7 @@ namespace RunningBox
         /// <param name="color">顏色</param>
         public ObjectScrap(float x, float y, int width, int height, float speed, int life, double direction, Color color)
         {
+            Layout.CollisonShape = ShapeType.Ellipse;
             Layout.Anchor = ContentAlignment.MiddleCenter;
             Layout.X = x;
             Layout.Y = y;

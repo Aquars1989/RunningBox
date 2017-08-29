@@ -145,6 +145,7 @@ namespace RunningBox
     [Flags]
     public enum ObjectDeadType
     {
+        All = 255,
         Clear = 1,
         LifeEnd = 2,
         Collision = 4

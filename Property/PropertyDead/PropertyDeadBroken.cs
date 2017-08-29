@@ -47,6 +47,11 @@ namespace RunningBox
         public int ScrapLifeMin { get; set; }
 
         /// <summary>
+        /// 擴散角度
+        /// </summary>
+        public int Radiation { get; set; }
+
+        /// <summary>
         /// 符合指定的死亡方式才會觸發
         /// </summary>
         public ObjectDeadType DeadType { get; set; }
@@ -57,18 +62,20 @@ namespace RunningBox
         /// <param name="scrapCount">產生碎片數量</param>
         /// <param name="scrapWidth">碎片寬度</param>
         /// <param name="scrapHeight">碎片高度</param>
-        /// <param name="deadType">符合指定的死亡方式才會觸發</param>
+        /// <param name="deadType">符合指定的死亡方式才會觸發</param
+        /// <param name="radiation">擴散角度</param>
         /// <param name="scrapSpeedMax">碎片移動速度最大值</param>
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadBroken(int scrapCount, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+        public PropertyDeadBroken(int scrapCount, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int radiation, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;
             ScrapHeight = scrapHeight;
+            Radiation = radiation;
             ScrapSpeedMax = scrapSpeedMax;
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
@@ -93,7 +100,7 @@ namespace RunningBox
             {
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
-                double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * 20;
+                double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
                 Owner.Container.Add(new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, speed, life, scrapDirection, Owner.DrawObject.Color));
             }
         }

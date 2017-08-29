@@ -16,25 +16,6 @@ namespace RunningBox
         public override void Action() { }
 
         /// <summary>
-        /// 使用預設定位點(左上)建立介面物件
-        /// </summary>
-        /// <param name="x">物件左上位置X</param>
-        /// <param name="y">物件左上位置Y</param>
-        /// <param name="width">物件寬度</param>
-        /// <param name="height">物件高度</param>
-        /// <param name="drawObject">繪製物件</param>
-        public ObjectUI(int x, int y, int width, int height, IDraw drawObject)
-        {
-            Layout.Anchor = ContentAlignment.TopLeft;
-            Layout.X = x;
-            Layout.Y = y;
-            Layout.Width = width;
-            Layout.Height = height;
-
-            DrawObject = drawObject;
-        }
-
-        /// <summary>
         /// 使用指定的定位點建立介面物件
         /// </summary>
         /// <param name="anchor">定位點位置X</param>
@@ -45,13 +26,24 @@ namespace RunningBox
         /// <param name="drawObject">繪製物件</param>
         public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, IDraw drawObject)
         {
+            Layout.CollisonShape = ShapeType.Rectangle;
             Layout.Anchor = anchor;
             Layout.X = x;
             Layout.Y = y;
             Layout.Width = width;
             Layout.Height = height;
-
             DrawObject = drawObject;
         }
+
+        /// <summary>
+        /// 使用預設定位點(左上)建立介面物件
+        /// </summary>
+        /// <param name="x">物件左上位置X</param>
+        /// <param name="y">物件左上位置Y</param>
+        /// <param name="width">物件寬度</param>
+        /// <param name="height">物件高度</param>
+        /// <param name="drawObject">繪製物件</param>
+        public ObjectUI(int x, int y, int width, int height, IDraw drawObject) :
+            this(ContentAlignment.TopLeft, x, y, width, height, drawObject) { }
     }
 }

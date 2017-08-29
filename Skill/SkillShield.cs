@@ -16,9 +16,15 @@ namespace RunningBox
         private ObjectActive _ShieldObject;
         private PropertyUI _MiniBar;
 
-        public SkillShield(int costEnergy, int costEnergyPerSec, int channeled, int cooldown)
+        /// <summary>
+        /// 撞擊力量提升
+        /// </summary>
+        public int CollisionPower { get; private set; }
+
+        public SkillShield(int collisionPower, int costEnergy, int costEnergyPerSec, int channeled, int cooldown)
         {
             Status = SkillStatus.Disabled;
+            CollisionPower = collisionPower;
             CostEnergy = costEnergy;
             CostEnergyPerSec = costEnergyPerSec;
             Channeled = new CounterObject(channeled);
@@ -51,14 +57,15 @@ namespace RunningBox
                             Break();
                             return;
                         }
-                        _Collision.CollisionPower += 1;
+                        _Collision.CollisionPower += CollisionPower;
 
                         int effectWidth = Owner.Layout.RectWidth + 12;
                         int effectHeight = Owner.Layout.RectHeight + 12;
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
-                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, new DrawPolygon(Color.FromArgb(170, 170, 0), Color.FromArgb(200, 255, 255, 200), 6, 1, 0, 5), null);
-                        _ShieldObject.Propertys.Add(new PropertyCollision(10, null));
+                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League,ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(170, 170, 0), Color.FromArgb(200, 255, 255, 200), 6, 1, 0, 5), null);
+                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(5, 3,3, ObjectDeadType.All, 360, 150, 300, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
+                        _ShieldObject.Propertys.Add(new PropertyCollision(_Collision.CollisionPower, null));
                         _ShieldObject.Layout.DependTarget = new TargetObject(Owner);
                         Owner.Container.Add(_ShieldObject);
 
@@ -77,9 +84,9 @@ namespace RunningBox
                 case SkillEndType.ChanneledBreak:
                 case SkillEndType.Finish:
                     {
-                        _Collision.CollisionPower -= 1;
+                        _Collision.CollisionPower -= CollisionPower;
                         _Collision = null;
-                        _ShieldObject.Status = ObjectStatus.Dead;
+                        _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
                         _MiniBar.Status = PropertyStatus.Disabled;
                     }
                     break;

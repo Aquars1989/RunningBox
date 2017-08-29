@@ -47,72 +47,72 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\AutoCast\AutoCastNormal.cs" />
-    <Compile Include="Class\AutoCast\AutoCastBase.cs" />
+    <Compile Include="AutoCast\AutoCastNormal.cs" />
+    <Compile Include="AutoCast\AutoCastBase.cs" />
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
-    <Compile Include="Class\Draw\DrawPolygon.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillFrame.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
+    <Compile Include="Draw\DrawPolygon.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillFrame.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Class\Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawUI.cs" />
-    <Compile Include="Class\Draw\DrawUI\DrawUICounterBar.cs" />
-    <Compile Include="Class\Object\UI\ObjectUI.cs" />
-    <Compile Include="Class\Property\PropertyFreeze.cs" />
-    <Compile Include="Class\Property\PropertyUI.cs" />
-    <Compile Include="Class\Property\PropertyDead\PropertyDeadExplosion.cs" />
-    <Compile Include="Class\Property\PropertySpeeded.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
+    <Compile Include="Draw\DrawUI\DrawUI.cs" />
+    <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
+    <Compile Include="Object\UI\ObjectUI.cs" />
+    <Compile Include="Property\PropertyFreeze.cs" />
+    <Compile Include="Property\PropertyUI.cs" />
+    <Compile Include="Property\PropertyDead\PropertyDeadExplosion.cs" />
+    <Compile Include="Property\PropertySpeeded.cs" />
     <Compile Include="Class\ColorFix.cs" />
-    <Compile Include="Class\Draw\DrawPic.cs" />
-    <Compile Include="Class\Draw\DrawPen.cs" />
-    <Compile Include="Class\Draw\DrawBrush.cs" />
-    <Compile Include="Class\Draw\IDraw.cs" />
-    <Compile Include="Class\Effect\EffectCollection.cs" />
-    <Compile Include="Class\Effect\EffectDyeing.cs" />
-    <Compile Include="Class\Effect\EffectShark.cs" />
-    <Compile Include="Class\Effect\EffectShrink.cs" />
-    <Compile Include="Class\Effect\IEffect.cs" />
+    <Compile Include="Draw\DrawPic.cs" />
+    <Compile Include="Draw\DrawPen.cs" />
+    <Compile Include="Draw\DrawBrush.cs" />
+    <Compile Include="Draw\IDraw.cs" />
+    <Compile Include="Effect\EffectCollection.cs" />
+    <Compile Include="Effect\EffectDyeing.cs" />
+    <Compile Include="Effect\EffectShark.cs" />
+    <Compile Include="Effect\EffectShrink.cs" />
+    <Compile Include="Effect\IEffect.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
-    <Compile Include="Class\Object\ObjectActive.cs" />
-    <Compile Include="Class\Object\ObjectCollection.cs" />
-    <Compile Include="Class\Object\ObjectScrap.cs" />
-    <Compile Include="Class\Object\ObjectSmoke.cs" />
-    <Compile Include="Class\Object\ObjectPlayer.cs" />
-    <Compile Include="Class\Object\ObjectBase.cs" />
-    <Compile Include="Class\Property\PropertyBase.cs" />
-    <Compile Include="Class\Property\PropertyCollection.cs" />
-    <Compile Include="Class\Property\PropertyCollision.cs" />
-    <Compile Include="Class\Property\PropertyDead\PropertyDeadCollapse.cs" />
-    <Compile Include="Class\Property\PropertyDead\PropertyDeadBroken.cs" />
-    <Compile Include="Class\Property\PropertyScraping.cs" />
-    <Compile Include="Class\Property\PropertySmoking.cs" />
-    <Compile Include="Class\Scene\SceneGaming.cs">
+    <Compile Include="Object\ObjectActive.cs" />
+    <Compile Include="Object\ObjectCollection.cs" />
+    <Compile Include="Object\ObjectScrap.cs" />
+    <Compile Include="Object\ObjectSmoke.cs" />
+    <Compile Include="Object\ObjectPlayer.cs" />
+    <Compile Include="Object\ObjectBase.cs" />
+    <Compile Include="Property\PropertyBase.cs" />
+    <Compile Include="Property\PropertyCollection.cs" />
+    <Compile Include="Property\PropertyCollision.cs" />
+    <Compile Include="Property\PropertyDead\PropertyDeadCollapse.cs" />
+    <Compile Include="Property\PropertyDead\PropertyDeadBroken.cs" />
+    <Compile Include="Property\PropertyScraping.cs" />
+    <Compile Include="Property\PropertySmoking.cs" />
+    <Compile Include="Scene\SceneGaming.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Class\Scene\SceneWelcome.cs">
+    <Compile Include="Scene\SceneWelcome.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Class\Scene\SceneWelcome.Designer.cs">
+    <Compile Include="Scene\SceneWelcome.Designer.cs">
       <DependentUpon>SceneWelcome.cs</DependentUpon>
     </Compile>
-    <Compile Include="Class\Skill\SkillCollection.cs" />
-    <Compile Include="Class\Skill\SkillBulletTime.cs" />
-    <Compile Include="Class\Layout\LayoutBase.cs" />
-    <Compile Include="Class\Skill\SkillShield.cs" />
-    <Compile Include="Class\Target\ITarget.cs" />
-    <Compile Include="Class\Scene\SceneBase.cs">
+    <Compile Include="Skill\SkillCollection.cs" />
+    <Compile Include="Skill\SkillBulletTime.cs" />
+    <Compile Include="Layout\LayoutBase.cs" />
+    <Compile Include="Skill\SkillShield.cs" />
+    <Compile Include="Target\ITarget.cs" />
+    <Compile Include="Scene\SceneBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Class\Skill\SkillBase.cs" />
-    <Compile Include="Class\Skill\SkillSprint.cs" />
-    <Compile Include="Class\Target\TargetTrackPoint.cs" />
-    <Compile Include="Class\Target\TargetObject.cs" />
-    <Compile Include="Class\Target\TargetPoint.cs" />
-    <Compile Include="Class\Draw\DrawPool.cs" />
+    <Compile Include="Skill\SkillBase.cs" />
+    <Compile Include="Skill\SkillSprint.cs" />
+    <Compile Include="Target\TargetTrackPoint.cs" />
+    <Compile Include="Target\TargetObject.cs" />
+    <Compile Include="Target\TargetPoint.cs" />
+    <Compile Include="Draw\DrawPool.cs" />
     <Compile Include="TestCollision.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,27 +125,27 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Class\Scene\SceneStand.cs">
+    <Compile Include="Scene\SceneStand.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Class\Scene\SceneStand.Designer.cs">
+    <Compile Include="Scene\SceneStand.Designer.cs">
       <DependentUpon>SceneStand.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Class\Scene\SceneBase.resx">
+    <EmbeddedResource Include="Scene\SceneBase.resx">
       <DependentUpon>SceneBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Class\Scene\SceneGaming.resx">
+    <EmbeddedResource Include="Scene\SceneGaming.resx">
       <DependentUpon>SceneGaming.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Class\Scene\SceneWelcome.resx">
+    <EmbeddedResource Include="Scene\SceneWelcome.resx">
       <DependentUpon>SceneWelcome.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Class\Scene\SceneStand.resx">
+    <EmbeddedResource Include="Scene\SceneStand.resx">
       <DependentUpon>SceneStand.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -175,7 +175,9 @@
     <Content Include="ICON.ico" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Move\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

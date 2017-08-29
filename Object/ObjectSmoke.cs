@@ -27,6 +27,7 @@ namespace RunningBox
         /// <param name="drawObject">繪製物件</param>
         public ObjectSmoke(float x, float y, int width, int height, int shrinkTime, IDraw drawObject)
         {
+            Layout.CollisonShape = ShapeType.Ellipse;
             Layout.Anchor = ContentAlignment.MiddleCenter;
             Layout.X = x;
             Layout.Y = y;
@@ -45,17 +46,7 @@ namespace RunningBox
         /// <param name="shrinkTime">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
         public ObjectSmoke(Layout layout, int shrinkTime, IDraw drawObject)
-        {
-            Layout.Anchor = ContentAlignment.MiddleCenter;
-            Layout.X = layout.CenterX;
-            Layout.Y = layout.CenterY;
-            Layout.Width = layout.RectWidth;
-            Layout.Height = layout.RectHeight;
-
-            Status = ObjectStatus.Alive;
-            ShrinkTime = new CounterObject(shrinkTime);
-            DrawObject = drawObject;
-        }
+            : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, shrinkTime, drawObject) { }
 
         public override void Action()
         {

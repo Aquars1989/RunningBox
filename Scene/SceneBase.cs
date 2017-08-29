@@ -166,7 +166,6 @@ namespace RunningBox
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
-
             SceneSlow = 1;
             IntervalOfRound = Global.DefaultIntervalOfRound;
             UIObjects = new ObjectCollection(this);
@@ -193,6 +192,7 @@ namespace RunningBox
             this.BackColor = System.Drawing.Color.White;
             this.Name = "SceneBase";
             this.Load += new System.EventHandler(this.SceneBase_Load);
+            this.SizeChanged += new System.EventHandler(this.SceneBase_SizeChanged);
             this.ResumeLayout(false);
 
         }
@@ -436,6 +436,20 @@ namespace RunningBox
                     break;
             }
             return new Point(x, y);
+        }
+
+        private void SceneBase_SizeChanged(object sender, EventArgs e)
+        {
+            if (BufferImage != null) BufferImage.Dispose();
+            if (BufferGraphics != null) BufferGraphics.Dispose();
+            if (ThisGraphics != null) ThisGraphics.Dispose();
+
+            MainRectangle = ClientRectangle;
+            BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
+            BufferGraphics = Graphics.FromImage(BufferImage);
+            BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            ThisGraphics = CreateGraphics();
         }
     }
 }
