@@ -93,6 +93,6 @@ namespace RunningBox
         public override void DoBeforeActionEnergyGet() { }
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
         public override void DoUseWhenEfficacy(ITarget target) { }
-        public override void DoBeforeEnd(SkillEndType endType) { }
+        public override void DoAfterEnd(SkillEndType endType) { }
     }
 }

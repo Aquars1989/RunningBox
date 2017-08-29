@@ -103,7 +103,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
@@ -124,7 +124,7 @@ namespace RunningBox
 
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 3), new TargetTrackPoint(this));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(10, 4, ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(10, null));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 40));
                     GameObjects.Add(newObject);
@@ -181,14 +181,14 @@ namespace RunningBox
 
         public override void SetWave()
         {
-            //                                 12345678901234567890123456789012345678901234567890
-            //Waves.Add(new WaveLine("Catcher", "111 11111 1111 1111  111 1111 1111 1111   11 11111  "));
-            //Waves.Add(new WaveLine("Faster ", "   1    1    1    11   1    1    1    111  1        "));
-            //Waves.Add(new WaveLine("Blocker", "1            1             1             11         "));
-            Waves.Add(new WaveLine("Group  ", "     4           5           6         7       8    "));
-            Waves.Add(new WaveLine("Mine   ", " 8        4            5           6        7       "));
-            //Waves.Add(new WaveLine("@Dark  ", "              +++               +++                 "));
-            Waves.Add(new WaveLine("@Shrink", "33   +++     +++     +++     +++     +++     +++    "));
+            //                                 123456789012345678901234567890123456789012345678901234
+            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            Waves.Add(new WaveLine("Faster ", "      1      1             1      1             1     "));
+            Waves.Add(new WaveLine("Blocker", "                    1                    1            "));
+            Waves.Add(new WaveLine("Group  ", "   3          4               5                  6    "));
+            Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
+            Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
+            Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
         }
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)

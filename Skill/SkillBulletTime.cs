@@ -60,7 +60,7 @@ namespace RunningBox
         }
 
 
-        public override void DoBeforeEnd(SkillEndType endType)
+        public override void DoAfterEnd(SkillEndType endType)
         {
             switch (endType)
             {

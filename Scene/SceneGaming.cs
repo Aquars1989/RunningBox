@@ -237,6 +237,7 @@ namespace RunningBox
                     _WaveCounter.Value += SceneIntervalOfRound;
                 }
             }
+
             Drawing();
 
             //顯示FPS

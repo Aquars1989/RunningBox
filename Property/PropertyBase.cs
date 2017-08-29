@@ -129,7 +129,12 @@ namespace RunningBox
         /// <summary>
         /// 生效
         /// </summary>
-        Enabled = 1
+        Enabled = 1,
+
+        /// <summary>
+        /// 暫時失效
+        /// </summary>
+        Pause = 2
     }
 
     /// <summary>

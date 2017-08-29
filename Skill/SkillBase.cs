@@ -111,8 +111,8 @@ namespace RunningBox
                 case SkillStatus.Channeled:
                     if (Channeled.IsFull)
                     {
-                        DoBeforeEnd(SkillEndType.Finish);
                         Status = SkillStatus.Cooldown;
+                        DoAfterEnd(SkillEndType.Finish);
                         goto case SkillStatus.Cooldown;
                     }
                     else
@@ -127,8 +127,8 @@ namespace RunningBox
                     }
                     else
                     {
-                        DoBeforeEnd(SkillEndType.ChanneledBreak);
                         Status = SkillStatus.Cooldown;
+                        DoAfterEnd(SkillEndType.ChanneledBreak);
                         goto case SkillStatus.Cooldown;
                     }
                     break;
@@ -153,13 +153,13 @@ namespace RunningBox
             switch (Status)
             {
                 case SkillStatus.Enabled:
-                    DoBeforeEnd(SkillEndType.CastBreak);
                     Owner.Energy.Value += CostEnergy;
                     Status = SkillStatus.Disabled;
+                    DoAfterEnd(SkillEndType.CastBreak);
                     break;
                 case SkillStatus.Channeled:
-                    DoBeforeEnd(SkillEndType.ChanneledBreak);
                     Status = SkillStatus.Cooldown;
+                    DoAfterEnd(SkillEndType.ChanneledBreak);
                     break;
             }
 
@@ -211,9 +211,9 @@ namespace RunningBox
         public abstract void DoAfterDead(ObjectActive killer, ObjectDeadType deadType);
 
         /// <summary>
-        /// 技能結束進入冷卻前執行
+        /// 技能結束卻後(包含中斷)執行
         /// </summary>
-        public abstract void DoBeforeEnd(SkillEndType endType);
+        public abstract void DoAfterEnd(SkillEndType endType);
 
         /// <summary>
         /// 取得繪圖物件

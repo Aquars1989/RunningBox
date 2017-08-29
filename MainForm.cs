@@ -14,7 +14,8 @@ namespace RunningBox
         public MainForm()
         {
             InitializeComponent();
-
+            Controls.Add(new SceneStand() { Dock = DockStyle.Fill });
+            return;
             SceneWelcome senceWelcome = new SceneWelcome() { Dock = DockStyle.Fill };
             senceWelcome.GoSence += (x, e) =>
             {

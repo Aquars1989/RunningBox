@@ -249,7 +249,7 @@ namespace RunningBox
             EffectObjects.AllDoAfterDraw(BufferGraphics);
             OnAfterDrawReset(BufferGraphics);
             OnAfterDraw(BufferGraphics);
-            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
+            //ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
         }
 
         /// <summary>

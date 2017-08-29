@@ -127,10 +127,19 @@ namespace RunningBox
                 if (life < Owner.Scene.Sec(1F))
                 {
                     int animation = (life / Owner.Scene.Sec(0.05F)) % 5;
+                    int animation2 = (life / Owner.Scene.Sec(0.05F));
+                    if (animation2 > 15) animation2 = 15;
                     _OwnerScaleFix = animation * OwnerScaleFix;
                     _OwnerRFix = animation * OwnerRFix;
                     Owner.DrawObject.Scale += _OwnerScaleFix;
                     Owner.DrawObject.RFix += _OwnerRFix;
+
+                    int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
+                    Rectangle rectRange = new Rectangle((int)(Owner.Layout.CenterX - explosionSize / 2), (int)(Owner.Layout.CenterY - explosionSize / 2), explosionSize, explosionSize);
+                    using (Pen pen = new Pen(Color.FromArgb(60 - animation2 * 4, 255, 50, 50)))
+                    {
+                        g.DrawEllipse(pen, rectRange);
+                    }
                 }
             }
             else
