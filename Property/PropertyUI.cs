@@ -24,7 +24,7 @@ namespace RunningBox
         /// <summary>
         /// 繪製物件
         /// </summary>
-        public IDraw DrawObject { get; set; }
+        public DrawBase DrawObject { get; set; }
 
         /// <summary>
         /// 新增依附於物件上的UI特性
@@ -32,7 +32,7 @@ namespace RunningBox
         /// <param name="duration">持續回合數,小於0為永久</param>
         /// <param name="size">UI尺寸</param>
         /// <param name="drawObject">繪製物件</param>
-        public PropertyUI(int duration, Size size, IDraw drawObject)
+        public PropertyUI(int duration, Size size, DrawBase drawObject)
         {
             Status = PropertyStatus.Enabled;
             Size = size;

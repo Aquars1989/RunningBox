@@ -9,93 +9,14 @@ namespace RunningBox
     /// <summary>
     /// 筆刷繪圖物件
     /// </summary>
-    public class DrawBrush : IDraw
+    public class DrawBrush : DrawBase
     {
         private SolidBrush _Brush;
-        private Color _Color;
-        /// <summary>
-        /// 繪製顏色
-        /// </summary>
-        public Color Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color == value) return;
-                _Color = value;
-                BackBrush();
-            }
-        }
 
         /// <summary>
         /// 繪製圖形
         /// </summary>
         public ShapeType DrawShape { get; set; }
-
-        private float _Opacity;
-        /// <summary>
-        /// 不透明度(0~1)
-        /// </summary>
-        public float Opacity
-        {
-            get { return _Opacity; }
-            set
-            {
-                if (_Opacity == value) return;
-                _Opacity = value;
-                BackBrush();
-            }
-        }
-
-        private float _RFix;
-        /// <summary>
-        /// 紅色值調整(-1~1)
-        /// </summary>
-        public float RFix
-        {
-            get { return _RFix; }
-            set
-            {
-                if (_RFix == value) return;
-                _RFix = value;
-                BackBrush();
-            }
-        }
-
-        private float _GFix;
-        /// <summary>
-        /// 綠色值調整(-1~1)
-        /// </summary>
-        public float GFix
-        {
-            get { return _GFix; }
-            set
-            {
-                if (_GFix == value) return;
-                _GFix = value;
-                BackBrush();
-            }
-        }
-
-        private float _BFix;
-        /// <summary>
-        /// 藍色值調整(-1~1)
-        /// </summary>
-        public float BFix
-        {
-            get { return _BFix; }
-            set
-            {
-                if (_BFix == value) return;
-                _BFix = value;
-                BackBrush();
-            }
-        }
-
-        /// <summary>
-        /// 縮放比例調整
-        /// </summary>
-        public float Scale { get; set; }
 
         /// <summary>
         /// 新增筆刷繪圖物件
@@ -106,8 +27,6 @@ namespace RunningBox
         {
             Color = color;
             DrawShape = drawShape;
-            _Opacity = 1;
-            Scale = 1;
         }
 
         /// <summary>
@@ -115,24 +34,17 @@ namespace RunningBox
         /// </summary>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        public void Draw(Graphics g, Rectangle rectangle)
+        public override void Draw(Graphics g, Rectangle rectangle)
         {
-            Rectangle drawRectangle = rectangle;
-            if (Scale != 1)
-            {
-                int scaleX = (int)(((drawRectangle.Width * Scale) - drawRectangle.Width) / 2);
-                int scaleY = (int)(((drawRectangle.Height * Scale) - drawRectangle.Height) / 2);
-                drawRectangle = new Rectangle(rectangle.Left - scaleX, rectangle.Top - scaleY, rectangle.Width + scaleX * 2, rectangle.Height + scaleY * 2);
-            }
-
-            Brush brush = GetBrush();
+            Rectangle drawRectangle = GetScaleRectangle(rectangle);
+            GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:
-                    g.FillRectangle(brush, drawRectangle);
+                    g.FillRectangle(_Brush, drawRectangle);
                     break;
                 case RunningBox.ShapeType.Ellipse:
-                    g.FillEllipse(brush, drawRectangle);
+                    g.FillEllipse(_Brush, drawRectangle);
                     break;
             }
         }
@@ -141,57 +53,35 @@ namespace RunningBox
         /// 複製繪圖物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
-        public IDraw Copy()
+        public override DrawBase Copy()
         {
-            return new DrawBrush(Color, DrawShape) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
-        }
-
-        /// <summary>
-        /// 取得筆刷物件
-        /// </summary>
-        /// <returns>筆刷物件</returns>
-        public SolidBrush GetBrush()
-        {
-            if (_Brush == null)
+            return new DrawBrush(Color, DrawShape)
             {
-                Color brushColor = ColorFix.GetColor(Color, Opacity, RFix, GFix, BFix);
-                _Brush = DrawPool.GetBrush(brushColor);
-            }
-            return _Brush;
+                Scene = this.Scene,
+                Owner = this.Owner,
+                Opacity = this.Opacity,
+                RFix = this.RFix,
+                GFix = this.GFix,
+                BFix = this.BFix,
+                Scale = this.Scale
+            };
         }
 
-        /// <summary>
-        /// 返還筆刷物件
-        /// </summary>
-        public void BackBrush()
+        protected override void OnColorChanged()
         {
-            if (_Brush != null)
-            {
-                DrawPool.BackBrush(_Brush);
-                _Brush = null;
-            }
+            BackBrush(ref _Brush);
+            base.OnColorChanged();
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // 偵測多餘的呼叫
-
-        protected virtual void Dispose(bool disposing)
+        protected override void OnColorFixChanged()
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    BackBrush();
-                }
-                disposedValue = true;
-            }
+            BackBrush(ref _Brush);
+            base.OnColorFixChanged();
         }
 
-        // 加入這個程式碼的目的在正確實作可處置的模式。
-        public void Dispose()
+        protected override void OnDispose()
         {
-            Dispose(true);
+            BackBrush(ref _Brush);
         }
-        #endregion
     }
 }

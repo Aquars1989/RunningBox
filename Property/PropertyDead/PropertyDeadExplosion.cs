@@ -60,7 +60,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="rangeMultiple">爆炸範圍倍數(以所有者大小為基準)</param>
         /// <param name="rangeConstant">爆炸範圍常數</param>
-        /// <param name="collisionPower">爆炸的撞擊力量,撞擊力量小於等於此值會被毀滅</param>
+        /// <param name="collisionPower">爆炸的撞擊力量,撞擊力量小於等於此值會被摧毀</param>
         /// <param name="collisionLeague">爆炸的陣營判定,符合此陣營不會被傷害</param>
         /// <param name="color">爆炸顏色</param>
         /// <param name="ownerScaleFix">快爆炸時的大小調整倍數</param>
@@ -84,6 +84,7 @@ namespace RunningBox
         {
             if ((DeadType & deadType) != deadType) return;
 
+            Owner.Scene.EffectObjects.Add(new EffectShark(Owner.Scene.Sec(0.2F), 5));
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
 
             ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, Owner.Scene.Sec(0.6F), 0, Color);

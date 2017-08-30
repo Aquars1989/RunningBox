@@ -10,12 +10,9 @@ namespace RunningBox
     /// <summary>
     /// 技能:衝刺繪圖物件
     /// </summary>
-    public class DrawSkillSprint : DrawUI, IDrawSkill
+    public class DrawSkillSprint : DrawSkillBase
     {
-        /// <summary>
-        /// 綁定技能
-        /// </summary>
-        public SkillBase BindingSkill { get; set; }
+        private SolidBrush _Brush;
 
         /// <summary>
         /// 動畫進度
@@ -41,27 +38,29 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public override void Draw(Graphics g, Rectangle rectangle)
         {
+            Rectangle drawRectangle = GetScaleRectangle(rectangle);
+
             if (Animation > 32)
             {
                 Animation %= 32;
             }
 
             int ani = Animation / 2 % 4;
+            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.1F), drawY = drawRectangle.Top + (drawRectangle.Height * 0.1F);
+            float size = drawRectangle.Width * 0.3F;
 
-            Brush brush = GetBrush();
-            float drawX = rectangle.Left + (rectangle.Width * 0.1F), drawY = rectangle.Top + (rectangle.Height * 0.1F);
-            float size = rectangle.Width * 0.3F;
-            g.FillEllipse(brush, drawX, drawY, size, size);
+            GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
+            g.FillEllipse(_Brush, drawX, drawY, size, size);
 
 
             do
             {
-                size -= ani * rectangle.Width * 0.3F / 16F;
-                drawX += ani * rectangle.Width * 0.7F / 16F;
-                drawY += ani * rectangle.Width * 0.7F / 16F;
+                size -= ani * drawRectangle.Width * 0.3F / 16F;
+                drawX += ani * drawRectangle.Width * 0.7F / 16F;
+                drawY += ani * drawRectangle.Width * 0.7F / 16F;
                 if (size > 0)
                 {
-                    g.FillEllipse(brush, drawX, drawY, size, size);
+                    g.FillEllipse(_Brush, drawX, drawY, size, size);
                 }
                 ani = 4;
             } while (size > 0);
@@ -72,9 +71,35 @@ namespace RunningBox
         /// 複製繪圖物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
-        public override IDraw Copy()
+        public override DrawBase Copy()
         {
-            return new DrawSkillSprint(Color, BindingSkill);
+            return new DrawSkillSprint(Color, BindingSkill)
+            {
+                Scene = this.Scene,
+                Owner = this.Owner,
+                Opacity = this.Opacity,
+                RFix = this.RFix,
+                GFix = this.GFix,
+                BFix = this.BFix,
+                Scale = this.Scale
+            };
+        }
+
+        protected override void OnColorChanged()
+        {
+            BackBrush(ref _Brush);
+            base.OnColorChanged();
+        }
+
+        protected override void OnColorFixChanged()
+        {
+            BackBrush(ref _Brush);
+            base.OnColorFixChanged();
+        }
+
+        protected override void OnDispose()
+        {
+            BackBrush(ref _Brush);
         }
     }
 }

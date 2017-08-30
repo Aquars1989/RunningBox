@@ -26,9 +26,5 @@ namespace RunningBox
             };
             Controls.Add(senceWelcome);
         }
-
-        void senceWelcome_GoSence(object sender, EventArgs e)
-        {
-        }
     }
 }

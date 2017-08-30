@@ -32,7 +32,7 @@ namespace RunningBox
         {
             if (Owner.DrawObject == null) return;
 
-            IDraw drawSmoke = Owner.DrawObject.Copy();
+            DrawBase drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
             Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke));
         }

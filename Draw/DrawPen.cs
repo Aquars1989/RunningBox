@@ -9,99 +9,19 @@ namespace RunningBox
     /// <summary>
     /// 畫筆繪圖物件
     /// </summary>
-    public class DrawPen : IDraw
+    public class DrawPen : DrawBase
     {
+        private Pen _Pen;
+
         /// <summary>
         /// 畫筆寬度
         /// </summary>
         public int Width { get; set; }
 
-        private Pen _Pen;
-        private Color _Color;
-        /// <summary>
-        /// 繪製顏色
-        /// </summary>
-        public Color Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color == value) return;
-                _Color = value;
-                BackPen();
-            }
-        }
-
-
         /// <summary>
         /// 繪製圖形
         /// </summary>
         public ShapeType DrawShape { get; set; }
-
-        private float _Opacity;
-        /// <summary>
-        /// 不透明度(0~1)
-        /// </summary>
-        public float Opacity
-        {
-            get { return _Opacity; }
-            set
-            {
-                if (_Opacity == value) return;
-                _Opacity = value;
-                BackPen();
-            }
-        }
-
-        private float _RFix;
-        /// <summary>
-        /// 紅色值調整(-1~1)
-        /// </summary>
-        public float RFix
-        {
-            get { return _RFix; }
-            set
-            {
-                if (_RFix == value) return;
-                _RFix = value;
-                BackPen();
-            }
-        }
-
-        private float _GFix;
-        /// <summary>
-        /// 綠色值調整(-1~1)
-        /// </summary>
-        public float GFix
-        {
-            get { return _GFix; }
-            set
-            {
-                if (_GFix == value) return;
-                _GFix = value;
-                BackPen();
-            }
-        }
-
-        private float _BFix;
-        /// <summary>
-        /// 藍色值調整(-1~1)
-        /// </summary>
-        public float BFix
-        {
-            get { return _BFix; }
-            set
-            {
-                if (_BFix == value) return;
-                _BFix = value;
-                BackPen();
-            }
-        }
-
-        /// <summary>
-        /// 縮放比例調整
-        /// </summary>
-        public float Scale { get; set; }
 
         /// <summary>
         /// 新增畫筆繪圖物件
@@ -114,8 +34,6 @@ namespace RunningBox
             Color = color;
             Width = width;
             DrawShape = drawShape;
-            _Opacity = 1;
-            Scale = 1;
         }
 
         /// <summary>
@@ -123,27 +41,20 @@ namespace RunningBox
         /// </summary>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        public void Draw(Graphics g, Rectangle rectangle)
+        public override void Draw(Graphics g, Rectangle rectangle)
         {
             if (Width < 1) return;
 
-            Rectangle drawRectangle = rectangle;
-            if (Scale != 1)
-            {
-                int scaleX = (int)(((drawRectangle.Width * Scale) - drawRectangle.Width) / 2);
-                int scaleY = (int)(((drawRectangle.Height * Scale) - drawRectangle.Height) / 2);
-                drawRectangle = new Rectangle(rectangle.Left - scaleX, rectangle.Top - scaleY, rectangle.Width + scaleX * 2, rectangle.Height + scaleY * 2);
-            }
-
-            Pen pen = GetPen();
-            pen.Width = Width;
+            Rectangle drawRectangle = GetScaleRectangle(rectangle);
+            GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
+            _Pen.Width = Width;
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:
-                    g.DrawRectangle(pen, drawRectangle);
+                    g.DrawRectangle(_Pen, drawRectangle);
                     break;
                 case RunningBox.ShapeType.Ellipse:
-                    g.DrawEllipse(pen, drawRectangle);
+                    g.DrawEllipse(_Pen, drawRectangle);
                     break;
             }
         }
@@ -152,58 +63,35 @@ namespace RunningBox
         /// 複製繪圖物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
-        public IDraw Copy()
+        public override DrawBase Copy()
         {
-            return new DrawPen(Color, DrawShape, Width) { Opacity = this.Opacity, RFix = this.RFix, GFix = this.GFix, BFix = this.BFix, Scale = this.Scale };
-        }
-
-        /// <summary>
-        /// 取得畫筆物件
-        /// </summary>
-        /// <returns>畫筆物件</returns>
-        public Pen GetPen()
-        {
-            if (_Pen == null)
+            return new DrawPen(Color, DrawShape, Width)
             {
-                Color penColor = ColorFix.GetColor(Color, Opacity, RFix, GFix, BFix);
-                _Pen = DrawPool.GetPen(penColor);
-            }
-            return _Pen;
+                Scene = this.Scene,
+                Owner = this.Owner,
+                Opacity = this.Opacity,
+                RFix = this.RFix,
+                GFix = this.GFix,
+                BFix = this.BFix,
+                Scale = this.Scale
+            };
         }
 
-        /// <summary>
-        /// 返還畫筆物件
-        /// </summary>
-        public void BackPen()
+        protected override void OnColorChanged()
         {
-            if (_Pen != null)
-            {
-                DrawPool.BackPen(_Pen);
-                _Pen = null;
-            }
+            BackPen(ref _Pen);
+            base.OnColorChanged();
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // 偵測多餘的呼叫
-
-        protected virtual void Dispose(bool disposing)
+        protected override void OnColorFixChanged()
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    BackPen();
-                }
-                disposedValue = true;
-            }
+            BackPen(ref _Pen);
+            base.OnColorFixChanged();
         }
 
-        // 加入這個程式碼的目的在正確實作可處置的模式。
-        public void Dispose()
+        protected override void OnDispose()
         {
-            // 請勿變更這個程式碼。請將清除程式碼放入上方的 Dispose(bool disposing) 中。
-            Dispose(true);
+            BackPen(ref _Pen);
         }
-        #endregion
     }
 }

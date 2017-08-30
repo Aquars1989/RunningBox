@@ -24,20 +24,43 @@ namespace RunningBox
             get { return Container == null ? null : Container.Scene; }
         }
 
+        private ObjectCollection _Container;
         /// <summary>
         /// 物件歸屬集合
         /// </summary>
-        public ObjectCollection Container { get; set; }
+        public ObjectCollection Container
+        {
+            get { return _Container; }
+            set
+            {
+                _Container = value;
+                if (_DrawObject != null)
+                {
+                    _DrawObject.Scene = Scene;
+                }
+            }
+        }
 
         /// <summary>
         /// 物件狀態
         /// </summary>
         public ObjectStatus Status { get; set; }
 
+        private DrawBase _DrawObject;
         /// <summary>
         /// 繪製物件
         /// </summary>
-        public IDraw DrawObject { get; set; }
+        public DrawBase DrawObject
+        {
+            get { return _DrawObject; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                _DrawObject = value;
+                _DrawObject.Owner = this;
+                _DrawObject.Scene = Scene;
+            }
+        }
 
         /// <summary>
         /// 物件配置方式

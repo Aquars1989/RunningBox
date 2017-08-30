@@ -51,7 +51,7 @@ namespace RunningBox
                     {
                         _SceneSlow = SlowRate;
                         Owner.Scene.SceneSlow += _SceneSlow;
-                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Colors.EnergyBar, 1, false, Owner.Energy));
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Colors.EnergyBar, Color.Black, Color.White, 1, false, Owner.Energy));
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }
@@ -79,7 +79,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public override IDrawSkill GetDrawObject(Color color)
+        public override DrawSkillBase GetDrawObject(Color color)
         {
             DrawSkillBulletTime drawObject = new DrawSkillBulletTime(color, this);
             return drawObject;

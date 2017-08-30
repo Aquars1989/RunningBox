@@ -8,9 +8,9 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 技能:時間減緩繪圖物件
+    /// 技能:護盾繪圖物件
     /// </summary>
-    public class DrawSkillBulletTime : DrawSkillBase
+    public class DrawSkillShield : DrawSkillBase
     {
         private Pen _Pen;
 
@@ -20,11 +20,11 @@ namespace RunningBox
         public int Animation { get; set; }
 
         /// <summary>
-        /// 新增技能:時間減緩繪圖物件
+        /// 新增技能:護盾繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <param name="bindingSkill">綁定技能</param>
-        public DrawSkillBulletTime(Color color, SkillBase bindingSkill = null)
+        public DrawSkillShield(Color color, SkillBase bindingSkill = null)
         {
             Color = color;
             Animation = 0;
@@ -38,41 +38,48 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         public override void Draw(Graphics g, Rectangle rectangle)
         {
+            if (Animation >= 120)
+            {
+                Animation %= 120;
+            }
+
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
             int width = drawRectangle.Width;
             int height = drawRectangle.Height;
-            int paddingX = (int)(width * 0.1F);
-            int paddingY = (int)(height * 0.1F);
-            Rectangle clockRect = new Rectangle(drawRectangle.Left + paddingX, drawRectangle.Top + paddingY, width - paddingX * 2, height - paddingY * 2);
+            int paddingCenterX = (int)(width * 0.6F);
+            int paddingCenterY = (int)(height * 0.6F);
+            int paddingX = (int)(width * 0.2F);
+            int paddingY = (int)(height * 0.2F);
+            Rectangle centerRect = new Rectangle(drawRectangle.Left + paddingCenterX, drawRectangle.Top + paddingCenterY, width - paddingCenterX * 2, height - paddingCenterY * 2);
+            Rectangle shieldRect = new Rectangle(drawRectangle.Left + paddingX, drawRectangle.Top + paddingY, width - paddingX * 2, height - paddingY * 2);
 
             GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
             _Pen.Width = 1;
-            g.DrawEllipse(_Pen, clockRect);
-
-            if (Animation > 2880)
+            if (BindingSkill != null && BindingSkill.Status != SkillStatus.Channeled)
             {
-                Animation %= 2880;
+                _Pen.DashStyle = DashStyle.Custom;
+                _Pen.DashPattern = new float[] { 1,1 };
             }
-            int ani = Animation / 2;
-            float h = ani / 60F;
-            int m = ani % 60;
 
-            PointF point1 = new PointF(drawRectangle.Left + drawRectangle.Width / 2, drawRectangle.Top + drawRectangle.Height / 2);
-            float directionH = (h * 15) - 180;
-            float lengthH = (drawRectangle.Width + drawRectangle.Height) / 4 * 0.5F;
-            float moveHX = (float)Math.Cos(directionH / 180 * Math.PI) * lengthH;
-            float moveHY = (float)Math.Sin(directionH / 180 * Math.PI) * lengthH;
-            PointF pointH = new PointF(point1.X + moveHX, point1.Y + moveHY);
-            g.DrawLine(_Pen, point1, pointH);
+            int helfWidth = shieldRect.Width / 2;
+            int helfHeight = shieldRect.Width / 2;
+            int midX = shieldRect.Left + helfWidth;
+            int midY = shieldRect.Top + helfHeight;
 
-            float directionM = (m * 6) - 180;
-            float lengthM = (drawRectangle.Width + drawRectangle.Height) / 4 * 0.7F;
-            float moveMX = (float)Math.Cos(directionM / 180 * Math.PI) * lengthM;
-            float moveMY = (float)Math.Sin(directionM / 180 * Math.PI) * lengthM;
-            PointF pointM = new PointF(point1.X + moveMX, point1.Y + moveMY);
-            g.DrawLine(_Pen, point1, pointM);
+            Point[] pots = new Point[6];
+            float partAngle = 360F / 6;
+            for (int i = 0; i < 6; i++)
+            {
+                float angle = 180 - i * partAngle +Animation * 3;
+                int x = (int)(Math.Sin(angle / 180F * Math.PI) * helfWidth);
+                int y = (int)(Math.Cos(angle / 180F * Math.PI) * helfHeight);
+                pots[i] = new Point(midX + x, midY + y);
+            }
 
-            Animation += BindingSkill != null && BindingSkill.Status == SkillStatus.Channeled ? 1 : 3;
+            g.DrawPolygon(_Pen, pots);
+            _Pen.DashStyle = DashStyle.Solid;
+            g.DrawEllipse(_Pen, centerRect);
+            Animation++;
         }
 
         /// <summary>

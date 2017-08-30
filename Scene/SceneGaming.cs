@@ -41,17 +41,17 @@ namespace RunningBox
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, 2, false));
+        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
 
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawSkillFrame(Color.Black, EnumSkillButton.MouseButtonLeft));
+        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, EnumSkillButton.MouseButtonLeft));
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawSkillFrame(Color.Black, EnumSkillButton.MouseButtonRight));
+        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, EnumSkillButton.MouseButtonRight));
         #endregion
 
         #region ===== 技能物件 =====
@@ -70,7 +70,7 @@ namespace RunningBox
                     SkillIcon1.DrawObject.Dispose();
                 }
 
-                (SkillIcon1.DrawObject as DrawSkillFrame).IconDrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black);
+                (SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black);
             }
         }
 
@@ -89,7 +89,7 @@ namespace RunningBox
                     SkillIcon2.DrawObject.Dispose();
                 }
 
-                (SkillIcon2.DrawObject as DrawSkillFrame).IconDrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black);
+                (SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black);
             }
         }
         #endregion
@@ -243,9 +243,8 @@ namespace RunningBox
             //顯示FPS
             if (Global.DebugMode)
             {
-                BufferGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
+                ThisGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
             }
-            ThisGraphics.DrawImageUnscaled(BufferImage, 0, 0);
 
             //計算FPS
             if (refreshFPS)
@@ -322,7 +321,7 @@ namespace RunningBox
 
         protected override void OnBeforeDraw(Graphics g)
         {
-            BufferGraphics.DrawString(string.Format("Lv:{0}    Score:{1}", Wave, Score), Font, Brushes.Black, 85, 50);
+            BufferGraphics.DrawString(string.Format("Wave:{0}    Score:{1}", Wave, Score), Font, Brushes.Black, 85, 50);
             base.OnBeforeDraw(g);
         }
 

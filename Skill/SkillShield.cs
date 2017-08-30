@@ -71,14 +71,16 @@ namespace RunningBox
                         int effectHeight = Owner.Layout.RectHeight + 12;
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
-                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(170, 170, 0), Color.FromArgb(200, 255, 255, 200), 6, 1, 0, 5), null);
-                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(1, 3, 3, ObjectDeadType.All, 360, 150, 300, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.25F)));
+                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(220, 255, 255, 150), Color.FromArgb(170, 170, 0), 6, 1, 0, 360), null);
+                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.All, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
+                        //_ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.All, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
+
                         _ShieldObject.Propertys.Add(new PropertyCollision(1, null));
                         _ShieldObject.Layout.DependTarget = new TargetObject(Owner);
                         _ShieldObject.Dead += (x, e, t) => { this.Break(); };
                         Owner.Container.Add(_ShieldObject);
 
-                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Color.FromArgb(160, 210, 100), 1, true, Channeled));
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Color.FromArgb(160, 210, 100), Color.Black, Color.White, 1, true, Channeled));
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }
@@ -107,9 +109,9 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public override IDrawSkill GetDrawObject(Color color)
+        public override DrawSkillBase GetDrawObject(Color color)
         {
-            DrawSkillSprint drawObject = new DrawSkillSprint(color, this);
+            DrawSkillShield drawObject = new DrawSkillShield(color, this);
             return drawObject;
         }
 

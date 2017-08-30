@@ -220,7 +220,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public abstract IDrawSkill GetDrawObject(Color color);
+        public abstract DrawSkillBase GetDrawObject(Color color);
     }
 
     /// <summary>

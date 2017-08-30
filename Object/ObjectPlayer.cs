@@ -23,7 +23,7 @@ namespace RunningBox
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, League leage, IDraw drawObject, ITarget target) :
+        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, League leage, DrawBase drawObject, ITarget target) :
             base(x, y, maxMoves, width, height, speed, -1, leage, ShapeType.Ellipse, drawObject, target) { }
 
         protected override void ActionPlan()

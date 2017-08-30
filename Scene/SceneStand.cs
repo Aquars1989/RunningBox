@@ -59,7 +59,7 @@ namespace RunningBox
                     newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
@@ -81,7 +81,7 @@ namespace RunningBox
                     newObject.Skills.Add(new SkillSprint(0, Sec(1F), 10, 0, true) { AutoCastObject = new AutoCastNormal(1F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                 }
@@ -103,7 +103,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
                     newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
@@ -122,9 +122,9 @@ namespace RunningBox
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 3), new TargetTrackPoint(this));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 360), new TargetTrackPoint(this));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(10, null));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 40));
                     GameObjects.Add(newObject);
@@ -184,7 +184,7 @@ namespace RunningBox
             //                                 123456789012345678901234567890123456789012345678901234
             Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             Waves.Add(new WaveLine("Faster ", "      1      1             1      1             1     "));
-            Waves.Add(new WaveLine("Blocker", "                    1                    1            "));
+            Waves.Add(new WaveLine("Blocker", "1                    1                    1            "));
             Waves.Add(new WaveLine("Group  ", "   3          4               5                  6    "));
             Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
             Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));

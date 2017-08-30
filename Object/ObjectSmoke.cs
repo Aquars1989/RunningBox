@@ -14,7 +14,7 @@ namespace RunningBox
         /// <summary>
         /// 縮小時間計時器(毫秒)
         /// </summary>
-        public CounterObject ShrinkTime { get; private set; }
+        public CounterObject Life { get; private set; }
 
         /// <summary>
         /// 新增虛擬物件,會逐漸縮小直到消失
@@ -23,9 +23,9 @@ namespace RunningBox
         /// <param name="y">物件位置Y</param>
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
-        /// <param name="shrinkTime">縮小時間(毫秒),小於0為永久</param>
+        /// <param name="life">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectSmoke(float x, float y, int width, int height, int shrinkTime, IDraw drawObject)
+        public ObjectSmoke(float x, float y, int width, int height, int life, DrawBase drawObject)
         {
             Layout.CollisonShape = ShapeType.Ellipse;
             Layout.Anchor = ContentAlignment.MiddleCenter;
@@ -35,7 +35,7 @@ namespace RunningBox
             Layout.Height = height;
 
             Status = ObjectStatus.Alive;
-            ShrinkTime = new CounterObject(shrinkTime);
+            Life = new CounterObject(life);
             DrawObject = drawObject;
         }
 
@@ -43,21 +43,21 @@ namespace RunningBox
         /// 使用指定的配置新增虛擬物件,會逐漸縮小直到消失
         /// </summary>
         /// <param name="layout">配置資訊</param>
-        /// <param name="shrinkTime">縮小時間(毫秒),小於0為永久</param>
+        /// <param name="life">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectSmoke(Layout layout, int shrinkTime, IDraw drawObject)
-            : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, shrinkTime, drawObject) { }
+        public ObjectSmoke(Layout layout, int life, DrawBase drawObject)
+            : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, life, drawObject) { }
 
         public override void Action()
         {
-            if (ShrinkTime.IsFull)
+            if (Life.IsFull)
             {
                 Kill(null, ObjectDeadType.LifeEnd);
             }
             else
             {
-                Layout.Scale = 1F - ShrinkTime.GetRatio();
-                ShrinkTime.Value += Scene.SceneIntervalOfRound;
+                Layout.Scale = 1F - Life.GetRatio();
+                Life.Value += Scene.SceneIntervalOfRound;
             }
         }
     }

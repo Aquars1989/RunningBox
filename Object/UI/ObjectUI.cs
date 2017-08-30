@@ -24,7 +24,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, IDraw drawObject)
+        public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject)
         {
             Layout.CollisonShape = ShapeType.Rectangle;
             Layout.Anchor = anchor;
@@ -43,7 +43,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectUI(int x, int y, int width, int height, IDraw drawObject) :
+        public ObjectUI(int x, int y, int width, int height, DrawBase drawObject) :
             this(ContentAlignment.TopLeft, x, y, width, height, drawObject) { }
     }
 }

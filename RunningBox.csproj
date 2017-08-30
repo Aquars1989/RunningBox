@@ -48,17 +48,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoCast\AutoCastNormal.cs" />
-    <Compile Include="AutoCast\AutoCastBase.cs" />
+    <Compile Include="AutoCast\%40AutoCastBase.cs" />
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
-    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillFrame.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
+    <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Draw\DrawUI\DrawSkill\IDrawSkill.cs" />
-    <Compile Include="Draw\DrawUI\DrawUI.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBase.cs" />
     <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
@@ -69,12 +69,12 @@
     <Compile Include="Draw\DrawPic.cs" />
     <Compile Include="Draw\DrawPen.cs" />
     <Compile Include="Draw\DrawBrush.cs" />
-    <Compile Include="Draw\IDraw.cs" />
+    <Compile Include="Draw\%40DrawBase.cs" />
     <Compile Include="Effect\EffectCollection.cs" />
     <Compile Include="Effect\EffectDyeing.cs" />
     <Compile Include="Effect\EffectShark.cs" />
     <Compile Include="Effect\EffectShrink.cs" />
-    <Compile Include="Effect\IEffect.cs" />
+    <Compile Include="Effect\%40IEffect.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
     <Compile Include="Object\ObjectActive.cs" />
@@ -82,8 +82,8 @@
     <Compile Include="Object\ObjectScrap.cs" />
     <Compile Include="Object\ObjectSmoke.cs" />
     <Compile Include="Object\ObjectPlayer.cs" />
-    <Compile Include="Object\ObjectBase.cs" />
-    <Compile Include="Property\PropertyBase.cs" />
+    <Compile Include="Object\%40ObjectBase.cs" />
+    <Compile Include="Property\%40PropertyBase.cs" />
     <Compile Include="Property\PropertyCollection.cs" />
     <Compile Include="Property\PropertyCollision.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadCollapse.cs" />
@@ -101,13 +101,13 @@
     </Compile>
     <Compile Include="Skill\SkillCollection.cs" />
     <Compile Include="Skill\SkillBulletTime.cs" />
-    <Compile Include="Layout\LayoutBase.cs" />
+    <Compile Include="Layout\%40LayoutBase.cs" />
     <Compile Include="Skill\SkillShield.cs" />
-    <Compile Include="Target\ITarget.cs" />
-    <Compile Include="Scene\SceneBase.cs">
+    <Compile Include="Target\%40ITarget.cs" />
+    <Compile Include="Scene\%40SceneBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Skill\SkillBase.cs" />
+    <Compile Include="Skill\%40SkillBase.cs" />
     <Compile Include="Skill\SkillSprint.cs" />
     <Compile Include="Target\TargetTrackPoint.cs" />
     <Compile Include="Target\TargetObject.cs" />
@@ -133,8 +133,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Scene\SceneBase.resx">
-      <DependentUpon>SceneBase.cs</DependentUpon>
+    <EmbeddedResource Include="Scene\%40SceneBase.resx">
+      <DependentUpon>%40SceneBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneGaming.resx">
       <DependentUpon>SceneGaming.cs</DependentUpon>

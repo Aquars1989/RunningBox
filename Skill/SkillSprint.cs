@@ -79,7 +79,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public override IDrawSkill GetDrawObject(Color color)
+        public override DrawSkillBase GetDrawObject(Color color)
         {
             DrawSkillSprint drawObject = new DrawSkillSprint(color, this);
             return drawObject;

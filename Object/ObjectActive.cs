@@ -93,7 +93,7 @@ namespace RunningBox
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="target">追蹤目標</param>
-        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, IDraw drawObject, ITarget target)
+        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, DrawBase drawObject, ITarget target)
             : this()
         {
             Layout.CollisonShape = collisonShape;
