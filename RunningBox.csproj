@@ -60,6 +60,8 @@
     </Compile>
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBase.cs" />
     <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
+    <Compile Include="Move\MoveStraight.cs" />
+    <Compile Include="Move\%40MoveBase.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
     <Compile Include="Property\PropertyUI.cs" />
@@ -175,9 +177,7 @@
     <Content Include="ICON.ico" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Move\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

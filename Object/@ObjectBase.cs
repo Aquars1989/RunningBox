@@ -17,11 +17,44 @@ namespace RunningBox
         public event ObjectDeadEventHandle Dead;
 
         /// <summary>
+        /// 發生於繪圖物件變更
+        /// </summary>
+        public event EventHandler DrawObjectChanged;
+
+        /// <summary>
+        /// 發生於移動物件變更
+        /// </summary>
+        public event EventHandler MoveObjectChanged;
+
+        /// <summary>
+        /// 發生於配置物件變更
+        /// </summary>
+        public event EventHandler LayoutChanged;
+
+        /// <summary>
+        /// 發生於歸屬群組變更
+        /// </summary>
+        public event EventHandler ContainerChanged;
+
+        /// <summary>
+        /// 發生於歸屬場景變更
+        /// </summary>
+        public event EventHandler SceneChanged;
+
+        private SceneBase _Scene;
+        /// <summary>
         /// 物件歸屬場景
         /// </summary>
         public SceneBase Scene
         {
-            get { return Container == null ? null : Container.Scene; }
+            get { return _Scene; }
+            set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
+                OnSceneChanged();
+            }
+
         }
 
         private ObjectCollection _Container;
@@ -34,10 +67,7 @@ namespace RunningBox
             set
             {
                 _Container = value;
-                if (_DrawObject != null)
-                {
-                    _DrawObject.Scene = Scene;
-                }
+                OnContainerChanged();
             }
         }
 
@@ -55,10 +85,24 @@ namespace RunningBox
             get { return _DrawObject; }
             set
             {
-                if (value == null) throw new ArgumentNullException();
+                if (_DrawObject == value) return;
                 _DrawObject = value;
-                _DrawObject.Owner = this;
-                _DrawObject.Scene = Scene;
+                OnDrawObjectChanged();
+            }
+        }
+
+        private MoveBase _MoveObject;
+        /// <summary>
+        /// 移動物件
+        /// </summary>
+        public MoveBase MoveObject
+        {
+            get { return _MoveObject; }
+            set
+            {
+                if (_MoveObject == value) return;
+                _MoveObject = value;
+                OnMoveObjectChanged();
             }
         }
 
@@ -124,6 +168,61 @@ namespace RunningBox
             float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
             float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
             return new PointF(moveX, moveY);
+        }
+
+        /// <summary>
+        /// 發生於繪圖物件變更
+        /// </summary>
+        public void OnDrawObjectChanged()
+        {
+            if (DrawObjectChanged != null)
+            {
+                DrawObjectChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於移動物件變更
+        /// </summary>
+        public void OnMoveObjectChanged()
+        {
+            if (MoveObjectChanged != null)
+            {
+                MoveObjectChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於配置物件變更
+        /// </summary>
+        public void OnLayoutChanged()
+        {
+            if (LayoutChanged != null)
+            {
+                LayoutChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於歸屬群組變更
+        /// </summary>
+        public void OnContainerChanged()
+        {
+            if (ContainerChanged != null)
+            {
+                ContainerChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於歸屬場景變更
+        /// </summary>
+        public void OnSceneChanged()
+        {
+            if (SceneChanged != null)
+            {
+                SceneChanged(this, new EventArgs());
+            }
         }
 
         #region IDisposable Support
