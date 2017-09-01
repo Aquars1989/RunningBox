@@ -27,26 +27,6 @@ namespace RunningBox
         public League League { get; set; }
 
         /// <summary>
-        /// 追尋目標
-        /// </summary>
-        public ITarget Target { get; set; }
-
-        /// <summary>
-        /// 移動調整值紀錄
-        /// </summary>
-        public List<PointF> Moves { get; set; }
-
-        /// <summary>
-        /// 最大調整值紀錄數量
-        /// </summary>
-        public int MaxMoves { get; set; }
-
-        /// <summary>
-        /// 移動速度,決定每個移動調整值的距離
-        /// </summary>
-        public float Speed { get; set; }
-
-        /// <summary>
         /// 每秒自動恢復的能量數
         /// </summary>
         public int EnergyGetPerSec { get; set; }
@@ -67,13 +47,15 @@ namespace RunningBox
         public int UIOffSetY { get; set; }
 
         /// <summary>
-        /// 建立一個互動性活動物件
+        /// 使用繪製物件和移動物件建立互動性活動物件
         /// </summary>
-        public ObjectActive()
+        /// <param name="drawObject">繪製物件</param>
+        /// <param name="moveObject">移動物件</param>
+        public ObjectActive(DrawBase drawObject, MoveBase moveObject)
+            : base(drawObject, moveObject)
         {
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
-            Moves = new List<PointF>();
             Life = new CounterObject(-1);
             Energy = new CounterObject(10000, 10000, false);
             EnergyGetPerSec = 2000;
@@ -92,9 +74,9 @@ namespace RunningBox
         /// <param name="collisonShape">碰撞形狀</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
-        /// <param name="target">追蹤目標</param>
-        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, DrawBase drawObject, ITarget target)
-            : this()
+        /// <param name="moveObject">移動物件</param>
+        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, DrawBase drawObject, MoveBase moveObject)
+            : this(drawObject, moveObject)
         {
             Layout.CollisonShape = collisonShape;
             Layout.Anchor = ContentAlignment.MiddleCenter;
@@ -104,9 +86,6 @@ namespace RunningBox
             Layout.Height = height;
 
             Status = ObjectStatus.Alive;
-            MaxMoves = maxMoves;
-            Speed = speed;
-            Target = target;
             League = leage;
             Life.Limit = life;
             DrawObject = drawObject;
@@ -131,12 +110,12 @@ namespace RunningBox
             Skills.AllDoBeforeActionPlan();
             Propertys.AllDoBeforeActionPlan();
 
-            ActionPlan();
+            MoveObject.Plan();
 
             Skills.AllDoBeforeActionMove();
             Propertys.AllDoBeforeActionMove();
 
-            ActionMove();
+            MoveObject.Move();
 
             Skills.AllDoAfterAction();
             Propertys.AllDoAfterAction();
@@ -155,70 +134,7 @@ namespace RunningBox
             Energy.Value += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
         }
 
-        /// <summary>
-        /// 物件在回合內進行的規劃活動
-        /// </summary>
-        protected virtual void ActionPlan()
-        {
-            if (Target != null)
-            {
-                double distance = Function.GetDistance(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
-                double direction = Function.GetAngle(Layout.CenterX, Layout.CenterY, Target.X, Target.Y);
-
-                float speed = Speed;
-                if (distance < 50)
-                {
-                    distance -= 0.1;
-                    if (distance < 0) distance = 0;
-                     speed = (float)(Speed * distance / 50);
-                }
-
-                Moves.Add(GetMovePoint(direction, speed));
-            }
-        }
-
-        /// <summary>
-        /// 物件在回合內進行的移動活動
-        /// </summary>
-        protected virtual void ActionMove()
-        {
-            if (Moves.Count > MaxMoves)
-            {
-                Moves.RemoveRange(0, Moves.Count - MaxMoves);
-            }
-
-            float moveTotalX = 0;
-            float moveTotalY = 0;
-            foreach (PointF pt in Moves)
-            {
-                moveTotalX += pt.X;
-                moveTotalY += pt.Y;
-            }
-
-            Layout.X += moveTotalX / Scene.SceneSlow;
-            Layout.Y += moveTotalY / Scene.SceneSlow;
-
-            Life.Value += Scene.SceneIntervalOfRound;
-            if (Life.IsFull)
-            {
-                Kill(null, ObjectDeadType.LifeEnd);
-            }
-
-        }
-
-        /// <summary>
-        /// 殺死此物件
-        /// </summary>
-        /// <param name="killer">殺手物件</param>
-        public override void Kill(ObjectActive killer, ObjectDeadType deadType)
-        {
-            if (Status == ObjectStatus.Alive)
-            {
-                base.Kill(killer, deadType);
-                Skills.AllDoAfterDead(killer, deadType);
-                Propertys.AllDoAfterDead(killer, deadType);
-            }
-        }
+       
 
         /// <summary>
         /// 繪製物件

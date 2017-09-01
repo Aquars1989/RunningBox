@@ -11,10 +11,16 @@ namespace RunningBox
     /// </summary>
     public abstract class ObjectBase : IDisposable
     {
+        #region ===== 事件 =====
         /// <summary>
         /// 發生於物件死亡
         /// </summary>
         public event ObjectDeadEventHandle Dead;
+
+        /// <summary>
+        /// 發生於物件狀態變更
+        /// </summary>
+        public event EventHandler StatusChanged;
 
         /// <summary>
         /// 發生於繪圖物件變更
@@ -27,11 +33,6 @@ namespace RunningBox
         public event EventHandler MoveObjectChanged;
 
         /// <summary>
-        /// 發生於配置物件變更
-        /// </summary>
-        public event EventHandler LayoutChanged;
-
-        /// <summary>
         /// 發生於歸屬群組變更
         /// </summary>
         public event EventHandler ContainerChanged;
@@ -40,134 +41,18 @@ namespace RunningBox
         /// 發生於歸屬場景變更
         /// </summary>
         public event EventHandler SceneChanged;
+        #endregion
 
-        private SceneBase _Scene;
+        #region ===== 引發事件 =====
         /// <summary>
-        /// 物件歸屬場景
+        /// 發生於物件狀態變更
         /// </summary>
-        public SceneBase Scene
+        public void OnStatusChanged()
         {
-            get { return _Scene; }
-            set
+            if (StatusChanged != null)
             {
-                if (_Scene == value) return;
-                _Scene = value;
-                OnSceneChanged();
+                StatusChanged(this, new EventArgs());
             }
-
-        }
-
-        private ObjectCollection _Container;
-        /// <summary>
-        /// 物件歸屬集合
-        /// </summary>
-        public ObjectCollection Container
-        {
-            get { return _Container; }
-            set
-            {
-                _Container = value;
-                OnContainerChanged();
-            }
-        }
-
-        /// <summary>
-        /// 物件狀態
-        /// </summary>
-        public ObjectStatus Status { get; set; }
-
-        private DrawBase _DrawObject;
-        /// <summary>
-        /// 繪製物件
-        /// </summary>
-        public DrawBase DrawObject
-        {
-            get { return _DrawObject; }
-            set
-            {
-                if (_DrawObject == value) return;
-                _DrawObject = value;
-                OnDrawObjectChanged();
-            }
-        }
-
-        private MoveBase _MoveObject;
-        /// <summary>
-        /// 移動物件
-        /// </summary>
-        public MoveBase MoveObject
-        {
-            get { return _MoveObject; }
-            set
-            {
-                if (_MoveObject == value) return;
-                _MoveObject = value;
-                OnMoveObjectChanged();
-            }
-        }
-
-        /// <summary>
-        /// 物件配置方式
-        /// </summary>
-        public Layout Layout { get; private set; }
-
-        public ObjectBase()
-        {
-            Layout = new Layout();
-        }
-
-        /// <summary>
-        /// 殺死此物件
-        /// </summary>
-        /// <param name="killer">殺手物件</param>
-        public virtual void Kill(ObjectActive killer, ObjectDeadType deadType)
-        {
-            if (Status == ObjectStatus.Alive)
-            {
-                Status = ObjectStatus.Dead;
-                OnDead(this, killer, deadType);
-            }
-        }
-
-        /// <summary>
-        /// 發生在物件死亡時
-        /// </summary>
-        /// <param name="sender">死亡物件</param>
-        /// <param name="killer">殺手物件</param>
-        protected void OnDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
-        {
-            if (Dead != null)
-            {
-                Dead(sender, killer, deadType);
-            }
-        }
-
-        /// <summary>
-        /// 物件在1回合內進行的活動
-        /// </summary>
-        public abstract void Action();
-
-        /// <summary>
-        /// 繪製物件
-        /// </summary>
-        /// <param name="g">Graphics物件</param>
-        public virtual void Draw(Graphics g)
-        {
-            if (DrawObject == null) return;
-            DrawObject.Draw(g, Layout.Rectangle);
-        }
-
-        /// <summary>
-        /// 取得位移值(不計入場景速度)
-        /// </summary>
-        /// <param name="angle">位移角度</param>
-        /// <param name="speed">速度值</param>
-        /// <returns>位移點</returns>
-        public PointF GetMovePoint(double angle, float speed)
-        {
-            float moveX = (float)(Math.Cos(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
-            float moveY = (float)(Math.Sin(angle / 180 * Math.PI) * speed / Scene.RoundPerSec);
-            return new PointF(moveX, moveY);
         }
 
         /// <summary>
@@ -175,6 +60,11 @@ namespace RunningBox
         /// </summary>
         public void OnDrawObjectChanged()
         {
+            if (DrawObject != null)
+            {
+                DrawObject.Scene = Scene;
+            }
+
             if (DrawObjectChanged != null)
             {
                 DrawObjectChanged(this, new EventArgs());
@@ -186,20 +76,14 @@ namespace RunningBox
         /// </summary>
         public void OnMoveObjectChanged()
         {
+            if (MoveObject != null)
+            {
+                MoveObject.Owner = this;
+            }
+
             if (MoveObjectChanged != null)
             {
                 MoveObjectChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於配置物件變更
-        /// </summary>
-        public void OnLayoutChanged()
-        {
-            if (LayoutChanged != null)
-            {
-                LayoutChanged(this, new EventArgs());
             }
         }
 
@@ -219,11 +103,173 @@ namespace RunningBox
         /// </summary>
         public void OnSceneChanged()
         {
+            if (DrawObject != null)
+            {
+                DrawObject.Scene = Scene;
+            }
+
             if (SceneChanged != null)
             {
                 SceneChanged(this, new EventArgs());
             }
         }
+
+        /// <summary>
+        /// 發生在物件死亡時
+        /// </summary>
+        /// <param name="sender">死亡物件</param>
+        /// <param name="killer">殺手物件</param>
+        protected void OnDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
+        {
+            if (Dead != null)
+            {
+                Dead(sender, killer, deadType);
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
+        private SceneBase _Scene;
+        /// <summary>
+        /// 物件歸屬場景(必要,上層設定)
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return _Scene; }
+            set
+            {
+                if (_Scene == null) throw new ArgumentNullException();
+                if (_Scene == value) return;
+                _Scene = value;
+                OnSceneChanged();
+            }
+
+        }
+
+        private ObjectCollection _Container;
+        /// <summary>
+        /// 物件歸屬集合(必要,上層設定)
+        /// </summary>
+        public ObjectCollection Container
+        {
+            get { return _Container; }
+            set
+            {
+                if (_Container == null) throw new ArgumentNullException();
+                if (_Container == value) return;
+                _Container = value;
+                OnContainerChanged();
+            }
+        }
+
+        private DrawBase _DrawObject;
+        /// <summary>
+        /// 繪製物件(必要)
+        /// </summary>
+        public DrawBase DrawObject
+        {
+            get { return _DrawObject; }
+            set
+            {
+                if (_DrawObject == null) throw new ArgumentNullException();
+                if (_DrawObject == value) return;
+                _DrawObject = value;
+                OnDrawObjectChanged();
+            }
+        }
+
+        private MoveBase _MoveObject;
+        /// <summary>
+        /// 移動物件(必要)
+        /// </summary>
+        public MoveBase MoveObject
+        {
+            get { return _MoveObject; }
+            set
+            {
+                if (_MoveObject == null) throw new ArgumentNullException();
+                if (_MoveObject == value) return;
+                _MoveObject = value;
+                OnMoveObjectChanged();
+            }
+        }
+
+        private Layout _Layout;
+        /// <summary>
+        /// 物件配置方式(必要)
+        /// </summary>
+        public Layout Layout
+        {
+            get { return _Layout; }
+            private set
+            {
+                if (_Layout == null) throw new ArgumentNullException();
+                _Layout = value;
+            }
+        }
+
+        private ObjectStatus _Status;
+        /// <summary>
+        /// 物件狀態
+        /// </summary>
+        public ObjectStatus Status
+        {
+            get { return _Status; }
+            set
+            {
+                if (_Status == value) return;
+                _Status = value;
+                OnStatusChanged();
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// 使用繪製物件和移動物件建立基本活動物件
+        /// </summary>
+        /// <param name="drawObject">繪製物件</param>
+        /// <param name="moveObject">移動物件</param>
+        public ObjectBase(DrawBase drawObject, MoveBase moveObject)
+        {
+            Layout = new Layout();
+            Status = ObjectStatus.Alive;
+            DrawObject = drawObject;
+            MoveObject = moveObject;
+        }
+
+        #region ===== 方法 =====
+        /// <summary>
+        /// 殺死此物件
+        /// </summary>
+        /// <param name="killer">殺手物件</param>
+        public virtual void Kill(ObjectActive killer, ObjectDeadType deadType)
+        {
+            if (Status == ObjectStatus.Alive)
+            {
+                Status = ObjectStatus.Dead;
+                OnDead(this, killer, deadType);
+            }
+        }
+
+        /// <summary>
+        /// 物件在1回合內進行的活動
+        /// </summary>
+        public virtual void Action()
+        {
+            MoveObject.Plan();
+            MoveObject.Move();
+        }
+
+        /// <summary>
+        /// 繪製物件
+        /// </summary>
+        /// <param name="g">Graphics物件</param>
+        public virtual void Draw(Graphics g)
+        {
+            if (DrawObject == null) return;
+            DrawObject.Draw(g, Layout.Rectangle);
+        }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // 偵測多餘的呼叫

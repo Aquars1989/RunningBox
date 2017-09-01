@@ -51,6 +51,7 @@
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
+    <Compile Include="Draw\DrawNone.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
@@ -60,6 +61,8 @@
     </Compile>
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBase.cs" />
     <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
+    <Compile Include="Move\MoveNone.cs" />
+    <Compile Include="Move\MovePlayer.cs" />
     <Compile Include="Move\MoveStraight.cs" />
     <Compile Include="Move\%40MoveBase.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />

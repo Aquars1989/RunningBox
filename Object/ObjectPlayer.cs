@@ -22,43 +22,9 @@ namespace RunningBox
         /// <param name="speed">基本速度</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
-        /// <param name="target">追蹤目標</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, League leage, DrawBase drawObject, ITarget target) :
-            base(x, y, maxMoves, width, height, speed, -1, leage, ShapeType.Ellipse, drawObject, target) { }
-
-        protected override void ActionPlan()
-        {
-            Point trackPoint = Scene.TrackPoint;
-            Rectangle rectScene = Scene.MainRectangle;
-            double direction = Function.GetAngle(Layout.CenterX, Layout.CenterY, trackPoint.X, trackPoint.Y);
-            float speed = (Math.Abs(trackPoint.X - Layout.CenterX) + Math.Abs(trackPoint.Y - Layout.CenterY)) + 10;
-            //float speed = (float)Function.GetDistance(trackPoint.X, trackPoint.Y, X, Y) * 10 + 5;
-            if (speed > Speed) speed = Speed;
-
-            PointF move = GetMovePoint(direction, speed);
-            float moveX = move.X;
-            float moveY = move.Y;
-
-            if (Layout.CenterX < rectScene.Left)
-            {
-                moveX = Math.Abs(moveX) * 2 + 2;
-            }
-            else if (Layout.CenterX > rectScene.Left + rectScene.Width)
-            {
-                moveX = -Math.Abs(moveX) * 2 - 2;
-            }
-
-            if (Layout.CenterY < rectScene.Top)
-            {
-                moveY = Math.Abs(moveY) * 2 + 2;
-            }
-            else if (Layout.CenterY > rectScene.Top + rectScene.Height)
-            {
-                moveY = -Math.Abs(moveY) * 2 - 2;
-            }
-
-            Moves.Add(new PointF(moveX, moveY));
-        }
+        /// <param name="moveObject">移動物件</param>
+        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, League leage, DrawBase drawObject, MovePlayer moveObject) :
+            base(x, y, maxMoves, width, height, speed, -1, leage, ShapeType.Ellipse, drawObject, moveObject) { }
 
         public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
