@@ -51,7 +51,9 @@ namespace RunningBox
         /// <param name="life">存活時間(毫秒),小於0為永久</param>
         /// <param name="direction">方向</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectScrap(float x, float y, int width, int height, float speed, int life, double direction, DrawBase drawObject)
+        /// <param name="moveObject">移動物件</param>
+        public ObjectScrap(float x, float y, int width, int height, float speed, int life, double direction, DrawBase drawObject, MoveBase moveObject)
+            : base(drawObject, moveObject)
         {
             Layout.CollisonShape = ShapeType.Ellipse;
             Layout.Anchor = ContentAlignment.MiddleCenter;
