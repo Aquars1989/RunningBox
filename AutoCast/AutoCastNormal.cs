@@ -22,7 +22,7 @@ namespace RunningBox
 
         protected override bool Cast(SkillBase skill)
         {
-            skill.Use(skill.Owner.Target);
+            skill.Use(skill.Owner.MoveObject.Target);
             return true;
         }
     }

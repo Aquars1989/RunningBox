@@ -20,10 +20,28 @@ namespace RunningBox
         /// </summary>
         public ObjectDeadEventHandle ObjectDead;
 
+
+        private SceneBase _Scene;
         /// <summary>
-        /// 歸屬的場景物件
+        /// 歸屬的場景物件(必要)
         /// </summary>
-        public SceneBase Scene { get; set; }
+        public SceneBase Scene
+        {
+            get { return _Scene; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                _Scene = value;
+                if (_Collection != null)
+                {
+                    for (int i = 0; i < _Collection.Count; i++)
+                    {
+                        ObjectBase item = _Collection[i];
+                        item.Scene = _Scene;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 集合物件數量
@@ -61,6 +79,7 @@ namespace RunningBox
         {
             item.Container = this;
             item.Dead += OnObjectDead;
+            item.Scene = Scene;
             _Collection.Add(item);
         }
 

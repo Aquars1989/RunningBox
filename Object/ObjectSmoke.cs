@@ -25,7 +25,9 @@ namespace RunningBox
         /// <param name="height">物件高度</param>
         /// <param name="life">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectSmoke(float x, float y, int width, int height, int life, DrawBase drawObject)
+        /// <param name="moveObject">移動物件</param>
+        public ObjectSmoke(float x, float y, int width, int height, int life, DrawBase drawObject, MoveBase moveObject) :
+            base(drawObject, moveObject)
         {
             Layout.CollisonShape = ShapeType.Ellipse;
             Layout.Anchor = ContentAlignment.MiddleCenter;
@@ -33,10 +35,7 @@ namespace RunningBox
             Layout.Y = y;
             Layout.Width = width;
             Layout.Height = height;
-
-            Status = ObjectStatus.Alive;
             Life = new CounterObject(life);
-            DrawObject = drawObject;
         }
 
         /// <summary>
@@ -45,8 +44,9 @@ namespace RunningBox
         /// <param name="layout">配置資訊</param>
         /// <param name="life">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectSmoke(Layout layout, int life, DrawBase drawObject)
-            : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, life, drawObject) { }
+        /// <param name="moveObject">移動物件</param>
+        public ObjectSmoke(Layout layout, int life, DrawBase drawObject, MoveBase moveObject)
+            : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, life, drawObject, moveObject) { }
 
         public override void Action()
         {

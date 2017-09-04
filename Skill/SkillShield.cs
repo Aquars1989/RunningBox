@@ -71,7 +71,7 @@ namespace RunningBox
                         int effectHeight = Owner.Layout.RectHeight + 12;
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
-                        _ShieldObject = new ObjectActive(0, 0, 0, effectWidth, effectHeight, 0, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(220, 255, 255, 150), Color.FromArgb(170, 170, 0), 6, 1, 0, 360), null);
+                        _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(220, 255, 255, 150), Color.FromArgb(170, 170, 0), 6, 1, 0, 360), MoveNull.Value);
                         _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.All, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
                         //_ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.All, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
 

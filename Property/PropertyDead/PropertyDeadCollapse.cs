@@ -128,7 +128,7 @@ namespace RunningBox
 
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
         {
-            if (Owner.DrawObject == null || (DeadType & deadType) != deadType) return;
+            if ((DeadType & deadType) != deadType) return;
 
             Owner.Status = ObjectStatus.Dying;
             if (ScrapDrawObject == null)

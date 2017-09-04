@@ -34,7 +34,7 @@ namespace RunningBox
 
             DrawBase drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Opacity *= 0.2F;
-            Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke));
+            Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke, MoveNull.Value));
         }
 
         public override void DoBeforeActionMove() { }

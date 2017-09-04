@@ -138,7 +138,7 @@ namespace RunningBox
             get { return _Scene; }
             set
             {
-                if (_Scene == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_Scene == value) return;
                 _Scene = value;
                 OnSceneChanged();
@@ -155,7 +155,7 @@ namespace RunningBox
             get { return _Container; }
             set
             {
-                if (_Container == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_Container == value) return;
                 _Container = value;
                 OnContainerChanged();
@@ -171,7 +171,7 @@ namespace RunningBox
             get { return _DrawObject; }
             set
             {
-                if (_DrawObject == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_DrawObject == value) return;
                 _DrawObject = value;
                 OnDrawObjectChanged();
@@ -187,7 +187,7 @@ namespace RunningBox
             get { return _MoveObject; }
             set
             {
-                if (_MoveObject == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_MoveObject == value) return;
                 _MoveObject = value;
                 OnMoveObjectChanged();
@@ -203,7 +203,7 @@ namespace RunningBox
             get { return _Layout; }
             private set
             {
-                if (_Layout == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 _Layout = value;
             }
         }
@@ -266,7 +266,6 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public virtual void Draw(Graphics g)
         {
-            if (DrawObject == null) return;
             DrawObject.Draw(g, Layout.Rectangle);
         }
         #endregion
@@ -295,28 +294,6 @@ namespace RunningBox
             Dispose(true);
         }
         #endregion
-    }
-
-    /// <summary>
-    /// 活動物件狀態
-    /// </summary>
-    public enum ObjectStatus
-    {
-        Alive = 0,
-        Dying = 1,
-        Dead = 2,
-    }
-
-    /// <summary>
-    /// 物件死亡類型
-    /// </summary>
-    [Flags]
-    public enum ObjectDeadType
-    {
-        All = 255,
-        Clear = 1,
-        LifeEnd = 2,
-        Collision = 4
     }
 
     /// <summary>

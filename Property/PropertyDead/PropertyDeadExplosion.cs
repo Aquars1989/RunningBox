@@ -32,7 +32,7 @@ namespace RunningBox
         /// <summary>
         /// 爆炸的陣營判定,符合此陣營不會被傷害
         /// </summary>
-        public League CollisionLeague { get; set; }
+        public LeagueType CollisionLeague { get; set; }
 
         /// <summary>
         /// 爆炸顏色
@@ -66,7 +66,7 @@ namespace RunningBox
         /// <param name="ownerScaleFix">快爆炸時的大小調整倍數</param>
         /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
-        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, League collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
+        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, LeagueType collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
         {
             Status = PropertyStatus.Enabled;
             DeadType = deadType;
@@ -87,7 +87,7 @@ namespace RunningBox
             Owner.Scene.EffectObjects.Add(new EffectShark(Owner.Scene.Sec(0.2F), 5));
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
 
-            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 0, Owner.Scene.Sec(0.6F), 0, Color);
+            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, Owner.Scene.Sec(0.6F), Color, MoveNull.Value);
             Owner.Container.Add(explosionObject);
 
             for (int i = 0; i < Owner.Container.Count; i++)

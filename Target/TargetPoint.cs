@@ -16,7 +16,7 @@ namespace RunningBox
         /// </summary>
         public float X
         {
-            get { return Targer.X; }
+            get { return Target.X; }
         }
 
         /// <summary>
@@ -24,13 +24,13 @@ namespace RunningBox
         /// </summary>
         public float Y
         {
-            get { return Targer.Y; }
+            get { return Target.Y; }
         }
 
         /// <summary>
         /// 目標點
         /// </summary>
-        public PointF Targer { get; set; }
+        public PointF Target { get; set; }
 
         /// <summary>
         /// 新增代表座標點的目標物件
@@ -39,7 +39,7 @@ namespace RunningBox
         /// <param name="y">目標點Y座標</param>
         public TargetPoint(int x, int y)
         {
-            Targer = new PointF(x, y);
+            Target = new PointF(x, y);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace RunningBox
         /// <param name="point">座標點</param>
         public TargetPoint(PointF point)
         {
-            Targer = point;
+            Target = point;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace RunningBox
         /// <returns>目標點</returns>
         public PointF GetPoint()
         {
-            return Targer;
+            return Target;
         }
     }
 }

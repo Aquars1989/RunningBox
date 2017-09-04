@@ -21,15 +21,16 @@ namespace RunningBox
         private int _Animation;
         private Pen _Pen;
 
-        private DrawSkillBase _IconDrawObject;
+        private DrawBase _IconDrawObject;
         /// <summary>
-        /// 內部的圖示繪圖物件
+        /// 內部的圖示繪圖物件(必要)
         /// </summary>
-        public DrawSkillBase IconDrawObject
+        public DrawBase IconDrawObject
         {
             get { return _IconDrawObject; }
             set
             {
+                if (value == null) throw new ArgumentNullException();
                 if (_IconDrawObject == value) return;
                 _IconDrawObject = value;
                 OnIconDrawObjectChanged();
@@ -39,7 +40,7 @@ namespace RunningBox
         /// <summary>
         /// 是否顯示熱鍵圖示
         /// </summary>
-        public EnumSkillButton DrawButton { get; set; }
+        public SkillKeyType DrawButton { get; set; }
 
         /// <summary>
         /// 新增技能框架繪圖物件
@@ -47,12 +48,21 @@ namespace RunningBox
         /// <param name="color">繪製顏色</param>
         /// <param name="drawButton">繪製技能熱鍵</param>
         /// <param name="iconDrawObject">技能繪製物件</param>
-        public DrawUISkillFrame(Color color, EnumSkillButton drawButton, DrawSkillBase iconDrawObject = null)
+        public DrawUISkillFrame(Color color, SkillKeyType drawButton, DrawBase iconDrawObject)
         {
             Color = color;
             DrawButton = drawButton;
             IconDrawObject = iconDrawObject;
         }
+
+        /// <summary>
+        /// 新增技能框架繪圖物件
+        /// </summary>
+        /// <param name="color">繪製顏色</param>
+        /// <param name="drawButton">繪製技能熱鍵</param>
+        /// <param name="iconDrawObject">技能繪製物件</param>
+        public DrawUISkillFrame(Color color, SkillKeyType drawButton) :
+            this(color, drawButton, DrawNull.Value) { }
 
         /// <summary>
         /// 繪製到Graphics
@@ -66,7 +76,8 @@ namespace RunningBox
             _Pen.Width = 2;
 
             GraphicsPath backFrame = GetBackFrame(drawRectangle);
-            SkillBase bindingSkill = IconDrawObject == null ? null : IconDrawObject.BindingSkill;
+            DrawSkillBase drawSkillBase = IconDrawObject as DrawSkillBase;
+            SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill;
             if (bindingSkill != null)
             {
                 switch (bindingSkill.Status)
@@ -117,7 +128,7 @@ namespace RunningBox
             {
                 IconDrawObject.Draw(g, drawRectangle);
             }
-            if (DrawButton != RunningBox.EnumSkillButton.None)
+            if (DrawButton != RunningBox.SkillKeyType.None)
             {
                 _PenDrawButton.Width = 2;
                 Rectangle keyRectangle = new Rectangle(drawRectangle.Left + drawRectangle.Width - 15, drawRectangle.Top + drawRectangle.Height - 15, 20, 25);
@@ -125,11 +136,11 @@ namespace RunningBox
 
                 switch (DrawButton)
                 {
-                    case RunningBox.EnumSkillButton.MouseButtonLeft:
+                    case RunningBox.SkillKeyType.MouseButtonLeft:
                         g.FillPie(Brushes.SkyBlue, keyRectangle, 180, 90);
 
                         break;
-                    case RunningBox.EnumSkillButton.MouseButtonRight:
+                    case RunningBox.SkillKeyType.MouseButtonRight:
                         g.FillPie(Brushes.SkyBlue, keyRectangle, 270, 90);
 
                         break;

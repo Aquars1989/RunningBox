@@ -50,8 +50,8 @@ namespace RunningBox
         /// <returns>位移後點位置</returns>
         public static PointF GetOffsetPoint(float originX, float originY, double angle, double distance)
         {
-            float moveX = originX + (float)(Math.Cos(angle / 180 * Math.PI * distance));
-            float moveY = originY + (float)(Math.Sin(angle / 180 * Math.PI * distance));
+            float moveX = originX + (float)(Math.Cos(angle / 180 * Math.PI) * distance);
+            float moveY = originY + (float)(Math.Sin(angle / 180 * Math.PI) * distance);
             return new PointF(moveX, moveY);
         }
 

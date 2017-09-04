@@ -9,18 +9,20 @@ namespace RunningBox
     /// <summary>
     /// 代表無效的繪圖物件
     /// </summary>
-    public class DrawNone : DrawBase
+    public class DrawNull : DrawBase
     {
+        public static DrawNull Value = new DrawNull();
+
         /// <summary>
         /// 代表無效的繪圖物件
         /// </summary>
-        public DrawNone() { }
+        private DrawNull() { }
 
         public override void Draw(Graphics g, Rectangle rectangle) { }
 
         public override DrawBase Copy()
         {
-            return new DrawNone();
+            return Value;
         }
 
         protected override void OnDispose() { }

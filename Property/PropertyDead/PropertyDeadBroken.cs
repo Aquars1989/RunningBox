@@ -57,7 +57,7 @@ namespace RunningBox
         public ObjectDeadType DeadType { get; set; }
 
         /// <summary>
-        /// 碎片外觀範本繪圖物件
+        /// 碎片外觀範本繪圖物件(可為null,null為使用所有者外觀)
         /// </summary>
         public DrawBase ScrapDrawObject { get; set; }
 
@@ -128,25 +128,21 @@ namespace RunningBox
 
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
         {
-            if (Owner.DrawObject == null || (DeadType & deadType) != deadType) return;
+            if (Owner.DrawObject == DrawNull.Value || (DeadType & deadType) != deadType) return;
 
-            float moveTotalX = 0;
-            float moveTotalY = 0;
-            foreach (PointF pt in Owner.Moves)
-            {
-                moveTotalX += pt.X;
-                moveTotalY += pt.Y;
-            }
-
-            double angle = Function.GetAngle(0, 0, moveTotalX, moveTotalY);
+            double angle = Function.GetAngle(0, 0, Owner.MoveObject.MoveX, Owner.MoveObject.MoveY);
             for (int i = 0; i < ScrapCount; i++)
             {
                 int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
+
+                TargetOffset moveTarget = new TargetOffset(TargetNull.Value, scrapDirection, 1000);
+                MoveStraight moveObject = new MoveStraight(moveTarget, speed, 1, 0, 1);
+                ObjectScrap newObject;
                 if (ScrapDrawObject == null)
                 {
-                    Owner.Container.Add(new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, speed, life, scrapDirection, Owner.DrawObject.Color));
+                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.Color, moveObject);
                 }
                 else
                 {
@@ -159,8 +155,10 @@ namespace RunningBox
                         scrapDrawPolygon.Angle = Global.Rand.Next(360);
                         scrapDrawPolygon.RotatingPerSec = Global.Rand.Next(280, 520);
                     }
-                    Owner.Container.Add(new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, speed, life, scrapDirection, scrapDraw));
+                    newObject =new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
                 }
+                moveTarget.Target = new TargetObject(newObject);
+                Owner.Container.Add(newObject);
             }
         }
 

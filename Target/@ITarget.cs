@@ -12,7 +12,7 @@ namespace RunningBox
     /// </summary>
     public interface ITarget
     {
-        /// <summary>
+        // <summary>
         /// 目標的X座標
         /// </summary>
         float X { get; }

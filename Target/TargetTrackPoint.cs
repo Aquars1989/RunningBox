@@ -16,7 +16,7 @@ namespace RunningBox
         /// </summary>
         public float X
         {
-            get { return Targer.TrackPoint.X; }
+            get { return Target.TrackPoint.X; }
         }
 
         /// <summary>
@@ -24,20 +24,20 @@ namespace RunningBox
         /// </summary>
         public float Y
         {
-            get { return Targer.TrackPoint.Y; }
+            get { return Target.TrackPoint.Y; }
         }
 
-        private SceneGaming _Targer = null;
+        private SceneGaming _Target = null;
         /// <summary>
-        /// 指定場景
+        /// 指定場景(必要)
         /// </summary>
-        public SceneGaming Targer
+        public SceneGaming Target
         {
-            get { return _Targer; }
+            get { return _Target; }
             set
             {
                 if (value == null) throw new ArgumentNullException();
-                _Targer = value;
+                _Target = value;
             }
         }
 
@@ -47,7 +47,7 @@ namespace RunningBox
         /// <param name="scene">場景物件</param>
         public TargetTrackPoint(SceneGaming scene)
         {
-            Targer = scene;
+            Target = scene;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace RunningBox
         /// <returns>場景追蹤點</returns>
         public PointF GetPoint()
         {
-            return Targer.TrackPoint;
+            return Target.TrackPoint;
         }
     }
 }

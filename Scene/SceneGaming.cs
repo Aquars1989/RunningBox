@@ -46,12 +46,12 @@ namespace RunningBox
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, EnumSkillButton.MouseButtonLeft));
+        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonLeft));
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, EnumSkillButton.MouseButtonRight));
+        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonRight));
         #endregion
 
         #region ===== 技能物件 =====

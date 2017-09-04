@@ -17,19 +17,17 @@ namespace RunningBox
         /// <param name="target">追蹤目標(必要)</param>
         /// <param name="speed">移動速度,決定每個移動調整值的最大距離</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
-        public MovePlayer(float speed, int offsetsLimit, ITarget target)
-            : base(target)
+        public MovePlayer(ITarget target, float speed, int offsetsLimit)
+            : base(target, speed, offsetsLimit)
         {
             Speed = speed;
-            OffsetsLimit = offsetsLimit;
         }
 
         public override void Plan()
         {
-            PointF trackPoint = Target.GetPoint();
             Rectangle rectScene = Owner.Scene.MainRectangle;
-            double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, trackPoint.X, trackPoint.Y);
-            float speed = (Math.Abs(trackPoint.X - Owner.Layout.CenterX) + Math.Abs(trackPoint.Y - Owner.Layout.CenterY)) + 10;
+            double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Target.X, Target.Y);
+            float speed = (Math.Abs(Target.X - Owner.Layout.CenterX) + Math.Abs(Target.Y - Owner.Layout.CenterY)) + 10;
             if (speed > Speed) speed = Speed;
 
             PointF move = Function.GetOffsetPoint(0, 0, direction, speed);

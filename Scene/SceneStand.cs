@@ -54,8 +54,8 @@ namespace RunningBox
                     float speedPerMove = speed / movesCount;
                     int life = Sec(3.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
-
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
+                    MoveStraight moveObject = new MoveStraight(new TargetObject(PlayerObject),speed, movesCount);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y,  size, size,  life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
                     newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
@@ -77,7 +77,8 @@ namespace RunningBox
                     int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), new TargetObject(PlayerObject));
+                    MoveStraight moveObject = new MoveStraight(new TargetObject(PlayerObject), speed, movesCount);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y,  size, size,  life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), moveObject);
                     newObject.Skills.Add(new SkillSprint(0, Sec(1F), 10, 0, true) { AutoCastObject = new AutoCastNormal(1F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
@@ -98,9 +99,10 @@ namespace RunningBox
                     float speed = (Global.Rand.Next(500, 600) - (size * 30)) * _SpeedFix;
                     float speedPerMove = speed / movesCount;
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint((EnumDirection)roundIdx);
+                    Point enterPoint = GetEnterPoint((DirectionType)roundIdx);
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), new TargetObject(PlayerObject));
+                    MoveStraight moveObject = new MoveStraight(new TargetObject(PlayerObject), speed, movesCount);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y,  size, size,  life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
                     newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
@@ -122,7 +124,8 @@ namespace RunningBox
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint();
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 360), new TargetTrackPoint(this));
+                    MoveStraight moveObject = new MoveStraight(new TargetObject(PlayerObject), speed, movesCount);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y,  size, size,  life, LeagueType.Ememy, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 360), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(10, null));
@@ -149,29 +152,30 @@ namespace RunningBox
                     switch (roundIdx)
                     {
                         case 0:
-                            enterPoint = GetEnterPoint(EnumDirection.Left);
+                            enterPoint = GetEnterPoint(DirectionType.Left);
                             targetX = MainRectangle.Left + Global.Rand.Next(MainRectangle.Width / 2);
                             targetY = MainRectangle.Top + Global.Rand.Next(MainRectangle.Height);
                             break;
                         case 1:
-                            enterPoint = GetEnterPoint(EnumDirection.Right);
+                            enterPoint = GetEnterPoint(DirectionType.Right);
                             targetX = MainRectangle.Left + MainRectangle.Width / 2 + Global.Rand.Next(MainRectangle.Width / 2);
                             targetY = MainRectangle.Top + Global.Rand.Next(MainRectangle.Height);
                             break;
                         case 2:
-                            enterPoint = GetEnterPoint(EnumDirection.Top);
+                            enterPoint = GetEnterPoint(DirectionType.Top);
                             targetX = MainRectangle.Left + Global.Rand.Next(MainRectangle.Width);
                             targetY = MainRectangle.Top + Global.Rand.Next(MainRectangle.Height / 2);
                             break;
                         case 3:
-                            enterPoint = GetEnterPoint(EnumDirection.Bottom);
+                            enterPoint = GetEnterPoint(DirectionType.Bottom);
                             targetX = MainRectangle.Left + Global.Rand.Next(MainRectangle.Width);
                             targetY = MainRectangle.Top + MainRectangle.Height / 2 + Global.Rand.Next(MainRectangle.Height / 2);
                             break;
                     }
 
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, movesCount, size, size, speedPerMove, life, League.Ememy, ShapeType.Ellipse, new DrawImage(Color.Black, Properties.Resources.Mine), new TargetPoint(targetX, targetY));
-                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, League.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                    MoveStraight moveObject = new MoveStraight(new TargetPoint(targetX, targetY), speed, movesCount);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y,  size, size,  life, LeagueType.Ememy, ShapeType.Ellipse, new DrawImage(Color.Black, Properties.Resources.Mine), moveObject);
+                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1, null));
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
@@ -193,7 +197,8 @@ namespace RunningBox
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
-            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, League.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), new TargetTrackPoint(this));
+            MovePlayer moveObject = new MovePlayer( new TargetTrackPoint(this), 200, 8);
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
             //SkillSprint skill1 = new SkillSprint(3500, Sec(1), 0, 1000, true);
             SkillShield skill1 = new SkillShield(1, 6000, 0, Sec(1F), Sec(3));
             SkillBulletTime skill2 = new SkillBulletTime(1000, 8000, -1, Sec(5), 1);

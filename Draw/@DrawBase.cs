@@ -315,20 +315,4 @@ namespace RunningBox
         }
         #endregion
     }
-
-    /// <summary>
-    /// 繪製型狀
-    /// </summary>
-    public enum ShapeType
-    {
-        /// <summary>
-        /// 矩形
-        /// </summary>
-        Rectangle = 0,
-
-        /// <summary>
-        /// 圓形
-        /// </summary>
-        Ellipse = 1
-    }
 }

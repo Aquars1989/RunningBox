@@ -405,7 +405,7 @@ namespace RunningBox
         /// <returns>物件進入點</returns>
         public Point GetEnterPoint()
         {
-            return GetEnterPoint((EnumDirection)Global.Rand.Next(4));
+            return GetEnterPoint((DirectionType)Global.Rand.Next(4));
         }
 
         /// <summary>
@@ -413,24 +413,24 @@ namespace RunningBox
         /// </summary>
         /// <param name="enterSide">進入方向</param>
         /// <returns>物件進入點</returns>
-        public Point GetEnterPoint(EnumDirection enterSide)
+        public Point GetEnterPoint(DirectionType enterSide)
         {
             int x = 0, y = 0;
             switch (enterSide)
             {
-                case EnumDirection.Left:
+                case DirectionType.Left:
                     x = -Global.Rand.Next(20, 60);
                     y = Global.Rand.Next(0, Height);
                     break;
-                case EnumDirection.Right:
+                case DirectionType.Right:
                     x = Width + Global.Rand.Next(20, 60);
                     y = Global.Rand.Next(0, Height);
                     break;
-                case EnumDirection.Top:
+                case DirectionType.Top:
                     x = Global.Rand.Next(0, Width);
                     y = -Global.Rand.Next(20, 60);
                     break;
-                case EnumDirection.Bottom:
+                case DirectionType.Bottom:
                     x = Global.Rand.Next(0, Width);
                     y = Height + Global.Rand.Next(20, 60);
                     break;

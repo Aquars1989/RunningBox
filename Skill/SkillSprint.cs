@@ -51,22 +51,20 @@ namespace RunningBox
             {
                 case SkillStatus.Enabled:
                     {
-                        if (Owner == null || Owner.Target == null)
+                        if (Owner == null || Owner.MoveObject.Target is TargetNull)
                         {
                             Break();
                             return;
                         }
 
-                        int lastMove = Owner.Moves.Count - 1;
-                        if (lastMove < 0) return;
 
-                        double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.Target.X, Owner.Target.Y);
-                        float speed = (Owner.Speed * SpeedMultiple) + SpeedConstant;
-                        Owner.Moves.Add(Owner.GetMovePoint(direction, speed));
+                        double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
+                        float speed = (Owner.MoveObject.Speed * SpeedMultiple) + SpeedConstant;
+                        Owner.MoveObject.AddOffset(Function.GetOffsetPoint(0, 0, direction, speed));
 
                         if (Smoking)
                         {
-                            Owner.Propertys.Add(new PropertySmoking(Owner.Scene.Round(Owner.MaxMoves), Owner.Scene.Sec(0.2F)));
+                            Owner.Propertys.Add(new PropertySmoking(Owner.Scene.Round(Owner.MoveObject.OffsetsLimit), Owner.Scene.Sec(0.2F)));
                         }
                         Status = SkillStatus.Cooldown;
                     }

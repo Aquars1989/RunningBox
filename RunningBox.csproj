@@ -51,7 +51,7 @@
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
-    <Compile Include="Draw\DrawNone.cs" />
+    <Compile Include="Draw\DrawNull.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
@@ -61,7 +61,19 @@
     </Compile>
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBase.cs" />
     <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
-    <Compile Include="Move\MoveNone.cs" />
+    <Compile Include="Enum\DirectionType.cs" />
+    <Compile Include="Enum\SkillEndType.cs" />
+    <Compile Include="Enum\PropertyEndType.cs" />
+    <Compile Include="Enum\Status\SpecialStatus.cs" />
+    <Compile Include="Enum\Status\SkillStatus.cs" />
+    <Compile Include="Enum\Status\PropertyStatus.cs" />
+    <Compile Include="Enum\Status\ObjectStatus.cs" />
+    <Compile Include="Enum\ObjectDeadType.cs" />
+    <Compile Include="Enum\LeagueType.cs" />
+    <Compile Include="Enum\ShapeType.cs" />
+    <Compile Include="Enum\Status\EffectStatus.cs" />
+    <Compile Include="Enum\SkillKeyType.cs" />
+    <Compile Include="Move\MoveNull.cs" />
     <Compile Include="Move\MovePlayer.cs" />
     <Compile Include="Move\MoveStraight.cs" />
     <Compile Include="Move\%40MoveBase.cs" />
@@ -114,6 +126,8 @@
     </Compile>
     <Compile Include="Skill\%40SkillBase.cs" />
     <Compile Include="Skill\SkillSprint.cs" />
+    <Compile Include="Target\TargetOffset.cs" />
+    <Compile Include="Target\TargetNull.cs" />
     <Compile Include="Target\TargetTrackPoint.cs" />
     <Compile Include="Target\TargetObject.cs" />
     <Compile Include="Target\TargetPoint.cs" />

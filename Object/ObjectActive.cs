@@ -24,7 +24,7 @@ namespace RunningBox
         /// <summary>
         /// 物件所屬陣營,供技能或特性判定
         /// </summary>
-        public League League { get; set; }
+        public LeagueType League { get; set; }
 
         /// <summary>
         /// 每秒自動恢復的能量數
@@ -66,16 +66,14 @@ namespace RunningBox
         /// </summary>
         /// <param name="x">物件中心位置X</param>
         /// <param name="y">物件中心位置Y</param>
-        /// <param name="maxMoves">最大調整值紀錄數量</param>
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
-        /// <param name="speed">速度</param>
         /// <param name="life">存活時間,小於0為永久</param>
         /// <param name="collisonShape">碰撞形狀</param>
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectActive(float x, float y, int maxMoves, int width, int height, float speed, int life, League leage, ShapeType collisonShape, DrawBase drawObject, MoveBase moveObject)
+        public ObjectActive(float x, float y, int width, int height, int life, LeagueType leage, ShapeType collisonShape, DrawBase drawObject, MoveBase moveObject)
             : this(drawObject, moveObject)
         {
             Layout.CollisonShape = collisonShape;
@@ -84,11 +82,8 @@ namespace RunningBox
             Layout.Y = y;
             Layout.Width = width;
             Layout.Height = height;
-
-            Status = ObjectStatus.Alive;
             League = leage;
             Life.Limit = life;
-            DrawObject = drawObject;
         }
 
         /// <summary>
@@ -134,7 +129,7 @@ namespace RunningBox
             Energy.Value += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
         }
 
-       
+
 
         /// <summary>
         /// 繪製物件
@@ -148,15 +143,5 @@ namespace RunningBox
             Propertys.AllDoAfterDraw(g);
             Skills.AllDoAfterDraw(g);
         }
-    }
-
-    /// <summary>
-    /// 活動物件所屬陣營
-    /// </summary>
-    public enum League
-    {
-        None,
-        Player,
-        Ememy
     }
 }

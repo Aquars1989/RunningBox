@@ -40,7 +40,7 @@ namespace RunningBox
                     //限定目標
                     if (Target != null)
                     {
-                        if (objectActive == Target)
+                        if (objectActive == (Target as TargetObject).Target)
                         {
                             i = Owner.Container.Count;
                         }
@@ -60,7 +60,7 @@ namespace RunningBox
                         if (checkCollision != null && checkCollision.Status == PropertyStatus.Enabled)
                         {
                             TargetObject checkTarget = checkCollision.Target as TargetObject;
-                            if (checkTarget == null || checkTarget.Targer == Owner)
+                            if (checkTarget == null || checkTarget.Target == Owner)
                             {
                                 colliderPower = Math.Max(colliderPower, checkCollision.CollisionPower);
                             }

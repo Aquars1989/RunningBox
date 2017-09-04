@@ -140,7 +140,7 @@ namespace RunningBox
             get { return _Owner; }
             set
             {
-                if (_Owner == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_Owner == value) return;
                 _Owner = value;
                 OnOwnerChanged();
@@ -168,13 +168,14 @@ namespace RunningBox
             {
                 if (_OffsetsLimit == value) return;
                 _OffsetsLimit = value;
+                _SpeedPerOffsets = _Speed / _OffsetsLimit;
                 OnOffsetsLimitChanged();
             }
         }
 
         private float _Speed;
         /// <summary>
-        /// 移動速度,決定每個移動調整值的最大距離
+        /// 總體移動速度最大值
         /// </summary>
         public float Speed
         {
@@ -183,6 +184,23 @@ namespace RunningBox
             {
                 if (_Speed == value) return;
                 _Speed = value;
+                _SpeedPerOffsets = _Speed / _OffsetsLimit;
+                OnSpeedChanged();
+            }
+        }
+
+        private float _SpeedPerOffsets;
+        /// <summary>
+        /// 移動速度,決定每個移動調整值的最大距離
+        /// </summary>
+        public float SpeedPerOffsets
+        {
+            get { return _SpeedPerOffsets; }
+            set
+            {
+                if (_SpeedPerOffsets == value) return;
+                _SpeedPerOffsets = value;
+                _Speed = _SpeedPerOffsets * _OffsetsLimit;
                 OnSpeedChanged();
             }
         }
@@ -196,7 +214,7 @@ namespace RunningBox
             get { return _Target; }
             set
             {
-                if (_Target == null) throw new ArgumentNullException();
+                if (value == null) throw new ArgumentNullException();
                 if (_Target == value) return;
                 _Target = value;
 
@@ -209,9 +227,12 @@ namespace RunningBox
         /// 基本移動物件建構式
         /// </summary>
         /// <param name="Target">追蹤目標(必要)</param>
-        public MoveBase(ITarget target)
+        /// <param name="offsetsLimit">移動調整值列表最大數量</param>
+        public MoveBase(ITarget target, float speed, int offsetsLimit)
         {
             Offsets = new List<PointF>();
+            OffsetsLimit = offsetsLimit;
+            Speed = speed;
             Target = target;
         }
 
@@ -226,8 +247,8 @@ namespace RunningBox
         /// </summary>
         public virtual void Move()
         {
-            Owner.Layout.X += MoveX / Owner.Scene.SceneSlow;
-            Owner.Layout.Y += MoveY / Owner.Scene.SceneSlow;
+            Owner.Layout.X += MoveX / Owner.Scene.SceneRoundPerSec;
+            Owner.Layout.Y += MoveY / Owner.Scene.SceneRoundPerSec;
             OnAfterMove();
         }
 
@@ -246,7 +267,7 @@ namespace RunningBox
                 for (int i = 0; i < Offsets.Count - OffsetsLimit; i++)
                 {
                     MoveX -= Offsets[i].X;
-                    MoveY -= Offsets[i].X;
+                    MoveY -= Offsets[i].Y;
                 }
                 Offsets.RemoveRange(0, Offsets.Count - OffsetsLimit);
             }
@@ -264,7 +285,7 @@ namespace RunningBox
                 for (int i = 0; i < Offsets.Count - OffsetsLimit; i++)
                 {
                     MoveX -= Offsets[i].X;
-                    MoveY -= Offsets[i].X;
+                    MoveY -= Offsets[i].Y;
                 }
                 Offsets.RemoveRange(0, Offsets.Count - OffsetsLimit);
                 OnOffsetsChanged();

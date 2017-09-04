@@ -9,15 +9,14 @@ namespace RunningBox
     /// <summary>
     /// 表示無效的移動物件
     /// </summary>
-    class MoveNone : MoveBase
+    class MoveNull : MoveBase
     {
+        public static MoveNull Value = new MoveNull();
+
         /// <summary>
         /// 表示無效的移動物件
         /// </summary>
-        public MoveNone() : base(new TargetPoint(0, 0)) 
-        {
-        //todo add targetnone
-        }
+        private MoveNull() : base(TargetNull.Value, 0,0) { }
         public override void Plan() { }
         public override void Move() { }
     }

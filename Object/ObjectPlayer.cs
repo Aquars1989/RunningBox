@@ -23,8 +23,8 @@ namespace RunningBox
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, League leage, DrawBase drawObject, MovePlayer moveObject) :
-            base(x, y, maxMoves, width, height, speed, -1, leage, ShapeType.Ellipse, drawObject, moveObject) { }
+        public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, LeagueType leage, DrawBase drawObject, MovePlayer moveObject) :
+            base(x, y,  width, height,  -1, leage, ShapeType.Ellipse, drawObject, moveObject) { }
 
         public override void Kill(ObjectActive killer, ObjectDeadType deadType)
         {

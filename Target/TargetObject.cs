@@ -19,9 +19,9 @@ namespace RunningBox
         {
             get
             {
-                if (Targer != null)
+                if (Target != null)
                 {
-                    _X = Targer.Layout.CenterX;
+                    _X = Target.Layout.CenterX;
                 }
                 return _X;
             }
@@ -35,24 +35,24 @@ namespace RunningBox
         {
             get
             {
-                if (Targer != null)
+                if (Target != null)
                 {
-                    _Y = Targer.Layout.CenterY;
+                    _Y = Target.Layout.CenterY;
                 }
                 return _Y;
             }
         }
 
-        private ObjectBase _Targer = null;
+        private ObjectBase _Target = null;
         /// <summary>
         /// 做為目標的活動物件
         /// </summary>
-        public ObjectBase Targer
+        public ObjectBase Target
         {
-            get { return _Targer; }
+            get { return _Target; }
             set
             {
-                _Targer = value;
+                _Target = value;
             }
         }
 
@@ -62,7 +62,7 @@ namespace RunningBox
         /// <param name="objectBase">活動物件</param>
         public TargetObject(ObjectBase objectBase)
         {
-            Targer = objectBase;
+            Target = objectBase;
         }
 
         /// <summary>
@@ -71,10 +71,10 @@ namespace RunningBox
         /// <returns>物件的座標</returns>
         public PointF GetPoint()
         {
-            if (Targer != null)
+            if (Target != null)
             {
-                _X = Targer.Layout.CenterX;
-                _Y = Targer.Layout.CenterY;
+                _X = Target.Layout.CenterX;
+                _Y = Target.Layout.CenterY;
             }
             return new PointF(_X, _Y);
         }
