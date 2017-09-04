@@ -130,7 +130,7 @@ namespace RunningBox
         {
             if ((DeadType & deadType) != deadType) return;
 
-            Owner.Status = ObjectStatus.Dying;
+            //Owner.Status = ObjectStatus.Dying;
             if (ScrapDrawObject == null)
             {
                 Owner.Propertys.Add(new PropertyScraping((int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax));
@@ -147,7 +147,7 @@ namespace RunningBox
             {
                 if (ShrinkTime.IsFull)
                 {
-                    Owner.Status = ObjectStatus.Dead;
+                    //Owner.Status = ObjectStatus.Dead;
                 }
                 else
                 {

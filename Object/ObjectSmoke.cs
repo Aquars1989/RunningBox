@@ -58,6 +58,7 @@ namespace RunningBox
             {
                 Layout.Scale = 1F - Life.GetRatio();
                 Life.Value += Scene.SceneIntervalOfRound;
+                base.Action();
             }
         }
     }

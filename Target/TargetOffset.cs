@@ -58,7 +58,7 @@ namespace RunningBox
         /// </summary>
         public float Y
         {
-            get { return Target.X + OffsetY; }
+            get { return Target.Y + OffsetY; }
         }
 
         /// <summary>

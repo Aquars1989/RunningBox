@@ -129,7 +129,21 @@ namespace RunningBox
             Energy.Value += (int)(EnergyGetPerSec / Scene.SceneRoundPerSec + 0.5F);
         }
 
-
+        /// <summary>
+        /// 殺死此物件
+        /// </summary>
+        /// <param name="killer">殺手物件</param>
+        /// <param name="deadType">死亡類型</param>
+        public override void Kill(ObjectActive killer, ObjectDeadType deadType)
+        {
+            if (Status == ObjectStatus.Alive)
+            {
+                Status = ObjectStatus.Dead;
+                Propertys.AllDoAfterDead(killer, deadType);
+                Skills.AllDoAfterDead(killer, deadType);
+                OnDead(this, killer, deadType);
+            }
+        }
 
         /// <summary>
         /// 繪製物件

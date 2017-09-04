@@ -215,7 +215,7 @@ namespace RunningBox
         public ObjectStatus Status
         {
             get { return _Status; }
-            set
+            protected set
             {
                 if (_Status == value) return;
                 _Status = value;
@@ -242,6 +242,7 @@ namespace RunningBox
         /// 殺死此物件
         /// </summary>
         /// <param name="killer">殺手物件</param>
+        /// <param name="deadType">死亡類型</param>
         public virtual void Kill(ObjectActive killer, ObjectDeadType deadType)
         {
             if (Status == ObjectStatus.Alive)
