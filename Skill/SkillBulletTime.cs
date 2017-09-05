@@ -65,10 +65,15 @@ namespace RunningBox
             switch (endType)
             {
                 case SkillEndType.ChanneledBreak:
+                    {
+                        Owner.Scene.SceneSlow -= _SceneSlow;
+                        _MiniBar.End(PropertyEndType.Break);
+                    }
+                    break;
                 case SkillEndType.Finish:
                     {
                         Owner.Scene.SceneSlow -= _SceneSlow;
-                        _MiniBar.Status = PropertyStatus.Disabled;
+                        _MiniBar.End(PropertyEndType.Finish);
                     }
                     break;
             }

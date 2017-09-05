@@ -115,10 +115,26 @@ namespace RunningBox
             Skills.AllDoAfterAction();
             Propertys.AllDoAfterAction();
 
+            Settlement();
             Skills.AllSettlement();
             Propertys.AllSettlement();
 
             Propertys.ClearAllDisabled();
+        }
+
+        /// <summary>
+        /// 結算物件生命
+        /// </summary>
+        protected virtual void Settlement()
+        {
+            if (Life.IsFull)
+            {
+                Kill(null, ObjectDeadType.LifeEnd);
+            }
+            else
+            {
+                Life.Value += Scene.SceneIntervalOfRound;
+            }
         }
 
         /// <summary>

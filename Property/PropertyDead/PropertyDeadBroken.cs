@@ -112,8 +112,8 @@ namespace RunningBox
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
         public PropertyDeadBroken(int scrapCount, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int radiation, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;

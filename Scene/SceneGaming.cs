@@ -142,7 +142,7 @@ namespace RunningBox
         /// <summary>
         /// 波數
         /// </summary>
-        public int Wave { get; set; }
+        public int WaveNo { get; set; }
 
         /// <summary>
         /// 是否開始遊戲
@@ -178,6 +178,7 @@ namespace RunningBox
             UIObjects.Add(SkillIcon1);
             UIObjects.Add(SkillIcon2);
             UIObjects.Add(EnergyBar);
+
             GameObjects.ObjectDead += OnObjectDead;
         }
 
@@ -231,8 +232,8 @@ namespace RunningBox
                     if (_WaveCounter.IsFull)
                     {
                         _WaveCounter.Value = 0;
-                        Wave++;
-                        GoWave(Wave);
+                        WaveNo++;
+                        GoWave(WaveNo);
                     }
                     _WaveCounter.Value += SceneIntervalOfRound;
                 }
@@ -287,7 +288,7 @@ namespace RunningBox
         /// <param name="potY">玩家起始點Y</param>
         public void SetStart(int potX, int potY)
         {
-            Wave = 0;
+            WaveNo = 0;
             Score = 0;
             SceneSlow = 1;
 
@@ -321,7 +322,7 @@ namespace RunningBox
 
         protected override void OnBeforeDraw(Graphics g)
         {
-            BufferGraphics.DrawString(string.Format("Wave:{0}    Score:{1}", Wave, Score), Font, Brushes.Black, 85, 50);
+            BufferGraphics.DrawString(string.Format("Wave:{0}    Score:{1}", WaveNo, Score), Font, Brushes.Black, 85, 50);
             base.OnBeforeDraw(g);
         }
 
@@ -332,7 +333,7 @@ namespace RunningBox
         {
             if (IsStart && !IsEnding)
             {
-                Score += Wave;
+                Score += WaveNo;
             }
 
             base.OnAfterRound();
@@ -438,6 +439,16 @@ namespace RunningBox
             {
                 Skill2.Use(new TargetTrackPoint(this));
             }
+        }
+
+        /// <summary>
+        /// 波數時間轉換為毫秒
+        /// </summary>
+        /// <param name="wave">波數</param>
+        /// <returns>毫秒</returns>
+        public int Wave(float wave)
+        {
+            return (int)(wave * IntervalOfWave + 0.5F);
         }
 
         /// <summary>

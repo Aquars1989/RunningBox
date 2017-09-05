@@ -93,7 +93,9 @@ namespace RunningBox
             bool result = _Collection.Remove(item);
             if (result)
             {
-                item.Container = null;
+                item.Dead -= OnObjectDead;
+                item.Kill(null, ObjectDeadType.Clear);
+                item.Dispose();
             }
             return result;
         }
@@ -105,8 +107,9 @@ namespace RunningBox
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
-                ObjectBase item = _Collection[i];
-                item.Container = null;
+                _Collection[i].Dead -= OnObjectDead;
+                _Collection[i].Kill(null, ObjectDeadType.Clear);
+                _Collection[i].Dispose();
             }
             _Collection.Clear();
         }
@@ -157,7 +160,11 @@ namespace RunningBox
                 ObjectBase item = _Collection[i];
                 if (item.Status == ObjectStatus.Dead)
                 {
-                    deadObjects.Add(item);
+                    ObjectActive itemA = item as ObjectActive;
+                    if (itemA == null || (itemA.Propertys.Affix & SpecialStatus.Remain) != SpecialStatus.Remain)
+                    {
+                        deadObjects.Add(item);
+                    }
                 }
             }
 

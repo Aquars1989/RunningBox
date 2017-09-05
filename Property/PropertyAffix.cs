@@ -7,28 +7,26 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 凍結特性,凍結的物件無法移動
+    /// 附加狀態特性,單純增加附加狀態無特殊效果的特性
     /// </summary>
-    class PropertyFreeze : PropertyBase
+    public class PropertyAffix : PropertyBase
     {
         /// <summary>
-        /// 新增凍結特性,凍結的物件無法移動
+        /// 新增附加狀態特性,單純增加附加狀態無特殊效果的特性
         /// </summary>
-        /// <param name="durationTime">凍結時間(毫秒)</param>
-        public PropertyFreeze(int durationTime)
+        /// <param name="affix">附加狀態</param>
+        /// <param name="durationTime">持續時間(毫秒)</param>
+        public PropertyAffix(SpecialStatus affix, int durationTime)
             : base(TargetNull.Value)
         {
+            Affix = affix;
             DurationTime.Limit = durationTime;
         }
 
-        public override void DoBeforeActionMove()
-        {
-            Owner.MoveObject.ClearOffset();
-        }
-
-        public override void DoAfterAction() { }
         public override void DoBeforeAction() { }
+        public override void DoBeforeActionMove() { }
         public override void DoBeforeActionPlan() { }
+        public override void DoAfterAction() { }
         public override void DoBeforeDraw(Graphics g) { }
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }

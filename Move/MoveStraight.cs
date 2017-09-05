@@ -29,7 +29,7 @@ namespace RunningBox
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
         /// <param name="closeRange">定義鄰近距離,與目標距離小於此值會開始減速</param>
         /// <param name="closeSpeedSlow">進入鄰近範圍後,移動速度降低比例最大值,速度比例=1-(CloseSpeedSlow * (CloseRange-Distance)/CloseRange)</param>
-        public MoveStraight(ITarget target, float speed, int offsetsLimit, float closeRange = 100, float closeSpeedSlow = 1F)
+        public MoveStraight(ITarget target, float speed, int offsetsLimit, float closeRange, float closeSpeedSlow)
             : base(target, speed, offsetsLimit)
         {
             CloseRange = closeRange;
@@ -47,7 +47,7 @@ namespace RunningBox
                 if (distance < CloseRange)
                 {
                     double speedFix = 1 - (CloseSpeedSlow * (CloseRange - distance) / CloseRange);
-                    speed = (float)(Speed * Math.Max(speedFix,0));
+                    speed = (float)(speed * Math.Max(speedFix, 0));
                 }
                 AddOffset(Function.GetOffsetPoint(0, 0, direction, speed));
             }

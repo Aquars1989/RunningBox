@@ -67,8 +67,8 @@ namespace RunningBox
         /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
         public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, LeagueType collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DeadType = deadType;
             RangeMultiple = rangeMultiple;
             RangeConstant = rangeConstant;
@@ -94,6 +94,13 @@ namespace RunningBox
             {
                 ObjectActive objectActive = Owner.Container[i] as ObjectActive;
                 if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
+
+                //特殊狀態判定 具碰撞 非鬼魂
+                if ((objectActive.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
+                    (objectActive.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
+                {
+                    continue;
+                }
 
                 //碰撞判定
                 if (!Function.IsCollison(objectActive.Layout, explosionObject.Layout)) continue;

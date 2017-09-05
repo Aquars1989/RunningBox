@@ -78,6 +78,7 @@
     <Compile Include="Move\MoveStraight.cs" />
     <Compile Include="Move\%40MoveBase.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
+    <Compile Include="Property\PropertyAffix.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
     <Compile Include="Property\PropertyUI.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadExplosion.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Draw\DrawPen.cs" />
     <Compile Include="Draw\DrawBrush.cs" />
     <Compile Include="Draw\%40DrawBase.cs" />
-    <Compile Include="Effect\EffectCollection.cs" />
+    <Compile Include="Effect\%24EffectCollection.cs" />
     <Compile Include="Effect\EffectDyeing.cs" />
     <Compile Include="Effect\EffectShark.cs" />
     <Compile Include="Effect\EffectShrink.cs" />
@@ -95,13 +96,13 @@
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
     <Compile Include="Object\ObjectActive.cs" />
-    <Compile Include="Object\ObjectCollection.cs" />
+    <Compile Include="Object\%24ObjectCollection.cs" />
     <Compile Include="Object\ObjectScrap.cs" />
     <Compile Include="Object\ObjectSmoke.cs" />
     <Compile Include="Object\ObjectPlayer.cs" />
     <Compile Include="Object\%40ObjectBase.cs" />
     <Compile Include="Property\%40PropertyBase.cs" />
-    <Compile Include="Property\PropertyCollection.cs" />
+    <Compile Include="Property\%24PropertyCollection.cs" />
     <Compile Include="Property\PropertyCollision.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadCollapse.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadBroken.cs" />
@@ -110,13 +111,19 @@
     <Compile Include="Scene\SceneGaming.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Scene\SceneSkill.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Scene\SceneSkill.Designer.cs">
+      <DependentUpon>SceneSkill.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scene\SceneWelcome.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Scene\SceneWelcome.Designer.cs">
       <DependentUpon>SceneWelcome.cs</DependentUpon>
     </Compile>
-    <Compile Include="Skill\SkillCollection.cs" />
+    <Compile Include="Skill\%24SkillCollection.cs" />
     <Compile Include="Skill\SkillBulletTime.cs" />
     <Compile Include="Layout\%40LayoutBase.cs" />
     <Compile Include="Skill\SkillShield.cs" />
@@ -157,6 +164,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneGaming.resx">
       <DependentUpon>SceneGaming.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scene\SceneSkill.resx">
+      <DependentUpon>SceneSkill.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneWelcome.resx">
       <DependentUpon>SceneWelcome.cs</DependentUpon>

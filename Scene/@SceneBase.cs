@@ -39,57 +39,245 @@ namespace RunningBox
 
         #region ===== 事件 =====
         /// <summary>
-        /// 場景速度減慢值變更
+        /// 發生於場景追蹤點變更
+        /// </summary>
+        public event EventHandler TrackPointChanged;
+
+        /// <summary>
+        /// 發生於目前獲得焦點的UI變更
+        /// </summary>
+        public event EventHandler FocusObjectUIChanged;
+
+        /// <summary>
+        /// 發生於場景速度減慢值變更
         /// </summary>
         public event EventHandler SceneSlowChanged;
 
         /// <summary>
-        /// 回合時間變更
+        /// 發生於回合時間變更
         /// </summary>
         public event EventHandler IntervalOfRoundChanged;
 
         /// <summary>
-        /// 回合開始前執行
+        /// 發生於回合開始前
         /// </summary>
         public event EventHandler BeforeRound;
 
         /// <summary>
-        /// 回合結束後執行
+        /// 發生於回合結束後
         /// </summary>
         public event EventHandler AfterRound;
 
         /// <summary>
-        /// 繪製畫面前執行,在此設定繪製參數
+        /// 發生於繪製畫面前,在此設定繪製參數
         /// </summary>
         public event PaintEventHandler BeforeDraw;
 
         /// <summary>
-        /// 繪製地板
+        /// 發生於繪製地板時
         /// </summary>
         public event PaintEventHandler DrawFloor;
 
         /// <summary>
-        /// 繪製UI前執行
+        /// 發生於繪製UI前
         /// </summary>
         public event PaintEventHandler BeforeDrawUI;
 
         /// <summary>
-        /// 繪製UI後執行
+        /// 發生於繪製UI後
         /// </summary>
         public event PaintEventHandler AfterDrawUI;
 
         /// <summary>
-        /// 繪製結束前執行,在此重置畫布設定
+        /// 發生於繪製結束前,在此重置畫布設定
         /// </summary>
         public event PaintEventHandler AfterDrawReset;
 
         /// <summary>
-        /// 繪製畫面後執行
+        /// 發生於繪製畫面後
         /// </summary>
         public event PaintEventHandler AfterDraw;
         #endregion
 
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於場景追蹤點變更
+        /// </summary>
+        protected virtual void OnTrackPointChanged()
+        {
+            ObjectUI fidUI = null;
+            for (int i = UIObjects.Count - 1; i >= 0; i--) // 由後往前找
+            {
+                ObjectUI item = UIObjects[i] as ObjectUI;
+                if (item != null && item.InRectangle(TrackPoint))
+                {
+                    fidUI = item;
+                    break;
+                }
+            }
+            FocusObjectUI = fidUI;
+
+            if (TrackPointChanged != null)
+            {
+                TrackPointChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於目前獲得焦點的UI變更
+        /// </summary>
+        protected virtual void OnFocusObjectUIChanged()
+        {
+            if (FocusObjectUIChanged != null)
+            {
+                FocusObjectUIChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於回合時間變更
+        /// </summary>
+        protected virtual void OnIntervalOfRoundChanged()
+        {
+            RoundPerSec = 1000F / IntervalOfRound;
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+
+            if (IntervalOfRoundChanged != null)
+            {
+                IntervalOfRoundChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於場景速度減慢值變更
+        /// </summary>
+        protected virtual void OnSceneSlowChanged()
+        {
+            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+            if (SceneSlowChanged != null)
+            {
+                SceneSlowChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於回合開始前,此事件應永遠在回合的開端
+        /// </summary>
+        protected virtual void OnBeforeRound()
+        {
+            if (BeforeRound != null)
+            {
+                BeforeRound(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於回合結束,此事件應永遠在回合的結尾
+        /// </summary>
+        protected virtual void OnAfterRound()
+        {
+            if (BeforeRound != null)
+            {
+                AfterRound(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製畫面前,此事件應永遠在繪製流程的開端,在此設定繪製參數
+        /// </summary>
+        protected virtual void OnBeforeDraw(Graphics g)
+        {
+            if (BeforeDraw != null)
+            {
+                BeforeDraw(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製地板時
+        /// </summary>
+        protected virtual void OnDrawFloor(Graphics g)
+        {
+            if (DrawFloor != null)
+            {
+                DrawFloor(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製UI前
+        /// </summary>
+        protected virtual void OnBeforeDrawUI(Graphics g)
+        {
+            if (BeforeDrawUI != null)
+            {
+                BeforeDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製UI後
+        /// </summary>
+        protected virtual void OnAfterDrawUI(Graphics g)
+        {
+            if (AfterDrawUI != null)
+            {
+                AfterDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製結束前,在OnAfterDraw前發生,在此重置畫布設定
+        /// </summary>
+        protected virtual void OnAfterDrawReset(Graphics g)
+        {
+            g.ResetTransform();
+            if (AfterDrawReset != null)
+            {
+                AfterDrawReset(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製畫面後,此事件應永遠在繪製流程的結尾(畫布重置後)
+        /// </summary>
+        protected virtual void OnAfterDraw(Graphics g)
+        {
+            if (AfterDraw != null)
+            {
+                AfterDraw(this, new PaintEventArgs(g, this.ClientRectangle));
+            }
+        }
+        #endregion
+
         #region===== 屬性 =====
+        private ObjectUI _FocusObjectUI;
+        /// <summary>
+        /// 目前獲得焦點的UI
+        /// </summary>
+        public ObjectUI FocusObjectUI
+        {
+            get { return _FocusObjectUI; }
+            private set
+            {
+                if (_FocusObjectUI == value) return;
+                if (_FocusObjectUI != null)
+                {
+                    _FocusObjectUI.OnLostFocus();
+                }
+
+                _FocusObjectUI = value;
+
+                if (_FocusObjectUI != null)
+                {
+                    _FocusObjectUI.OnGetFocus();
+                }
+                OnFocusObjectUIChanged();
+            }
+        }
+
         /// <summary>
         /// 場景每秒回合數(計入場景速度)
         /// </summary>
@@ -132,10 +320,20 @@ namespace RunningBox
             }
         }
 
+        private Point _TrackPoint;
         /// <summary>
         /// 場景追蹤點
         /// </summary>
-        public Point TrackPoint { get; set; }
+        public Point TrackPoint
+        {
+            get { return _TrackPoint; }
+            set
+            {
+                if (_TrackPoint == value) return;
+                _TrackPoint = value;
+                OnTrackPointChanged();
+            }
+        }
 
         /// <summary>
         /// 主要區域
@@ -193,6 +391,7 @@ namespace RunningBox
             this.Name = "SceneBase";
             this.Load += new System.EventHandler(this.SceneBase_Load);
             this.SizeChanged += new System.EventHandler(this.SceneBase_SizeChanged);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SceneBase_MouseDown);
             this.ResumeLayout(false);
 
         }
@@ -253,123 +452,6 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 回合時間變更
-        /// </summary>
-        protected virtual void OnIntervalOfRoundChanged()
-        {
-            RoundPerSec = 1000F / IntervalOfRound;
-            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
-            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
-
-            if (IntervalOfRoundChanged != null)
-            {
-                IntervalOfRoundChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 場景速度減慢值變更
-        /// </summary>
-        protected virtual void OnSceneSlowChanged()
-        {
-            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
-            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
-            if (SceneSlowChanged != null)
-            {
-                SceneSlowChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 回合開始前執行,此方法應永遠在回合的開端
-        /// </summary>
-        protected virtual void OnBeforeRound()
-        {
-            if (BeforeRound != null)
-            {
-                BeforeRound(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 回合結束執行,此方法應永遠在回合的結尾
-        /// </summary>
-        protected virtual void OnAfterRound()
-        {
-            if (BeforeRound != null)
-            {
-                AfterRound(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 繪製畫面前執行,此方法應永遠在繪製流程的開端,在此設定繪製參數
-        /// </summary>
-        protected virtual void OnBeforeDraw(Graphics g)
-        {
-            if (BeforeDraw != null)
-            {
-                BeforeDraw(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
-        /// 繪製地板
-        /// </summary>
-        protected virtual void OnDrawFloor(Graphics g)
-        {
-            if (DrawFloor != null)
-            {
-                DrawFloor(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
-        /// 繪製UI前執行
-        /// </summary>
-        protected virtual void OnBeforeDrawUI(Graphics g)
-        {
-            if (BeforeDrawUI != null)
-            {
-                BeforeDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
-        /// 繪製UI後執行
-        /// </summary>
-        protected virtual void OnAfterDrawUI(Graphics g)
-        {
-            if (AfterDrawUI != null)
-            {
-                AfterDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
-        /// 繪製結束前執行,在OnAfterDraw前發生,在此重置畫布設定
-        /// </summary>
-        protected virtual void OnAfterDrawReset(Graphics g)
-        {
-            g.ResetTransform();
-            if (AfterDrawReset != null)
-            {
-                AfterDrawReset(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
-        /// 繪製畫面後執行,此方法應永遠在繪製流程的結尾(畫布重置後)
-        /// </summary>
-        protected virtual void OnAfterDraw(Graphics g)
-        {
-            if (AfterDraw != null)
-            {
-                AfterDraw(this, new PaintEventArgs(g, this.ClientRectangle));
-            }
-        }
-
-        /// <summary>
         /// 滑鼠移動時更新追蹤點
         /// </summary>
         /// <param name="e"></param>
@@ -386,7 +468,7 @@ namespace RunningBox
         /// <returns></returns>
         public int Sec(float sec)
         {
-            return (int)(sec * 1000);
+            return (int)(sec * 1000 + 0.5F);
         }
 
         /// <summary>
@@ -450,6 +532,14 @@ namespace RunningBox
             BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             ThisGraphics = CreateGraphics();
+        }
+
+        private void SceneBase_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (FocusObjectUI != null)
+            {
+                FocusObjectUI.OnClick(e);
+            }
         }
     }
 }

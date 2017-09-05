@@ -22,8 +22,8 @@ namespace RunningBox
         /// <param name="duration">持續時間(毫秒),小於0為永久</param>
         /// <param name="shrinkTime">smoke縮小時間(毫秒),小於0為永久</param>
         public PropertySmoking(int duration, int shrinkTime)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DurationTime.Limit = duration;
             ShrinkLimit = shrinkTime;
         }

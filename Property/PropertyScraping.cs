@@ -99,8 +99,8 @@ namespace RunningBox
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
         public PropertyScraping(int duration, int scrapCount, int scrapWidth, int scrapHeight, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DurationTime.Limit = duration;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;

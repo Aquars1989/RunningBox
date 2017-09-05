@@ -59,7 +59,7 @@ namespace RunningBox
 
 
                         double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
-                        float speed = (Owner.MoveObject.Speed * SpeedMultiple) + SpeedConstant;
+                        float speed = (Owner.MoveObject.SpeedPerOffsets * SpeedMultiple) + SpeedConstant;
                         Owner.MoveObject.AddOffset(Function.GetOffsetPoint(0, 0, direction, speed));
 
                         if (Smoking)

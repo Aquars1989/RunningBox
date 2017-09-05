@@ -12,9 +12,8 @@ namespace RunningBox
     /// </summary>
     public class SkillShield : SkillBase
     {
-        private PropertyCollision _Collision;
-        private ObjectActive _ShieldObject;
-        private PropertyUI _MiniBar;
+        private ObjectActive _ShieldObject; //護盾物件
+        private PropertyUI _MiniBar;        //迷你條棒+幽靈屬性
 
         /// <summary>
         /// 護盾撞擊力量
@@ -51,38 +50,31 @@ namespace RunningBox
                             return;
                         }
 
-                        for (int i = 0; i < Owner.Propertys.Count; i++)
-                        {
-                            PropertyCollision collision = Owner.Propertys[i] as PropertyCollision;
-                            if (collision != null)
-                            {
-                                _Collision = collision;
-                            }
-                        }
-
-                        if (_Collision == null)
-                        {
-                            Break();
-                            return;
-                        }
-                        _Collision.Status = PropertyStatus.Pause;
-
                         int effectWidth = Owner.Layout.RectWidth + 12;
                         int effectHeight = Owner.Layout.RectHeight + 12;
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
-                        _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(Color.FromArgb(220, 255, 255, 150), Color.FromArgb(170, 170, 0), 6, 1, 0, 360), MoveNull.Value);
-                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.All, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
-                        //_ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, Color.FromArgb(170, 170, 0), 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.All, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
 
-                        _ShieldObject.Propertys.Add(new PropertyCollision(1, null));
+                        Color color = Owner.DrawObject.Color;
+                        Color colorBack = Color.FromArgb(50, color.R, color.G, color.G);
+                        _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(colorBack, color, 6, 1, 0, 360), MoveNull.Value);
+                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
+                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
+                        _ShieldObject.Propertys.Add(new PropertyCollision(1));
                         _ShieldObject.Layout.DependTarget = new TargetObject(Owner);
-                        _ShieldObject.Dead += (x, e, t) => { this.Break(); };
+                        //_ShieldObject.Dead += (x, e, t) => { this.Break(); };
                         Owner.Container.Add(_ShieldObject);
 
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Color.FromArgb(160, 210, 100), Color.Black, Color.White, 1, true, Channeled));
+                        _MiniBar.Affix = SpecialStatus.Ghost;   //增加幽靈屬性
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
+                    }
+                    break;
+                case SkillStatus.Channeled:
+                    if (_ShieldObject.Status != ObjectStatus.Alive)
+                    {
+                        this.Break();
                     }
                     break;
             }
@@ -93,12 +85,16 @@ namespace RunningBox
             switch (endType)
             {
                 case SkillEndType.ChanneledBreak:
+                    {
+                        //_Collision.Status = PropertyStatus.Enabled;
+                        _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
+                        _MiniBar.End(PropertyEndType.Break);
+                    }
+                    break;
                 case SkillEndType.Finish:
                     {
-                        _Collision.Status = PropertyStatus.Enabled;
-                        _Collision = null;
                         _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
-                        _MiniBar.Status = PropertyStatus.Disabled;
+                        _MiniBar.End(PropertyEndType.Finish);
                     }
                     break;
             }

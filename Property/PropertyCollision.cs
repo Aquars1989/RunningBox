@@ -20,11 +20,21 @@ namespace RunningBox
         /// 新增碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
         /// </summary>
         /// <param name="collisionPower">碰撞強度</param>
-        /// <param name="target">鎖定目標,不為null時只針對特定目標碰撞</param>
         public PropertyCollision(int collisionPower, TargetObject target)
+            : base(target)
         {
-            Status = PropertyStatus.Enabled;
-            Target = target;
+            Affix = SpecialStatus.Collision;
+            CollisionPower = collisionPower;
+        }
+
+        /// <summary>
+        /// 新增碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
+        /// </summary>
+        /// <param name="collisionPower">碰撞強度</param>
+        public PropertyCollision(int collisionPower)
+            : base(TargetNull.Value)
+        {
+            Affix = SpecialStatus.Collision;
             CollisionPower = collisionPower;
         }
 
@@ -38,9 +48,10 @@ namespace RunningBox
                     if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
 
                     //限定目標
-                    if (Target != null)
+                    if (Target != TargetNull.Value)
                     {
-                        if (objectActive == (Target as TargetObject).Target)
+                        TargetObject targetObject = (Target as TargetObject);
+                        if (targetObject != null && objectActive == targetObject.Target)
                         {
                             i = Owner.Container.Count;
                         }
@@ -48,6 +59,13 @@ namespace RunningBox
                         {
                             continue;
                         }
+                    }
+
+                    //特殊狀態判定 具碰撞 非鬼魂
+                    if ((objectActive.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
+                        (objectActive.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
+                    {
+                        continue;
                     }
 
                     //碰撞判定
@@ -88,5 +106,14 @@ namespace RunningBox
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
         public override void DoBeforeEnd(PropertyEndType endType) { }
+
+        protected override void OnTargetChanged()
+        {
+            if (Target != TargetNull.Value && !(Target is TargetObject))
+            {
+                Target = TargetNull.Value;
+            }
+            base.OnTargetChanged();
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace RunningBox
         /// <summary>
         /// 已提升的速度
         /// </summary>
-        private float _SpeededToatl;
+        private float _SpeededToatl = 0;
 
         /// <summary>
         /// 每秒速度提升
@@ -27,11 +27,10 @@ namespace RunningBox
         /// <param name="durationRound">持續時間(毫秒),小於0為永久</param>
         /// <param name="speededPerSec">每秒速度增加</param>
         public PropertySpeeded(int durationRound, float speededPerSec)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DurationTime.Limit = durationRound;
             SpeededPerSec = speededPerSec;
-            _SpeededToatl = 0;
         }
 
         public override void DoAfterAction()

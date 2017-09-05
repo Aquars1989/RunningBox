@@ -11,6 +11,8 @@ namespace RunningBox
     /// </summary>
     class PropertyDeadCollapse : PropertyBase
     {
+        private PropertyScraping _PropertyScraping; //碎裂特性+遺骸屬性
+
         /// <summary>
         /// 碎片寬度
         /// </summary>
@@ -112,8 +114,8 @@ namespace RunningBox
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
         public PropertyDeadCollapse(int scrapCount, int shrinkTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+            : base(TargetNull.Value)
         {
-            Status = PropertyStatus.Enabled;
             DeadType = deadType;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;
@@ -133,21 +135,23 @@ namespace RunningBox
             //Owner.Status = ObjectStatus.Dying;
             if (ScrapDrawObject == null)
             {
-                Owner.Propertys.Add(new PropertyScraping((int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax));
+                _PropertyScraping = new PropertyScraping((int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             else
             {
-                Owner.Propertys.Add(new PropertyScraping(ScrapDrawObject, (int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax));
+                _PropertyScraping = new PropertyScraping(ScrapDrawObject, (int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
+            _PropertyScraping.Affix = SpecialStatus.Remain;
+            Owner.Propertys.Add(_PropertyScraping);
         }
 
         public override void DoAfterAction()
         {
-            if (Owner.Status == ObjectStatus.Dying)
+            if (Owner.Status == ObjectStatus.Dead)
             {
                 if (ShrinkTime.IsFull)
                 {
-                    //Owner.Status = ObjectStatus.Dead;
+                    _PropertyScraping.End(PropertyEndType.Finish);
                 }
                 else
                 {

@@ -109,7 +109,7 @@ namespace RunningBox
                         int speed = Global.Rand.Next(1800, 2200);
                         PointF targetPoint = new PointF(drawLeft + x * partWidth, drawTop + y * partHeight);
                         TargetPoint target = new TargetPoint(targetPoint);
-                        MoveStraight moveObject = new MoveStraight(target, speed, 1);
+                        MoveStraight moveObject = new MoveStraight(target, speed, 1, 100, 1F);
                         ObjectActive bigBall = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, -1, LeagueType.None, ShapeType.Ellipse, new DrawPen(Color.FromArgb(150, 0, 0, 0), ShapeType.Ellipse, 4), moveObject);
                         bigBall.Propertys.Add(new PropertyFreeze(Sec(delay)));
                         GameObjects.Add(bigBall);
@@ -128,7 +128,7 @@ namespace RunningBox
                                     int targetFixX = (partWidth * linkOffsetX[i] / 2) + (int)((0.5F - Global.Rand.NextDouble()) * partWidth * fx + 0.5F);
                                     int targetFixY = (partHeight * linkOffsetY[i] / 2) + (int)((0.5F - Global.Rand.NextDouble()) * partHeight * fx + 0.5F);
                                     TargetPoint target2 = new TargetPoint((int)(targetPoint.X) + targetFixX, (int)(targetPoint.Y) + targetFixY);
-                                    MoveStraight moveObject2 = new MoveStraight(target2, speed2, 1);
+                                    MoveStraight moveObject2 = new MoveStraight(target2, speed2, 1, 100, 1F);
                                     Color color2 = Color.FromArgb(Global.Rand.Next(200), Global.Rand.Next(200), Global.Rand.Next(200));
                                     ObjectActive smallBall = new ObjectActive(enterPoint2.X, enterPoint2.Y, size2, size2, -1, LeagueType.None, ShapeType.Ellipse, new DrawBrush(color2, ShapeType.Ellipse), moveObject2);
                                     smallBall.Propertys.Add(new PropertyFreeze(Sec(0.75F + (float)Global.Rand.NextDouble() * 0.5F)));
