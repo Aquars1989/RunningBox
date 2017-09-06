@@ -40,30 +40,36 @@ namespace RunningBox
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
 
-            if (Animation > 32)
+            int aniMax = 8;
+            int criMax = 32;
+            if (Animation >= aniMax)
             {
-                Animation %= 32;
+                Animation %= aniMax;
             }
 
-            int ani = Animation / 2 % 4;
-            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.1F), drawY = drawRectangle.Top + (drawRectangle.Height * 0.1F);
-            float size = drawRectangle.Width * 0.3F;
+            int ani = Animation;
+            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.1F); //原始位置
+            float drawY = drawRectangle.Top + (drawRectangle.Height * 0.1F); //原始位置
+            float size = drawRectangle.Width * 0.3F; //原始大小
 
             GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
             g.FillEllipse(_Brush, drawX, drawY, size, size);
 
 
-            do
+            while (true)
             {
-                size -= ani * drawRectangle.Width * 0.3F / 16F;
-                drawX += ani * drawRectangle.Width * 0.7F / 16F;
-                drawY += ani * drawRectangle.Width * 0.7F / 16F;
+                float ratio = ani / (float)criMax;
+                size -= ratio * drawRectangle.Width * 0.3F;
+                drawX += ratio * drawRectangle.Width * 0.7F;
+                drawY += ratio * drawRectangle.Height * 0.7F;
                 if (size > 0)
                 {
                     g.FillEllipse(_Brush, drawX, drawY, size, size);
                 }
-                ani = 4;
-            } while (size > 0);
+                else break;
+                ani = aniMax;
+            }
+
             Animation++;
         }
 

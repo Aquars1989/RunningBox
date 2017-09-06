@@ -54,6 +54,8 @@
     <Compile Include="Draw\DrawNull.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShockwave.cs" />
+    <Compile Include="Draw\DrawUI\DrawUIString.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
@@ -77,6 +79,7 @@
     <Compile Include="Move\MovePlayer.cs" />
     <Compile Include="Move\MoveStraight.cs" />
     <Compile Include="Move\%40MoveBase.cs" />
+    <Compile Include="Object\ObjectWave.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyAffix.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
@@ -126,6 +129,7 @@
     <Compile Include="Skill\%24SkillCollection.cs" />
     <Compile Include="Skill\SkillBulletTime.cs" />
     <Compile Include="Layout\%40LayoutBase.cs" />
+    <Compile Include="Skill\SkillShockwave.cs" />
     <Compile Include="Skill\SkillShield.cs" />
     <Compile Include="Target\%40ITarget.cs" />
     <Compile Include="Scene\%40SceneBase.cs">

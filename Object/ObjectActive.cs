@@ -57,8 +57,8 @@ namespace RunningBox
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
             Life = new CounterObject(-1);
-            Energy = new CounterObject(10000, 10000, false);
-            EnergyGetPerSec = 2000;
+            Energy = new CounterObject(Global.DefaultEnergyGetPerSec, Global.DefaultEnergyGetPerSec, false);
+            EnergyGetPerSec = Global.DefaultEnergyGetPerSec;
         }
 
         /// <summary>
@@ -167,11 +167,14 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public override void Draw(Graphics g)
         {
-            Skills.AllDoBeforeDraw(g);
-            Propertys.AllDoBeforeDraw(g);
-            base.Draw(g);
-            Propertys.AllDoAfterDraw(g);
-            Skills.AllDoAfterDraw(g);
+            if (Visible)
+            {
+                Skills.AllDoBeforeDraw(g);
+                Propertys.AllDoBeforeDraw(g);
+                base.Draw(g);
+                Propertys.AllDoAfterDraw(g);
+                Skills.AllDoAfterDraw(g);
+            }
         }
     }
 }

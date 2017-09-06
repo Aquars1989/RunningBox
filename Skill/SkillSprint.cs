@@ -13,6 +13,14 @@ namespace RunningBox
     public class SkillSprint : SkillBase
     {
         /// <summary>
+        /// 說明文字
+        /// </summary>
+        public override string Info
+        {
+            get { return "使用後可以往前衝刺一段距離"; }
+        }
+
+        /// <summary>
         /// 衝刺距離倍數(以所有者速度為基準)
         /// </summary>
         public float SpeedMultiple { get; set; }
@@ -58,9 +66,9 @@ namespace RunningBox
                         }
 
 
-                        double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
-                        float speed = (Owner.MoveObject.SpeedPerOffsets * SpeedMultiple) + SpeedConstant;
-                        Owner.MoveObject.AddOffset(Function.GetOffsetPoint(0, 0, direction, speed));
+                        float speed = (Owner.MoveObject.Speed * SpeedMultiple) + SpeedConstant;
+                        PointF offset = Owner.MoveObject.GetOffsetByXY(Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y, speed);
+                        Owner.MoveObject.AddOffset(offset);
 
                         if (Smoking)
                         {

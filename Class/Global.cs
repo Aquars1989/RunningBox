@@ -14,5 +14,8 @@ namespace RunningBox
         public static int DefaultIntervalOfWave = 1500;
         public static int DefaultEndDelayLimit = 1000;
         public static Padding DefaultMainRectanglePadding = new Padding(80, 80, 80, 80);
+
+        public static int DefaultEnergyLimit = 10000;
+        public static int DefaultEnergyGetPerSec = 2000;
     }
 }

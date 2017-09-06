@@ -86,7 +86,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:包圍者 與普通一致但不會大幅加速
+            //物件:包圍 與普通追捕者一致但不會大幅加速
             WaveEvents.Add("Group", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -109,27 +109,37 @@ namespace RunningBox
                 }
             });
 
-            //物件:包圍者 與普通一致但不會大幅加速
+            //物件:序列 排列成直線的追捕者
             WaveEvents.Add("Series", (n) =>
             {
                 Point enterPoint = GetEnterPoint();
-                int size = Global.Rand.Next(16, 18);
-                int movesCount = 5;
-                float speed = Global.Rand.Next(500, 550) * _SpeedFix;
+                int size = Global.Rand.Next(10, 12);
+                int movesCount = 6;
+                float speed = Global.Rand.Next(300, 400) * _SpeedFix;
                 int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
 
                 ObjectActive target = PlayerObject;
+                ObjectActive lastObject = null;
                 for (int i = 0; i < n; i++)
                 {
-                    MoveStraight moveObject = new MoveStraight(new TargetObject(target), speed, movesCount, 0, 1F);
+                    MoveStraight moveObject = new MoveStraight(new TargetObject(target), speed, movesCount, 30, 1F);
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.DarkOrange, ShapeType.Ellipse), moveObject);
                     newObject.Propertys.Add(new PropertyFreeze(Sec(i * 0.05F)));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
-                    newObject.Propertys.Add(new PropertyCollision(10));
+                    newObject.Propertys.Add(new PropertyCollision(1));
                     GameObjects.Add(newObject);
                     target = newObject;
-                    speed += 20;
+                    speed += 10;
+                    life -= 50;
+                    if (lastObject != null)
+                    {
+                        lastObject.Dead += (x, e, t) =>
+                        {
+                            newObject.MoveObject.Target = (x as ObjectActive).MoveObject.Target;
+                        };
+                    }
+                    lastObject = newObject;
                 }
             });
 
@@ -204,26 +214,19 @@ namespace RunningBox
         public override void SetWave()
         {
             //                                 123456789012345678901234567890123456789012345678901234
-            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
-            Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
-            Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
-            Waves.Add(new WaveLine("Series  ", "4   3          4               5                  6    "));
-            Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
-            Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
-            Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
+            //Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
+            //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
+            Waves.Add(new WaveLine("Series  ", "     3          4               5                  6    "));
+            //Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
+            //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
+            //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
         }
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
             MovePlayer moveObject = new MovePlayer(new TargetTrackPoint(this), 200, 8);
-            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
-            //SkillSprint skill1 = new SkillSprint(3500, Sec(1), 0, 1000, true);
-
-           
-            SkillShield skill1 = new SkillShield(1, 6000, 0, Sec(1F), Sec(2.5F));
-            SkillBulletTime skill2 = new SkillBulletTime(1000, 8000, -1, Sec(5), 1);
-            PlayerObject.Skills.Add(skill1);
-            PlayerObject.Skills.Add(skill2);
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);         
             PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
             return PlayerObject;

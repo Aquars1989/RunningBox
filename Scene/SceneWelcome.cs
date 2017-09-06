@@ -13,7 +13,6 @@ namespace RunningBox
 {
     public partial class SceneWelcome : SceneBase
     {
-        public event EventHandler GoSence;
         private Timer _TimerOfEnter = new Timer() { Interval = 1000 };
 
         private static string[] _StringPoint =
@@ -35,10 +34,7 @@ namespace RunningBox
             _TimerOfEnter.Tick += (x, e) =>
             {
                 _TimerOfEnter.Enabled = false;
-                if (GoSence != null)
-                {
-                    GoSence(this, null);
-                }
+                OnGoScene(new SceneSkill());
             };
         }
 

@@ -129,6 +129,11 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否顯示
+        /// </summary>
+        public bool Visible { get; set; }
+
         private SceneBase _Scene;
         /// <summary>
         /// 物件歸屬場景(必要,上層設定)
@@ -235,6 +240,7 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             DrawObject = drawObject;
             MoveObject = moveObject;
+            Visible = true;
         }
 
         #region ===== 方法 =====
@@ -267,7 +273,10 @@ namespace RunningBox
         /// <param name="g">Graphics物件</param>
         public virtual void Draw(Graphics g)
         {
-            DrawObject.Draw(g, Layout.Rectangle);
+            if (Visible)
+            {
+                DrawObject.Draw(g, Layout.Rectangle);
+            }
         }
         #endregion
 

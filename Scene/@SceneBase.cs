@@ -16,6 +16,8 @@ namespace RunningBox
     /// </summary>
     public class SceneBase : UserControl
     {
+        public delegate void GoSceneEventHandle(object sender, SceneBase scene);
+
         private Timer _RoundTimer = new Timer();
         /// <summary>
         /// 回合計時器
@@ -38,6 +40,11 @@ namespace RunningBox
         protected Bitmap BufferImage { get; set; }
 
         #region ===== 事件 =====
+        /// <summary>
+        /// 前往其他場景
+        /// </summary>
+        public event GoSceneEventHandle GoScene;
+
         /// <summary>
         /// 發生於場景追蹤點變更
         /// </summary>
@@ -100,6 +107,34 @@ namespace RunningBox
         #endregion
 
         #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於版面重新配置
+        /// </summary>
+        protected virtual void OnReLayout()
+        {
+            if (BufferImage != null) BufferImage.Dispose();
+            if (BufferGraphics != null) BufferGraphics.Dispose();
+            if (ThisGraphics != null) ThisGraphics.Dispose();
+
+            MainRectangle = ClientRectangle;
+            BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
+            BufferGraphics = Graphics.FromImage(BufferImage);
+            BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            ThisGraphics = CreateGraphics();
+        }
+
+        /// <summary>
+        /// 發生於目前獲得焦點的UI變更
+        /// </summary>
+        protected virtual void OnGoScene(SceneBase scene)
+        {
+            if (GoScene != null)
+            {
+                GoScene(this, scene);
+            }
+        }
+
         /// <summary>
         /// 發生於場景追蹤點變更
         /// </summary>
@@ -398,13 +433,21 @@ namespace RunningBox
 
         private void SceneBase_Load(object sender, EventArgs e)
         {
-            MainRectangle = ClientRectangle;
-            BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
-            BufferGraphics = Graphics.FromImage(BufferImage);
-            BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            ThisGraphics = CreateGraphics();
+            OnReLayout();
             RoundTimer.Enabled = true;
+        }
+
+        private void SceneBase_SizeChanged(object sender, EventArgs e)
+        {
+            OnReLayout();
+        }
+
+        private void SceneBase_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (FocusObjectUI != null)
+            {
+                FocusObjectUI.OnClick(e);
+            }
         }
 
         private void RoundTimer_Tick(object sender, EventArgs e)
@@ -518,28 +561,6 @@ namespace RunningBox
                     break;
             }
             return new Point(x, y);
-        }
-
-        private void SceneBase_SizeChanged(object sender, EventArgs e)
-        {
-            if (BufferImage != null) BufferImage.Dispose();
-            if (BufferGraphics != null) BufferGraphics.Dispose();
-            if (ThisGraphics != null) ThisGraphics.Dispose();
-
-            MainRectangle = ClientRectangle;
-            BufferImage = new Bitmap(this.DisplayRectangle.Width, this.DisplayRectangle.Height);
-            BufferGraphics = Graphics.FromImage(BufferImage);
-            BufferGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            BufferGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            ThisGraphics = CreateGraphics();
-        }
-
-        private void SceneBase_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (FocusObjectUI != null)
-            {
-                FocusObjectUI.OnClick(e);
-            }
         }
     }
 }

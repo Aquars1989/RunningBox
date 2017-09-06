@@ -21,6 +21,11 @@ namespace RunningBox
         private int _Animation;
         private Pen _Pen;
 
+        /// <summary>
+        /// 是否忽略技能狀態
+        /// </summary>
+        public bool StaticMode { get; set; }
+
         private DrawBase _IconDrawObject;
         /// <summary>
         /// 內部的圖示繪圖物件(必要)
@@ -78,7 +83,7 @@ namespace RunningBox
             GraphicsPath backFrame = GetBackFrame(drawRectangle);
             DrawSkillBase drawSkillBase = IconDrawObject as DrawSkillBase;
             SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill;
-            if (bindingSkill != null)
+            if (bindingSkill != null && !StaticMode)
             {
                 switch (bindingSkill.Status)
                 {
@@ -165,37 +170,24 @@ namespace RunningBox
 
             if (_BackFrame == null)
             {
-                int width = rectangle.Width;
-                int height = rectangle.Height;
-
                 _BackFrameRectangle = rectangle;
-                _BackFrame = new GraphicsPath();
-
-                int radius = 8;
-                //頂端
-                _BackFrame.AddLine(rectangle.Left + radius, rectangle.Top, rectangle.Right - radius, rectangle.Top);
-                //右上角
-                _BackFrame.AddArc(rectangle.Right - radius, rectangle.Top, radius, radius, 270, 90);
-                //右邊
-                _BackFrame.AddLine(rectangle.Right, rectangle.Top + radius, rectangle.Right, rectangle.Bottom - radius);
-                //右下角
-                _BackFrame.AddArc(rectangle.Right - radius, rectangle.Bottom - radius, radius, radius, 0, 90);
-                //底邊
-                _BackFrame.AddLine(rectangle.Right - radius, rectangle.Bottom, rectangle.Left + radius, rectangle.Bottom);
-                //左下角
-                _BackFrame.AddArc(rectangle.Left, rectangle.Bottom - radius, radius, radius, 90, 90);
-                //左邊
-                _BackFrame.AddLine(rectangle.Left, rectangle.Bottom - radius, rectangle.Left, rectangle.Top + radius);
-                //左上角
-                _BackFrame.AddArc(rectangle.Left, rectangle.Top, radius, radius, 180, 90);
-                _BackFrame.CloseAllFigures();
+                _BackFrame = Function.GetRadiusFrame(rectangle, 8);
             }
             return _BackFrame;
         }
 
         public override DrawBase Copy()
         {
-            return new DrawUISkillFrame(Color, DrawButton, IconDrawObject);
+            return new DrawUISkillFrame(Color, DrawButton, IconDrawObject)
+            {
+                Scene = this.Scene,
+                Owner = this.Owner,
+                Opacity = this.Opacity,
+                RFix = this.RFix,
+                GFix = this.GFix,
+                BFix = this.BFix,
+                Scale = this.Scale
+            };
         }
 
         protected virtual void OnIconDrawObjectChanged()
@@ -254,6 +246,11 @@ namespace RunningBox
 
         protected override void OnDispose()
         {
+            if (_BackFrame != null)
+            {
+                _BackFrame.Dispose();
+                _BackFrame = null;
+            }
             BackPen(ref _Pen);
         }
     }

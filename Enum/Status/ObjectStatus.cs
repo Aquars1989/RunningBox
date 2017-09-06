@@ -15,11 +15,10 @@ namespace RunningBox
         /// 存活
         /// </summary>
         Alive = 0,
-        Dying = 1,
 
         /// <summary>
         /// 死亡,等待回收
         /// </summary>
-        Dead = 2
+        Dead = 1
     }
 }

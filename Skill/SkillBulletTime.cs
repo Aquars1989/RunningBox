@@ -16,6 +16,14 @@ namespace RunningBox
         private PropertyUI _MiniBar;
 
         /// <summary>
+        /// 說明文字
+        /// </summary>
+        public override string Info
+        {
+            get { return string.Format("減緩時間流逝速度{0:P0}", SlowRate); }
+        }
+
+        /// <summary>
         /// 減慢程度(1為原速度的50%)
         /// </summary>
         public float SlowRate { get; set; }

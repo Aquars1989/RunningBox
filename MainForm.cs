@@ -15,17 +15,23 @@ namespace RunningBox
         {
             InitializeComponent();
             //Controls.Add(new SceneStand() { Dock = DockStyle.Fill });
-            Controls.Add(new SceneSkill() { Dock = DockStyle.Fill });
+            SceneSkill s = new SceneSkill() { Dock = DockStyle.Fill };
+            s.GoScene += SceneToScene;
+            Controls.Add(s);
             return;
             SceneWelcome senceWelcome = new SceneWelcome() { Dock = DockStyle.Fill };
-            senceWelcome.GoSence += (x, e) =>
-            {
-                Controls.Remove(senceWelcome);
-                SceneStand SceneStand = new SceneStand() { Dock = DockStyle.Fill };
-                Controls.Add(SceneStand);
-                senceWelcome.Dispose();
-            };
+            senceWelcome.GoScene += SceneToScene;
             Controls.Add(senceWelcome);
+        }
+
+        private void SceneToScene(object sender, SceneBase scene)
+        {
+            SceneBase senderSence = sender as SceneBase;
+            Controls.Remove(senderSence);
+            scene.Dock = DockStyle.Fill;
+            scene.GoScene += SceneToScene;
+            Controls.Add(scene);
+            senderSence.Dispose();
         }
     }
 }

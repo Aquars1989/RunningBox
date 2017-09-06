@@ -302,6 +302,30 @@ namespace RunningBox
             MoveY = 0;
             OnOffsetsChanged();
         }
+
+        /// <summary>
+        /// 使用目標座標和速度取得位移值
+        /// </summary>
+        /// <param name="x">目標X座標</param>
+        /// <param name="y">目標Y座標</param>
+        /// <param name="speed">移動速度</param>
+        /// <returns>位移值</returns>
+        public PointF GetOffsetByXY(float x, float y, float speed)
+        {
+            double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, x, y);
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit);
+        }
+
+        /// <summary>
+        /// 使用角度和速度取得位移值
+        /// </summary>
+        /// <param name="angle">角度</param>
+        /// <param name="speed">移動速度</param>
+        /// <returns>位移值</returns>
+        public PointF GetOffsetByAngle(double angle, float speed)
+        {
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit);
+        }
         #endregion
     }
 }

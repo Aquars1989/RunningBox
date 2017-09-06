@@ -14,6 +14,15 @@ namespace RunningBox
     /// </summary>
     public abstract class SkillBase
     {
+        //說明文字用
+        private static Font _InfoFont = new Font("微軟正黑體", 12);
+        private static StringFormat _InfoFormat = new StringFormat();
+
+        /// <summary>
+        /// 說明文字
+        /// </summary>
+        public abstract string Info { get; }
+
         /// <summary>
         /// 自動施放物件
         /// </summary>
@@ -221,5 +230,16 @@ namespace RunningBox
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
         public abstract DrawSkillBase GetDrawObject(Color color);
+
+        /// <summary>
+        /// 取得繪圖物件
+        /// </summary>
+        /// <param name="color">繪製顏色</param>
+        /// <returns>繪圖物件</returns>
+        public virtual DrawUIString GetInfoObject(Color color,Color backColor,Color borderColor)
+        {
+            DrawUIString result = new DrawUIString(color, backColor, borderColor, Info, _InfoFont, _InfoFormat);
+            return result;
+        }
     }
 }

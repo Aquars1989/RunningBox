@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -80,18 +81,24 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 取得兩點間的距離
+        /// 取得物件AB是否碰撞
         /// </summary>
-        /// <param name="X1">點1X座標</param>
-        /// <param name="Y1">點1Y座標</param>
-        /// <param name="X2">點2X座標</param>
-        /// <param name="Y2">點2Y座標</param>
-        /// <returns>距離</returns>
+        /// <param name="layou1">物件配置A</param>
+        /// <param name="layout2">物件配置B</param>
+        /// <returns>是否碰撞</returns>
         public static bool IsCollison(Layout layou1, Layout layout2)
         {
             return IsCollison(layou1.CollisonShape, layou1.Rectangle, layout2.CollisonShape, layout2.Rectangle);
         }
 
+        /// <summary>
+        /// 取得物件AB是否碰撞
+        /// </summary>
+        /// <param name="type1">物件A類型</param>
+        /// <param name="rect1">物件A區域</param>
+        /// <param name="type2">物件B類型</param>
+        /// <param name="rect2">物件B區域</param>
+        /// <returns>是否碰撞</returns>
         public static bool IsCollison(ShapeType type1, Rectangle rect1, ShapeType type2, Rectangle rect2)
         {
             if (!rect1.IntersectsWith(rect2)) return false; //如果矩形未相交,任意形狀一定不相交
@@ -158,6 +165,45 @@ namespace RunningBox
                 double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth2 * Math.Cos(roation), 2) + Math.Pow(halfHeight2 * Math.Sin(roation), 2)); //圓半徑2
                 return (uX * uX + uY * uY) < (radius2 * radius2);
             }
+        }
+
+        /// <summary>
+        /// 取得圓角區域
+        /// </summary>
+        /// <param name="rectangle">區域</param>
+        /// <param name="radius">圓角大小</param>
+        /// <returns>圓角區域</returns>
+        public static GraphicsPath GetRadiusFrame(Rectangle rectangle, int radius)
+        {
+            GraphicsPath result = new GraphicsPath();
+            if (radius == 0)
+            {
+                result.AddRectangle(rectangle);
+            }
+            else
+            {
+                int width = rectangle.Width;
+                int height = rectangle.Height;
+
+                //頂端
+                result.AddLine(rectangle.Left + radius, rectangle.Top, rectangle.Right - radius, rectangle.Top);
+                //右上角
+                result.AddArc(rectangle.Right - radius, rectangle.Top, radius, radius, 270, 90);
+                //右邊
+                result.AddLine(rectangle.Right, rectangle.Top + radius, rectangle.Right, rectangle.Bottom - radius);
+                //右下角
+                result.AddArc(rectangle.Right - radius, rectangle.Bottom - radius, radius, radius, 0, 90);
+                //底邊
+                result.AddLine(rectangle.Right - radius, rectangle.Bottom, rectangle.Left + radius, rectangle.Bottom);
+                //左下角
+                result.AddArc(rectangle.Left, rectangle.Bottom - radius, radius, radius, 90, 90);
+                //左邊
+                result.AddLine(rectangle.Left, rectangle.Bottom - radius, rectangle.Left, rectangle.Top + radius);
+                //左上角
+                result.AddArc(rectangle.Left, rectangle.Top, radius, radius, 180, 90);
+                result.CloseAllFigures();
+            }
+            return result;
         }
     }
 }

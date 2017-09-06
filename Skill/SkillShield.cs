@@ -16,6 +16,14 @@ namespace RunningBox
         private PropertyUI _MiniBar;        //迷你條棒+幽靈屬性
 
         /// <summary>
+        /// 說明文字
+        /// </summary>
+        public override string Info
+        {
+            get { return string.Format("產生強度{0:N0}的護盾,護盾被摧毀之前本體不會受到傷害", CollisionPower); }
+        }
+
+        /// <summary>
         /// 護盾撞擊力量
         /// </summary>
         public int CollisionPower { get; private set; }
@@ -86,7 +94,6 @@ namespace RunningBox
             {
                 case SkillEndType.ChanneledBreak:
                     {
-                        //_Collision.Status = PropertyStatus.Enabled;
                         _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
                         _MiniBar.End(PropertyEndType.Break);
                     }
@@ -98,8 +105,8 @@ namespace RunningBox
                     }
                     break;
             }
-
         }
+
         /// <summary>
         /// 取得繪圖物件
         /// </summary>
@@ -118,6 +125,6 @@ namespace RunningBox
         public override void DoAfterDraw(Graphics g) { }
         public override void DoBeforeActionEnergyGet() { }
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
-        public override void DoUseWhenEfficacy(ITarget target) { }
+        public override void DoUseWhenEfficacy(ITarget target) { }       
     }
 }

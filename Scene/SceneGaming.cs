@@ -70,7 +70,7 @@ namespace RunningBox
                     SkillIcon1.DrawObject.Dispose();
                 }
 
-                (SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? null : Skill1.GetDrawObject(Color.Black);
+                (SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? DrawNull.Value : Skill1.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
 
@@ -89,7 +89,7 @@ namespace RunningBox
                     SkillIcon2.DrawObject.Dispose();
                 }
 
-                (SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? null : Skill2.GetDrawObject(Color.Black);
+                (SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? DrawNull.Value : Skill2.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
         #endregion
@@ -298,9 +298,11 @@ namespace RunningBox
             SetWave();
 
             PlayerObject = CreatePlayerObject(potX, potY);
+            if (Skill1 != null) 
+                PlayerObject.Skills.Add(Skill1);
+            if (Skill2 != null) 
+                PlayerObject.Skills.Add(Skill2);
             GameObjects.Add(PlayerObject);
-            Skill1 = PlayerObject.Skills.Count > 0 ? PlayerObject.Skills[0] : null;
-            Skill2 = PlayerObject.Skills.Count > 1 ? PlayerObject.Skills[1] : null;
             (EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
 
             Padding padding = Global.DefaultMainRectanglePadding;
@@ -538,10 +540,13 @@ namespace RunningBox
                     }
                     else
                     {
-                        int n = c - '0';
-                        if (n >= 0 && n <= 9)
+                        if (c >= '0' && c <= '9')
                         {
-                            result = n;
+                            result = c - '0';
+                        }
+                        else if (c >= 'A' && c <= 'Z')
+                        {
+                            result = c - 'A' + 10;
                         }
                         WaveNO = waveNO + 1;
                     }
