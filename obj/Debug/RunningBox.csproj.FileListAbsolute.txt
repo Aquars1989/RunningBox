@@ -24,3 +24,4 @@ E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources
+E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources

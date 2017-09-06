@@ -298,10 +298,18 @@ namespace RunningBox
             SetWave();
 
             PlayerObject = CreatePlayerObject(potX, potY);
-            if (Skill1 != null) 
+            if (Skill1 != null)
+            {
+                Skill1.Reset();
                 PlayerObject.Skills.Add(Skill1);
-            if (Skill2 != null) 
+            }
+
+            if (Skill2 != null)
+            {
+                Skill2.Reset();
                 PlayerObject.Skills.Add(Skill2);
+            }
+
             GameObjects.Add(PlayerObject);
             (EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
 

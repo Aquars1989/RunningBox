@@ -46,7 +46,7 @@ namespace RunningBox
                 DrawBase infoDraw = _Skills[i].GetInfoObject(Color.FromArgb(180, 80, 0), Color.FromArgb(255, 255, 240), Color.FromArgb(210, 180, 50));
                 _SkillInfos[i] = new ObjectUI(left + 85, top, 150, 75, infoDraw);
 
-                // UIObjects.Add(_SkillIcons[i]);
+                UIObjects.Add(_SkillIcons[i]);
                 UIObjects.Add(_SkillInfos[i]);
             }
 

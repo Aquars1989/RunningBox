@@ -171,7 +171,15 @@ namespace RunningBox
                     DoAfterEnd(SkillEndType.ChanneledBreak);
                     break;
             }
+        }
 
+        /// <summary>
+        /// 重設技能
+        /// </summary>
+        public virtual void Reset()
+        {
+            Break();
+            Status = SkillStatus.Disabled;
         }
 
         /// <summary>
@@ -236,7 +244,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public virtual DrawUIString GetInfoObject(Color color,Color backColor,Color borderColor)
+        public virtual DrawUIString GetInfoObject(Color color, Color backColor, Color borderColor)
         {
             DrawUIString result = new DrawUIString(color, backColor, borderColor, Info, _InfoFont, _InfoFormat);
             return result;

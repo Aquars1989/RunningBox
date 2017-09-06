@@ -57,7 +57,7 @@ namespace RunningBox
             Skills = new SkillCollection(this);
             Propertys = new PropertyCollection(this);
             Life = new CounterObject(-1);
-            Energy = new CounterObject(Global.DefaultEnergyGetPerSec, Global.DefaultEnergyGetPerSec, false);
+            Energy = new CounterObject(Global.DefaultEnergyLimit, Global.DefaultEnergyLimit, false);
             EnergyGetPerSec = Global.DefaultEnergyGetPerSec;
         }
 
