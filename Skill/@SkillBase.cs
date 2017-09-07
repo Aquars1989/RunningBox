@@ -246,7 +246,7 @@ namespace RunningBox
         /// <returns>繪圖物件</returns>
         public virtual DrawUIString GetInfoObject(Color color, Color backColor, Color borderColor)
         {
-            DrawUIString result = new DrawUIString(color, backColor, borderColor, Info, _InfoFont, _InfoFormat);
+            DrawUIString result = new DrawUIString(color, backColor, borderColor, 2, Info, _InfoFont, _InfoFormat);
             return result;
         }
     }

@@ -12,7 +12,7 @@ namespace RunningBox
     public class ObjectWave : ObjectBase
     {
         /// <summary>
-        /// 擴散時間計時器(毫秒)
+        /// 擴散時間計時器(毫秒),小於0為永久
         /// </summary>
         public CounterObject DiffusionTime { get; private set; }
 
@@ -115,6 +115,8 @@ namespace RunningBox
                 {
                     DrawObject.Opacity = FadeOpacity * (1 - FadeTime.GetRatio());
                     FadeTime.Value += Scene.SceneIntervalOfRound;
+                    base.Action();
+
                 }
             }
             else

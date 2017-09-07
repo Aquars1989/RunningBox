@@ -79,7 +79,7 @@ namespace RunningBox
         /// <returns></returns>
         public float GetRatio()
         {
-            return _Value / (float)_Limit;
+            return _Limit < 1 ? 0 : _Value / (float)_Limit;
         }
     }
 }

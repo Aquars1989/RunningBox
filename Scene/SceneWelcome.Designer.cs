@@ -37,12 +37,10 @@
             this.BackColor = System.Drawing.Color.White;
             this.MainRectangle = new System.Drawing.Rectangle(0, 0, 150, 150);
             this.Name = "SceneWelcome";
-            this.Load += new System.EventHandler(this.SceneWelcome_Load);
+            this.Size = new System.Drawing.Size(1292, 833);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SceneWelcome_MouseDown);
             this.ResumeLayout(false);
-
         }
-
         #endregion
 
 

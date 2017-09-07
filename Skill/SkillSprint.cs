@@ -17,7 +17,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return "使用後可以往前衝刺一段距離"; }
+            get { return "往前衝刺一段距離"; }
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("使用後每{0:N2}秒產生可將周圍所有物件擊退的衝擊波", PushSycle.Limit / 1000F); }
+            get { return string.Format("連續產生衝擊波\n擊退所有物件", PushSycle.Limit / 1000F); }
         }
 
         /// <summary>

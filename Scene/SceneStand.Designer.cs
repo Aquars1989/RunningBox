@@ -36,10 +36,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Name = "SceneStand";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RunningBox_MouseDown);
-            this.MouseEnter += new System.EventHandler(this.RunningBox_MouseEnter);
-            this.MouseLeave += new System.EventHandler(this.RunningBox_MouseLeave);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RunningBox_MouseMove);
             this.ResumeLayout(false);
 
         }

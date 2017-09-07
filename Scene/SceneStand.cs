@@ -86,27 +86,53 @@ namespace RunningBox
                 }
             });
 
-            //物件:包圍 與普通追捕者一致但不會大幅加速
-            WaveEvents.Add("Group", (n) =>
+            //物件:包圍 四面八方的直線前進物件
+            WaveEvents.Add("Siege", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
                 {
-                    int size = Global.Rand.Next(7, 10);
-                    int movesCount = size + Global.Rand.Next(5, 10);
-                    float speed = Global.Rand.Next(320, 380) * _SpeedFix;
-                    int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
+                    int size = 10;
+                    int movesCount = 1;
+                    float speed = 450 * _SpeedFix;
+                    int life = Sec(5F + 0.2F * i);
                     Point enterPoint = GetEnterPoint((DirectionType)roundIdx);
 
-                    MoveStraight moveObject = new MoveStraight(new TargetObject(PlayerObject), speed, movesCount, 100, 0.5F);
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
-                    newObject.Skills.Add(new SkillSprint(0, 50, 5, 0, false) { AutoCastObject = new AutoCastNormal(2.5F) });
+                    double angel = Function.GetAngle(enterPoint.X, enterPoint.Y, PlayerObject.Layout.CenterX, PlayerObject.Layout.CenterY) + Global.Rand.Next(-20, 20);
+                    TargetOffset targetObject = new TargetOffset(TargetNull.Value, angel, 1000F);
+                    MoveStraight moveObject = new MoveStraight(targetObject, speed, movesCount, 0, 1F);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Orchid, ShapeType.Ellipse), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyFreeze(Sec(0.2F * i)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    targetObject.Target = new TargetObject(newObject);
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
                 }
+            });
+
+            //物件:水平牆壁
+            WaveEvents.Add("WallA", (n) =>
+            {
+                List<ObjectActive> objects = new List<ObjectActive>();
+                for (int i = 0; i < Height; i += 50)
+                {
+                    int movesCount = 1;
+                    float speed = 300 * _SpeedFix;
+                    int life = Sec(5F);
+                    TargetOffset targetObject = new TargetOffset(TargetNull.Value, 0, 1000F);
+                    MoveStraight moveObject = new MoveStraight(targetObject, speed, movesCount, 0, 1F);
+                    ObjectActive newObject = new ObjectActive(-50, i, 10, 50, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
+                    newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision, 20, 200, 600, Sec(0.8F), Sec(1.4F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyCollision(1));
+                    targetObject.Target = new TargetObject(newObject);
+                    GameObjects.Add(newObject);
+                    objects.Add(newObject);
+                }
+
+                objects[Global.Rand.Next(3, objects.Count - 4)].Kill(null, ObjectDeadType.Clear);
             });
 
             //物件:序列 排列成直線的追捕者
@@ -214,10 +240,10 @@ namespace RunningBox
         public override void SetWave()
         {
             //                                 123456789012345678901234567890123456789012345678901234
-            //Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
             //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
-            Waves.Add(new WaveLine("Series  ", "     3          4               5                  6    "));
+            Waves.Add(new WaveLine("WallA  ", "111113          4               5                  6    "));
             //Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
             //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
@@ -226,7 +252,7 @@ namespace RunningBox
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
             MovePlayer moveObject = new MovePlayer(new TargetTrackPoint(this), 200, 8);
-            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);         
+            ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
             PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
             return PlayerObject;
@@ -240,53 +266,10 @@ namespace RunningBox
 
         public override void DoAfterWave()
         {
-            _SpeedFix = 1F + WaveNo * 0.015F;
-            _LifeFix = 1F + WaveNo * 0.01F;
+            _SpeedFix = 1F + WaveNo.Value * 0.015F;
+            _LifeFix = 1F + WaveNo.Value * 0.01F;
         }
 
-        private void RunningBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (IsStart)
-            {
-                switch (e.Button)
-                {
-                    case System.Windows.Forms.MouseButtons.Left:
-                        UsePlayerSkill1();
-                        break;
-                    case System.Windows.Forms.MouseButtons.Right:
-                        UsePlayerSkill2();
-                        break;
-                }
-            }
-            else
-            {
-                SetStart(e.X, e.Y);
-            }
-        }
-
-        private void RunningBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            TrackPoint = e.Location;
-        }
-
-        private void RunningBox_MouseEnter(object sender, EventArgs e)
-        {
-            if (IsStart)
-            {
-                Cursor.Hide();
-            }
-        }
-
-        private void RunningBox_MouseLeave(object sender, EventArgs e)
-        {
-            if (IsStart)
-            {
-                Cursor.Show();
-            }
-        }
-
-        public override void DoAfterEnd()
-        {
-        }
+        public override void DoAfterEnd() { }
     }
 }

@@ -52,7 +52,9 @@
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Draw\DrawNull.cs" />
+    <Compile Include="Draw\DrawNoise.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBait.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShockwave.cs" />
     <Compile Include="Draw\DrawUI\DrawUIString.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="Layout\%40LayoutBase.cs" />
     <Compile Include="Skill\SkillShockwave.cs" />
     <Compile Include="Skill\SkillShield.cs" />
+    <Compile Include="Skill\SkillBait.cs" />
     <Compile Include="Target\%40ITarget.cs" />
     <Compile Include="Scene\%40SceneBase.cs">
       <SubType>UserControl</SubType>

@@ -30,13 +30,14 @@
         {
             this.SuspendLayout();
             // 
-            // SceneWelcome
+            // SceneSkill
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.MainRectangle = new System.Drawing.Rectangle(0, 0, 150, 150);
-            this.Name = "SceneWelcome";
+            this.Name = "SceneSkill";
+            this.Size = new System.Drawing.Size(1292, 833);
             this.ResumeLayout(false);
 
         }

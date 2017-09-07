@@ -50,6 +50,11 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 框線粗細
+        /// </summary>
+        public int BorderWidtrh { get; set; }
+
+        /// <summary>
         /// 繪製文字
         /// </summary>
         public string Text { get; set; }
@@ -75,16 +80,18 @@ namespace RunningBox
         /// <param name="color">文字顏色</param>
         /// <param name="backColor">背景色</param>
         /// <param name="borderColor">框線顏色</param>
+        /// <param name="borderWidtrh">框線粗細</param>
         /// <param name="text">文字</param>
         /// <param name="font">字型</param>
         /// <param name="drawFormat">繪製設定</param>
-        public DrawUIString(Color color, Color backColor, Color borderColor, string text, Font font, StringFormat drawFormat)
+        public DrawUIString(Color color, Color backColor, Color borderColor, int borderWidtrh, string text, Font font, StringFormat drawFormat)
         {
             Text = text;
             Font = font;
             Color = color;
             BackColor = backColor;
             BorderColor = borderColor;
+            BorderWidtrh = borderWidtrh;
             DrawFormat = drawFormat;
             Padding = new Padding(5, 5, 5, 5);
         }
@@ -108,10 +115,10 @@ namespace RunningBox
                 g.FillPath(_BrushBack, backFrame);
             }
 
-            if (BorderColor != Color.Empty)
+            if (BorderColor != Color.Empty && BorderWidtrh > 0)
             {
                 GetPen(ref _PenBorder, BorderColor, Opacity, RFix, GFix, BFix);
-                _PenBorder.Width = 1;
+                _PenBorder.Width = BorderWidtrh;
                 g.DrawPath(_PenBorder, backFrame);
             }
             g.DrawString(Text, Font, _Brush, textRectangle, DrawFormat);
@@ -138,7 +145,7 @@ namespace RunningBox
 
         public override DrawBase Copy()
         {
-            return new DrawUIString(Color, BackColor, BorderColor, Text, Font, DrawFormat)
+            return new DrawUIString(Color, BackColor, BorderColor, 2, Text, Font, DrawFormat)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,

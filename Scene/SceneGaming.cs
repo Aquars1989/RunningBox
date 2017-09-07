@@ -16,6 +16,7 @@ namespace RunningBox
     /// </summary>
     public abstract class SceneGaming : SceneBase
     {
+        private static Cursor _StartCursor = new Cursor(new Bitmap(1, 1).GetHicon());
         private static Font _FPSFont = new Font("Arial", 12);
         private Stopwatch _FPSWatch = new Stopwatch();
         private int _FPSTick = 0;
@@ -39,19 +40,34 @@ namespace RunningBox
 
         #region ===== UI物件 =====
         /// <summary>
+        /// 
+        /// </summary>
+        private ObjectUI _DarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private ObjectUI _CommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "重試", Global.CommandFont, Global.CommandFormat));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private ObjectUI _CommandBack = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "返回", Global.CommandFont, Global.CommandFormat));
+
+        /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
+        private ObjectUI _EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
 
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUI SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonLeft));
+        private ObjectUI _SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonLeft));
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUI SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonRight));
+        private ObjectUI _SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonRight));
         #endregion
 
         #region ===== 技能物件 =====
@@ -65,12 +81,12 @@ namespace RunningBox
             set
             {
                 _Skill1 = value;
-                if (SkillIcon1.DrawObject != null)
+                if (_SkillIcon1.DrawObject != null)
                 {
-                    SkillIcon1.DrawObject.Dispose();
+                    _SkillIcon1.DrawObject.Dispose();
                 }
 
-                (SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? DrawNull.Value : Skill1.GetDrawObject(Color.DarkSlateGray) as DrawBase;
+                (_SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? DrawNull.Value : Skill1.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
 
@@ -84,12 +100,12 @@ namespace RunningBox
             set
             {
                 _Skill2 = value;
-                if (SkillIcon2.DrawObject != null)
+                if (_SkillIcon2.DrawObject != null)
                 {
-                    SkillIcon2.DrawObject.Dispose();
+                    _SkillIcon2.DrawObject.Dispose();
                 }
 
-                (SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? DrawNull.Value : Skill2.GetDrawObject(Color.DarkSlateGray) as DrawBase;
+                (_SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? DrawNull.Value : Skill2.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
         #endregion
@@ -134,15 +150,31 @@ namespace RunningBox
         /// </summary>
         public ObjectActive PlayerObject { get; set; }
 
+        private bool _ShowMenu;
+        /// <summary>
+        /// 是否顯示選單
+        /// </summary>
+        public bool ShowMenu
+        {
+            get { return _ShowMenu; }
+            set
+            {
+                _ShowMenu = value;
+                _DarkCover.Visible = value;
+                _CommandBack.Visible = value;
+                _CommandRetry.Visible = value;
+            }
+        }
+
         /// <summary>
         /// 分數
         /// </summary>
-        public int Score { get; set; }
+        public CounterObject Score { get; private set; }
 
         /// <summary>
         /// 波數
         /// </summary>
-        public int WaveNo { get; set; }
+        public CounterObject WaveNo { get; set; }
 
         /// <summary>
         /// 是否開始遊戲
@@ -172,14 +204,25 @@ namespace RunningBox
         {
             EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
+            Score = new CounterObject(Global.DefaultScoreMax);
+            WaveNo = new CounterObject(Global.DefaultWaveMax);
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
 
-            UIObjects.Add(SkillIcon1);
-            UIObjects.Add(SkillIcon2);
-            UIObjects.Add(EnergyBar);
-
+            _CommandRetry.Click += (x, e) =>
+            {
+                ShowMenu = false;
+                SetStart(e.X, e.Y);
+            };
+            _CommandBack.Click += (x, e) => { OnGoScene(new SceneSkill()); };
+            UIObjects.Add(_SkillIcon1);
+            UIObjects.Add(_SkillIcon2);
+            UIObjects.Add(_EnergyBar);
+            UIObjects.Add(_DarkCover);
+            UIObjects.Add(_CommandBack);
+            UIObjects.Add(_CommandRetry);
             GameObjects.ObjectDead += OnObjectDead;
+            ShowMenu = false;
         }
 
         /// <summary>
@@ -219,6 +262,10 @@ namespace RunningBox
                 {
                     if (EndDelay.IsFull)
                     {
+                        Cursor = Cursors.Default;
+                        DefaultCursor = Cursors.Default;
+                        //Cursor.Show();
+                        ShowMenu = true;
                         IsEnding = false;
                         IsStart = false;
                     }
@@ -227,13 +274,13 @@ namespace RunningBox
                         EndDelay.Value += IntervalOfRound;
                     }
                 }
-                else
+                else if (!WaveNo.IsFull)
                 {
                     if (_WaveCounter.IsFull)
                     {
                         _WaveCounter.Value = 0;
-                        WaveNo++;
-                        GoWave(WaveNo);
+                        WaveNo.Value++;
+                        GoWave(WaveNo.Value);
                     }
                     _WaveCounter.Value += SceneIntervalOfRound;
                 }
@@ -288,8 +335,8 @@ namespace RunningBox
         /// <param name="potY">玩家起始點Y</param>
         public void SetStart(int potX, int potY)
         {
-            WaveNo = 0;
-            Score = 0;
+            WaveNo.Value = 0;
+            Score.Value = 0;
             SceneSlow = 1;
 
             GameObjects.Clear();
@@ -311,12 +358,14 @@ namespace RunningBox
             }
 
             GameObjects.Add(PlayerObject);
-            (EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
+            (_EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
 
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
 
-            Cursor.Hide();
+            Cursor = _StartCursor;
+            DefaultCursor = _StartCursor;
+            //Cursor.Hide();
             IsStart = true;
             DoAfterStart();
         }
@@ -330,10 +379,10 @@ namespace RunningBox
             base.OnDrawFloor(g);
         }
 
-        protected override void OnBeforeDraw(Graphics g)
+        protected override void OnAfterDrawUI(Graphics g)
         {
-            BufferGraphics.DrawString(string.Format("Wave:{0}    Score:{1}", WaveNo, Score), Font, Brushes.Black, 85, 50);
-            base.OnBeforeDraw(g);
+            BufferGraphics.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
+            base.OnAfterDrawUI(g);
         }
 
         /// <summary>
@@ -343,7 +392,11 @@ namespace RunningBox
         {
             if (IsStart && !IsEnding)
             {
-                Score += WaveNo;
+                Score.Value += IntervalOfRound;
+                if (Score.IsFull)
+                {
+                    SetEnd();
+                }
             }
 
             base.OnAfterRound();
@@ -397,12 +450,6 @@ namespace RunningBox
             base.OnIntervalOfRoundChanged();
         }
 
-        protected override void OnSceneSlowChanged()
-        {
-
-            base.OnSceneSlowChanged();
-        }
-
         /// <summary>
         /// 物件死亡時
         /// </summary>
@@ -416,6 +463,61 @@ namespace RunningBox
             }
         }
 
+        protected override void OnReLayout()
+        {
+            base.OnReLayout();
+
+            Padding padding = Global.DefaultMainRectanglePadding;
+            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
+
+            _DarkCover.Layout.Width = Width;
+            _DarkCover.Layout.Height = Height;
+            _CommandRetry.Layout.Y = (Height - _CommandRetry.Layout.Height) / 2;
+            _CommandBack.Layout.Y = (Height - _CommandBack.Layout.Height) / 2;
+            _CommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
+            _CommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _CommandBack.Layout.Width;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (!ShowMenu)
+            {
+                if (IsStart)
+                {
+                    switch (e.Button)
+                    {
+                        case System.Windows.Forms.MouseButtons.Left:
+                            UsePlayerSkill1();
+                            break;
+                        case System.Windows.Forms.MouseButtons.Right:
+                            UsePlayerSkill2();
+                            break;
+                    }
+                }
+                else
+                {
+                    SetStart(e.X, e.Y);
+                }
+            }
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            TrackPoint = e.Location;
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && PlayerObject != null)
+            {
+                PlayerObject.Kill(null, ObjectDeadType.Clear);
+                EndDelay.Value = EndDelay.Limit;
+            }
+            base.OnKeyDown(e);
+        }
+
         /// <summary>
         /// 結束遊戲
         /// </summary>
@@ -425,7 +527,6 @@ namespace RunningBox
             PlayerObject = null;
             IsEnding = true;
             EndDelay.Value = 0;
-            Cursor.Show();
             DoAfterEnd();
         }
 
@@ -569,17 +670,9 @@ namespace RunningBox
             // 
             // SceneGaming
             // 
-            this.MainRectangle = new System.Drawing.Rectangle(0, 0, 150, 150);
             this.Name = "SceneGaming";
-            this.Load += new System.EventHandler(this.SceneGaming_Load);
             this.ResumeLayout(false);
 
-        }
-
-        private void SceneGaming_Load(object sender, EventArgs e)
-        {
-            Padding padding = Global.DefaultMainRectanglePadding;
-            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
         }
     }
 }

@@ -14,24 +14,11 @@ namespace RunningBox
         public MainForm()
         {
             InitializeComponent();
-            //Controls.Add(new SceneStand() { Dock = DockStyle.Fill });
-            SceneSkill s = new SceneSkill() { Dock = DockStyle.Fill };
-            s.GoScene += SceneToScene;
-            Controls.Add(s);
+            Controls.Add(new SceneStand() { Dock = DockStyle.Fill, Skill1 = new SkillBait(5000, 1500, 1500, 200) });
             return;
-            SceneWelcome senceWelcome = new SceneWelcome() { Dock = DockStyle.Fill };
-            senceWelcome.GoScene += SceneToScene;
-            Controls.Add(senceWelcome);
-        }
-
-        private void SceneToScene(object sender, SceneBase scene)
-        {
-            SceneBase senderSence = sender as SceneBase;
-            Controls.Remove(senderSence);
-            scene.Dock = DockStyle.Fill;
-            scene.GoScene += SceneToScene;
-            Controls.Add(scene);
-            senderSence.Dispose();
+            Controls.Add(new SceneSkill() { Dock = DockStyle.Fill });
+            return;
+            Controls.Add( new SceneWelcome() { Dock = DockStyle.Fill });
         }
     }
 }

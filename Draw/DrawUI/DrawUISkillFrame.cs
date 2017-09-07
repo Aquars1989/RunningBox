@@ -128,11 +128,18 @@ namespace RunningBox
                         break;
                 }
             }
-            g.DrawPath(_Pen, backFrame);
-            if (IconDrawObject != null)
+
+            if (IconDrawObject != DrawNull.Value)
             {
                 IconDrawObject.Draw(g, drawRectangle);
             }
+            else
+            {
+                g.FillPath(Brushes.White, backFrame);
+            }
+
+            g.DrawPath(_Pen, backFrame);
+
             if (DrawButton != RunningBox.SkillKeyType.None)
             {
                 _PenDrawButton.Width = 2;

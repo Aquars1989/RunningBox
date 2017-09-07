@@ -38,9 +38,9 @@ namespace RunningBox
             };
         }
 
-        private void SceneWelcome_Load(object sender, EventArgs e)
+        protected override void OnLoadComplete()
         {
-
+            base.OnLoadComplete();
 
             int drawWidth = 400;
             int drawHeight = 150;
@@ -129,7 +129,6 @@ namespace RunningBox
                                     ObjectActive smallBall = new ObjectActive(enterPoint2.X, enterPoint2.Y, size2, size2, -1, LeagueType.None, ShapeType.Ellipse, new DrawBrush(color2, ShapeType.Ellipse), moveObject2);
                                     smallBall.Propertys.Add(new PropertyFreeze(Sec(0.75F + (float)Global.Rand.NextDouble() * 0.5F)));
                                     GameObjects.Add(smallBall);
-
                                 }
                             }
                         }
@@ -139,6 +138,7 @@ namespace RunningBox
                 }
             }
         }
+
 
         private void SceneWelcome_MouseDown(object sender, MouseEventArgs e)
         {

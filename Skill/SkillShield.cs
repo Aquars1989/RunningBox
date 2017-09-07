@@ -20,7 +20,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("產生強度{0:N0}的護盾,護盾被摧毀之前本體不會受到傷害", CollisionPower); }
+            get { return string.Format("產生強度{0:N0}點的護盾", CollisionPower); }
         }
 
         /// <summary>

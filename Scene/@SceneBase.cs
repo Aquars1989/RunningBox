@@ -18,6 +18,13 @@ namespace RunningBox
     {
         public delegate void GoSceneEventHandle(object sender, SceneBase scene);
 
+        protected new Cursor DefaultCursor { get; set; }
+
+        /// <summary>
+        /// 是否載入完成
+        /// </summary>
+        public bool IsLoadComplete { get; private set; }
+
         private Timer _RoundTimer = new Timer();
         /// <summary>
         /// 回合計時器
@@ -40,6 +47,11 @@ namespace RunningBox
         protected Bitmap BufferImage { get; set; }
 
         #region ===== 事件 =====
+        /// <summary>
+        /// 載入完成
+        /// </summary>
+        public event EventHandler LoadComplete;
+
         /// <summary>
         /// 前往其他場景
         /// </summary>
@@ -107,11 +119,24 @@ namespace RunningBox
         #endregion
 
         #region ===== 引發事件 =====
+        protected virtual void OnLoadComplete()
+        {
+            IsLoadComplete = true;
+            OnReLayout();
+            RoundTimer.Enabled = true;
+            
+            if (LoadComplete != null)
+            {
+                LoadComplete(this, new EventArgs());
+            }
+        }
+
         /// <summary>
         /// 發生於版面重新配置
         /// </summary>
         protected virtual void OnReLayout()
         {
+            if (!IsLoadComplete) return;
             if (BufferImage != null) BufferImage.Dispose();
             if (BufferGraphics != null) BufferGraphics.Dispose();
             if (ThisGraphics != null) ThisGraphics.Dispose();
@@ -129,6 +154,10 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnGoScene(SceneBase scene)
         {
+            scene.Dock = DockStyle.Fill;
+            Parent.Controls.Add(scene);
+            Parent.Controls.Remove(this);
+
             if (GoScene != null)
             {
                 GoScene(this, scene);
@@ -144,9 +173,9 @@ namespace RunningBox
             for (int i = UIObjects.Count - 1; i >= 0; i--) // 由後往前找
             {
                 ObjectUI item = UIObjects[i] as ObjectUI;
-                if (item != null && item.InRectangle(TrackPoint))
+                if (item != null && item.Visible && item.InRectangle(TrackPoint))
                 {
-                    fidUI = item;
+                    fidUI = item.Enabled ? item : null;
                     break;
                 }
             }
@@ -308,6 +337,18 @@ namespace RunningBox
                 if (_FocusObjectUI != null)
                 {
                     _FocusObjectUI.OnGetFocus();
+                    if (_FocusObjectUI.HasClickEnevt)
+                    {
+                        Cursor = Cursors.Hand;
+                    }
+                    else
+                    {
+                        Cursor = DefaultCursor;
+                    }
+                }
+                else
+                {
+                    Cursor = DefaultCursor;
                 }
                 OnFocusObjectUIChanged();
             }
@@ -400,6 +441,7 @@ namespace RunningBox
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
             SceneSlow = 1;
+            DefaultCursor = Cursors.Default;
             IntervalOfRound = Global.DefaultIntervalOfRound;
             UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
@@ -433,12 +475,22 @@ namespace RunningBox
 
         private void SceneBase_Load(object sender, EventArgs e)
         {
-            OnReLayout();
-            RoundTimer.Enabled = true;
+            Timer loadTimer = new Timer() { Interval = 1 };
+            loadTimer.Tick += (x, te) =>
+            {
+                Timer s = x as Timer;
+                s.Enabled = false;
+                OnLoadComplete();
+                s.Dispose();
+            };
+            loadTimer.Enabled = true;
         }
 
         private void SceneBase_SizeChanged(object sender, EventArgs e)
         {
+            if (!Visible) return;
+            Form form = FindForm();
+            if (form == null || form.WindowState == FormWindowState.Minimized) return;
             OnReLayout();
         }
 

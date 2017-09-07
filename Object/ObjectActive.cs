@@ -62,6 +62,27 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 使用指定的配置建立互動性活動物件
+        /// </summary>
+        /// <param name="layout">配置資訊</param>
+        /// <param name="life">存活時間,小於0為永久</param>
+        /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
+        /// <param name="drawObject">繪製物件</param>
+        /// <param name="moveObject">移動物件</param>
+        public ObjectActive(Layout layout, int life, LeagueType leage, DrawBase drawObject, MoveBase moveObject)
+            : this(drawObject, moveObject)
+        {
+            Layout.CollisonShape = layout.CollisonShape;
+            Layout.Anchor =layout.Anchor;
+            Layout.X = layout.X;
+            Layout.Y = layout.Y;
+            Layout.Width = layout.Width;
+            Layout.Height = layout.Height;
+            League = leage;
+            Life.Limit = life;
+        }
+
+        /// <summary>
         /// 建立一個互動性活動物件
         /// </summary>
         /// <param name="x">物件中心位置X</param>

@@ -33,6 +33,11 @@ namespace RunningBox
         public bool Enabled { get; set; }
 
         /// <summary>
+        /// 是否綁定Click事件
+        /// </summary>
+        public bool HasClickEnevt { get { return Click != null; } }
+
+        /// <summary>
         /// 使用指定的定位點和移動物件建立介面物件
         /// </summary>
         /// <param name="x">物件左上位置X</param>
@@ -99,13 +104,8 @@ namespace RunningBox
 
         public virtual void OnGetFocus()
         {
-            if (Enabled)
+            if (Enabled && Visible)
             {
-                if (Click != null)
-                {
-                    Scene.Cursor = Cursors.Hand;
-                }
-
                 if (GetFocus != null)
                 {
                     GetFocus(this, new EventArgs());
@@ -115,9 +115,8 @@ namespace RunningBox
 
         public virtual void OnLostFocus()
         {
-            if (Enabled)
+            if (Enabled && Visible)
             {
-                Scene.Cursor = Cursors.Default;
                 if (LostFocus != null)
                 {
                     LostFocus(this, new EventArgs());
