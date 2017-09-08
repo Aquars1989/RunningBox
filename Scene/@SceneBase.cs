@@ -121,6 +121,8 @@ namespace RunningBox
         #region ===== 引發事件 =====
         protected virtual void OnLoadComplete()
         {
+            if (IsDisposed) return;
+
             IsLoadComplete = true;
             OnReLayout();
             RoundTimer.Enabled = true;
@@ -490,7 +492,7 @@ namespace RunningBox
         {
             if (!Visible) return;
             Form form = FindForm();
-            if (form == null || form.WindowState == FormWindowState.Minimized) return;
+            if (IsDisposed || form == null || form.WindowState == FormWindowState.Minimized) return;
             OnReLayout();
         }
 

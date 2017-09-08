@@ -69,5 +69,14 @@ namespace RunningBox.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   查詢類似  的當地語系化字串。
+        /// </summary>
+        internal static string MySQLConnand {
+            get {
+                return ResourceManager.GetString("MySQLConnand", resourceCulture);
+            }
+        }
     }
 }
