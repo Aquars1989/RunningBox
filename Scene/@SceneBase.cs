@@ -126,7 +126,7 @@ namespace RunningBox
             IsLoadComplete = true;
             OnReLayout();
             RoundTimer.Enabled = true;
-            
+
             if (LoadComplete != null)
             {
                 LoadComplete(this, new EventArgs());
@@ -442,6 +442,7 @@ namespace RunningBox
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
+
             SceneSlow = 1;
             DefaultCursor = Cursors.Default;
             IntervalOfRound = Global.DefaultIntervalOfRound;

@@ -25,13 +25,5 @@ namespace RunningBox
         {
             Owner.MoveObject.ClearOffset();
         }
-
-        public override void DoAfterAction() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

@@ -135,11 +135,11 @@ namespace RunningBox
             //Owner.Status = ObjectStatus.Dying;
             if (ScrapDrawObject == null)
             {
-                _PropertyScraping = new PropertyScraping((int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping(ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             else
             {
-                _PropertyScraping = new PropertyScraping(ScrapDrawObject, (int)(ShrinkTime.Limit * 0.7F + 0.5F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping(ScrapDrawObject, ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             _PropertyScraping.Affix = SpecialStatus.Remain;
             Owner.Propertys.Add(_PropertyScraping);
@@ -160,13 +160,5 @@ namespace RunningBox
                 }
             }
         }
-
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

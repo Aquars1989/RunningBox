@@ -37,13 +37,9 @@ namespace RunningBox
             Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke, MoveNull.Value));
         }
 
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
+        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        {
+            //死亡不中斷
+        }
     }
 }

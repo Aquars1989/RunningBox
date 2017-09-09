@@ -94,7 +94,7 @@ namespace RunningBox
                 {
                     int size = 10;
                     int movesCount = 1;
-                    float speed = 450 * _SpeedFix;
+                    float speed = 500 * _SpeedFix;
                     int life = Sec(5F + 0.2F * i);
                     Point enterPoint = GetEnterPoint((DirectionType)roundIdx);
 
@@ -104,6 +104,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy, ShapeType.Ellipse, new DrawBrush(Color.Orchid, ShapeType.Ellipse), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertySmoking(-1, Sec(0.2F)));
                     newObject.Propertys.Add(new PropertyFreeze(Sec(0.2F * i)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     targetObject.Target = new TargetObject(newObject);
@@ -116,14 +117,14 @@ namespace RunningBox
             WaveEvents.Add("WallA", (n) =>
             {
                 List<ObjectActive> objects = new List<ObjectActive>();
-                for (int i = 0; i < Height; i += 50)
+                for (int i = 0; i < MainRectangle.Height + 40; i += 20)
                 {
                     int movesCount = 1;
                     float speed = 300 * _SpeedFix;
                     int life = Sec(5F);
                     TargetOffset targetObject = new TargetOffset(TargetNull.Value, 0, 1000F);
                     MoveStraight moveObject = new MoveStraight(targetObject, speed, movesCount, 0, 1F);
-                    ObjectActive newObject = new ObjectActive(-50, i, 10, 50, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 8, 18, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision, 20, 200, 600, Sec(0.8F), Sec(1.4F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
@@ -132,7 +133,13 @@ namespace RunningBox
                     objects.Add(newObject);
                 }
 
-                objects[Global.Rand.Next(3, objects.Count - 4)].Kill(null, ObjectDeadType.Clear);
+                int clearCount = 2;
+                int clearIndex = Global.Rand.Next(0, objects.Count - 1 - clearCount + 1);
+                for (int i = 0; i < clearCount; i++)
+                {
+                    objects[clearIndex + i].Kill(null, ObjectDeadType.Clear);
+                }
+
             });
 
             //物件:序列 排列成直線的追捕者
@@ -243,7 +250,7 @@ namespace RunningBox
             Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
             //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
-            Waves.Add(new WaveLine("WallA  ", "111113          4               5                  6    "));
+            Waves.Add(new WaveLine("WallaA  ", "1111          4               5                  6    "));
             //Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
             //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));

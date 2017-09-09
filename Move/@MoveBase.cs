@@ -10,6 +10,11 @@ namespace RunningBox
     {
         #region ===== 事件 =====
         /// <summary>
+        /// 發生於移動時
+        /// </summary>
+        public event EventHandler Moving;
+
+        /// <summary>
         /// 發生於所有者變更
         /// </summary>
         public event EventHandler OwnerChanged;
@@ -46,6 +51,17 @@ namespace RunningBox
         #endregion
 
         #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於移動時
+        /// </summary>
+        protected void OnMoving()
+        {
+            if (Moving != null)
+            {
+                Moving(this, new EventArgs());
+            }
+        }
+
         /// <summary>
         /// 發生於所有者變更
         /// </summary>
@@ -247,8 +263,29 @@ namespace RunningBox
         /// </summary>
         public virtual void Move()
         {
-            Owner.Layout.X += MoveX / Owner.Scene.SceneRoundPerSec;
-            Owner.Layout.Y += MoveY / Owner.Scene.SceneRoundPerSec;
+            if (MoveX != 0 || MoveY != 0)
+            {
+                if (Owner is ObjectActive)
+                {
+                    //移動距離大時分割為多部分移動
+                    double distance = Function.GetDistance(0, 0, MoveX, MoveY);
+                    int partCount = (int)(distance / Math.Min(Owner.Layout.Width, Owner.Layout.Height) + 0.5F);
+                    float partX = MoveX / Owner.Scene.SceneRoundPerSec / partCount;
+                    float partY = MoveY / Owner.Scene.SceneRoundPerSec / partCount;
+                    for (int i = 0; i < partCount; i++)
+                    {
+                        Owner.Layout.X += partX;
+                        Owner.Layout.Y += partY;
+                        OnMoving();
+                    }
+                }
+                else
+                {
+                    Owner.Layout.X += MoveX / Owner.Scene.SceneRoundPerSec;
+                    Owner.Layout.Y += MoveY / Owner.Scene.SceneRoundPerSec;
+                    OnMoving();
+                }
+            }
             OnAfterMove();
         }
 

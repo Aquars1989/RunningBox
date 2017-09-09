@@ -38,7 +38,7 @@ namespace RunningBox
             CollisionPower = collisionPower;
         }
 
-        public override void DoAfterAction()
+        public override void DoActionMoving()
         {
             if (Owner.Status == ObjectStatus.Alive && Status == PropertyStatus.Enabled)
             {
@@ -98,14 +98,6 @@ namespace RunningBox
                 }
             }
         }
-
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
 
         protected override void OnTargetChanged()
         {

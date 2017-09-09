@@ -148,7 +148,6 @@ namespace RunningBox
                 _Scene = value;
                 OnSceneChanged();
             }
-
         }
 
         private ObjectCollection _Container;
@@ -194,7 +193,18 @@ namespace RunningBox
             {
                 if (value == null) throw new ArgumentNullException();
                 if (_MoveObject == value) return;
+
+                if (MoveObject!= null)
+                {
+                    MoveObject.Moving -= MoveObject_Moving;
+                }
+
                 _MoveObject = value;
+
+                if (MoveObject != null)
+                {
+                    MoveObject.Moving += MoveObject_Moving;
+                }
                 OnMoveObjectChanged();
             }
         }
@@ -268,6 +278,11 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 物件移動中進行的活動
+        /// </summary>
+        public virtual void Moving() { }
+
+        /// <summary>
         /// 繪製物件
         /// </summary>
         /// <param name="g">Graphics物件</param>
@@ -277,6 +292,11 @@ namespace RunningBox
             {
                 DrawObject.Draw(g, Layout.Rectangle);
             }
+        }
+
+        private void MoveObject_Moving(object sender, EventArgs e)
+        {
+            Moving();
         }
         #endregion
 

@@ -73,7 +73,7 @@ namespace RunningBox
             : this(drawObject, moveObject)
         {
             Layout.CollisonShape = layout.CollisonShape;
-            Layout.Anchor =layout.Anchor;
+            Layout.Anchor = layout.Anchor;
             Layout.X = layout.X;
             Layout.Y = layout.Y;
             Layout.Width = layout.Width;
@@ -141,6 +141,12 @@ namespace RunningBox
             Propertys.AllSettlement();
 
             Propertys.ClearAllDisabled();
+        }
+
+        public override void Moving()
+        {
+            Propertys.AllDoActionMoving();
+            base.Moving();
         }
 
         /// <summary>

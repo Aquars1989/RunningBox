@@ -240,6 +240,17 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 所有集合內特性物件執行DoActionMoving方法
+        /// </summary>
+        public void AllDoActionMoving()
+        {
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                _Collection[i].DoActionMoving();
+            }
+        }
+
+        /// <summary>
         /// 所有集合內特性物件執行DoAfterAction方法
         /// </summary>
         public void AllDoAfterAction()

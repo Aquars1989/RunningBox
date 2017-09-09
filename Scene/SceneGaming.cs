@@ -288,12 +288,6 @@ namespace RunningBox
 
             Drawing();
 
-            //顯示FPS
-            if (Global.DebugMode)
-            {
-                ThisGraphics.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
-            }
-
             //計算FPS
             if (refreshFPS)
             {
@@ -374,14 +368,20 @@ namespace RunningBox
         {
             if (MainRectangle != null)
             {
-                BufferGraphics.DrawRectangle(_PenRectGaming, MainRectangle);
+                g.DrawRectangle(_PenRectGaming, MainRectangle);
             }
             base.OnDrawFloor(g);
         }
 
         protected override void OnAfterDrawUI(Graphics g)
         {
-            BufferGraphics.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
+            g.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
+
+            //顯示FPS
+            if (Global.DebugMode)
+            {
+                g.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
+            }
             base.OnAfterDrawUI(g);
         }
 

@@ -198,42 +198,47 @@ namespace RunningBox
         /// <summary>
         /// 物件活動前執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeAction();
+        public virtual void DoBeforeAction() { }
 
         /// <summary>
         /// 物件能量調整前執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeActionEnergyGet();
+        public virtual void DoBeforeActionEnergyGet() { }
 
         /// <summary>
         /// 物件規劃活動前執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeActionPlan();
+        public virtual void DoBeforeActionPlan() { }
 
         /// <summary>
         /// 物件移動前執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeActionMove();
+        public virtual void DoBeforeActionMove() { }
+
+        /// <summary>
+        /// 物件移動中執行動作(供上層呼叫)
+        /// </summary>
+        public virtual void DoActionMoving() { }
 
         /// <summary>
         /// 物件活動後執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoAfterAction();
+        public virtual void DoAfterAction() { }
 
         /// <summary>
         /// 繪製前執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeDraw(Graphics g);
+        public virtual void DoBeforeDraw(Graphics g) { }
 
         /// <summary>
         /// 繪製後執行動作(供上層呼叫)
         /// </summary>
-        public abstract void DoAfterDraw(Graphics g);
+        public virtual void DoAfterDraw(Graphics g) { }
 
         /// <summary>
         /// 特性結束前執行(供上層呼叫)
         /// </summary>
-        public abstract void DoBeforeEnd(PropertyEndType endType);
+        public virtual void DoBeforeEnd(PropertyEndType endType) { }
         #endregion
     }
 }

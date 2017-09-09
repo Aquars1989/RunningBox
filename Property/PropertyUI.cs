@@ -48,13 +48,5 @@ namespace RunningBox
             DrawObject.Draw(g, drawRectangle);
             Owner.UIOffSetY += Size.Height + 5;
         }
-
-        public override void DoAfterAction() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

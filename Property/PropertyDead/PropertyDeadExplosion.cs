@@ -165,12 +165,5 @@ namespace RunningBox
                 Owner.DrawObject.RFix -= _OwnerRFix;
             }
         }
-
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoAfterAction() { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoBeforeEnd(PropertyEndType endType) { }
     }
 }

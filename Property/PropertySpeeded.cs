@@ -44,12 +44,5 @@ namespace RunningBox
         {
             Owner.MoveObject.Speed -= _SpeededToatl;
         }
-
-        public override void DoBeforeActionMove() { }
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
     }
 }
