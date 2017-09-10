@@ -87,7 +87,7 @@ namespace RunningBox
             });
 
             //物件:包圍 四面八方的直線前進物件
-            WaveEvents.Add("Siege", (n) =>
+            WaveEvents.Add("Meteor", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
@@ -124,7 +124,7 @@ namespace RunningBox
                     int life = Sec(5F);
                     TargetOffset targetObject = new TargetOffset(TargetNull.Value, 0, 1000F);
                     MoveStraight moveObject = new MoveStraight(targetObject, speed, movesCount, 0, 1F);
-                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 8, 18, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 18, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision, 20, 200, 600, Sec(0.8F), Sec(1.4F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
@@ -247,10 +247,10 @@ namespace RunningBox
         public override void SetWave()
         {
             //                                 123456789012345678901234567890123456789012345678901234
-            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            //Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
             //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
-            Waves.Add(new WaveLine("WallaA  ", "1111          4               5                  6    "));
+            Waves.Add(new WaveLine("Meteor  ", "1          4               5                  6    "));
             //Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
             //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));

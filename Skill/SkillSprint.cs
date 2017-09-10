@@ -68,7 +68,7 @@ namespace RunningBox
 
                         float speed = (Owner.MoveObject.Speed * SpeedMultiple) + SpeedConstant;
                         PointF offset = Owner.MoveObject.GetOffsetByXY(Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y, speed);
-                        Owner.MoveObject.AddOffset(offset);
+                        Owner.MoveObject.AddToNextOffset(offset);
 
                         if (Smoking)
                         {
@@ -90,15 +90,5 @@ namespace RunningBox
             DrawSkillSprint drawObject = new DrawSkillSprint(color, this);
             return drawObject;
         }
-
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoAfterAction() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
-        public override void DoUseWhenEfficacy(ITarget target) { }
-        public override void DoAfterEnd(SkillEndType endType) { }
     }
 }

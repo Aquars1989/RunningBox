@@ -125,15 +125,5 @@ namespace RunningBox
             DrawSkillBait drawObject = new DrawSkillBait(color, this);
             return drawObject;
         }
-
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoAfterAction() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
-        public override void DoUseWhenEfficacy(ITarget target) { }
-        public override void DoAfterEnd(SkillEndType endType) { }
     }
 }

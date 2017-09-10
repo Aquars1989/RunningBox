@@ -34,7 +34,7 @@ namespace RunningBox
         public PropertyCollision(int collisionPower)
             : base(TargetNull.Value)
         {
-            Affix = SpecialStatus.Collision;
+            Affix = SpecialStatus.Collision | SpecialStatus.Movesplit;
             CollisionPower = collisionPower;
         }
 

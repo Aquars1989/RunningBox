@@ -27,13 +27,18 @@ namespace RunningBox
         Collision = 2,
 
         /// <summary>
+        /// 需拆分移動步驟
+        /// </summary>
+        Movesplit = 4,
+
+        /// <summary>
         /// 幽靈,暫停碰撞
         /// </summary>
-        Ghost = 4,
+        Ghost = 8,
 
         /// <summary>
         /// 潛行,不會被鎖定
         /// </summary>
-        Sneak = 8
+        Sneak = 16
     }
 }

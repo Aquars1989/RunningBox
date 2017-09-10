@@ -98,7 +98,8 @@ namespace RunningBox
                             if (!Function.IsCollison(objectActive.Layout, checkRange)) continue;
 
                             double angle = Function.GetAngle(checkRange.CenterX, checkRange.CenterY, objectActive.Layout.CenterX, objectActive.Layout.CenterY);
-                            objectActive.MoveObject.AddOffset(objectActive.MoveObject.GetOffsetByAngle(angle, PushPower));
+                            double pushPower = PushPower * Function.GetDistance(checkRange.CenterX, checkRange.CenterY, objectActive.Layout.CenterX, objectActive.Layout.CenterY) / Range;
+                            objectActive.MoveObject.AddToNextOffset(objectActive.MoveObject.GetOffsetByAngle(angle, PushPower));
                         }
 
                         Color waveColor = Color.FromArgb(80, Owner.DrawObject.Color.R, Owner.DrawObject.Color.G, Owner.DrawObject.Color.B);
@@ -144,14 +145,5 @@ namespace RunningBox
             DrawSkillShockwave drawObject = new DrawSkillShockwave(color, this);
             return drawObject;
         }
-
-        public override void DoBeforeAction() { }
-        public override void DoBeforeActionPlan() { }
-        public override void DoAfterAction() { }
-        public override void DoBeforeDraw(Graphics g) { }
-        public override void DoAfterDraw(Graphics g) { }
-        public override void DoBeforeActionEnergyGet() { }
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType) { }
-        public override void DoUseWhenEfficacy(ITarget target) { }
     }
 }

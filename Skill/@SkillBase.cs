@@ -185,52 +185,55 @@ namespace RunningBox
         /// <summary>
         /// 當技能生效時又使用技能時的動作
         /// </summary>
-        public abstract void DoUseWhenEfficacy(ITarget target);
+        public virtual void DoUseWhenEfficacy(ITarget target) { }
 
         /// <summary>
         /// 物件活動前執行動作
         /// </summary>
-        public abstract void DoBeforeAction();
+        public virtual void DoBeforeAction() { }
 
         /// <summary>
         /// 物件能量調整前執行動作
         /// </summary>
-        public abstract void DoBeforeActionEnergyGet();
+        public virtual void DoBeforeActionEnergyGet() { }
 
         /// <summary>
         /// 物件規劃活動前執行動作
         /// </summary>
-        public abstract void DoBeforeActionPlan();
+        public virtual void DoBeforeActionPlan() { }
 
         /// <summary>
         /// 物件移動前執行動作
         /// </summary>
-        public abstract void DoBeforeActionMove();
+        public virtual void DoBeforeActionMove() { }
 
         /// <summary>
         /// 物件活動後執行動作
         /// </summary>
-        public abstract void DoAfterAction();
+        public virtual void DoAfterAction() { }
 
         /// <summary>
         /// 繪製前執行動作
         /// </summary>
-        public abstract void DoBeforeDraw(Graphics g);
+        public virtual void DoBeforeDraw(Graphics g) { }
 
         /// <summary>
         /// 繪製後執行動作
         /// </summary>
-        public abstract void DoAfterDraw(Graphics g);
+        public virtual void DoAfterDraw(Graphics g) { }
 
         /// <summary>
         /// 死亡後執行動作
         /// </summary>
-        public abstract void DoAfterDead(ObjectActive killer, ObjectDeadType deadType);
+        public virtual void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        {
+            Break();
+        }
 
         /// <summary>
         /// 技能結束卻後(包含中斷)執行
         /// </summary>
-        public abstract void DoAfterEnd(SkillEndType endType);
+        public virtual void DoAfterEnd(SkillEndType endType) { }
 
         /// <summary>
         /// 取得繪圖物件

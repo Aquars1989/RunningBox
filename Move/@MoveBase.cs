@@ -8,6 +8,9 @@ namespace RunningBox
 {
     public abstract class MoveBase
     {
+        private float _NextOffsetFixX = 0;
+        private float _NextOffsetFixY = 0;
+
         #region ===== 事件 =====
         /// <summary>
         /// 發生於移動時
@@ -265,11 +268,12 @@ namespace RunningBox
         {
             if (MoveX != 0 || MoveY != 0)
             {
-                if (Owner is ObjectActive)
+                ObjectActive ownerActive = Owner as ObjectActive;
+                if (ownerActive != null && (ownerActive.Propertys.Affix & SpecialStatus.Movesplit) == SpecialStatus.Movesplit)
                 {
                     //移動距離大時分割為多部分移動
-                    double distance = Function.GetDistance(0, 0, MoveX, MoveY);
-                    int partCount = (int)(distance / Math.Min(Owner.Layout.Width, Owner.Layout.Height) + 0.5F);
+                    double distance = Function.GetDistance(0, 0, MoveX, MoveY) / Owner.Scene.SceneRoundPerSec;
+                    int partCount = (int)(distance / Math.Min(Owner.Layout.Width, Owner.Layout.Height)) + 1;
                     float partX = MoveX / Owner.Scene.SceneRoundPerSec / partCount;
                     float partY = MoveY / Owner.Scene.SceneRoundPerSec / partCount;
                     for (int i = 0; i < partCount; i++)
@@ -290,11 +294,28 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 加入移動調整值到下一次移動調整值中,因加入時物件可能已移動,所以加在下次移動調整內
+        /// </summary>
+        /// <param name="stepOffset">移動調整值</param>
+        public void AddToNextOffset(PointF stepOffset)
+        {
+            _NextOffsetFixX += stepOffset.X;
+            _NextOffsetFixY += stepOffset.Y;
+        }
+
+        /// <summary>
         /// 加入移動調整值並檢查移動調整值數量,超出上限時移除多餘項目
         /// </summary>
         /// <param name="stepOffset">移動調整值</param>
         public void AddOffset(PointF stepOffset)
         {
+            if (_NextOffsetFixX != 0 || _NextOffsetFixY != 0)
+            {
+                stepOffset = new PointF(stepOffset.X + _NextOffsetFixX, stepOffset.Y + _NextOffsetFixY);
+                _NextOffsetFixX = 0;
+                _NextOffsetFixY = 0;
+            }
+
             MoveX += stepOffset.X;
             MoveY += stepOffset.Y;
 
