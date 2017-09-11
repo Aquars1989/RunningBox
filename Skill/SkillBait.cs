@@ -59,7 +59,7 @@ namespace RunningBox
                         }
 
                         double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
-                        MoveStraight move = new MoveStraight(TargetNull.Value, BaitSpeed, 1, 0, 1F);
+                        MoveStraight move = new MoveStraight(TargetNull.Value,Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
                         DrawBase draw = Owner.DrawObject.Copy();
                         draw.Opacity = 0.6F;
                         ObjectActive bait = new ObjectActive(Owner.Layout, BaitLife, Owner.League, draw, move);

@@ -101,7 +101,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        public override void Draw(Graphics g, Rectangle rectangle)
+        protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle inside = new Rectangle(rectangle.Left + Padding.Left, rectangle.Top + Padding.Top, rectangle.Width - Padding.Horizontal, rectangle.Height - Padding.Vertical);
             Rectangle drawRectangle = GetScaleRectangle(rectangle);

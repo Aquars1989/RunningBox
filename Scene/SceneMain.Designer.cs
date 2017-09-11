@@ -1,6 +1,6 @@
 ﻿namespace RunningBox
 {
-    partial class SceneStand
+    partial class SceneMain
     {
         /// <summary> 
         /// 設計工具所需的變數。

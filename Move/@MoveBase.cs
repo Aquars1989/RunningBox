@@ -8,6 +8,7 @@ namespace RunningBox
 {
     public abstract class MoveBase
     {
+        //記錄作用於下次移動的偏移植
         private float _NextOffsetFixX = 0;
         private float _NextOffsetFixY = 0;
 
@@ -192,9 +193,14 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)
+        /// </summary>
+        public float Weight;
+
         private float _Speed;
         /// <summary>
-        /// 總體移動速度最大值
+        /// 總體移動速度最大值(排除重量影響)
         /// </summary>
         public float Speed
         {
@@ -210,7 +216,7 @@ namespace RunningBox
 
         private float _SpeedPerOffsets;
         /// <summary>
-        /// 移動速度,決定每個移動調整值的最大距離
+        /// 移動速度,決定每個移動調整值的最大距離(排除重量影響)
         /// </summary>
         public float SpeedPerOffsets
         {
@@ -246,11 +252,14 @@ namespace RunningBox
         /// 基本移動物件建構式
         /// </summary>
         /// <param name="Target">追蹤目標(必要)</param>
+        /// <param name="weight">重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
+        /// <param name="speed">總體移動速度最大值(排除重量影響)</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
-        public MoveBase(ITarget target, float speed, int offsetsLimit)
+        public MoveBase(ITarget target, float weight, float speed, int offsetsLimit)
         {
             Offsets = new List<PointF>();
             OffsetsLimit = offsetsLimit;
+            Weight = weight;
             Speed = speed;
             Target = target;
         }
@@ -266,16 +275,17 @@ namespace RunningBox
         /// </summary>
         public virtual void Move()
         {
+            float moveX = MoveX / Owner.Scene.SceneRoundPerSec / Weight;
+            float moveY = MoveY / Owner.Scene.SceneRoundPerSec / Weight;
             if (MoveX != 0 || MoveY != 0)
             {
                 ObjectActive ownerActive = Owner as ObjectActive;
                 if (ownerActive != null && (ownerActive.Propertys.Affix & SpecialStatus.Movesplit) == SpecialStatus.Movesplit)
                 {
-                    //移動距離大時分割為多部分移動
-                    double distance = Function.GetDistance(0, 0, MoveX, MoveY) / Owner.Scene.SceneRoundPerSec;
-                    int partCount = (int)(distance / Math.Min(Owner.Layout.Width, Owner.Layout.Height)) + 1;
-                    float partX = MoveX / Owner.Scene.SceneRoundPerSec / partCount;
-                    float partY = MoveY / Owner.Scene.SceneRoundPerSec / partCount;
+                    //移動距離大時分成多次移動,供碰撞用
+                    int partCount = (int)(Math.Max(Math.Abs(moveX / Owner.Layout.Width), Math.Abs(moveY / Owner.Layout.Height))) + 1;
+                    float partX = moveX / partCount;
+                    float partY = moveY / partCount;
                     for (int i = 0; i < partCount; i++)
                     {
                         Owner.Layout.X += partX;
@@ -285,8 +295,8 @@ namespace RunningBox
                 }
                 else
                 {
-                    Owner.Layout.X += MoveX / Owner.Scene.SceneRoundPerSec;
-                    Owner.Layout.Y += MoveY / Owner.Scene.SceneRoundPerSec;
+                    Owner.Layout.X += moveX;
+                    Owner.Layout.Y += moveY;
                     OnMoving();
                 }
             }
@@ -371,7 +381,7 @@ namespace RunningBox
         public PointF GetOffsetByXY(float x, float y, float speed)
         {
             double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, x, y);
-            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit);
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Weight);
         }
 
         /// <summary>
@@ -382,7 +392,7 @@ namespace RunningBox
         /// <returns>位移值</returns>
         public PointF GetOffsetByAngle(double angle, float speed)
         {
-            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit);
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Weight);
         }
         #endregion
     }

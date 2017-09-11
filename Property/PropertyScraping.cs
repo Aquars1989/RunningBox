@@ -113,7 +113,7 @@ namespace RunningBox
 
         public override void DoAfterAction()
         {
-            if (ScrapDrawObject== null && Owner.DrawObject == DrawNull.Value) return;
+            if (ScrapDrawObject == null && Owner.DrawObject == DrawNull.Value) return;
 
             for (int i = 0; i < ScrapCount; i++)
             {
@@ -122,11 +122,11 @@ namespace RunningBox
                 double scrapDirection = Global.Rand.NextDouble() * 360;
 
                 TargetOffset moveTarget = new TargetOffset(TargetNull.Value, scrapDirection, 1000);
-                MoveStraight moveObject = new MoveStraight(moveTarget, speed, 1, 0, 1);
+                MoveStraight moveObject = new MoveStraight(moveTarget, 1, speed, 1, 0, 1);
                 ObjectScrap newObject;
                 if (ScrapDrawObject == null)
                 {
-                   newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight,  life,  Owner.DrawObject.Color, moveObject);
+                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.Color, moveObject);
                 }
                 else
                 {

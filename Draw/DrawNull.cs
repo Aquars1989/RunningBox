@@ -18,7 +18,7 @@ namespace RunningBox
         /// </summary>
         private DrawNull() { }
 
-        public override void Draw(Graphics g, Rectangle rectangle) { }
+        protected override void OnDraw(Graphics g, Rectangle rectangle) { }
 
         public override DrawBase Copy()
         {

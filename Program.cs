@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace RunningBox
             Application.SetCompatibleTextRenderingDefault(false);
 
             SetDebug();
+
+            RegistryKey oRegistryKey = Registry.CurrentUser.CreateSubKey(Global.RegistryAddr + "\\PlayerInfo");
+            Global.PlayerName = oRegistryKey.GetValue("PlayerName", "") as string;
+
+
             Application.Run(new MainForm());
         }
 

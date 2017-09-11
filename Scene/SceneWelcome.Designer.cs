@@ -32,8 +32,6 @@
             // 
             // SceneWelcome
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.MainRectangle = new System.Drawing.Rectangle(0, 0, 150, 150);
             this.Name = "SceneWelcome";

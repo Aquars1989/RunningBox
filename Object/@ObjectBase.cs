@@ -18,6 +18,16 @@ namespace RunningBox
         public event ObjectDeadEventHandle Dead;
 
         /// <summary>
+        /// 發生於回合動作結束
+        /// </summary>
+        public event EventHandler AfterAction;
+
+        /// <summary>
+        /// 發生於物件可見狀態變更
+        /// </summary>
+        public event EventHandler VisibleChanged;
+
+        /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
         public event EventHandler StatusChanged;
@@ -45,9 +55,33 @@ namespace RunningBox
 
         #region ===== 引發事件 =====
         /// <summary>
+        /// 發生於回合動作結束
+        /// </summary>
+        protected virtual void OnAfterAction()
+        {
+            if (AfterAction != null)
+            {
+                AfterAction(this, new EventArgs());
+            }
+
+        }
+
+        /// <summary>
+        /// 發生於物件可見狀態變更
+        /// </summary>
+        protected virtual void OnVisibleChanged()
+        {
+            if (VisibleChanged != null)
+            {
+                VisibleChanged(this, new EventArgs());
+            }
+
+        }
+
+        /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
-        public void OnStatusChanged()
+        protected virtual void OnStatusChanged()
         {
             if (StatusChanged != null)
             {
@@ -58,7 +92,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於繪圖物件變更
         /// </summary>
-        public void OnDrawObjectChanged()
+        protected virtual void OnDrawObjectChanged()
         {
             if (DrawObject != null)
             {
@@ -74,7 +108,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於移動物件變更
         /// </summary>
-        public void OnMoveObjectChanged()
+        protected virtual void OnMoveObjectChanged()
         {
             if (MoveObject != null)
             {
@@ -90,7 +124,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於歸屬群組變更
         /// </summary>
-        public void OnContainerChanged()
+        protected virtual void OnContainerChanged()
         {
             if (ContainerChanged != null)
             {
@@ -101,7 +135,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於歸屬場景變更
         /// </summary>
-        public void OnSceneChanged()
+        protected virtual void OnSceneChanged()
         {
             if (DrawObject != null)
             {
@@ -119,7 +153,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="sender">死亡物件</param>
         /// <param name="killer">殺手物件</param>
-        protected void OnDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
+        protected virtual void OnDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
         {
             if (Dead != null)
             {
@@ -129,10 +163,20 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        private bool _Visible = true;
         /// <summary>
-        /// 是否顯示
+        /// 是否顯示物件
         /// </summary>
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get { return _Visible; }
+            set
+            {
+                if (_Visible == value) return;
+                _Visible = value;
+                OnVisibleChanged();
+            }
+        }
 
         private SceneBase _Scene;
         /// <summary>
@@ -194,7 +238,7 @@ namespace RunningBox
                 if (value == null) throw new ArgumentNullException();
                 if (_MoveObject == value) return;
 
-                if (MoveObject!= null)
+                if (MoveObject != null)
                 {
                     MoveObject.Moving -= MoveObject_Moving;
                 }
@@ -250,7 +294,6 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             DrawObject = drawObject;
             MoveObject = moveObject;
-            Visible = true;
         }
 
         #region ===== 方法 =====
@@ -275,6 +318,7 @@ namespace RunningBox
         {
             MoveObject.Plan();
             MoveObject.Move();
+            OnAfterAction();
         }
 
         /// <summary>
@@ -325,11 +369,4 @@ namespace RunningBox
         }
         #endregion
     }
-
-    /// <summary>
-    /// 處理物件死亡事件
-    /// </summary>
-    /// <param name="sender">死亡物件</param>
-    /// <param name="killer">殺手物件</param>
-    public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType);
 }

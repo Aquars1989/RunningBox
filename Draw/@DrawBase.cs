@@ -11,6 +11,17 @@ namespace RunningBox
     /// </summary>
     public abstract class DrawBase : IDisposable
     {
+        #region ===== 事件 =====
+        /// <summary>
+        /// 發生於繪製前
+        /// </summary>
+        public event DrawObjectEnentHandle BeforeDraw;
+
+        /// <summary>
+        /// 發生於繪製後
+        /// </summary>
+        public event DrawObjectEnentHandle AfterDraw;
+
         /// <summary>
         /// 發生於場景物件改變時
         /// </summary>
@@ -35,7 +46,88 @@ namespace RunningBox
         /// 發生於繪製大小改變時
         /// </summary>
         public event EventHandler ScaleChanged;
+        #endregion
 
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於場景物件改變時
+        /// </summary>
+        protected virtual void OnSceneChanged()
+        {
+            if (SceneChanged != null)
+            {
+                SceneChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於所有者改變時
+        /// </summary>
+        protected virtual void OnOwnerChanged()
+        {
+            if (OwnerChanged != null)
+            {
+                OwnerChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於顏色改變時
+        /// </summary>
+        protected virtual void OnColorChanged()
+        {
+            if (ColorChanged != null)
+            {
+                ColorChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於顏色調整改變時
+        /// </summary>
+        protected virtual void OnColorFixChanged()
+        {
+            if (ColorFixChanged != null)
+            {
+                ColorFixChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製大小改變時
+        /// </summary>
+        protected virtual void OnScaleChanged()
+        {
+            if (ScaleChanged != null)
+            {
+                ScaleChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製前
+        /// </summary>
+        protected virtual void OnBeforeDraw(Graphics g, Rectangle rectangle)
+        {
+            if (BeforeDraw != null)
+            {
+                BeforeDraw(this, g, rectangle);
+            }
+        }
+
+        /// <summary>
+        /// 發生於繪製後
+        /// </summary>
+        protected virtual void OnAfterDraw(Graphics g, Rectangle rectangle)
+        {
+            if (AfterDraw != null)
+            {
+                AfterDraw(this, g, rectangle);
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
         private SceneBase _Scene;
         /// <summary>
         /// 所在的場景物件
@@ -159,14 +251,21 @@ namespace RunningBox
                 OnScaleChanged();
             }
         }
+        #endregion
 
         /// <summary>
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        public abstract void Draw(Graphics g, Rectangle rectangle);
+        public void Draw(Graphics g, Rectangle rectangle)
+        {
+            OnBeforeDraw(g, rectangle);
+            OnDraw(g, rectangle);
+            OnAfterDraw(g, rectangle);
+        }
 
+        #region ===== 方法 =====
         /// <summary>
         /// 複製繪圖物件
         /// </summary>
@@ -238,61 +337,17 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於場景物件改變時
+        /// 繪製到Graphics
         /// </summary>
-        protected virtual void OnSceneChanged()
-        {
-            if (SceneChanged != null)
-            {
-                SceneChanged(this, new EventArgs());
-            }
-        }
+        /// <param name="g">Graphics物件</param>
+        /// <param name="rectangle">繪製區域</param>
+        protected abstract void OnDraw(Graphics g, Rectangle rectangle);
 
         /// <summary>
-        /// 發生於所有者改變時
+        /// 釋放時進行動作
         /// </summary>
-        protected virtual void OnOwnerChanged()
-        {
-            if (OwnerChanged != null)
-            {
-                OwnerChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於顏色改變時
-        /// </summary>
-        protected virtual void OnColorChanged()
-        {
-            if (ColorChanged != null)
-            {
-                ColorChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於顏色調整改變時
-        /// </summary>
-        protected virtual void OnColorFixChanged()
-        {
-            if (ColorFixChanged != null)
-            {
-                ColorFixChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於繪製大小改變時
-        /// </summary>
-        protected virtual void OnScaleChanged()
-        {
-            if (ScaleChanged != null)
-            {
-                ScaleChanged(this, new EventArgs());
-            }
-        }
-
         protected abstract void OnDispose();
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // 偵測多餘的呼叫

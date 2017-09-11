@@ -14,7 +14,7 @@ namespace RunningBox
     /// <summary>
     /// 基本場景物件
     /// </summary>
-    public class SceneBase : UserControl
+    public class SceneBase : Control
     {
         public delegate void GoSceneEventHandle(object sender, SceneBase scene);
 
@@ -121,7 +121,7 @@ namespace RunningBox
         #region ===== 引發事件 =====
         protected virtual void OnLoadComplete()
         {
-            if (IsDisposed) return;
+            if (IsDisposed || IsLoadComplete || DesignMode) return;
 
             IsLoadComplete = true;
             OnReLayout();
@@ -171,17 +171,7 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnTrackPointChanged()
         {
-            ObjectUI fidUI = null;
-            for (int i = UIObjects.Count - 1; i >= 0; i--) // 由後往前找
-            {
-                ObjectUI item = UIObjects[i] as ObjectUI;
-                if (item != null && item.Visible && item.InRectangle(TrackPoint))
-                {
-                    fidUI = item.Enabled ? item : null;
-                    break;
-                }
-            }
-            FocusObjectUI = fidUI;
+            SearchFocusObjectUI();
 
             if (TrackPointChanged != null)
             {
@@ -450,6 +440,16 @@ namespace RunningBox
             EffectObjects = new EffectCollection(this);
             GameObjects = new ObjectCollection(this);
             RoundTimer.Tick += RoundTimer_Tick;
+
+            Timer loadTimer = new Timer() { Interval = 1 };
+            loadTimer.Tick += (x, te) =>
+            {
+                Timer s = x as Timer;
+                s.Enabled = false;
+                OnLoadComplete();
+                s.Dispose();
+            };
+            loadTimer.Enabled = true;
         }
 
         protected override void Dispose(bool disposing)
@@ -469,24 +469,10 @@ namespace RunningBox
             // 
             this.BackColor = System.Drawing.Color.White;
             this.Name = "SceneBase";
-            this.Load += new System.EventHandler(this.SceneBase_Load);
             this.SizeChanged += new System.EventHandler(this.SceneBase_SizeChanged);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SceneBase_MouseDown);
             this.ResumeLayout(false);
 
-        }
-
-        private void SceneBase_Load(object sender, EventArgs e)
-        {
-            Timer loadTimer = new Timer() { Interval = 1 };
-            loadTimer.Tick += (x, te) =>
-            {
-                Timer s = x as Timer;
-                s.Enabled = false;
-                OnLoadComplete();
-                s.Dispose();
-            };
-            loadTimer.Enabled = true;
         }
 
         private void SceneBase_SizeChanged(object sender, EventArgs e)
@@ -521,6 +507,7 @@ namespace RunningBox
             EffectObjects.AllDoAfterRound();
             OnAfterRound();
 
+            UIObjects.AllAction();
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
@@ -616,6 +603,24 @@ namespace RunningBox
                     break;
             }
             return new Point(x, y);
+        }
+
+        /// <summary>
+        /// 重新搜尋目前獲得焦點的UI
+        /// </summary>
+        public void SearchFocusObjectUI()
+        {
+            ObjectUI fidUI = null;
+            for (int i = UIObjects.Count - 1; i >= 0; i--) // 由後往前找
+            {
+                ObjectUI item = UIObjects[i] as ObjectUI;
+                if (item != null && item.Visible && item.InRectangle(TrackPoint))
+                {
+                    fidUI = item.Enabled ? item : null;
+                    break;
+                }
+            }
+            FocusObjectUI = fidUI;
         }
     }
 }

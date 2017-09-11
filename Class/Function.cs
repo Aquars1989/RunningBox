@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -206,6 +207,43 @@ namespace RunningBox
             return result;
         }
 
+        /// <summary>
+        /// byte陣列轉int32陣列
+        /// </summary>
+        /// <param name="byteArray">byte陣列</param>
+        /// <returns>int32陣列</returns>
+        public static int[] ByteToInt(byte[] byteArray)
+        {
+            if (byteArray.Length % 4 > 0) return null;
+
+            int[] result = new int[byteArray.Length / 4];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = BitConverter.ToInt32(byteArray, i * 4);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// int32陣列轉byte陣列
+        /// </summary>
+        /// <param name="intArray">int陣列</param>
+        /// <returns>byte陣列</returns>
+        public static byte[] IntToByte(int[] intArray)
+        {
+            byte[] result;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                for (int i = 0; i < intArray.Length; i++)
+                {
+                    ms.Write(BitConverter.GetBytes(intArray[i]), 0, 4);
+                }
+
+                result = ms.ToArray();
+                ms.Close();
+            }
+            return result;
+        }
 
         private static string[] _NameA = { "堅忍的", "優雅的", "孤獨的", "國家英雄" , "覺醒的", "真．", "恐怖的", "閃亮的", "莊嚴的", "潛伏的","粗黑的","粉色的",
                                            "神選者", "性感的", "無名的", "奇蹟之人", "脫俗的" , "Mr.", "極致的" ,"記憶中的", "亮眼的","飛奔的","纖細的","得道的",

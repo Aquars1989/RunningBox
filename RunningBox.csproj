@@ -60,6 +60,9 @@
     <Compile Include="Class\Colors.cs" />
     <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Class\SQLobject.cs" />
+    <Compile Include="Draw\DrawCustom.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Draw\DrawNull.cs" />
     <Compile Include="Draw\DrawNoise.cs" />
     <Compile Include="Draw\DrawPolygon.cs" />
@@ -86,6 +89,8 @@
     <Compile Include="Enum\ShapeType.cs" />
     <Compile Include="Enum\Status\EffectStatus.cs" />
     <Compile Include="Enum\SkillKeyType.cs" />
+    <Compile Include="Handle\DrawObjectEnentHandle.cs" />
+    <Compile Include="Handle\ObjectDeadEventHandle.cs" />
     <Compile Include="Move\MoveNull.cs" />
     <Compile Include="Move\MovePlayer.cs" />
     <Compile Include="Move\MoveStraight.cs" />
@@ -94,6 +99,7 @@
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyAffix.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
+    <Compile Include="Property\PropertyOutClear.cs" />
     <Compile Include="Property\PropertyUI.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadExplosion.cs" />
     <Compile Include="Property\PropertySpeeded.cs" />
@@ -123,16 +129,22 @@
     <Compile Include="Property\PropertyScraping.cs" />
     <Compile Include="Property\PropertySmoking.cs" />
     <Compile Include="Scene\SceneGaming.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scene\SceneSkill.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scene\SceneSkill.Designer.cs">
       <DependentUpon>SceneSkill.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scene\SceneMain.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Scene\SceneMain.Designer.cs">
+      <DependentUpon>SceneMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scene\SceneWelcome.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scene\SceneWelcome.Designer.cs">
       <DependentUpon>SceneWelcome.cs</DependentUpon>
@@ -145,7 +157,7 @@
     <Compile Include="Skill\SkillBait.cs" />
     <Compile Include="Target\%40ITarget.cs" />
     <Compile Include="Scene\%40SceneBase.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Skill\%40SkillBase.cs" />
     <Compile Include="Skill\SkillSprint.cs" />
@@ -168,7 +180,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Scene\SceneStand.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scene\SceneStand.Designer.cs">
       <DependentUpon>SceneStand.cs</DependentUpon>
@@ -183,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneSkill.resx">
       <DependentUpon>SceneSkill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scene\SceneMain.resx">
+      <DependentUpon>SceneMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneWelcome.resx">
       <DependentUpon>SceneWelcome.cs</DependentUpon>

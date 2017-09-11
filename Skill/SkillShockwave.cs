@@ -102,7 +102,7 @@ namespace RunningBox
                             objectActive.MoveObject.AddToNextOffset(objectActive.MoveObject.GetOffsetByAngle(angle, PushPower));
                         }
 
-                        Color waveColor = Color.FromArgb(80, Owner.DrawObject.Color.R, Owner.DrawObject.Color.G, Owner.DrawObject.Color.B);
+                        Color waveColor = Color.FromArgb(150, Owner.DrawObject.Color.R, Owner.DrawObject.Color.G, Owner.DrawObject.Color.B);
                         ObjectWave wave = new ObjectWave(0, 0, 0, 0, Range, Range, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.1F), new DrawPen(waveColor, ShapeType.Ellipse, 1), MoveNull.Value);
                         wave.Layout.DependTarget = new TargetObject(Owner);
                         wave.DiffusionOpacity = 0.1F;

@@ -40,17 +40,17 @@ namespace RunningBox
 
         #region ===== UI物件 =====
         /// <summary>
-        /// 
+        /// 附蓋灰色區塊
         /// </summary>
         private ObjectUI _DarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
 
         /// <summary>
-        /// 
+        /// 重試按鈕
         /// </summary>
         private ObjectUI _CommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "重試", Global.CommandFont, Global.CommandFormat));
 
         /// <summary>
-        /// 
+        /// 返回按鈕
         /// </summary>
         private ObjectUI _CommandBack = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "返回", Global.CommandFont, Global.CommandFormat));
 
@@ -380,7 +380,7 @@ namespace RunningBox
             //顯示FPS
             if (Global.DebugMode)
             {
-                g.DrawString(_FPSText, _FPSFont, Brushes.Red, Width - 50, 5);
+                g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
             }
             base.OnAfterDrawUI(g);
         }

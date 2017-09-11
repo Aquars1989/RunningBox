@@ -11,6 +11,16 @@ namespace RunningBox
         private static Dictionary<Color, DrawPoolBrush> _BrushPool = new Dictionary<Color, DrawPoolBrush>();
         private static Dictionary<Color, DrawPoolPen> _PenPool = new Dictionary<Color, DrawPoolPen>();
 
+        public static int BrushCount
+        {
+            get { return _BrushPool.Count; }
+        }
+
+        public static int PenCount
+        {
+            get { return _PenPool.Count; }
+        }
+
         public static SolidBrush GetBrush(Color color)
         {
             DrawPoolBrush drawPoolBrush;

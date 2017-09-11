@@ -1,9 +1,11 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Win32;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
@@ -26,7 +28,8 @@ namespace RunningBox
             //}
             //Global.SQL.CloseConn();
             //return;
-            Controls.Add(new SceneStand() { Dock = DockStyle.Fill, Skill1 = new SkillBait(5000, 1500, 1500, 200) });
+            Controls.Add(new SceneMain() { Dock = DockStyle.Fill });
+            //Controls.Add(new SceneStand() { Dock = DockStyle.Fill, Skill1 = new SkillBait(5000, 1500, 1500, 200) });
             return;
             Controls.Add(new SceneSkill() { Dock = DockStyle.Fill });
             return;

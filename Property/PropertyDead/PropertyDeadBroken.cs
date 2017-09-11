@@ -124,7 +124,7 @@ namespace RunningBox
             ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
         }
-        
+
         public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
         {
             if (Owner.DrawObject == DrawNull.Value || (DeadType & deadType) != deadType) return;
@@ -137,7 +137,7 @@ namespace RunningBox
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
 
                 TargetOffset moveTarget = new TargetOffset(TargetNull.Value, scrapDirection, 1000);
-                MoveStraight moveObject = new MoveStraight(moveTarget, speed, 1, 0, 1);
+                MoveStraight moveObject = new MoveStraight(moveTarget, 1, speed, 1, 0, 1);
                 ObjectScrap newObject;
                 if (ScrapDrawObject == null)
                 {
@@ -154,7 +154,7 @@ namespace RunningBox
                         scrapDrawPolygon.Angle = Global.Rand.Next(360);
                         scrapDrawPolygon.RotatingPerSec = Global.Rand.Next(280, 520);
                     }
-                    newObject =new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
+                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
                 }
                 moveTarget.Target = new TargetObject(newObject);
                 Owner.Container.Add(newObject);

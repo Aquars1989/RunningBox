@@ -132,6 +132,31 @@ namespace RunningBox
             }
         }
 
-        public override void Action() { }
+        public override void Action()
+        {
+            if (MoveObject == MoveNull.Value)
+            {
+                base.Action();
+            }
+            else
+            {
+                bool inRect = InRectangle(Scene.TrackPoint);
+                base.Action();
+                if (inRect != InRectangle(Scene.TrackPoint))
+                {
+                    Scene.SearchFocusObjectUI();
+                }
+            }
+        }
+
+        protected override void OnVisibleChanged()
+        {
+            if (Scene == null) return;
+            if (InRectangle(Scene.TrackPoint))
+            {
+                Scene.SearchFocusObjectUI();
+            }
+            base.OnVisibleChanged();
+        }
     }
 }

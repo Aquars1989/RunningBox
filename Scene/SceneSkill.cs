@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace RunningBox
 {
@@ -21,7 +22,7 @@ namespace RunningBox
         private ObjectUI[] _SkillInfos;
         private ObjectUI _CommandOK = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.Empty, Color.Black, 2, "繼續", Global.CommandFont, Global.CommandFormat));
         private ObjectUI _CommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.Empty, Color.Black, 2, "返回", Global.CommandFont, Global.CommandFormat));
-       
+
         public SceneSkill()
         {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace RunningBox
             {
                 new SkillSprint(3500, Sec(1), 0, 6000, true),
                 new SkillShield(1, 6000, 0, Sec(1F), Sec(2.5F)),
-                new SkillShockwave(4000, 0, Sec(1F), Sec(2.5F), Sec(0.1F), 5000, 300),
+                new SkillShockwave(4000, 0, Sec(1F), Sec(2.5F), Sec(0.1F), 4000, 300),
                 new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
                 new SkillBait(6000, Sec(1.5F), Sec(1.5F), 200) 
             };
@@ -40,7 +41,7 @@ namespace RunningBox
             for (int i = 0; i < len; i++)
             {
                 int left = i % 2 * 270 + 30;
-                int top = i / 2 * 120 + 50;
+                int top = i / 2 * 100 + 120;
                 DrawBase skillDraw = _Skills[i].GetDrawObject(Color.FromArgb(120, 60, 0));
                 _SkillIcons[i] = new ObjectUI(left, top, 75, 75, new DrawUISkillFrame(Color.FromArgb(210, 180, 50), SkillKeyType.None, skillDraw) { StaticMode = true });
                 _SkillIcons[i].Click += IconClick;
@@ -72,10 +73,21 @@ namespace RunningBox
         protected override void OnReLayout()
         {
             base.OnReLayout();
-            _CommandOK.Layout.Y = Height - _CommandOK.Layout.Height - 80;
-            _CommandCancel.Layout.Y = Height - _CommandCancel.Layout.Height - 80;
+            _CommandOK.Layout.Y = Height - _CommandOK.Layout.Height - 70;
+            _CommandCancel.Layout.Y = Height - _CommandCancel.Layout.Height - 70;
             _CommandOK.Layout.X = Width - _CommandCancel.Layout.Width - 80;
             _CommandCancel.Layout.X = 80;
+        }
+
+        private static Font _TitleFont = new Font("標楷體", 30);
+        private static Rectangle _TitleRect = new Rectangle(20, 40, 300, 50);
+
+        private static LinearGradientBrush _TitleBrush = new LinearGradientBrush(_TitleRect, Color.FromArgb(210, 130, 50), Color.FromArgb(120, 60, 0), 135);
+        protected override void OnAfterDrawUI(Graphics g)
+        {
+            g.DrawString("技能設定", _TitleFont, Brushes.DarkGray, _TitleRect.X + 1, _TitleRect.Y + 1);
+            g.DrawString("技能設定", _TitleFont, _TitleBrush, _TitleRect);
+            base.OnAfterDrawUI(g);
         }
 
         public void IconClick(object sender, MouseEventArgs e)

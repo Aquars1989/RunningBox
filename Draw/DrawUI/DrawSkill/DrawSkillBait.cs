@@ -37,7 +37,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="g">Graphics物件</param>
         /// <param name="rectangle">繪製區域</param>
-        public override void Draw(Graphics g, Rectangle rectangle)
+        protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             int aniMax = 40;
             if (Animation >= aniMax)
