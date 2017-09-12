@@ -10,5 +10,6 @@ namespace RunningBox
     /// </summary>
     /// <param name="sender">死亡物件</param>
     /// <param name="killer">殺手物件</param>
+    /// <param name="deadType">死亡方式</param>
     public delegate void ObjectDeadEventHandle(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType);
 }

@@ -59,16 +59,16 @@ namespace RunningBox
                         }
 
                         double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
-                        MoveStraight move = new MoveStraight(TargetNull.Value,Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
+                        MoveStraight move = new MoveStraight(TargetNull.Value, Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
                         DrawBase draw = Owner.DrawObject.Copy();
-                        draw.Opacity = 0.6F;
+                        draw.Colors.Opacity = 0.6F;
                         ObjectActive bait = new ObjectActive(Owner.Layout, BaitLife, Owner.League, draw, move);
                         move.Target = new TargetOffset(new TargetObject(bait), angle, 1000);
                         bait.Propertys.Add(new PropertyCollision(0));
 
                         int noiseWidth = Owner.Layout.Width + 2;
                         int noiseHeight = (int)(Owner.Layout.Height * 1.3F + 0.5F) + 5;
-                        ObjectWave noise = new ObjectWave(0, 0, noiseWidth, noiseHeight, noiseWidth * 3, noiseHeight * 3, -1, 0, new DrawNoise(Owner.DrawObject.Color, Color.White, 1), MoveNull.Value);
+                        ObjectWave noise = new ObjectWave(0, 0, noiseWidth, noiseHeight, noiseWidth * 3, noiseHeight * 3, -1, 0, new DrawNoise(Owner.DrawObject.MainColor, Color.White, 1), MoveNull.Value);
                         noise.DiffusionOpacity = 0;
                         noise.Layout.DependTarget = new TargetObject(bait);
 

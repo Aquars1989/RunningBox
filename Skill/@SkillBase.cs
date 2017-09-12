@@ -247,9 +247,9 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public virtual DrawUIString GetInfoObject(Color color, Color backColor, Color borderColor)
+        public virtual DrawUITextFrame GetInfoObject(Color color, Color backColor, Color borderColor)
         {
-            DrawUIString result = new DrawUIString(color, backColor, borderColor, 2, Info, _InfoFont, _InfoFormat);
+            DrawUITextFrame result = new DrawUITextFrame(color, Color.WhiteSmoke, backColor, borderColor, 2, 10, Info, _InfoFont, _InfoFormat);
             return result;
         }
     }

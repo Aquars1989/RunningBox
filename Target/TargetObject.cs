@@ -11,6 +11,16 @@ namespace RunningBox
     /// </summary>
     public class TargetObject : ITarget
     {
+        private ContentAlignment _Anchor = ContentAlignment.MiddleCenter;
+        /// <summary>
+        /// 追蹤點位於目標的位置
+        /// </summary>
+        public ContentAlignment Anchor
+        {
+            get { return _Anchor; }
+            set { _Anchor = value; }
+        }
+
         private float _X = 0;
         /// <summary>
         /// 目標X座標
@@ -21,7 +31,24 @@ namespace RunningBox
             {
                 if (Target != null)
                 {
-                    _X = Target.Layout.CenterX;
+                    switch (Anchor)
+                    {
+                        case ContentAlignment.BottomLeft:
+                        case ContentAlignment.MiddleLeft:
+                        case ContentAlignment.TopLeft:
+                            _X = Target.Layout.LeftTopX;
+                            break;
+                        case ContentAlignment.BottomCenter:
+                        case ContentAlignment.MiddleCenter:
+                        case ContentAlignment.TopCenter:
+                            _X = Target.Layout.CenterX;
+                            break;
+                        case ContentAlignment.BottomRight:
+                        case ContentAlignment.MiddleRight:
+                        case ContentAlignment.TopRight:
+                            _X = Target.Layout.RightBottomX;
+                            break;
+                    }
                 }
                 return _X;
             }
@@ -37,7 +64,26 @@ namespace RunningBox
             {
                 if (Target != null)
                 {
-                    _Y = Target.Layout.CenterY;
+                    switch (Anchor)
+                    {
+                        
+                       
+                        case ContentAlignment.TopLeft:
+                        case ContentAlignment.TopCenter:
+                        case ContentAlignment.TopRight:
+                            _Y = Target.Layout.LeftTopY;
+                            break;
+                        case ContentAlignment.MiddleLeft:
+                        case ContentAlignment.MiddleCenter:
+                        case ContentAlignment.MiddleRight:
+                            _Y = Target.Layout.CenterY;
+                            break;
+                        case ContentAlignment.BottomLeft:
+                        case ContentAlignment.BottomCenter:
+                        case ContentAlignment.BottomRight:
+                            _Y = Target.Layout.RightBottomY;
+                            break;
+                    }
                 }
                 return _Y;
             }

@@ -10,7 +10,6 @@ namespace RunningBox
     /// 處理繪製物件繪圖事件
     /// </summary>
     /// <param name="sender">觸發物件</param>
-    /// <param name="g">Graphics物件</param>
-    /// <param name="rectangle">繪置區域</param>
-    public delegate void DrawObjectEnentHandle(object sender, Graphics g, Rectangle rectangle);
+    /// <param name="colorID">顏色索引</param>
+    public delegate void DrawColorsEnentHandle(object sender, string colorID);
 }

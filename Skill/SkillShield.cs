@@ -63,8 +63,8 @@ namespace RunningBox
                         effectWidth += effectWidth % 2;
                         effectHeight += effectHeight % 2;
 
-                        Color color = Owner.DrawObject.Color;
-                        Color colorBack = Color.FromArgb(50, color.R, color.G, color.G);
+                        Color color = Owner.DrawObject.MainColor;
+                        Color colorBack = Color.FromArgb(50, color);
                         _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(colorBack, color, 6, 1, 0, 360), MoveNull.Value);
                         _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
                         _ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
@@ -116,6 +116,6 @@ namespace RunningBox
         {
             DrawSkillShield drawObject = new DrawSkillShield(color, this);
             return drawObject;
-        }   
+        }
     }
 }

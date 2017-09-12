@@ -13,18 +13,37 @@ namespace RunningBox
     public class DrawImage : DrawBase
     {
         /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Back"); }
+        }
+
+        /// <summary>
         /// 繪製圖片
         /// </summary>
         public Image Image { get; set; }
 
         /// <summary>
+        /// 使用繪圖工具管理物件新增圖片繪圖物件
+        /// </summary>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="image">繪製圖片</param>
+        public DrawImage(DrawColors drawColor, Image image)
+            : base(drawColor)
+        {
+            Image = image;
+        }
+
+        /// <summary>
         /// 新增圖片繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色(供技能/特效使用)</param>
-        /// <param name="drawShape">繪製圖片</param>
-        public DrawImage(Color color, Image image)
+        /// <param name="backColor">繪製顏色(供技能/特效使用)</param>
+        /// <param name="image">繪製圖片</param>
+        public DrawImage(Color backColor, Image image)
         {
-            Color = color;
+            Colors.SetColor("Back", backColor);
             Image = image;
         }
 
@@ -36,27 +55,21 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            ColorFix.DrawImage(g, Image, drawRectangle, Opacity, RFix, GFix, BFix);
+            ColorFix.DrawImage(g, Image, drawRectangle, Colors.Opacity, Colors.RFix, Colors.GFix, Colors.BFix);
         }
 
         /// <summary>
-        /// 複製繪圖物件
+        /// 複製繪圖物件及內部的繪圖工具管理物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawImage(Color, Image)
+            return new DrawImage(Colors.Copy(), Image)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
         }
-
-        protected override void OnDispose() { }
     }
 }

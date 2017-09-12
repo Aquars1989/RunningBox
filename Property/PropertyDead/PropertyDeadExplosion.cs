@@ -140,7 +140,7 @@ namespace RunningBox
                     _OwnerScaleFix = animation * OwnerScaleFix;
                     _OwnerRFix = animation * OwnerRFix;
                     Owner.DrawObject.Scale += _OwnerScaleFix;
-                    Owner.DrawObject.RFix += _OwnerRFix;
+                    Owner.DrawObject.Colors.RFix += _OwnerRFix;
 
                     int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
                     Rectangle rectRange = new Rectangle((int)(Owner.Layout.CenterX - explosionSize / 2), (int)(Owner.Layout.CenterY - explosionSize / 2), explosionSize, explosionSize);
@@ -162,7 +162,7 @@ namespace RunningBox
             if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.DrawObject != null)
             {
                 Owner.DrawObject.Scale -= _OwnerScaleFix;
-                Owner.DrawObject.RFix -= _OwnerRFix;
+                Owner.DrawObject.Colors.RFix -= _OwnerRFix;
             }
         }
     }

@@ -69,7 +69,7 @@ namespace RunningBox
             }
             else
             {
-                DrawObject.Opacity = 1F - Life.GetRatio();
+                DrawObject.Colors.Opacity = 1F - Life.GetRatio();
                 Life.Value += Scene.SceneIntervalOfRound;
                 base.Action();
             }

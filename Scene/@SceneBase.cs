@@ -614,10 +614,14 @@ namespace RunningBox
             for (int i = UIObjects.Count - 1; i >= 0; i--) // 由後往前找
             {
                 ObjectUI item = UIObjects[i] as ObjectUI;
-                if (item != null && item.Visible && item.InRectangle(TrackPoint))
+                if (item != null && item.Visible)
                 {
-                    fidUI = item.Enabled ? item : null;
-                    break;
+                    ObjectUI hoverUI = item.InRectangle(TrackPoint);
+                    if (hoverUI != null)
+                    {
+                        fidUI = hoverUI.Enabled ? hoverUI : null;
+                        break;
+                    }
                 }
             }
             FocusObjectUI = fidUI;

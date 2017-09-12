@@ -35,7 +35,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於顏色改變時
         /// </summary>
-        public event EventHandler ColorChanged;
+        public event DrawColorsEnentHandle ColorChanged;
 
         /// <summary>
         /// 發生於顏色調整改變時
@@ -74,11 +74,11 @@ namespace RunningBox
         /// <summary>
         /// 發生於顏色改變時
         /// </summary>
-        protected virtual void OnColorChanged()
+        protected virtual void OnColorChanged(string colorId)
         {
             if (ColorChanged != null)
             {
-                ColorChanged(this, new EventArgs());
+                ColorChanged(this, colorId);
             }
         }
 
@@ -128,6 +128,11 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 繪製顏色管理物件
+        /// </summary>
+        public DrawColors Colors { get; private set; }
+
         private SceneBase _Scene;
         /// <summary>
         /// 所在的場景物件
@@ -158,83 +163,10 @@ namespace RunningBox
             }
         }
 
-        private Color _Color;
         /// <summary>
-        /// 主要繪製顏色
+        /// 主要繪製顏色(供碎片物件使用)
         /// </summary>
-        public Color Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color == value) return;
-                _Color = value;
-                OnColorChanged();
-            }
-        }
-
-        private float _Opacity = 1;
-        /// <summary>
-        /// 不透明度(0~1)
-        /// </summary>
-        public float Opacity
-        {
-            get { return _Opacity; }
-            set
-            {
-                if (value > 1) value = 1;
-                else if (value < 0) value = 0;
-
-                if (_Opacity == value) return;
-                _Opacity = value;
-                OnColorFixChanged();
-            }
-        }
-
-        private float _RFix = 0;
-        /// <summary>
-        /// 紅色值調整(-1~1)
-        /// </summary>
-        public float RFix
-        {
-            get { return _RFix; }
-            set
-            {
-                if (_RFix == value) return;
-                _RFix = value;
-                OnColorFixChanged();
-            }
-        }
-
-        private float _GFix = 0;
-        /// <summary>
-        /// 綠色值調整(-1~1)
-        /// </summary>
-        public float GFix
-        {
-            get { return _GFix; }
-            set
-            {
-                if (_GFix == value) return;
-                _GFix = value;
-                OnColorFixChanged();
-            }
-        }
-
-        private float _BFix = 0;
-        /// <summary>
-        /// 藍色值調整(-1~1)
-        /// </summary>
-        public float BFix
-        {
-            get { return _BFix; }
-            set
-            {
-                if (_BFix == value) return;
-                _BFix = value;
-                OnColorFixChanged();
-            }
-        }
+        public abstract Color MainColor { get; }
 
         private float _Scale = 1;
         /// <summary>
@@ -254,6 +186,24 @@ namespace RunningBox
         #endregion
 
         /// <summary>
+        /// 使用指定管理物件建立繪圖物件
+        /// </summary>
+        /// <param name="drawColor"></param>
+        public DrawBase(DrawColors drawColor)
+        {
+            Colors = drawColor;
+            drawColor.ColorFixChanged += (x, e) => { OnColorFixChanged(); };
+            drawColor.ColorChanged += (x, e) => { OnColorChanged(e); };
+        }
+
+        /// <summary>
+        /// 建立繪圖物件
+        /// </summary>
+        public DrawBase()
+            : this(new DrawColors()) { }
+
+        #region ===== 方法 =====
+        /// <summary>
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>
@@ -265,9 +215,8 @@ namespace RunningBox
             OnAfterDraw(g, rectangle);
         }
 
-        #region ===== 方法 =====
         /// <summary>
-        /// 複製繪圖物件
+        /// 複製繪圖物件及內部的繪圖工具管理物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public abstract DrawBase Copy();
@@ -287,56 +236,6 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 取得畫筆物件
-        /// </summary>
-        /// <returns>畫筆物件</returns>
-        public void GetPen(ref Pen pen, Color color, float opacity, float rfix, float gfix, float bfix)
-        {
-            if (pen == null)
-            {
-                Color penColor = ColorFix.GetColor(color, Opacity, RFix, GFix, BFix);
-                pen = DrawPool.GetPen(penColor);
-            }
-        }
-
-        /// <summary>
-        /// 取得筆刷物件
-        /// </summary>
-        /// <returns>筆刷物件</returns>
-        public void GetBrush(ref SolidBrush brush, Color color, float opacity, float rfix, float gfix, float bfix)
-        {
-            if (brush == null)
-            {
-                Color brushColor = ColorFix.GetColor(color, opacity, rfix, gfix, bfix);
-                brush = DrawPool.GetBrush(brushColor);
-            }
-        }
-
-        /// <summary>
-        /// 返還畫筆物件
-        /// </summary>
-        public void BackPen(ref Pen pen)
-        {
-            if (pen != null)
-            {
-                DrawPool.BackPen(pen);
-                pen = null;
-            }
-        }
-
-        /// <summary>
-        /// 返還筆刷物件
-        /// </summary>
-        public void BackBrush(ref SolidBrush brush)
-        {
-            if (brush != null)
-            {
-                DrawPool.BackBrush(brush);
-                brush = null;
-            }
-        }
-
-        /// <summary>
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>
@@ -344,9 +243,12 @@ namespace RunningBox
         protected abstract void OnDraw(Graphics g, Rectangle rectangle);
 
         /// <summary>
-        /// 釋放時進行動作
+        /// 試放物件時執行動作
         /// </summary>
-        protected abstract void OnDispose();
+        protected virtual void OnDispose() 
+        {
+            Colors.Dispose();
+        }
         #endregion
 
         #region IDisposable Support

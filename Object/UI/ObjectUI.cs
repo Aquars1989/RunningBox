@@ -93,13 +93,13 @@ namespace RunningBox
             : this(ContentAlignment.TopLeft, x, y, width, height, drawObject) { }
 
         /// <summary>
-        /// 檢查座標是否在此物件內
+        /// 檢查座標落在哪個物件內
         /// </summary>
         /// <param name="point">檢查座標</param>
-        public virtual bool InRectangle(Point point)
+        public virtual ObjectUI InRectangle(Point point)
         {
             return point.X >= Layout.Rectangle.Left && point.X <= Layout.Rectangle.Left + Layout.Rectangle.Width &&
-                   point.Y >= Layout.Rectangle.Top && point.Y <= Layout.Rectangle.Top + Layout.Rectangle.Height;
+                   point.Y >= Layout.Rectangle.Top && point.Y <= Layout.Rectangle.Top + Layout.Rectangle.Height ? this : null;
         }
 
         public virtual void OnGetFocus()
@@ -140,7 +140,7 @@ namespace RunningBox
             }
             else
             {
-                bool inRect = InRectangle(Scene.TrackPoint);
+                ObjectUI inRect = InRectangle(Scene.TrackPoint);
                 base.Action();
                 if (inRect != InRectangle(Scene.TrackPoint))
                 {
@@ -152,7 +152,7 @@ namespace RunningBox
         protected override void OnVisibleChanged()
         {
             if (Scene == null) return;
-            if (InRectangle(Scene.TrackPoint))
+            if (InRectangle(Scene.TrackPoint) != null)
             {
                 Scene.SearchFocusObjectUI();
             }

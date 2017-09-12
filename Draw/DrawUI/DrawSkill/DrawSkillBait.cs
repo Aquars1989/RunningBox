@@ -12,8 +12,13 @@ namespace RunningBox
     /// </summary>
     public class DrawSkillBait : DrawSkillBase
     {
-        private SolidBrush _Brush;
-        private Pen _Pen;
+        /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Icon"); }
+        }
 
         /// <summary>
         /// 動畫進度
@@ -21,13 +26,25 @@ namespace RunningBox
         public int Animation { get; set; }
 
         /// <summary>
+        /// 由繪圖工具管理物件新增技能:誘餌繪圖物件
+        /// </summary>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="bindingSkill">綁定技能</param>
+        public DrawSkillBait(DrawColors drawColor, SkillBase bindingSkill = null)
+            : base(drawColor)
+        {
+            Animation = 0;
+            BindingSkill = bindingSkill;
+        }
+
+        /// <summary>
         /// 新增技能:誘餌繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
+        /// <param name="iconColor">繪製顏色</param>
         /// <param name="bindingSkill">綁定技能</param>
-        public DrawSkillBait(Color color, SkillBase bindingSkill = null)
+        public DrawSkillBait(Color iconColor, SkillBase bindingSkill = null)
         {
-            Color = color;
+            Colors.SetColor("Icon", iconColor);
             Animation = 0;
             BindingSkill = bindingSkill;
         }
@@ -57,10 +74,11 @@ namespace RunningBox
 
             int aniStart = aniMax / 3;
             float offsetWidth = (width * 0.2F);
+
+            SolidBrush brushIcon = Colors.GetBrush("Icon");
             if (Animation <= aniStart)
             {
-                GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
-                g.FillEllipse(_Brush, centLeft, centTop, centerWidth, centerHeight);
+                g.FillEllipse(brushIcon, centLeft, centTop, centerWidth, centerHeight);
             }
             else
             {
@@ -69,11 +87,10 @@ namespace RunningBox
                 float offsetX = (1 - (Math.Abs(aniStartMaxHalf - ani) / (float)aniStartMaxHalf)) * 2F;
                 if (offsetX > 1) offsetX = 1;
 
-                GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
-                GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
+                Pen penIcon = Colors.GetPen("Icon");
 
-                g.DrawEllipse(_Pen, centLeft + offsetX * offsetWidth, centTop, centerWidth, centerHeight);
-                g.FillEllipse(_Brush, centLeft - offsetX * offsetWidth, centTop, centerWidth, centerHeight);
+                g.DrawEllipse(penIcon, centLeft + offsetX * offsetWidth, centTop, centerWidth, centerHeight);
+                g.FillEllipse(brushIcon, centLeft - offsetX * offsetWidth, centTop, centerWidth, centerHeight);
 
                 float noiseCenterX = centLeft + offsetX * offsetWidth + centerWidth / 2;
                 float noiseCenterY = centTop + centerHeight / 2;
@@ -84,7 +101,7 @@ namespace RunningBox
                     double angle = Global.Rand.NextDouble() * 360;
                     PointF drawPoint = Function.GetOffsetPoint(noiseCenterX, noiseCenterY, angle, centerWidth / 2);
                     int lineLength = Global.Rand.Next(lineLengthMin, lineLengthMax);
-                    g.DrawLine(_Pen, drawPoint.X, drawPoint.Y - lineLength, drawPoint.X, drawPoint.Y + lineLength + 1);
+                    g.DrawLine(penIcon, drawPoint.X, drawPoint.Y - lineLength, drawPoint.X, drawPoint.Y + lineLength + 1);
                 }
             }
             Animation++;
@@ -96,36 +113,12 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawSkillBait(Color, BindingSkill)
+            return new DrawSkillBait(Colors.Copy(), BindingSkill)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
         }
     }
 }

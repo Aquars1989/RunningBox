@@ -12,8 +12,13 @@ namespace RunningBox
     /// </summary>
     public class DrawSkillShockwave : DrawSkillBase
     {
-        private SolidBrush _Brush;
-        private Pen _Pen;
+        /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Icon"); }
+        }
 
         /// <summary>
         /// 動畫進度
@@ -21,17 +26,29 @@ namespace RunningBox
         public int Animation { get; set; }
 
         /// <summary>
-        /// 新增技能:衝刺繪圖物件
+        /// 由繪圖工具管理物件新增技能:衝刺繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
+        /// <param name="drawColor">繪圖工具管理物件</param>
         /// <param name="bindingSkill">綁定技能</param>
-        public DrawSkillShockwave(Color color, SkillBase bindingSkill = null)
+        public DrawSkillShockwave(DrawColors drawColor, SkillBase bindingSkill = null)
+            : base(drawColor)
         {
-            Color = color;
             Animation = 0;
             BindingSkill = bindingSkill;
         }
 
+        /// <summary>
+        /// 新增技能:衝刺繪圖物件
+        /// </summary>
+        /// <param name="iconColor">繪製顏色</param>
+        /// <param name="bindingSkill">綁定技能</param>
+        public DrawSkillShockwave(Color iconColor, SkillBase bindingSkill = null)
+        {
+            Colors.SetColor("Icon", iconColor);
+            Animation = 0;
+            BindingSkill = bindingSkill;
+        }
+        
         /// <summary>
         /// 繪製到Graphics
         /// </summary>
@@ -55,9 +72,9 @@ namespace RunningBox
             int centerHeight = (int)(height * 0.25F + 0.5F);
             Rectangle centerRect = new Rectangle(left + (width - centerWidth) / 2, top + (height - centerHeight) / 2, centerWidth, centerHeight);
 
-            GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
-            GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
-            _Pen.Width = 1;
+            SolidBrush brushIcon = Colors.GetBrush("Icon");
+            Pen penIcon = Colors.GetPen("Icon");
+            penIcon.Width = 1;
             int ani = Animation;
             float size = drawRectangle.Width * 0.3F; //原始大小
             float maxWidth = width * 1.5F;
@@ -71,7 +88,7 @@ namespace RunningBox
                     size += ratio * maxWidth;
                     if (size < maxWidth)
                     {
-                        g.DrawEllipse(_Pen, drawRectangle.Left + (drawRectangle.Width - size) / 2, drawRectangle.Top + (drawRectangle.Height - size) / 2, size, size);
+                        g.DrawEllipse(penIcon, drawRectangle.Left + (drawRectangle.Width - size) / 2, drawRectangle.Top + (drawRectangle.Height - size) / 2, size, size);
                     }
                     else break;
                     ani = aniMax;
@@ -79,7 +96,7 @@ namespace RunningBox
                 g.ResetClip();
             }
 
-            g.FillEllipse(_Brush, centerRect);
+            g.FillEllipse(brushIcon, centerRect);
             Animation++;
         }
 
@@ -89,36 +106,12 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawSkillSprint(Color, BindingSkill)
+            return new DrawSkillSprint(Colors.Copy(), BindingSkill)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            BackBrush(ref _Brush);
-            BackPen(ref _Pen);
         }
     }
 }

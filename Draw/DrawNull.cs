@@ -13,6 +13,11 @@ namespace RunningBox
     {
         public static DrawNull Value = new DrawNull();
 
+        public override Color MainColor
+        {
+            get { return Color.Empty; }
+        }
+
         /// <summary>
         /// 代表無效的繪圖物件
         /// </summary>
@@ -24,7 +29,5 @@ namespace RunningBox
         {
             return Value;
         }
-
-        protected override void OnDispose() { }
     }
 }

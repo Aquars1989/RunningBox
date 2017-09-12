@@ -10,37 +10,14 @@ namespace RunningBox
     /// <summary>
     /// 技能框架繪圖物件
     /// </summary>
-    public class DrawUISkillFrame : DrawBase
+    public class DrawUISkillFrame : DrawUIFrame
     {
-        public event EventHandler IconDrawObjectChanged;
-
-        private static Pen _PenDrawButton = new Pen(Color.Black);
-        private static SolidBrush _BrushChanneled = new SolidBrush(Colors.Channeled);
-        private GraphicsPath _BackFrame;
-        private Rectangle _BackFrameRectangle;
         private int _Animation;
-        private Pen _Pen;
 
         /// <summary>
         /// 是否忽略技能狀態
         /// </summary>
         public bool StaticMode { get; set; }
-
-        private DrawBase _IconDrawObject;
-        /// <summary>
-        /// 內部的圖示繪圖物件(必要)
-        /// </summary>
-        public DrawBase IconDrawObject
-        {
-            get { return _IconDrawObject; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException();
-                if (_IconDrawObject == value) return;
-                _IconDrawObject = value;
-                OnIconDrawObjectChanged();
-            }
-        }
 
         /// <summary>
         /// 是否顯示熱鍵圖示
@@ -48,26 +25,69 @@ namespace RunningBox
         public SkillKeyType DrawButton { get; set; }
 
         /// <summary>
-        /// 新增技能框架繪圖物件
+        /// 使用繪圖工具管理物件新增技能框架繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="borderWidtrh">框線粗細</param>
+        /// <param name="readius">圓角大小</param>
         /// <param name="drawButton">繪製技能熱鍵</param>
         /// <param name="iconDrawObject">技能繪製物件</param>
-        public DrawUISkillFrame(Color color, SkillKeyType drawButton, DrawBase iconDrawObject)
+        public DrawUISkillFrame(DrawColors drawColor, int borderWidtrh, int readius, SkillKeyType drawButton, DrawBase iconDrawObject)
+            : base(drawColor, borderWidtrh, readius, iconDrawObject)
         {
-            Color = color;
             DrawButton = drawButton;
-            IconDrawObject = iconDrawObject;
+            Colors.SetColor("Button", Color.Black);
+            Colors.SetColor("Channel", GlobalColors.Channeled);
+        }
+
+        /// <summary>
+        /// 使用繪圖工具管理物件新增技能框架繪圖物件
+        /// </summary>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="borderWidtrh">框線粗細</param>
+        /// <param name="readius">圓角大小</param>
+        /// <param name="drawButton">繪製技能熱鍵</param>
+        public DrawUISkillFrame(DrawColors drawColor, int borderWidtrh, int readius, SkillKeyType drawButton)
+            : base(drawColor, borderWidtrh, readius)
+        {
+            DrawButton = drawButton;
+            Colors.SetColor("Button", Color.Black);
+            Colors.SetColor("Channel", GlobalColors.Channeled);
+        }
+
+        /// <summary>
+        /// 使用繪圖工具管理物件新增技能框架繪圖物件
+        /// </summary>
+        /// <param name="borderColor">框線顏色</param>
+        /// <param name="backColor">背景色</param>
+        /// <param name="borderWidtrh">框線粗細</param>
+        /// <param name="readius">圓角大小</param>
+        /// <param name="drawButton">繪製技能熱鍵</param>
+        /// <param name="iconDrawObject">技能繪製物件</param>
+        public DrawUISkillFrame(Color backColor, Color borderColor, int borderWidtrh, int readius, SkillKeyType drawButton, DrawBase iconDrawObject)
+            : base(backColor, borderColor, borderWidtrh, readius, iconDrawObject)
+        {
+            DrawButton = drawButton;
+            Colors.SetColor("Button", Color.Black);
+            Colors.SetColor("Channel", GlobalColors.Channeled);
         }
 
         /// <summary>
         /// 新增技能框架繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
+        /// <param name="borderColor">框線顏色</param>
+        /// <param name="backColor">背景色</param>
+        /// <param name="borderWidtrh">框線粗細</param>
+        /// <param name="readius">圓角大小</param>
         /// <param name="drawButton">繪製技能熱鍵</param>
         /// <param name="iconDrawObject">技能繪製物件</param>
-        public DrawUISkillFrame(Color color, SkillKeyType drawButton) :
-            this(color, drawButton, DrawNull.Value) { }
+        public DrawUISkillFrame(Color backColor, Color borderColor, int borderWidtrh, int readius, SkillKeyType drawButton)
+            : base(backColor, borderColor, borderWidtrh, readius)
+        {
+            DrawButton = drawButton;
+            Colors.SetColor("Button", Color.Black);
+            Colors.SetColor("Channel", GlobalColors.Channeled);
+        }
 
         /// <summary>
         /// 繪製到Graphics
@@ -77,12 +97,17 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
-            _Pen.Width = 2;
 
-            GraphicsPath backFrame = GetBackFrame(drawRectangle);
-            DrawSkillBase drawSkillBase = IconDrawObject as DrawSkillBase;
-            SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill;
+            SolidBrush brushBack = Colors.GetBrush("Back");
+            Pen penBorder = Colors.GetPen("Border");
+            penBorder.Width = BorderWidtrh;
+
+            GetBackFrame(drawRectangle);
+            DrawSkillBase drawSkillBase = DrawObjectInside as DrawSkillBase;
+            SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill; //取得綁定技能
+
+            g.FillPath(brushBack, _BackFrame);
+            g.Clip = _BackRegion;
             if (bindingSkill != null && !StaticMode)
             {
                 switch (bindingSkill.Status)
@@ -113,7 +138,7 @@ namespace RunningBox
                                 _Animation %= 20;
                             }
                             int angle = _Animation * 18;
-                            using (LinearGradientBrush brush2 = new LinearGradientBrush(drawRectangle, Colors.Channeled, Color.FromArgb(245, 255, 240), angle))
+                            using (LinearGradientBrush brush2 = new LinearGradientBrush(drawRectangle, GlobalColors.Channeled, Color.FromArgb(245, 255, 240), angle))
                             {
                                 g.FillRectangle(brush2, drawRectangle);
                             }
@@ -122,27 +147,24 @@ namespace RunningBox
                         else
                         {
                             float channeledSize = (1F - bindingSkill.Channeled.GetRatio()) * drawRectangle.Height;
-                            g.FillRectangle(Brushes.White, drawRectangle);
-                            g.FillRectangle(_BrushChanneled, drawRectangle.X, drawRectangle.Y + drawRectangle.Height - channeledSize, drawRectangle.Width, channeledSize);
+                            SolidBrush brushChannel = Colors.GetBrush("Channel");
+                            g.FillRectangle(brushChannel, drawRectangle.X, drawRectangle.Y + drawRectangle.Height - channeledSize, drawRectangle.Width, channeledSize);
                         }
                         break;
                 }
             }
 
-            if (IconDrawObject != DrawNull.Value)
+            if (DrawObjectInside != DrawNull.Value)
             {
-                IconDrawObject.Draw(g, drawRectangle);
+                DrawObjectInside.Draw(g, drawRectangle);
             }
-            else
-            {
-                g.FillPath(Brushes.White, backFrame);
-            }
-
-            g.DrawPath(_Pen, backFrame);
+            g.ResetClip();
+            g.DrawPath(penBorder, _BackFrame);
 
             if (DrawButton != RunningBox.SkillKeyType.None)
             {
-                _PenDrawButton.Width = 2;
+                Pen penBlack = Colors.GetPen("Button");
+                penBlack.Width = 2;
                 Rectangle keyRectangle = new Rectangle(drawRectangle.Left + drawRectangle.Width - 15, drawRectangle.Top + drawRectangle.Height - 15, 20, 25);
                 g.FillEllipse(Brushes.White, keyRectangle);
 
@@ -157,108 +179,25 @@ namespace RunningBox
 
                         break;
                 }
-                g.DrawEllipse(_PenDrawButton, keyRectangle);
-                _PenDrawButton.Width = 1;
-                g.DrawLine(_PenDrawButton, keyRectangle.Left, keyRectangle.Top + keyRectangle.Height / 2, keyRectangle.Left + keyRectangle.Width, keyRectangle.Top + keyRectangle.Height / 2);
-                g.DrawLine(_PenDrawButton, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top + keyRectangle.Height / 2);
+                g.DrawEllipse(penBlack, keyRectangle);
+                penBlack.Width = 1;
+                g.DrawLine(penBlack, keyRectangle.Left, keyRectangle.Top + keyRectangle.Height / 2, keyRectangle.Left + keyRectangle.Width, keyRectangle.Top + keyRectangle.Height / 2);
+                g.DrawLine(penBlack, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top, keyRectangle.Left + keyRectangle.Width / 2, keyRectangle.Top + keyRectangle.Height / 2);
             }
         }
 
         /// <summary>
-        /// 產生圓角區域
+        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件)
         /// </summary>
-        private GraphicsPath GetBackFrame(Rectangle rectangle)
-        {
-            if (_BackFrameRectangle != rectangle && _BackFrame != null)
-            {
-                _BackFrame.Dispose();
-                _BackFrame = null;
-            }
-
-            if (_BackFrame == null)
-            {
-                _BackFrameRectangle = rectangle;
-                _BackFrame = Function.GetRadiusFrame(rectangle, 8);
-            }
-            return _BackFrame;
-        }
-
+        /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUISkillFrame(Color, DrawButton, IconDrawObject)
+            return new DrawUISkillFrame(Colors.Copy(), BorderWidtrh, Readius, DrawButton)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected virtual void OnIconDrawObjectChanged()
-        {
-            if (_IconDrawObject != null)
-            {
-                _IconDrawObject.Scene = this.Scene;
-                _IconDrawObject.Owner = this.Owner;
-                _IconDrawObject.Scale = this.Scale;
-            }
-
-            if (IconDrawObjectChanged != null)
-            {
-                IconDrawObjectChanged(this, new EventArgs());
-            }
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackPen(ref _Pen);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackPen(ref _Pen);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnOwnerChanged()
-        {
-            if (_IconDrawObject != null)
-            {
-                _IconDrawObject.Owner = this.Owner;
-            }
-            base.OnOwnerChanged();
-        }
-
-        protected override void OnSceneChanged()
-        {
-            if (_IconDrawObject != null)
-            {
-                _IconDrawObject.Scene = this.Scene;
-            }
-            base.OnSceneChanged();
-        }
-
-        protected override void OnScaleChanged()
-        {
-            if (_IconDrawObject != null)
-            {
-                _IconDrawObject.Scale = this.Scale;
-            }
-            base.OnScaleChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            if (_BackFrame != null)
-            {
-                _BackFrame.Dispose();
-                _BackFrame = null;
-            }
-            BackPen(ref _Pen);
         }
     }
 }

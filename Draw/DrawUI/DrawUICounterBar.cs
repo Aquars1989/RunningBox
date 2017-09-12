@@ -12,9 +12,13 @@ namespace RunningBox
     /// </summary>
     public class DrawUICounterBar : DrawBase
     {
-        private Pen _PenBorder;
-        private SolidBrush _Brush;
-        private SolidBrush _BrushBack;
+        /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Icon"); }
+        }
 
         /// <summary>
         /// 綁定計數器
@@ -26,36 +30,6 @@ namespace RunningBox
         /// </summary>
         public int BorderWidth { get; set; }
 
-        private Color _BorderColor;
-        /// <summary>
-        /// 外框顏色
-        /// </summary>
-        public Color BorderColor
-        {
-            get { return _BorderColor; }
-            set
-            {
-                if (_BorderColor == value) return;
-                _BorderColor = value;
-                OnBorderColorChanged();
-            }
-        }
-
-        private Color _BackColor;
-        /// <summary>
-        /// 底色
-        /// </summary>
-        public Color BackColor
-        {
-            get { return _BackColor; }
-            set
-            {
-                if (_BackColor == value) return;
-                _BackColor = value;
-                OnBackColorChanged();
-            }
-        }
-
         /// <summary>
         /// 是否反向顯示
         /// </summary>
@@ -64,17 +38,32 @@ namespace RunningBox
         /// <summary>
         /// 新增能量條繪圖物件
         /// </summary>
-        /// <param name="color">條棒顏色</param>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="borderWidth">框線粗細</param>
+        /// <param name="reverse">是否反向顯示</param>
+        /// <param name="bindObject">綁定物件</param>
+        public DrawUICounterBar(DrawColors drawColor, int borderWidth, bool reverse, CounterObject bindingCounter = null)
+            : base(drawColor)
+        {
+            BorderWidth = borderWidth;
+            Reverse = reverse;
+            BindingCounter = bindingCounter;
+        }
+
+        /// <summary>
+        /// 新增能量條繪圖物件
+        /// </summary>
+        /// <param name="mainColor">條棒顏色</param>
         /// <param name="borderColor">外框顏色</param>
         /// <param name="backColor">底色</param>
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="reverse">是否反向顯示</param>
         /// <param name="bindObject">綁定物件</param>
-        public DrawUICounterBar(Color color, Color borderColor, Color backColor, int borderWidth, bool reverse, CounterObject bindingCounter = null)
+        public DrawUICounterBar(Color mainColor, Color borderColor, Color backColor, int borderWidth, bool reverse, CounterObject bindingCounter = null)
         {
-            Color = color;
-            BackColor = backColor;
-            BorderColor = borderColor;
+            Colors.SetColor("Main", mainColor);
+            Colors.SetColor("Border", borderColor);
+            Colors.SetColor("Back", backColor);
             BorderWidth = borderWidth;
             Reverse = reverse;
             BindingCounter = bindingCounter;
@@ -88,12 +77,13 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
-            GetBrush(ref _BrushBack, BackColor, Opacity, RFix, GFix, BFix);
-            GetPen(ref _PenBorder, BorderColor, Opacity, RFix, GFix, BFix);
+            SolidBrush brushMain = Colors.GetBrush("Main");
+            SolidBrush brushBack = Colors.GetBrush("Back");
+            Pen penBorder = Colors.GetPen("Border");
 
-            g.FillRectangle(_BrushBack, drawRectangle);
-            g.DrawRectangle(_PenBorder, drawRectangle);
+            penBorder.Width = BorderWidth;
+            g.FillRectangle(brushBack, drawRectangle);
+            g.DrawRectangle(penBorder, drawRectangle);
 
             if (BindingCounter != null && BindingCounter.Value > 0)
             {
@@ -102,56 +92,23 @@ namespace RunningBox
                 int widthInside = (int)((drawRectangle.Width - BorderWidth * 2) * ratio + 0.5F);
                 if (widthInside > 0)
                 {
-                    g.FillRectangle(_Brush, drawRectangle.Left + BorderWidth, drawRectangle.Top + BorderWidth, widthInside, drawRectangle.Height - BorderWidth * 2);
+                    g.FillRectangle(brushMain, drawRectangle.Left + BorderWidth, drawRectangle.Top + BorderWidth, widthInside, drawRectangle.Height - BorderWidth * 2);
                 }
             }
         }
 
+        /// <summary>
+        /// 複製繪圖物件及內部的繪圖工具管理物件
+        /// </summary>
+        /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUICounterBar(Color, BorderColor, BackColor, BorderWidth, Reverse, BindingCounter)
+            return new DrawUICounterBar(Colors.Copy(), BorderWidth, Reverse, BindingCounter)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackBrush(ref _Brush);
-            base.OnColorChanged();
-        }
-
-        protected void OnBorderColorChanged()
-        {
-            BackPen(ref _PenBorder);
-            base.OnColorChanged();
-        }
-
-        protected void OnBackColorChanged()
-        {
-            BackBrush(ref _BrushBack);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackBrush(ref _Brush);
-            BackBrush(ref _BrushBack);
-            BackPen(ref _PenBorder);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            BackBrush(ref _Brush);
-            BackBrush(ref _BrushBack);
-            BackPen(ref _PenBorder);
         }
     }
 }

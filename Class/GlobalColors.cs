@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RunningBox
 {
-    class Colors
+    class GlobalColors
     {
         public static Color Channeled = Color.FromArgb(200, 230, 140);
         public static Color EnergyBar = Color.SteelBlue;

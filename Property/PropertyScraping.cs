@@ -126,7 +126,7 @@ namespace RunningBox
                 ObjectScrap newObject;
                 if (ScrapDrawObject == null)
                 {
-                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.Color, moveObject);
+                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.MainColor, moveObject);
                 }
                 else
                 {

@@ -11,12 +11,18 @@ namespace RunningBox
     /// </summary>
     public class DrawPen : DrawBase
     {
-        private Pen _Pen;
+        /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Border"); }
+        }
 
         /// <summary>
         /// 畫筆寬度
         /// </summary>
-        public int Width { get; set; }
+        public int BorderWidth { get; set; }
 
         /// <summary>
         /// 繪製圖形
@@ -24,16 +30,29 @@ namespace RunningBox
         public ShapeType DrawShape { get; set; }
 
         /// <summary>
+        /// 使用繪圖工具管理物件新增畫筆繪圖物件
+        /// </summary>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="drawShape">繪製圖形</param>
+        /// <param name="borderWidth">畫筆寬度</param>
+        public DrawPen(DrawColors drawColor, ShapeType drawShape, int borderWidth)
+            : base(drawColor)
+        {
+            DrawShape = drawShape;
+            BorderWidth = borderWidth;
+        }
+
+        /// <summary>
         /// 新增畫筆繪圖物件
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <param name="drawShape">繪製圖形</param>
-        /// <param name="width">畫筆寬度</param>
-        public DrawPen(Color color, ShapeType drawShape, int width)
+        /// <param name="borderWidth">畫筆寬度</param>
+        public DrawPen(Color color, ShapeType drawShape, int borderWidth)
         {
-            Color = color;
-            Width = width;
+            Colors.SetColor("Border", color);
             DrawShape = drawShape;
+            BorderWidth = borderWidth;
         }
 
         /// <summary>
@@ -43,55 +62,34 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
-            if (Width < 1) return;
+            if (BorderWidth < 1) return;
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            GetPen(ref _Pen, Color, Opacity, RFix, GFix, BFix);
-            _Pen.Width = Width;
+            Pen penBorder = Colors.GetPen("Border");
+            penBorder.Width = BorderWidth;
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:
-                    g.DrawRectangle(_Pen, drawRectangle);
+                    g.DrawRectangle(penBorder, drawRectangle);
                     break;
                 case RunningBox.ShapeType.Ellipse:
-                    g.DrawEllipse(_Pen, drawRectangle);
+                    g.DrawEllipse(penBorder, drawRectangle);
                     break;
             }
         }
 
         /// <summary>
-        /// 複製繪圖物件
+        /// 複製繪圖物件及內部的繪圖工具管理物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawPen(Color, DrawShape, Width)
+            return new DrawPen(Colors.Copy(), DrawShape, BorderWidth)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackPen(ref _Pen);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackPen(ref _Pen);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            BackPen(ref _Pen);
         }
     }
 }

@@ -113,7 +113,7 @@ namespace RunningBox
                 }
                 else
                 {
-                    DrawObject.Opacity = FadeOpacity * (1 - FadeTime.GetRatio());
+                    DrawObject.Colors.Opacity = FadeOpacity * (1 - FadeTime.GetRatio());
                     FadeTime.Value += Scene.SceneIntervalOfRound;
                     base.Action();
 
@@ -123,7 +123,7 @@ namespace RunningBox
             {
                 Layout.Width = BaseWidth + (int)((DiffusionWidth - BaseWidth) * DiffusionTime.GetRatio());
                 Layout.Height = BaseHeight + (int)((DiffusionWidth - BaseWidth) * DiffusionTime.GetRatio());
-                DrawObject.Opacity = BaseOpacity + ((DiffusionOpacity - BaseOpacity) * DiffusionTime.GetRatio());
+                DrawObject.Colors.Opacity = BaseOpacity + ((DiffusionOpacity - BaseOpacity) * DiffusionTime.GetRatio());
                 DiffusionTime.Value += Scene.SceneIntervalOfRound;
                 base.Action();
             }

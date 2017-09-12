@@ -32,6 +32,9 @@ namespace RunningBox
             }
         }
 
+        public DrawSkillBase(DrawColors drawColor) : base(drawColor) { }
+        public DrawSkillBase() : base() { }
+
         /// <summary>
         /// 發生在綁定技能物件變更時
         /// </summary>

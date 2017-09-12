@@ -38,36 +38,42 @@ namespace RunningBox
         public event EventHandler IntervalOfWaveChanged;
         #endregion
 
+        #region ===== 繪製物件 =====
+        private DrawUISkillFrame _DrawSkill1 = new DrawUISkillFrame(Color.White, Color.Black, 2, 10, SkillKeyType.MouseButtonLeft);
+
+        private DrawUISkillFrame _DrawSkill2 = new DrawUISkillFrame(Color.White, Color.Black, 2, 10, SkillKeyType.MouseButtonRight);
+        #endregion
+
         #region ===== UI物件 =====
         /// <summary>
         /// 附蓋灰色區塊
         /// </summary>
-        private ObjectUI _DarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
+        private ObjectUI _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
 
         /// <summary>
         /// 重試按鈕
         /// </summary>
-        private ObjectUI _CommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "重試", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "重試", Global.CommandFont, Global.CommandFormat));
 
         /// <summary>
         /// 返回按鈕
         /// </summary>
-        private ObjectUI _CommandBack = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.White, Color.Black, 2, "返回", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "返回", Global.CommandFont, Global.CommandFormat));
 
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI _EnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(Colors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
+        private ObjectUI _UIEnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
 
         /// <summary>
         /// 技能1顯示物件
         /// </summary>
-        private ObjectUI _SkillIcon1 = new ObjectUI(320, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonLeft));
+        private ObjectUI _UISkillIcon1;
 
         /// <summary>
         /// 技能2顯示物件
         /// </summary>
-        private ObjectUI _SkillIcon2 = new ObjectUI(400, 10, 50, 50, new DrawUISkillFrame(Color.Black, SkillKeyType.MouseButtonRight));
+        private ObjectUI _UISkillIcon2;
         #endregion
 
         #region ===== 技能物件 =====
@@ -81,12 +87,12 @@ namespace RunningBox
             set
             {
                 _Skill1 = value;
-                if (_SkillIcon1.DrawObject != null)
+                if (_DrawSkill1.DrawObjectInside != DrawNull.Value)
                 {
-                    _SkillIcon1.DrawObject.Dispose();
+                    _DrawSkill1.DrawObjectInside.Dispose();
                 }
 
-                (_SkillIcon1.DrawObject as DrawUISkillFrame).IconDrawObject = Skill1 == null ? DrawNull.Value : Skill1.GetDrawObject(Color.DarkSlateGray) as DrawBase;
+                _DrawSkill1.DrawObjectInside = Skill1 == null ? DrawNull.Value : Skill1.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
 
@@ -100,12 +106,12 @@ namespace RunningBox
             set
             {
                 _Skill2 = value;
-                if (_SkillIcon2.DrawObject != null)
+                if (_DrawSkill2.DrawObjectInside != DrawNull.Value)
                 {
-                    _SkillIcon2.DrawObject.Dispose();
+                    _DrawSkill2.DrawObjectInside.Dispose();
                 }
 
-                (_SkillIcon2.DrawObject as DrawUISkillFrame).IconDrawObject = Skill2 == null ? DrawNull.Value : Skill2.GetDrawObject(Color.DarkSlateGray) as DrawBase;
+                _DrawSkill2.DrawObjectInside = Skill2 == null ? DrawNull.Value : Skill2.GetDrawObject(Color.DarkSlateGray) as DrawBase;
             }
         }
         #endregion
@@ -160,9 +166,9 @@ namespace RunningBox
             set
             {
                 _ShowMenu = value;
-                _DarkCover.Visible = value;
-                _CommandBack.Visible = value;
-                _CommandRetry.Visible = value;
+                _UIDarkCover.Visible = value;
+                _UICommandBack.Visible = value;
+                _UICommandRetry.Visible = value;
             }
         }
 
@@ -209,18 +215,21 @@ namespace RunningBox
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
 
-            _CommandRetry.Click += (x, e) =>
+            _UISkillIcon1 = new ObjectUI(300, 10, 50, 50, _DrawSkill1);
+            _UISkillIcon2 = new ObjectUI(380, 10, 50, 50, _DrawSkill2);
+
+            _UICommandRetry.Click += (x, e) =>
             {
                 ShowMenu = false;
                 SetStart(e.X, e.Y);
             };
-            _CommandBack.Click += (x, e) => { OnGoScene(new SceneSkill()); };
-            UIObjects.Add(_SkillIcon1);
-            UIObjects.Add(_SkillIcon2);
-            UIObjects.Add(_EnergyBar);
-            UIObjects.Add(_DarkCover);
-            UIObjects.Add(_CommandBack);
-            UIObjects.Add(_CommandRetry);
+            _UICommandBack.Click += (x, e) => { OnGoScene(new SceneSkill()); };
+            UIObjects.Add(_UISkillIcon1);
+            UIObjects.Add(_UISkillIcon2);
+            UIObjects.Add(_UIEnergyBar);
+            UIObjects.Add(_UIDarkCover);
+            UIObjects.Add(_UICommandBack);
+            UIObjects.Add(_UICommandRetry);
             GameObjects.ObjectDead += OnObjectDead;
             ShowMenu = false;
         }
@@ -352,7 +361,7 @@ namespace RunningBox
             }
 
             GameObjects.Add(PlayerObject);
-            (_EnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
+            (_UIEnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
 
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
@@ -470,12 +479,12 @@ namespace RunningBox
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
 
-            _DarkCover.Layout.Width = Width;
-            _DarkCover.Layout.Height = Height;
-            _CommandRetry.Layout.Y = (Height - _CommandRetry.Layout.Height) / 2;
-            _CommandBack.Layout.Y = (Height - _CommandBack.Layout.Height) / 2;
-            _CommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
-            _CommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _CommandBack.Layout.Width;
+            _UIDarkCover.Layout.Width = Width;
+            _UIDarkCover.Layout.Height = Height;
+            _UICommandRetry.Layout.Y = (Height - _UICommandRetry.Layout.Height) / 2;
+            _UICommandBack.Layout.Y = (Height - _UICommandBack.Layout.Height) / 2;
+            _UICommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
+            _UICommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _UICommandBack.Layout.Width;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

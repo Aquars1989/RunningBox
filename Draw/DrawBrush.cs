@@ -11,7 +11,13 @@ namespace RunningBox
     /// </summary>
     public class DrawBrush : DrawBase
     {
-        private SolidBrush _Brush;
+        /// <summary>
+        /// 主要繪製顏色(供碎片物件使用)
+        /// </summary>
+        public override Color MainColor
+        {
+            get { return Colors.GetColor("Main"); }
+        }
 
         /// <summary>
         /// 繪製圖形
@@ -19,13 +25,24 @@ namespace RunningBox
         public ShapeType DrawShape { get; set; }
 
         /// <summary>
+        /// 使用繪圖工具管理物件新增筆刷繪圖物件
+        /// </summary>
+        /// <param name="drawColor">繪圖工具管理物件</param>
+        /// <param name="drawShape">繪製圖形</param>
+        public DrawBrush(DrawColors drawColor, ShapeType drawShape)
+            : base(drawColor)
+        {
+            DrawShape = drawShape;
+        }
+
+        /// <summary>
         /// 新增筆刷繪圖物件
         /// </summary>
-        /// <param name="color">繪製顏色</param>
+        /// <param name="backColor">繪製顏色</param>
         /// <param name="drawShape">繪製圖形</param>
-        public DrawBrush(Color color, ShapeType drawShape)
+        public DrawBrush(Color backColor, ShapeType drawShape)
         {
-            Color = color;
+            Colors.SetColor("Main", backColor);
             DrawShape = drawShape;
         }
 
@@ -37,51 +54,30 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            GetBrush(ref _Brush, Color, Opacity, RFix, GFix, BFix);
+            SolidBrush brushBack = Colors.GetBrush("Main");
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:
-                    g.FillRectangle(_Brush, drawRectangle);
+                    g.FillRectangle(brushBack, drawRectangle);
                     break;
                 case RunningBox.ShapeType.Ellipse:
-                    g.FillEllipse(_Brush, drawRectangle);
+                    g.FillEllipse(brushBack, drawRectangle);
                     break;
             }
         }
 
         /// <summary>
-        /// 複製繪圖物件
+        /// 複製繪圖物件及內部的繪圖工具管理物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawBrush(Color, DrawShape)
+            return new DrawBrush(Colors.Copy(), DrawShape)
             {
                 Scene = this.Scene,
                 Owner = this.Owner,
-                Opacity = this.Opacity,
-                RFix = this.RFix,
-                GFix = this.GFix,
-                BFix = this.BFix,
                 Scale = this.Scale
             };
-        }
-
-        protected override void OnColorChanged()
-        {
-            BackBrush(ref _Brush);
-            base.OnColorChanged();
-        }
-
-        protected override void OnColorFixChanged()
-        {
-            BackBrush(ref _Brush);
-            base.OnColorFixChanged();
-        }
-
-        protected override void OnDispose()
-        {
-            BackBrush(ref _Brush);
         }
     }
 }

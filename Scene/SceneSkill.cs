@@ -18,10 +18,11 @@ namespace RunningBox
         private DrawUISkillFrame Skill2;
         private SkillBase[] _Skills;
 
-        private ObjectUI[] _SkillIcons;
-        private ObjectUI[] _SkillInfos;
-        private ObjectUI _CommandOK = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.Empty, Color.Black, 2, "繼續", Global.CommandFont, Global.CommandFormat));
-        private ObjectUI _CommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUIString(Color.Black, Color.Empty, Color.Black, 2, "返回", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI[] _UISkillIcons;
+        private ObjectUI[] _UISkillInfos;
+
+        private ObjectUI _UICommandOK = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, Global.CommandFormat));
 
         public SceneSkill()
         {
@@ -36,35 +37,35 @@ namespace RunningBox
             };
 
             int len = _Skills.Length;
-            _SkillIcons = new ObjectUI[len];
-            _SkillInfos = new ObjectUI[len];
+            _UISkillIcons = new ObjectUI[len];
+            _UISkillInfos = new ObjectUI[len];
             for (int i = 0; i < len; i++)
             {
                 int left = i % 2 * 270 + 30;
                 int top = i / 2 * 100 + 120;
                 DrawBase skillDraw = _Skills[i].GetDrawObject(Color.FromArgb(120, 60, 0));
-                _SkillIcons[i] = new ObjectUI(left, top, 75, 75, new DrawUISkillFrame(Color.FromArgb(210, 180, 50), SkillKeyType.None, skillDraw) { StaticMode = true });
-                _SkillIcons[i].Click += IconClick;
+                _UISkillIcons[i] = new ObjectUI(left, top, 75, 75, new DrawUISkillFrame(Color.White, Color.FromArgb(210, 180, 50), 2, 10, SkillKeyType.None, skillDraw) { StaticMode = true });
+                _UISkillIcons[i].Click += IconClick;
 
                 DrawBase infoDraw = _Skills[i].GetInfoObject(Color.FromArgb(180, 80, 0), Color.FromArgb(255, 255, 240), Color.FromArgb(210, 180, 50));
-                _SkillInfos[i] = new ObjectUI(left + 85, top, 170, 75, infoDraw);
+                _UISkillInfos[i] = new ObjectUI(left + 85, top, 170, 75, infoDraw);
 
-                UIObjects.Add(_SkillIcons[i]);
-                UIObjects.Add(_SkillInfos[i]);
+                UIObjects.Add(_UISkillIcons[i]);
+                UIObjects.Add(_UISkillInfos[i]);
             }
-            UIObjects.Add(_CommandOK);
-            UIObjects.Add(_CommandCancel);
+            UIObjects.Add(_UICommandOK);
+            UIObjects.Add(_UICommandCancel);
 
-            _CommandOK.Click += (x, e) =>
+            _UICommandOK.Click += (x, e) =>
             {
                 OnGoScene(new SceneStand()
                 {
-                    Skill1 = Skill1 == null ? null : (Skill1.IconDrawObject as DrawSkillBase).BindingSkill,
-                    Skill2 = Skill2 == null ? null : (Skill2.IconDrawObject as DrawSkillBase).BindingSkill
+                    Skill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill,
+                    Skill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill
                 });
             };
 
-            _CommandCancel.Click += (x, e) =>
+            _UICommandCancel.Click += (x, e) =>
             {
                 OnGoScene(new SceneWelcome());
             };
@@ -73,10 +74,10 @@ namespace RunningBox
         protected override void OnReLayout()
         {
             base.OnReLayout();
-            _CommandOK.Layout.Y = Height - _CommandOK.Layout.Height - 70;
-            _CommandCancel.Layout.Y = Height - _CommandCancel.Layout.Height - 70;
-            _CommandOK.Layout.X = Width - _CommandCancel.Layout.Width - 80;
-            _CommandCancel.Layout.X = 80;
+            _UICommandOK.Layout.Y = Height - _UICommandOK.Layout.Height - 70;
+            _UICommandCancel.Layout.Y = Height - _UICommandCancel.Layout.Height - 70;
+            _UICommandOK.Layout.X = Width - _UICommandCancel.Layout.Width - 80;
+            _UICommandCancel.Layout.X = 80;
         }
 
         private static Font _TitleFont = new Font("標楷體", 30);

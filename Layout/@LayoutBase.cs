@@ -63,6 +63,7 @@ namespace RunningBox
                 float fix = value - _LeftTopX;
                 _X += fix;
                 _CenterX += fix;
+                _RightBottomX = value;
                 _LeftTopX = value;
                 OnLocationChanged();
             }
@@ -83,7 +84,50 @@ namespace RunningBox
                 float fix = value - _LeftTopY;
                 _Y += fix;
                 _CenterY += fix;
+                _RightBottomY += fix;
                 _LeftTopY = value;
+                OnLocationChanged();
+            }
+        }
+
+        private float _RightBottomX;
+        /// <summary>
+        /// 右下角座標X
+        /// </summary>
+        public float RightBottomX
+        {
+            get { return _RightBottomX + DependTarget.X; }
+            set
+            {
+                value -= DependTarget.X;
+                if (_RightBottomX == value) return;
+
+                float fix = value - _RightBottomX;
+                _X += fix;
+                _CenterX += fix;
+                _LeftTopX += fix;
+                _RightBottomX = value;
+                OnLocationChanged();
+            }
+        }
+
+        private float _RightBottomY;
+        /// <summary>
+        /// 右下角座標Y
+        /// </summary>
+        public float RightBottomY
+        {
+            get { return _RightBottomY + DependTarget.Y; }
+            set
+            {
+                value -= DependTarget.Y;
+                if (_RightBottomY == value) return;
+
+                float fix = value - _RightBottomY;
+                _Y += fix;
+                _CenterY += fix;
+                _LeftTopY += fix;
+                _RightBottomY = value;
                 OnLocationChanged();
             }
         }
@@ -103,6 +147,7 @@ namespace RunningBox
                 float fix = value - _CenterX;
                 _X += fix;
                 _LeftTopX += fix;
+                _RightBottomX += fix;
                 _CenterX = value;
                 OnLocationChanged();
             }
@@ -123,6 +168,7 @@ namespace RunningBox
                 float fix = value - _CenterY;
                 _Y += fix;
                 _LeftTopY += fix;
+                _RightBottomY += fix;
                 _CenterY = value;
                 OnLocationChanged();
             }
@@ -197,6 +243,7 @@ namespace RunningBox
 
                 float fix = value - _X;
                 _LeftTopX += fix;
+                _RightBottomX += fix;
                 _CenterX += fix;
                 _X = value;
                 OnLocationChanged();
@@ -216,6 +263,7 @@ namespace RunningBox
 
                 float fix = value - _Y;
                 _LeftTopY += fix;
+                _RightBottomY += fix;
                 _CenterY += fix;
                 _Y = value;
                 OnLocationChanged();
@@ -236,6 +284,7 @@ namespace RunningBox
 
                 _RectWidth = value;
                 _LeftTopX = _X - _RectWidth * _AnchorOfWidth;
+                _RightBottomX = _LeftTopX + _RectWidth;
                 _CenterX = _LeftTopX + _RectWidth * 0.5F;
                 OnSizeChanged();
             }
@@ -255,6 +304,7 @@ namespace RunningBox
 
                 _RectHeight = value;
                 _LeftTopY = _Y - _RectHeight * _AnchorOfHeight;
+                _RightBottomY = _LeftTopY + _RectHeight;
                 _CenterY = _LeftTopY + _RectHeight * 0.5F;
                 OnSizeChanged();
             }
