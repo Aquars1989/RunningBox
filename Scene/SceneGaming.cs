@@ -53,12 +53,12 @@ namespace RunningBox
         /// <summary>
         /// 重試按鈕
         /// </summary>
-        private ObjectUI _UICommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "重試", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "重試", Global.CommandFont, GlobalFormat.MiddleCenter));
 
         /// <summary>
         /// 返回按鈕
         /// </summary>
-        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "返回", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter));
 
         /// <summary>
         /// 能量條物件

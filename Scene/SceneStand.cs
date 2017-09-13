@@ -61,6 +61,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     GameObjects.Add(newObject);
                 }
             });
@@ -84,6 +85,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     GameObjects.Add(newObject);
                 }
             });
@@ -110,6 +112,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertySmoking(-1, Sec(0.2F)));
                     newObject.Propertys.Add(new PropertyFreeze(Sec(0.2F * i)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     newObject.Propertys.Add(new PropertyOutClear());
                     targetObject.Target = new TargetObject(newObject);
                     GameObjects.Add(newObject);
@@ -132,6 +135,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.8F), Sec(1.4F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     newObject.Propertys.Add(new PropertyOutClear());
                     targetObject.Target = new TargetObject(newObject);
                     GameObjects.Add(newObject);
@@ -167,6 +171,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     GameObjects.Add(newObject);
                     target = newObject;
                     speed += 10;
@@ -200,6 +205,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(10));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 100));
+                    newObject.Propertys.Add(new PropertyShadow());
                     GameObjects.Add(newObject);
                 }
             });
@@ -246,6 +252,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy, ShapeType.Ellipse, new DrawImage(Color.Black, Properties.Resources.Mine), moveObject);
                     newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow());
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
                 }
@@ -255,11 +262,11 @@ namespace RunningBox
         public override void SetWave()
         {
             //                                 123456789012345678901234567890123456789012345678901234
-            //Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
-            //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
+            Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
             Waves.Add(new WaveLine("WallA  ", "1          4               5                  6    "));
-            //Waves.Add(new WaveLine("Mine   ", "         4            5           6        7          "));
+            Waves.Add(new WaveLine("Mine   ", "3         4            5           6        7          "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
             //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
         }
@@ -270,6 +277,7 @@ namespace RunningBox
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
             PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
+            PlayerObject.Propertys.Add(new PropertyShadow());
             return PlayerObject;
         }
 

@@ -16,7 +16,6 @@ namespace RunningBox
     {
         //說明文字用
         private static Font _InfoFont = new Font("微軟正黑體", 12);
-        private static StringFormat _InfoFormat = new StringFormat();
 
         /// <summary>
         /// 說明文字
@@ -249,7 +248,7 @@ namespace RunningBox
         /// <returns>繪圖物件</returns>
         public virtual DrawUITextFrame GetInfoObject(Color color, Color backColor, Color borderColor)
         {
-            DrawUITextFrame result = new DrawUITextFrame(color, Color.WhiteSmoke, backColor, borderColor, 2, 10, Info, _InfoFont, _InfoFormat);
+            DrawUITextFrame result = new DrawUITextFrame(color, Color.WhiteSmoke, backColor, borderColor, 2, 10, Info, _InfoFont, GlobalFormat.TopLeft);
             return result;
         }
     }

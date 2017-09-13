@@ -84,8 +84,6 @@ namespace RunningBox
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
 
             SolidBrush brushBack = Colors.GetBrush("Back");
-            Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidtrh;
 
             GetBackFrame(drawRectangle);
             g.FillPath(brushBack, _BackFrame);
@@ -102,7 +100,13 @@ namespace RunningBox
             g.DrawString(Text, Font, brushShadow, new Rectangle(textRectangle.X + 1, textRectangle.Y + 1, textRectangle.Width, textRectangle.Height), DrawFormat);
             g.DrawString(Text, Font, brushText, textRectangle, DrawFormat);
             g.ResetClip();
-            g.DrawPath(penBorder, _BackFrame);
+
+            if (BorderWidtrh > 0)
+            {
+                Pen penBorder = Colors.GetPen("Border");
+                penBorder.Width = BorderWidtrh;
+                g.DrawPath(penBorder, _BackFrame);
+            }
         }
 
         /// <summary>

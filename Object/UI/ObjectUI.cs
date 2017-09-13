@@ -37,6 +37,65 @@ namespace RunningBox
         /// </summary>
         public bool HasClickEnevt { get { return Click != null; } }
 
+        private bool _Focused;
+        /// <summary>
+        /// 是否獲得焦點
+        /// </summary>
+        public bool Focused
+        {
+            get { return _Focused; }
+            private set
+            {
+                if (_Focused == value) return;
+                _Focused = value;
+
+                if (DrawObjectHover == null) return;
+                if (Focused)
+                {
+                    _FocusSwitch = true;
+                    DrawObject = DrawObjectHover;
+                    _FocusSwitch = false;
+                }
+                else
+                {
+                    _FocusSwitch = true;
+                    DrawObject = DrawObjectOrigin;
+                    _FocusSwitch = false;
+                }
+            }
+        }
+
+        private DrawBase _DrawObjectHover = null;
+        /// <summary>
+        /// 滑鼠滑過時顯示的繪圖物件(null為不切換)
+        /// </summary>
+        public DrawBase DrawObjectHover
+        {
+            get { return _DrawObjectHover; }
+            set
+            {
+                if (_DrawObjectHover == value) return;
+                _DrawObjectHover = value;
+                if (Focused)
+                {
+                    _FocusSwitch = true;
+                    DrawObject = _DrawObjectHover == null ? DrawObjectOrigin : DrawObjectHover;
+                    _FocusSwitch = false;
+                }
+            }
+        }
+
+        private bool _FocusSwitch = false;
+        private DrawBase DrawObjectOrigin;
+        protected override void OnDrawObjectChanged()
+        {
+            if (!_FocusSwitch)
+            {
+                DrawObjectOrigin = DrawObject;
+            }
+            base.OnDrawObjectChanged();
+        }
+
         /// <summary>
         /// 使用指定的定位點和移動物件建立介面物件
         /// </summary>
@@ -45,6 +104,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
+        /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件(null為不切換)</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
             : base(drawObject, moveObject)
@@ -55,7 +115,6 @@ namespace RunningBox
             Layout.Y = y;
             Layout.Width = width;
             Layout.Height = height;
-            DrawObject = drawObject;
             Enabled = true;
         }
 
@@ -68,6 +127,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
+        /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件</param>
         public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject)
             : this(ContentAlignment.TopLeft, x, y, width, height, drawObject, MoveNull.Value)
         {
@@ -77,7 +137,6 @@ namespace RunningBox
             Layout.Y = y;
             Layout.Width = width;
             Layout.Height = height;
-            DrawObject = drawObject;
         }
 
         /// <summary>
@@ -88,6 +147,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
+        /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUI(int x, int y, int width, int height, DrawBase drawObject)
             : this(ContentAlignment.TopLeft, x, y, width, height, drawObject) { }
@@ -106,6 +166,7 @@ namespace RunningBox
         {
             if (Enabled && Visible)
             {
+                Focused = true;
                 if (GetFocus != null)
                 {
                     GetFocus(this, new EventArgs());
@@ -117,6 +178,7 @@ namespace RunningBox
         {
             if (Enabled && Visible)
             {
+                Focused = false;
                 if (LostFocus != null)
                 {
                     LostFocus(this, new EventArgs());

@@ -17,7 +17,6 @@ namespace RunningBox
         public static Random Rand = new Random(Guid.NewGuid().GetHashCode());
 
         public static Font CommandFont = new System.Drawing.Font("微軟正黑體", 20, FontStyle.Bold);
-        public static StringFormat CommandFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
         public static int DefaultIntervalOfRound = 20;
         public static int DefaultIntervalOfWave = 1500;

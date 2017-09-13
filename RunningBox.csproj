@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AutoCast\AutoCastNormal.cs" />
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
+    <Compile Include="Class\GlobalFormat.cs" />
     <Compile Include="Class\GlobalColors.cs" />
     <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Class\SQLobject.cs" />
@@ -99,10 +100,12 @@
     <Compile Include="Move\MoveStraight.cs" />
     <Compile Include="Move\%40MoveBase.cs" />
     <Compile Include="Object\ObjectWave.cs" />
-    <Compile Include="Object\UI\ObjectUIPlayer.cs" />
+    <Compile Include="Object\UI\ObjectUISceneChoice.cs" />
+    <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUIPanel.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyAffix.cs" />
+    <Compile Include="Property\PropertyShadow.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
     <Compile Include="Property\PropertyOutClear.cs" />
     <Compile Include="Property\PropertyUI.cs" />

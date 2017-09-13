@@ -21,8 +21,8 @@ namespace RunningBox
         private ObjectUI[] _UISkillIcons;
         private ObjectUI[] _UISkillInfos;
 
-        private ObjectUI _UICommandOK = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, Global.CommandFormat));
-        private ObjectUI _UICommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, Global.CommandFormat));
+        private ObjectUI _UICommandOK = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter));
+        private ObjectUI _UICommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter));
 
         public SceneSkill()
         {
