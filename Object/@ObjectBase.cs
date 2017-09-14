@@ -314,6 +314,7 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             League = LeagueType.None;
             Life = new CounterObject(-1);
+            Propertys = new PropertyCollection(this);
             DrawObject = drawObject;
             MoveObject = moveObject;
         }

@@ -32,7 +32,7 @@ namespace RunningBox
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectUIPanel(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
+        public ObjectUIPanel(DirectionType anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
             : base(anchor, x, y, width, height, drawObject, moveObject)
         {
             UIObjects = new ObjectCollection(SceneNull.Value);
@@ -47,7 +47,7 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
-        public ObjectUIPanel(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject)
+        public ObjectUIPanel(DirectionType anchor, int x, int y, int width, int height, DrawBase drawObject)
             : base(anchor, x, y, width, height, drawObject)
         {
             UIObjects = new ObjectCollection(SceneNull.Value);
@@ -63,7 +63,7 @@ namespace RunningBox
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUIPanel(int x, int y, int width, int height, DrawBase drawObject)
-            : this(ContentAlignment.TopLeft, x, y, width, height, drawObject)
+            : this(DirectionType.Left | DirectionType.Top, x, y, width, height, drawObject)
         {
             UIObjects = new ObjectCollection(SceneNull.Value);
         }

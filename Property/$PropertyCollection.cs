@@ -40,11 +40,11 @@ namespace RunningBox
         }
 
         #region ===== 屬性 =====
-        private ObjectActive _Owner;
+        private ObjectBase _Owner;
         /// <summary>
         /// 依附的活動物件,即為群組所有者(必要)
         /// </summary>
-        public ObjectActive Owner
+        public ObjectBase Owner
         {
             get { return _Owner; }
             set
@@ -100,7 +100,7 @@ namespace RunningBox
         /// 初始化特性物件集合
         /// </summary>
         /// <param name="scene">所屬活動物件</param>
-        public PropertyCollection(ObjectActive owner)
+        public PropertyCollection(ObjectBase owner)
         {
             Owner = owner;
         }

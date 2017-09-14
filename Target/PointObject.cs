@@ -19,10 +19,20 @@ namespace RunningBox
         /// <summary>
         /// 新增封裝座標點的物件(目標用)
         /// </summary>
-        /// <param name="point"></param>
+        /// <param name="point">座標點</param>
         public PointObject(PointF point)
         {
             Point = point;
+        }
+
+        /// <summary>
+        /// 新增封裝座標點的物件(目標用)
+        /// </summary>
+        /// <param name="x">座標點X</param>
+        /// <param name="y">座標點Y</param>
+        public PointObject(float x, float y)
+        {
+            Point = new PointF(x, y);
         }
 
         /// <summary>

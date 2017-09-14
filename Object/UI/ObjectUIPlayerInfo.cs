@@ -25,7 +25,7 @@ namespace RunningBox
 
         private DrawUITextFrame _DrawPlayerName;
 
-        public ObjectUIPlayerInfo(ContentAlignment anchor, int x, int y, MoveBase moveObject)
+        public ObjectUIPlayerInfo(DirectionType anchor, int x, int y, MoveBase moveObject)
             : base(anchor, x, y, 330, 150, new DrawUIFrame(Color.AliceBlue, Color.CornflowerBlue, 2, 20), moveObject)
         {
             //玩家姓名
@@ -37,30 +37,25 @@ namespace RunningBox
             DrawUITextFrame drawCommandBuildNameHover = new DrawUITextFrame(Color.Orange, Color.Empty, Color.Empty, Color.Empty, 0, 0, "↻", new Font("標楷體", 22, FontStyle.Bold), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 10, 0, 0) };
             ObjectUI uiCommandBuildName = new ObjectUI(260, 80, 40, 40, drawCommandBuildName) { DrawObjectHover = drawCommandBuildNameHover };
 
-            //確定
-            //DrawUITextFrame drawCommandOK = new DrawUITextFrame(Color.CornflowerBlue, Color.Empty, Color.FromArgb(240, 255, 242), Color.LightSteelBlue, 2, 10, "確定", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            //DrawUITextFrame drawCommandOKHover = new DrawUITextFrame(Color.RoyalBlue, Color.White, Color.FromArgb(215, 238, 242), Color.CornflowerBlue, 2, 10, "確定", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            //ObjectUI uiCommandOK = new ObjectUI(180, 140, 110, 40, drawCommandOK) { DrawObjectHover = drawCommandOKHover };
-
             DrawUITextFrame drawCommandClose = new DrawUITextFrame(Color.Pink, Color.Empty, Color.Empty, Color.Empty, 0, 0, "X", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
             DrawUITextFrame drawCommandCloseHover = new DrawUITextFrame(Color.Red, Color.Empty, Color.Empty, Color.Empty, 0, 0, "X", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
             ObjectUI uiCommandClose = new ObjectUI(290, 15, 30, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
 
+            uiPlayerName.Layout.Anchor = DirectionType.Left | DirectionType.Top;
+            uiCommandBuildName.Layout.Anchor = DirectionType.Left | DirectionType.Top;
+            uiCommandClose.Layout.Anchor = DirectionType.Left | DirectionType.Top;
 
-            //uiTilte.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiCommandBuildName.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiPlayerName.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            //uiCommandOK.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiCommandClose.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            uiCommandBuildName.Layout.Depend.SetObject(this); 
+            uiPlayerName.Layout.Depend .SetObject(this); 
+            uiCommandClose.Layout.Depend.SetObject(this);
+            
 
             uiCommandBuildName.Click += (s, e) => { _DrawPlayerName.Text = Function.GetRandName(); };
             uiCommandClose.Click += (s, e) => { OnClose(); };
 
-            //UIObjects.Add(uiTilte);
             UIObjects.Add(uiPlayerName);
             UIObjects.Add(uiCommandBuildName);
             UIObjects.Add(uiCommandClose);
-            //UIObjects.Add(uiCommandOK);
         }
 
         private static Font _TitleFont = new Font("微軟正黑體", 22);

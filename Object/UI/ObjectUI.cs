@@ -106,7 +106,7 @@ namespace RunningBox
         /// <param name="drawObject">繪製物件</param>
         /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件(null為不切換)</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
+        public ObjectUI(DirectionType anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
             : base(drawObject, moveObject)
         {
             Layout.CollisonShape = ShapeType.Rectangle;
@@ -128,16 +128,8 @@ namespace RunningBox
         /// <param name="height">物件高度</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件</param>
-        public ObjectUI(ContentAlignment anchor, int x, int y, int width, int height, DrawBase drawObject)
-            : this(ContentAlignment.TopLeft, x, y, width, height, drawObject, MoveNull.Value)
-        {
-            Layout.CollisonShape = ShapeType.Rectangle;
-            Layout.Anchor = anchor;
-            Layout.X = x;
-            Layout.Y = y;
-            Layout.Width = width;
-            Layout.Height = height;
-        }
+        public ObjectUI(DirectionType anchor, int x, int y, int width, int height, DrawBase drawObject)
+            : this(anchor, x, y, width, height, drawObject, MoveNull.Value) { }
 
         /// <summary>
         /// 使用預設定位點(左上)建立不可移動介面物件
@@ -150,7 +142,7 @@ namespace RunningBox
         /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUI(int x, int y, int width, int height, DrawBase drawObject)
-            : this(ContentAlignment.TopLeft, x, y, width, height, drawObject) { }
+            : this(DirectionType.Left | DirectionType.Top, x, y, width, height, drawObject) { }
 
         /// <summary>
         /// 檢查座標落在哪個物件內

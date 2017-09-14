@@ -28,7 +28,7 @@ namespace RunningBox
             _UIDarkCover.Layout.Width = Width;
             _UIDarkCover.Layout.Height = Height;
             _UIPlayerInfo.Layout.X = Width / 2;
-            (_UIPlayerInfo.MoveObject as MoveStraight).Target = new TargetPoint((int)(_UIPlayerInfo.Layout.X), (int)(Height / 2));
+            _UIPlayerInfo.MoveObject.Target.SetObject(new PointObject(_UIPlayerInfo.Layout.X, Height / 2));
         }
 
         protected override void OnLoadComplete()
@@ -36,7 +36,7 @@ namespace RunningBox
             _UITopbar = new ObjectUI(0, 0, 0, 90, new DrawUIFrame(Color.Wheat, Color.DarkSlateBlue, 1, 0));
             _UIInfo = new ObjectUI(5, 5, 200, 80, new DrawCustom());
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
-            _UIPlayerInfo = new ObjectUIPlayerInfo(ContentAlignment.MiddleCenter, 5, 5, new MoveStraight(TargetNull.Value, 1, 800, 1, 100, 1F)) { Visible = false };
+            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.Left | DirectionType.Top, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
             _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);
 
             _UIInfo.DrawObject.BeforeDraw += (x, g, r) =>

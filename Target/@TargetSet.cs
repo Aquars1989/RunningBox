@@ -73,7 +73,7 @@ namespace RunningBox
         /// <summary>
         /// 目標為單位時的定位點
         /// </summary>
-        private DirectionType Anchor { get; set; }
+        public DirectionType Anchor { get; set; }
 
         /// <summary>
         /// 取得目標X軸偏移位置
