@@ -67,7 +67,6 @@ namespace RunningBox
         /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
         public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, LeagueType collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
-            : base(TargetNull.Value)
         {
             DeadType = deadType;
             RangeMultiple = rangeMultiple;
@@ -80,7 +79,7 @@ namespace RunningBox
         }
 
 
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             if ((DeadType & deadType) != deadType) return;
 
@@ -92,24 +91,24 @@ namespace RunningBox
 
             for (int i = 0; i < Owner.Container.Count; i++)
             {
-                ObjectActive objectActive = Owner.Container[i] as ObjectActive;
-                if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == CollisionLeague) continue;
+                ObjectBase objectBase = Owner.Container[i];
+                if (objectBase.Status != ObjectStatus.Alive || Function.IsFriendly(objectBase.League,CollisionLeague)) continue;
 
                 //特殊狀態判定 具碰撞 非鬼魂
-                if ((objectActive.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
-                    (objectActive.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
+                if ((objectBase.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
+                    (objectBase.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
                 {
                     continue;
                 }
 
                 //碰撞判定
-                if (!Function.IsCollison(objectActive.Layout, explosionObject.Layout)) continue;
+                if (!Function.IsCollison(objectBase.Layout, explosionObject.Layout)) continue;
 
                 //檢查目標有無碰撞特性
                 int colliderPower = -1;
-                for (int j = 0; j < objectActive.Propertys.Count; j++)
+                for (int j = 0; j < objectBase.Propertys.Count; j++)
                 {
-                    PropertyCollision checkCollision = objectActive.Propertys[j] as PropertyCollision;
+                    PropertyCollision checkCollision = objectBase.Propertys[j] as PropertyCollision;
                     if (checkCollision != null && checkCollision.Status == PropertyStatus.Enabled)
                     {
                         colliderPower = Math.Max(colliderPower, checkCollision.CollisionPower);
@@ -119,7 +118,7 @@ namespace RunningBox
                 if (colliderPower < 0) continue;
                 if (colliderPower <= CollisionPower)
                 {
-                    objectActive.Kill(Owner, ObjectDeadType.Collision);
+                    objectBase.Kill(Owner,ObjectDeadType.Collision);
                 }
             }
         }

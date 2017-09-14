@@ -27,7 +27,6 @@ namespace RunningBox
         /// <param name="durationRound">持續時間(毫秒),小於0為永久</param>
         /// <param name="speededPerSec">每秒速度增加</param>
         public PropertySpeeded(int durationRound, float speededPerSec)
-            : base(TargetNull.Value)
         {
             DurationTime.Limit = durationRound;
             SpeededPerSec = speededPerSec;

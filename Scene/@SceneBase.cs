@@ -14,7 +14,7 @@ namespace RunningBox
     /// <summary>
     /// 基本場景物件
     /// </summary>
-    public class SceneBase : Control
+    public class SceneBase : Control, ITargetability
     {
         public delegate void GoSceneEventHandle(object sender, SceneBase scene);
 
@@ -626,5 +626,37 @@ namespace RunningBox
             }
             FocusObjectUI = fidUI;
         }
+
+        #region ===== 實作ITargetability =====
+        /// <summary>
+        /// 取得場景追蹤點X座標
+        /// </summary>
+        /// <param name="anchor">定位位置(此處無用)</param>
+        /// <returns>場景追蹤點X座標</returns>
+        public float GetTargetX(DirectionType anchor)
+        {
+            return TrackPoint.X;
+        }
+
+        /// <summary>
+        /// 取得場景追蹤點Y座標
+        /// </summary>
+        /// <param name="anchor">定位位置(此處無用)</param>
+        /// <returns>場景追蹤點Y座標</returns>
+        public float GetTargetY(DirectionType anchor)
+        {
+            return TrackPoint.Y;
+        }
+
+        /// <summary>
+        /// 取得場景追蹤點
+        /// </summary>
+        /// <param name="anchor">定位位置(此處無用)</param>
+        /// <returns>場景追蹤點</returns>
+        public PointF GetTargetPoint(DirectionType anchor)
+        {
+            return TrackPoint;
+        }
+        #endregion
     }
 }

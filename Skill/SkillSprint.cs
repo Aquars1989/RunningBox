@@ -59,12 +59,11 @@ namespace RunningBox
             {
                 case SkillStatus.Enabled:
                     {
-                        if (Owner == null || Owner.MoveObject.Target is TargetNull)
+                        if (Owner == null || Owner.MoveObject.Target.TargetType == TargetType.None)
                         {
                             Break();
                             return;
                         }
-
 
                         float speed = (Owner.MoveObject.Speed * SpeedMultiple) + SpeedConstant;
                         PointF offset = Owner.MoveObject.GetOffsetByXY(Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y, speed);

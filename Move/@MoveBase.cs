@@ -21,27 +21,27 @@ namespace RunningBox
         /// <summary>
         /// 發生於所有者變更
         /// </summary>
-        public event EventHandler OwnerChanged;
+        public event ValueChangedEnentHandle OwnerChanged;
 
         /// <summary>
         /// 發生於目標變更
         /// </summary>
-        public event EventHandler TargetChanged;
+        public event ValueChangedEnentHandle TargetObjectChanged;
 
         /// <summary>
         /// 發生於移動調整值最大數量變更
         /// </summary>
-        public event EventHandler OffsetsLimitChanged;
+        public event ValueChangedEnentHandle OffsetsLimitChanged;
+
+        /// <summary>
+        /// 發生於移動速度變更
+        /// </summary>
+        public event ValueChangedEnentHandle SpeedChanged;
 
         /// <summary>
         /// 發生於移動調整值列表內容變更
         /// </summary>
         public event EventHandler OffsetsChanged;
-
-        /// <summary>
-        /// 發生於移動速度變更
-        /// </summary>
-        public event EventHandler SpeedChanged;
 
         /// <summary>
         /// 發生於移動規劃後
@@ -69,34 +69,34 @@ namespace RunningBox
         /// <summary>
         /// 發生於所有者變更
         /// </summary>
-        protected void OnOwnerChanged()
+        protected void OnOwnerChanged(object oldValue, object newValue)
         {
             if (OwnerChanged != null)
             {
-                OwnerChanged(this, new EventArgs());
+                OwnerChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於目標變更
         /// </summary>
-        protected void OnTargetChanged()
+        protected void OnTargetObjectChanged(object oldValue, object newValue)
         {
-            if (TargetChanged != null)
+            if (TargetObjectChanged != null)
             {
-                TargetChanged(this, new EventArgs());
+                TargetObjectChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於移動調整值最大數量變更
         /// </summary>
-        protected void OnOffsetsLimitChanged()
+        protected void OnOffsetsLimitChanged(object oldValue, object newValue)
         {
             CheckOffset();
             if (OffsetsLimitChanged != null)
             {
-                OffsetsLimitChanged(this, new EventArgs());
+                OffsetsLimitChanged(this, oldValue, newValue);
             }
         }
 
@@ -114,11 +114,11 @@ namespace RunningBox
         /// <summary>
         /// 發生於移動速度變更
         /// </summary>
-        protected void OnSpeedChanged()
+        protected void OnSpeedChanged(object oldValue, object newValue)
         {
             if (SpeedChanged != null)
             {
-                SpeedChanged(this, new EventArgs());
+                SpeedChanged(this, oldValue, newValue);
             }
         }
 
@@ -162,8 +162,9 @@ namespace RunningBox
             {
                 if (value == null) throw new ArgumentNullException();
                 if (_Owner == value) return;
+                object oldValue = _Owner;
                 _Owner = value;
-                OnOwnerChanged();
+                OnOwnerChanged(oldValue, value);
             }
         }
 
@@ -187,9 +188,10 @@ namespace RunningBox
             set
             {
                 if (_OffsetsLimit == value) return;
+                object oldValue = _OffsetsLimit;
                 _OffsetsLimit = value;
                 _SpeedPerOffsets = _Speed / _OffsetsLimit;
-                OnOffsetsLimitChanged();
+                OnOffsetsLimitChanged(oldValue, value);
             }
         }
 
@@ -208,9 +210,10 @@ namespace RunningBox
             set
             {
                 if (_Speed == value) return;
+                object oldValue = _Speed;
                 _Speed = value;
                 _SpeedPerOffsets = _Speed / _OffsetsLimit;
-                OnSpeedChanged();
+                OnSpeedChanged(oldValue, value);
             }
         }
 
@@ -224,44 +227,34 @@ namespace RunningBox
             set
             {
                 if (_SpeedPerOffsets == value) return;
+                object oldValue = _SpeedPerOffsets;
                 _SpeedPerOffsets = value;
                 _Speed = _SpeedPerOffsets * _OffsetsLimit;
-                OnSpeedChanged();
+                OnSpeedChanged(oldValue, value);
             }
         }
 
-        private ITarget _Target;
         /// <summary>
         /// 追蹤目標(必要)
         /// </summary>
-        public ITarget Target
-        {
-            get { return _Target; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException();
-                if (_Target == value) return;
-                _Target = value;
-
-                OnTargetChanged();
-            }
-        }
+        public TargetSet Target { get; private set; }
         #endregion
 
         /// <summary>
         /// 基本移動物件建構式
         /// </summary>
-        /// <param name="Target">追蹤目標(必要)</param>
+        /// <param name="Target">追蹤目標</param>
         /// <param name="weight">重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
         /// <param name="speed">總體移動速度最大值(排除重量影響)</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
-        public MoveBase(ITarget target, float weight, float speed, int offsetsLimit)
+        public MoveBase(ITargetability target, float weight, float speed, int offsetsLimit)
         {
             Offsets = new List<PointF>();
             OffsetsLimit = offsetsLimit;
             Weight = weight;
             Speed = speed;
-            Target = target;
+            Target = new TargetSet(target);
+            Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o,n); };
         }
 
         #region ===== 方法 =====

@@ -28,9 +28,9 @@ namespace RunningBox
         public AutoCastBase AutoCastObject { get; set; }
 
         /// <summary>
-        /// 技能目標
+        /// 技能目標(必要)
         /// </summary>
-        public ITarget Target { get; set; }
+        public TargetSet Target { get; private set; }
 
         /// <summary>
         /// 技能所有人
@@ -81,11 +81,16 @@ namespace RunningBox
             }
         }
 
+        public SkillBase()
+        {
+            Target = new TargetSet();
+        }
+
         /// <summary>
         /// 使用技能
         /// </summary>
         /// <param name="target">技能目標</param>
-        public virtual void Use(ITarget target)
+        public virtual void Use(ITargetability target)
         {
             switch (Status)
             {
@@ -96,13 +101,13 @@ namespace RunningBox
                     if (Owner == null)
                     {
                         Status = SkillStatus.Enabled;
-                        Target = target;
+                        Target.SetObject(target);
                     }
-                    else if (Owner.Energy.Value > CostEnergy)
+                    else if (Owner.Status == ObjectStatus.Alive && Owner.Energy.Value > CostEnergy)
                     {
                         Owner.Energy.Value -= CostEnergy;
                         Status = SkillStatus.Enabled;
-                        Target = target;
+                        Target.SetObject(target);
                     }
                     break;
             }
@@ -184,7 +189,7 @@ namespace RunningBox
         /// <summary>
         /// 當技能生效時又使用技能時的動作
         /// </summary>
-        public virtual void DoUseWhenEfficacy(ITarget target) { }
+        public virtual void DoUseWhenEfficacy(ITargetability target) { }
 
         /// <summary>
         /// 物件活動前執行動作
@@ -224,7 +229,7 @@ namespace RunningBox
         /// <summary>
         /// 死亡後執行動作
         /// </summary>
-        public virtual void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public virtual void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             Break();
         }

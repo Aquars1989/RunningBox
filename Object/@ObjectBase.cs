@@ -9,7 +9,7 @@ namespace RunningBox
     /// <summary>
     /// 基礎活動物件
     /// </summary>
-    public abstract class ObjectBase : IDisposable
+    public abstract class ObjectBase : IDisposable, ITargetability
     {
         #region ===== 事件 =====
         /// <summary>
@@ -253,11 +253,16 @@ namespace RunningBox
             }
         }
 
-        private Layout _Layout;
+        /// <summary>
+        /// 物件擁有的特性群組
+        /// </summary>
+        public PropertyCollection Propertys { get; set; }
+
+        private LayoutSet _Layout;
         /// <summary>
         /// 物件配置方式(必要)
         /// </summary>
-        public Layout Layout
+        public LayoutSet Layout
         {
             get { return _Layout; }
             private set
@@ -281,6 +286,21 @@ namespace RunningBox
                 OnStatusChanged();
             }
         }
+
+        /// <summary>
+        /// 物件所屬陣營,供技能或特性判定
+        /// </summary>
+        public LeagueType League { get; set; }
+
+        /// <summary>
+        /// 存活時間計數器(毫秒)
+        /// </summary>
+        public CounterObject Life { get; private set; }
+
+        /// <summary>
+        /// 給UI特性使用
+        /// </summary>
+        public int UIOffSetY { get; set; }
         #endregion
 
         /// <summary>
@@ -290,8 +310,10 @@ namespace RunningBox
         /// <param name="moveObject">移動物件</param>
         public ObjectBase(DrawBase drawObject, MoveBase moveObject)
         {
-            Layout = new Layout();
+            Layout = new LayoutSet();
             Status = ObjectStatus.Alive;
+            League = LeagueType.None;
+            Life = new CounterObject(-1);
             DrawObject = drawObject;
             MoveObject = moveObject;
         }
@@ -302,11 +324,12 @@ namespace RunningBox
         /// </summary>
         /// <param name="killer">殺手物件</param>
         /// <param name="deadType">死亡類型</param>
-        public virtual void Kill(ObjectActive killer, ObjectDeadType deadType)
+        public virtual void Kill(ObjectBase killer, ObjectDeadType deadType)
         {
             if (Status == ObjectStatus.Alive)
             {
                 Status = ObjectStatus.Dead;
+                Propertys.AllDoAfterDead(killer, deadType);
                 OnDead(this, killer, deadType);
             }
         }
@@ -316,15 +339,40 @@ namespace RunningBox
         /// </summary>
         public virtual void Action()
         {
+            UIOffSetY = 0;
+            Propertys.AllDoBeforeAction();
+            Propertys.AllDoBeforeActionPlan();
             MoveObject.Plan();
+            Propertys.AllDoBeforeActionMove();
             MoveObject.Move();
+            Settlement();
+            Propertys.AllSettlement();
             OnAfterAction();
+            Propertys.ClearAllDisabled();
         }
 
         /// <summary>
         /// 物件移動中進行的活動
         /// </summary>
-        public virtual void Moving() { }
+        public virtual void Moving()
+        {
+            Propertys.AllDoActionMoving();
+        }
+
+        /// <summary>
+        /// 結算物件生命
+        /// </summary>
+        protected virtual void Settlement()
+        {
+            if (Life.IsFull)
+            {
+                Kill(null, ObjectDeadType.LifeEnd);
+            }
+            else
+            {
+                Life.Value += Scene.SceneIntervalOfRound;
+            }
+        }
 
         /// <summary>
         /// 繪製物件
@@ -334,13 +382,47 @@ namespace RunningBox
         {
             if (Visible)
             {
+                Propertys.AllDoBeforeDraw(g);
                 DrawObject.Draw(g, Layout.Rectangle);
+                Propertys.AllDoAfterDraw(g);
             }
         }
 
         private void MoveObject_Moving(object sender, EventArgs e)
         {
             Moving();
+        }
+        #endregion
+
+        #region ===== 實作ITargetability =====
+        /// <summary>
+        /// 使用特定的定位位置取得目標點X座標
+        /// </summary>
+        /// <param name="anchor">定位位置</param>
+        /// <returns>目標點X座標</returns>
+        public float GetTargetX(DirectionType anchor)
+        {
+            return Layout.GetTargetX(anchor);
+        }
+
+        /// <summary>
+        /// 使用特定的定位位置取得目標點Y座標
+        /// </summary>
+        /// <param name="anchor">定位位置</param>
+        /// <returns>目標點Y座標</returns>
+        public float GetTargetY(DirectionType anchor)
+        {
+            return Layout.GetTargetY(anchor);
+        }
+
+        /// <summary>
+        /// 使用特定的定位位置取得目標點
+        /// </summary>
+        /// <param name="anchor">定位位置</param>
+        /// <returns>目標點</returns>
+        public PointF GetTargetPoint(DirectionType anchor)
+        {
+            return Layout.GetTargetPoint(anchor);
         }
         #endregion
 

@@ -26,9 +26,9 @@ namespace RunningBox
             _UIGroup1.DrawObject = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(255, 255, 220), Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18), GlobalFormat.MiddleLeft);
             _UIGroup2.DrawObject = new DrawUITextFrame(Color.Black, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleLeft);
 
-            _UIBack.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            _UIGroup1.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            _UIGroup2.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            _UIBack.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            _UIGroup1.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            _UIGroup2.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
             _UIGroup1.Layout.X = -_UIGroup1.Layout.Width;
             _UIGroup2.Layout.X = width + _UIGroup1.Layout.Width;
             _UIGroup1.Layout.Y = height / 2;

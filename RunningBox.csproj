@@ -92,6 +92,8 @@
     <Compile Include="Enum\ShapeType.cs" />
     <Compile Include="Enum\Status\EffectStatus.cs" />
     <Compile Include="Enum\SkillKeyType.cs" />
+    <Compile Include="Enum\TargetType.cs" />
+    <Compile Include="Handle\ValueChangedEnentHandle.cs" />
     <Compile Include="Handle\DrawColorsEnentHandle.cs" />
     <Compile Include="Handle\DrawObjectEnentHandle.cs" />
     <Compile Include="Handle\ObjectDeadEventHandle.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Object\UI\ObjectUIPanel.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyAffix.cs" />
+    <Compile Include="Property\PropertyDead\PropertyDeadSmoke.cs" />
     <Compile Include="Property\PropertyShadow.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />
     <Compile Include="Property\PropertyOutClear.cs" />
@@ -162,21 +165,18 @@
     </Compile>
     <Compile Include="Skill\%24SkillCollection.cs" />
     <Compile Include="Skill\SkillBulletTime.cs" />
-    <Compile Include="Layout\%40LayoutBase.cs" />
+    <Compile Include="Layout\%40LayoutSet.cs" />
     <Compile Include="Skill\SkillShockwave.cs" />
     <Compile Include="Skill\SkillShield.cs" />
     <Compile Include="Skill\SkillBait.cs" />
-    <Compile Include="Target\%40ITarget.cs" />
+    <Compile Include="Target\%40TargetSet.cs" />
     <Compile Include="Scene\%40SceneBase.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Skill\%40SkillBase.cs" />
     <Compile Include="Skill\SkillSprint.cs" />
-    <Compile Include="Target\TargetOffset.cs" />
-    <Compile Include="Target\TargetNull.cs" />
-    <Compile Include="Target\TargetTrackPoint.cs" />
-    <Compile Include="Target\TargetObject.cs" />
-    <Compile Include="Target\TargetPoint.cs" />
+    <Compile Include="Target\%40ITargetability.cs" />
+    <Compile Include="Target\PointObject.cs" />
     <Compile Include="Draw\%40DrawPool.cs" />
     <Compile Include="TestCollision.cs">
       <SubType>Form</SubType>

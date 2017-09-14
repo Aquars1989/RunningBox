@@ -11,6 +11,19 @@ namespace RunningBox
     class Function
     {
         /// <summary>
+        /// 兩陣營是否友好
+        /// </summary>
+        /// <param name="leagueA">陣營A</param>
+        /// <param name="leagueB">陣營B</param>
+        /// <returns>是否為友好</returns>
+        public static bool IsFriendly(LeagueType leagueA, LeagueType leagueB)
+        {
+            if (leagueA == LeagueType.None || leagueB == LeagueType.None) return true;
+            if (leagueA == LeagueType.Chaos || leagueB == LeagueType.Chaos) return false;
+            return leagueA == leagueB;
+        }
+
+        /// <summary>
         /// 取得角度值(+-180)
         /// </summary>
         /// <param name="PotA">點A</param>
@@ -87,7 +100,7 @@ namespace RunningBox
         /// <param name="layou1">物件配置A</param>
         /// <param name="layout2">物件配置B</param>
         /// <returns>是否碰撞</returns>
-        public static bool IsCollison(Layout layou1, Layout layout2)
+        public static bool IsCollison(LayoutSet layou1, LayoutSet layout2)
         {
             return IsCollison(layou1.CollisonShape, layou1.Rectangle, layout2.CollisonShape, layout2.Rectangle);
         }

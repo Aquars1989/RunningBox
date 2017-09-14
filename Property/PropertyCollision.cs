@@ -20,21 +20,10 @@ namespace RunningBox
         /// 新增碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
         /// </summary>
         /// <param name="collisionPower">碰撞強度</param>
-        public PropertyCollision(int collisionPower, TargetObject target)
-            : base(target)
-        {
-            Affix = SpecialStatus.Collision;
-            CollisionPower = collisionPower;
-        }
-
-        /// <summary>
-        /// 新增碰撞特性,兩個具碰撞屬性的物件接觸時,強度小的會被消滅,如果強度相同則兩者都會消滅
-        /// </summary>
-        /// <param name="collisionPower">碰撞強度</param>
-        public PropertyCollision(int collisionPower)
-            : base(TargetNull.Value)
+        public PropertyCollision(int collisionPower, ObjectBase target = null)
         {
             Affix = SpecialStatus.Collision | SpecialStatus.Movesplit;
+            Target.SetObject(target);
             CollisionPower = collisionPower;
         }
 
@@ -44,14 +33,13 @@ namespace RunningBox
             {
                 for (int i = 0; i < Owner.Container.Count; i++)
                 {
-                    ObjectActive objectActive = Owner.Container[i] as ObjectActive;
-                    if (objectActive == null || objectActive.Status != ObjectStatus.Alive || objectActive.League == Owner.League) continue;
+                    ObjectBase objectActive = Owner.Container[i];
+                    if (objectActive.Status != ObjectStatus.Alive || Function.IsFriendly(objectActive.League, Owner.League)) continue;
 
                     //限定目標
-                    if (Target != TargetNull.Value)
+                    if (Target.TargetType == TargetType.GameObejct)
                     {
-                        TargetObject targetObject = (Target as TargetObject);
-                        if (targetObject != null && objectActive == targetObject.Target)
+                        if (objectActive == Target.Object)
                         {
                             i = Owner.Container.Count;
                         }
@@ -77,8 +65,7 @@ namespace RunningBox
                         PropertyCollision checkCollision = objectActive.Propertys[j] as PropertyCollision;
                         if (checkCollision != null && checkCollision.Status == PropertyStatus.Enabled)
                         {
-                            TargetObject checkTarget = checkCollision.Target as TargetObject;
-                            if (checkTarget == null || checkTarget.Target == Owner)
+                            if (checkCollision.Target.TargetType != TargetType.GameObejct || checkCollision.Target.Object == Owner)
                             {
                                 colliderPower = Math.Max(colliderPower, checkCollision.CollisionPower);
                             }
@@ -99,13 +86,13 @@ namespace RunningBox
             }
         }
 
-        protected override void OnTargetChanged()
+        protected override void OnTargetObjectChanged(object oldValue, object newValue)
         {
-            if (Target != TargetNull.Value && !(Target is TargetObject))
+            if (Target.TargetType != TargetType.GameObejct)
             {
-                Target = TargetNull.Value;
+                Target.ClearObject();
             }
-            base.OnTargetChanged();
+            base.OnTargetObjectChanged(oldValue, newValue);
         }
     }
 }

@@ -46,66 +46,68 @@ namespace RunningBox
             BaitSpeed = baitSpeed;
         }
 
+        /// <summary>
+        /// 技能生效
+        /// </summary>
         public override void DoBeforeActionMove()
         {
             switch (Status)
             {
                 case SkillStatus.Enabled:
                     {
-                        if (Owner == null || Owner.MoveObject.Target is TargetNull)
+                        if (Owner == null || Owner.MoveObject.Target.TargetType == TargetType.None)
                         {
                             Break();
                             return;
                         }
 
+                        //新增誘餌物件
                         double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
-                        MoveStraight move = new MoveStraight(TargetNull.Value, Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
+
+                        MoveStraight move = new MoveStraight(null, Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
+                        move.Target.SetOffsetByAngle(angle, 1000);
+
                         DrawBase draw = Owner.DrawObject.Copy();
                         draw.Colors.Opacity = 0.6F;
-                        ObjectActive bait = new ObjectActive(Owner.Layout, BaitLife, Owner.League, draw, move);
-                        move.Target = new TargetOffset(new TargetObject(bait), angle, 1000);
-                        bait.Propertys.Add(new PropertyCollision(0));
 
+                        ObjectActive bait = new ObjectActive(Owner.Layout, BaitLife, Owner.League, draw, move);
+                        move.Target.SetObject(bait);
+
+                        bait.Propertys.Add(new PropertyCollision(0)); //強度碰撞
+
+                        //新增雜訊物件
                         int noiseWidth = Owner.Layout.Width + 2;
                         int noiseHeight = (int)(Owner.Layout.Height * 1.3F + 0.5F) + 5;
                         ObjectWave noise = new ObjectWave(0, 0, noiseWidth, noiseHeight, noiseWidth * 3, noiseHeight * 3, -1, 0, new DrawNoise(Owner.DrawObject.MainColor, Color.White, 1), MoveNull.Value);
                         noise.DiffusionOpacity = 0;
-                        noise.Layout.DependTarget = new TargetObject(bait);
+                        noise.Layout.Depend.SetObject(bait);
 
                         Owner.Container.Add(bait);
                         Owner.Container.Add(noise);
 
+                        //將目標設為誘餌
                         for (int i = 0; i < Owner.Container.Count; i++)
                         {
-                            ObjectActive objectActive = Owner.Container[i] as ObjectActive;
-                            if (objectActive == null || objectActive.Status != ObjectStatus.Alive) continue;
-
-                            TargetObject targetObject = objectActive.MoveObject.Target as TargetObject;
-                            if (targetObject == null) continue;
-
-                            if (targetObject.Target == Owner)
+                            ObjectBase objectBase = Owner.Container[i];
+                            if (objectBase.Status != ObjectStatus.Alive || Function.IsFriendly(objectBase.League, Owner.League)) continue;
+                            if (objectBase.MoveObject.Target.Object == Owner)
                             {
-                                targetObject.Target = bait;
+                                objectBase.MoveObject.Target.SetObject(bait);
                             }
                         }
 
-                        bait.Dead += (x, e, t) =>
+                        bait.Dead += (s, e, t) =>
                             {
                                 noise.DiffusionTime.Limit = Owner.Scene.Sec(0.2F);
                                 noise.DiffusionTime.Value = 0;
 
-                                ObjectActive sender = x as ObjectActive;
                                 for (int i = 0; i < Owner.Container.Count; i++)
                                 {
-                                    ObjectActive objectActive = Owner.Container[i] as ObjectActive;
-                                    if (objectActive == null || objectActive.Status != ObjectStatus.Alive) continue;
-
-                                    TargetObject targetObject = objectActive.MoveObject.Target as TargetObject;
-                                    if (targetObject == null) continue;
-
-                                    if (targetObject.Target == sender)
+                                    ObjectBase objectBase = Owner.Container[i];
+                                    if (objectBase.Status != ObjectStatus.Alive) continue;
+                                    if (objectBase.MoveObject.Target.Object == s)
                                     {
-                                        targetObject.Target = Owner;
+                                        objectBase.MoveObject.Target.SetObject(Owner);
                                     }
                                 }
                             };

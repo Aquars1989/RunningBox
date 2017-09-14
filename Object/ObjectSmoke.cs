@@ -45,7 +45,7 @@ namespace RunningBox
         /// <param name="life">縮小時間(毫秒),小於0為永久</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectSmoke(Layout layout, int life, DrawBase drawObject, MoveBase moveObject)
+        public ObjectSmoke(LayoutSet layout, int life, DrawBase drawObject, MoveBase moveObject)
             : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, life, drawObject, moveObject) { }
 
         public override void Action()

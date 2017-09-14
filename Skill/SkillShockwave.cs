@@ -79,10 +79,10 @@ namespace RunningBox
                 case SkillStatus.Channeled:
                     if (PushSycle.IsFull)
                     {
-                        Layout checkRange = new Layout()
+                        LayoutSet checkRange = new LayoutSet()
                         {
                             CollisonShape = ShapeType.Ellipse,
-                            Anchor = ContentAlignment.MiddleCenter,
+                            Anchor = DirectionType.Center,
                             X = Owner.Layout.X,
                             Y = Owner.Layout.Y,
                             Width = Range,
@@ -104,7 +104,7 @@ namespace RunningBox
 
                         Color waveColor = Color.FromArgb(150, Owner.DrawObject.MainColor);
                         ObjectWave wave = new ObjectWave(0, 0, 0, 0, Range, Range, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.1F), new DrawPen(waveColor, ShapeType.Ellipse, 1), MoveNull.Value);
-                        wave.Layout.DependTarget = new TargetObject(Owner);
+                        wave.Layout.Depend.SetObject(Owner);
                         wave.DiffusionOpacity = 0.1F;
                         wave.FadeOpacity = 0.5F;
                         Owner.Container.Add(wave);

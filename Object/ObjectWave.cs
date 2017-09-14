@@ -100,7 +100,7 @@ namespace RunningBox
         /// <param name="fadeTime">消失時間(毫秒)</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectWave(Layout layout, int diffusionWidth, int diffusionHeight, int diffusionTime, int fadeTime, DrawBase drawObject, MoveBase moveObject)
+        public ObjectWave(LayoutSet layout, int diffusionWidth, int diffusionHeight, int diffusionTime, int fadeTime, DrawBase drawObject, MoveBase moveObject)
             : this(layout.CenterX, layout.CenterY, layout.RectWidth, layout.RectHeight, diffusionWidth, diffusionHeight, diffusionTime, fadeTime, drawObject, moveObject) { }
 
         public override void Action()

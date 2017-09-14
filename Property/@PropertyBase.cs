@@ -13,68 +13,68 @@ namespace RunningBox
     {
         #region ===== 事件 =====
         /// <summary>
-        /// 發生於目標變更
+        /// 發生於目標內容變更
         /// </summary>
-        public event EventHandler TargetChanged;
+        public event ValueChangedEnentHandle TargetObjectChanged;
 
         /// <summary>
         /// 發生於附加於物件的特殊狀態變更
         /// </summary>
-        public event EventHandler SpecialStatusChanged;
+        public event ValueChangedEnentHandle AffixChanged;
 
         /// <summary>
         /// 發生於特性狀態變更
         /// </summary>
-        public event EventHandler StatusChanged;
+        public event ValueChangedEnentHandle StatusChanged;
 
         /// <summary>
         /// 發生於所有者變更
         /// </summary>
-        public event EventHandler OwnerChanged;
+        public event ValueChangedEnentHandle OwnerChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於目標變更
+        /// 發生於目標內容變更
         /// </summary>
-        protected virtual void OnTargetChanged()
+        protected virtual void OnTargetObjectChanged(object oldValue, object newValue)
         {
-            if (TargetChanged != null)
+            if (TargetObjectChanged != null)
             {
-                TargetChanged(this, new EventArgs());
+                TargetObjectChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於附加於物件的特殊狀態變更
         /// </summary>
-        protected virtual void OnSpecialStatusChanged()
+        protected virtual void OnAffixChanged(object oldValue, object newValue)
         {
-            if (SpecialStatusChanged != null)
+            if (AffixChanged != null)
             {
-                SpecialStatusChanged(this, new EventArgs());
+                AffixChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於特性狀態變更
         /// </summary>
-        protected virtual void OnStatusChanged()
+        protected virtual void OnStatusChanged(object oldValue, object newValue)
         {
             if (StatusChanged != null)
             {
-                StatusChanged(this, new EventArgs());
+                StatusChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生所有者變更
         /// </summary>
-        protected virtual void OnOwnerChanged()
+        protected virtual void OnOwnerChanged(object oldValue, object newValue)
         {
             if (OwnerChanged != null)
             {
-                OwnerChanged(this, new EventArgs());
+                OwnerChanged(this, oldValue, newValue);
             }
         }
         #endregion
@@ -90,40 +90,26 @@ namespace RunningBox
             set
             {
                 if (_Affix == value) return;
+                object oldValue = _Affix;
                 _Affix = value;
-                OnSpecialStatusChanged();
+                OnAffixChanged(oldValue, value);
             }
         }
 
-        private ITarget _Target;
-        /// <summary>
-        /// 特性目標(必要)
-        /// </summary>
-        public ITarget Target
-        {
-            get { return _Target; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException();
-                if (_Target == value) return;
-                _Target = value;
-                OnTargetChanged();
-            }
-        }
-
-        private ObjectActive _Owner;
+        private ObjectBase _Owner;
         /// <summary>
         /// 特性所有者(必要,上層設定)
         /// </summary>
-        public ObjectActive Owner
+        public ObjectBase Owner
         {
             get { return _Owner; }
             set
             {
                 if (value == null) throw new ArgumentNullException();
                 if (_Owner == value) return;
+                object oldValue = _Owner;
                 _Owner = value;
-                OnOwnerChanged();
+                OnOwnerChanged(oldValue, value);
             }
         }
 
@@ -137,10 +123,16 @@ namespace RunningBox
             private set
             {
                 if (_Status == value) return;
+                object oldValue = _Status;
                 _Status = value;
-                OnStatusChanged();
+                OnStatusChanged(oldValue, value);
             }
         }
+
+        /// <summary>
+        /// 特性目標(必要)
+        /// </summary>
+        public TargetSet Target { get; private set; }
 
         /// <summary>
         /// 特性持續時間計時器(毫秒)
@@ -151,10 +143,12 @@ namespace RunningBox
         /// <summary>
         /// 特性基礎物件初始化
         /// </summary>
-        public PropertyBase(ITarget target)
+        public PropertyBase()
         {
-            Target = target;
+            Target = new TargetSet();
             DurationTime = new CounterObject(-1);
+
+            Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o, n); };
         }
 
         #region ===== 方法 =====
@@ -190,7 +184,7 @@ namespace RunningBox
         /// <summary>
         /// 所有者死亡後執行動作(供上層呼叫),預設為取消特性
         /// </summary>
-        public virtual void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public virtual void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             End(PropertyEndType.Break);
         }

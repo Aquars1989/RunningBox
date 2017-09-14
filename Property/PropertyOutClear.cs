@@ -16,8 +16,7 @@ namespace RunningBox
         /// <summary>
         /// 新增出界清除特性,擁有此特性的物件超出區域後被清除
         /// </summary>
-        public PropertyOutClear()
-            : base(TargetNull.Value) { }
+        public PropertyOutClear() { }
 
         public override void DoAfterAction()
         {

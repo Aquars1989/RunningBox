@@ -12,6 +12,8 @@ namespace RunningBox
     /// </summary>
     public class SkillShield : SkillBase
     {
+        private static Color _BarColor = Color.FromArgb(160, 210, 100);
+
         private ObjectActive _ShieldObject; //護盾物件
         private PropertyUI _MiniBar;        //迷你條棒+幽靈屬性
 
@@ -46,7 +48,10 @@ namespace RunningBox
             Cooldown = new CounterObject(cooldown);
         }
 
-        public override void DoBeforeActionMove()
+        /// <summary>
+        /// 技能生效
+        /// </summary>
+        public override void DoBeforeAction()
         {
             switch (Status)
             {
@@ -65,15 +70,17 @@ namespace RunningBox
 
                         Color color = Owner.DrawObject.MainColor;
                         Color colorBack = Color.FromArgb(50, color);
-                        _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, new DrawPolygon(colorBack, color, 6, 1, 0, 360), MoveNull.Value);
-                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
-                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(new DrawPolygon(Color.Empty, color, 2, 1, 0, 360), 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
+                        DrawPolygon drawShield =new DrawPolygon(colorBack, color, 6, 1, 0, 360);
+                        DrawPolygon drawScrap = new DrawPolygon(Color.Empty, color, 2, 1, 0, 360);
+                        _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, drawShield, MoveNull.Value);
+
+                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(drawScrap, 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
+                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
                         _ShieldObject.Propertys.Add(new PropertyCollision(1));
-                        _ShieldObject.Layout.DependTarget = new TargetObject(Owner);
-                        //_ShieldObject.Dead += (x, e, t) => { this.Break(); };
+                        _ShieldObject.Layout.Depend.SetObject(Owner);
                         Owner.Container.Add(_ShieldObject);
 
-                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Color.FromArgb(160, 210, 100), Color.Black, Color.White, 1, true, Channeled));
+                        _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(_BarColor, Color.Black, Color.White, 1, true, Channeled));
                         _MiniBar.Affix = SpecialStatus.Ghost;   //增加幽靈屬性
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
@@ -88,6 +95,9 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 技能失效
+        /// </summary>
         public override void DoAfterEnd(SkillEndType endType)
         {
             switch (endType)

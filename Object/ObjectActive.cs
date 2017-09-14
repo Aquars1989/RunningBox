@@ -12,19 +12,9 @@ namespace RunningBox
     public class ObjectActive : ObjectBase
     {
         /// <summary>
-        /// 存活時間計數器(毫秒)
-        /// </summary>
-        public CounterObject Life { get; private set; }
-
-        /// <summary>
         /// 能量計數物件
         /// </summary>
         public CounterObject Energy { get; private set; }
-
-        /// <summary>
-        /// 物件所屬陣營,供技能或特性判定
-        /// </summary>
-        public LeagueType League { get; set; }
 
         /// <summary>
         /// 每秒自動恢復的能量數
@@ -37,16 +27,6 @@ namespace RunningBox
         public SkillCollection Skills { get; set; }
 
         /// <summary>
-        /// 活動物件擁有的特性群組
-        /// </summary>
-        public PropertyCollection Propertys { get; set; }
-
-        /// <summary>
-        /// 給UI特性使用
-        /// </summary>
-        public int UIOffSetY { get; set; }
-
-        /// <summary>
         /// 使用繪製物件和移動物件建立互動性活動物件
         /// </summary>
         /// <param name="drawObject">繪製物件</param>
@@ -55,8 +35,6 @@ namespace RunningBox
             : base(drawObject, moveObject)
         {
             Skills = new SkillCollection(this);
-            Propertys = new PropertyCollection(this);
-            Life = new CounterObject(-1);
             Energy = new CounterObject(Global.DefaultEnergyLimit, Global.DefaultEnergyLimit, false);
             EnergyGetPerSec = Global.DefaultEnergyGetPerSec;
         }
@@ -69,7 +47,7 @@ namespace RunningBox
         /// <param name="leage">物件所屬陣營,供技能或特性判定</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
-        public ObjectActive(Layout layout, int life, LeagueType leage, DrawBase drawObject, MoveBase moveObject)
+        public ObjectActive(LayoutSet layout, int life, LeagueType leage, DrawBase drawObject, MoveBase moveObject)
             : this(drawObject, moveObject)
         {
             Layout.CollisonShape = layout.CollisonShape;
@@ -98,7 +76,7 @@ namespace RunningBox
             : this(drawObject, moveObject)
         {
             Layout.CollisonShape = collisonShape;
-            Layout.Anchor = ContentAlignment.MiddleCenter;
+            Layout.Anchor = DirectionType.Center;
             Layout.X = x;
             Layout.Y = y;
             Layout.Width = width;
@@ -114,54 +92,34 @@ namespace RunningBox
         {
             UIOffSetY = 0;
             Skills.AllDoAutoCast();
-
+            //回合前
             Skills.AllDoBeforeAction();
             Propertys.AllDoBeforeAction();
-
+            //能量調整前
             Skills.AllDoBeforeActionEnergyGet();
             Propertys.AllDoBeforeActionEnergyGet();
-
+            //能量調整
             ActionEnergyGet();
-
+            //移動規劃前
             Skills.AllDoBeforeActionPlan();
             Propertys.AllDoBeforeActionPlan();
-
+            //移動規劃
             MoveObject.Plan();
-
+            //移動動作前
             Skills.AllDoBeforeActionMove();
             Propertys.AllDoBeforeActionMove();
-
+            //移動動作
             MoveObject.Move();
-
+            //回合後
             Skills.AllDoAfterAction();
             Propertys.AllDoAfterAction();
-
+            //結算
             Settlement();
             Skills.AllSettlement();
             Propertys.AllSettlement();
 
+            OnAfterAction();
             Propertys.ClearAllDisabled();
-        }
-
-        public override void Moving()
-        {
-            Propertys.AllDoActionMoving();
-            base.Moving();
-        }
-
-        /// <summary>
-        /// 結算物件生命
-        /// </summary>
-        protected virtual void Settlement()
-        {
-            if (Life.IsFull)
-            {
-                Kill(null, ObjectDeadType.LifeEnd);
-            }
-            else
-            {
-                Life.Value += Scene.SceneIntervalOfRound;
-            }
         }
 
         /// <summary>
@@ -177,7 +135,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="killer">殺手物件</param>
         /// <param name="deadType">死亡類型</param>
-        public override void Kill(ObjectActive killer, ObjectDeadType deadType)
+        public override void Kill(ObjectBase killer, ObjectDeadType deadType)
         {
             if (Status == ObjectStatus.Alive)
             {
@@ -198,7 +156,7 @@ namespace RunningBox
             {
                 Skills.AllDoBeforeDraw(g);
                 Propertys.AllDoBeforeDraw(g);
-                base.Draw(g);
+                DrawObject.Draw(g, Layout.Rectangle);
                 Propertys.AllDoAfterDraw(g);
                 Skills.AllDoAfterDraw(g);
             }

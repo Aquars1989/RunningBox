@@ -16,7 +16,6 @@ namespace RunningBox
         /// </summary>
         /// <param name="durationTime">凍結時間(毫秒)</param>
         public PropertyFreeze(int durationTime)
-            : base(TargetNull.Value)
         {
             DurationTime.Limit = durationTime;
         }

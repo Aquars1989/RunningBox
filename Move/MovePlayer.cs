@@ -14,15 +14,12 @@ namespace RunningBox
         /// <summary>
         /// 建立玩家專屬移動物件
         /// </summary>
-        /// <param name="target">追蹤目標(必要)</param>
+        /// <param name="target">追蹤目標</param>
         /// <param name="weight">重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
         /// <param name="speed">移動速度,決定每個移動調整值的最大距離</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
-        public MovePlayer(ITarget target, float weight, float speed, int offsetsLimit)
-            : base(target, weight, speed, offsetsLimit)
-        {
-            Speed = speed;
-        }
+        public MovePlayer(ITargetability target, float weight, float speed, int offsetsLimit)
+            : base(target, weight, speed, offsetsLimit) { }
 
         public override void Plan()
         {

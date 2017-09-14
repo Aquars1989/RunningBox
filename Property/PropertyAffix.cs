@@ -17,7 +17,6 @@ namespace RunningBox
         /// <param name="affix">附加狀態</param>
         /// <param name="durationTime">持續時間(毫秒)</param>
         public PropertyAffix(SpecialStatus affix, int durationTime)
-            : base(TargetNull.Value)
         {
             Affix = affix;
             DurationTime.Limit = durationTime;

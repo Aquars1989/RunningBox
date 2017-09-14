@@ -26,7 +26,7 @@ namespace RunningBox
         public ObjectPlayer(float x, float y, int maxMoves, int width, int height, float speed, LeagueType leage, DrawBase drawObject, MovePlayer moveObject) :
             base(x, y, width, height, -1, leage, ShapeType.Ellipse, drawObject, moveObject) { }
 
-        public override void Kill(ObjectActive killer, ObjectDeadType deadType)
+        public override void Kill(ObjectBase killer, ObjectDeadType deadType)
         {
             if (Status != ObjectStatus.Alive) return;
 

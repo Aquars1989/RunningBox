@@ -10,6 +10,61 @@ namespace RunningBox
     /// </summary>
     public class CounterObject
     {
+        #region ===== 事件 =====
+        /// <summary>
+        /// 發生於計數值變更
+        /// </summary>
+        public event ValueChangedEnentHandle ValueChanged;
+
+        /// <summary>
+        /// 發生於上限值變更
+        /// </summary>
+        public event ValueChangedEnentHandle LimitChanged;
+
+        /// <summary>
+        /// 發生於是否可超出最大值變更
+        /// </summary>
+        public event ValueChangedEnentHandle OverloadChanged;
+        #endregion
+
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於計數值變更
+        /// </summary>
+        protected void OnValueChanged(object oldValue, object newValue)
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於上限值變更
+        /// </summary>
+        protected void OnLimitChanged(object oldValue, object newValue)
+        {
+            if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
+            if (LimitChanged != null)
+            {
+                LimitChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於是否可超出最大值變更
+        /// </summary>
+        protected void OnOverloadChanged(object oldValue, object newValue)
+        {
+            if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
+            if (OverloadChanged != null)
+            {
+                OverloadChanged(this, oldValue, newValue);
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
         /// <summary>
         /// 是否已滿
         /// </summary>
@@ -24,8 +79,10 @@ namespace RunningBox
             get { return _Limit; }
             set
             {
+                if (_Limit == value) return;
+                object oldValue = _Limit;
                 _Limit = value;
-                if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
+                OnLimitChanged(oldValue, value);
             }
         }
 
@@ -38,10 +95,13 @@ namespace RunningBox
             get { return _Value; }
             set
             {
-                _Value = Math.Min(value, int.MaxValue);
+                if (value < 0) value = 0;
+                else if (Limit >= 0 && value > Limit && !Overload) value = Limit;
 
-                if (_Value < 0) _Value = 0;
-                else if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
+                if (_Value == value) return;
+                object oldValue = _Value;
+                _Value = value;
+                OnValueChanged(oldValue, value);
             }
         }
 
@@ -54,13 +114,16 @@ namespace RunningBox
             get { return _Overload; }
             set
             {
+                if (_Overload == value) return;
+                object oldValue = _Overload;
                 _Overload = value;
-                if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
+                OnOverloadChanged(oldValue, value);
             }
         }
+        #endregion
 
         /// <summary>
-        /// 新增技數器物件
+        /// 新增計數器物件
         /// </summary>
         /// <param name="limit">計數器最大值</param>
         /// <param name="value">計數器目前數值</param>
@@ -74,7 +137,7 @@ namespace RunningBox
 
 
         /// <summary>
-        /// 取得目前比例
+        /// 取得目前比例0~1(無上限時為0)
         /// </summary>
         /// <returns></returns>
         public float GetRatio()

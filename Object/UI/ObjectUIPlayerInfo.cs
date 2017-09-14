@@ -48,10 +48,10 @@ namespace RunningBox
 
 
             //uiTilte.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiCommandBuildName.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiPlayerName.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            uiCommandBuildName.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            uiPlayerName.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
             //uiCommandOK.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
-            uiCommandClose.Layout.DependTarget = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
+            uiCommandClose.Layout.Depend = new TargetObject(this) { Anchor = ContentAlignment.TopLeft };
 
             uiCommandBuildName.Click += (s, e) => { _DrawPlayerName.Text = Function.GetRandName(); };
             uiCommandClose.Click += (s, e) => { OnClose(); };

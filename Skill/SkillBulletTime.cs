@@ -46,11 +46,17 @@ namespace RunningBox
             SlowRate = slowRate;
         }
 
-        public override void DoUseWhenEfficacy(ITarget target)
+        /// <summary>
+        /// 重複使用時中斷
+        /// </summary>
+        public override void DoUseWhenEfficacy(ITargetability target)
         {
             Break();
         }
 
+        /// <summary>
+        /// 技能生效
+        /// </summary>
         public override void DoBeforeAction()
         {
             switch (Status)
@@ -67,7 +73,9 @@ namespace RunningBox
             }
         }
 
-
+        /// <summary>
+        /// 技能失效
+        /// </summary>
         public override void DoAfterEnd(SkillEndType endType)
         {
             switch (endType)

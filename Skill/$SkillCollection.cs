@@ -211,7 +211,7 @@ namespace RunningBox
         /// <summary>
         /// 所有集合內技能物件執行DoAfterAction方法
         /// </summary>
-        public void AllDoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public void AllDoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {

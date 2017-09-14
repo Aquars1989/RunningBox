@@ -11,7 +11,7 @@ namespace RunningBox
     /// </summary>
     class PropertyDeadCollapse : PropertyBase
     {
-        private PropertyScraping _PropertyScraping; //碎裂特性+遺骸屬性
+        private PropertyScraping _PropertyScraping; //碎裂特性
 
         /// <summary>
         /// 碎片寬度
@@ -114,7 +114,6 @@ namespace RunningBox
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
         public PropertyDeadCollapse(int scrapCount, int shrinkTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
-            : base(TargetNull.Value)
         {
             DeadType = deadType;
             ScrapCount = scrapCount;
@@ -125,14 +124,14 @@ namespace RunningBox
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
+            Affix = SpecialStatus.Remain;
         }
 
 
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             if ((DeadType & deadType) != deadType) return;
 
-            //Owner.Status = ObjectStatus.Dying;
             if (ScrapDrawObject == null)
             {
                 _PropertyScraping = new PropertyScraping(ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
@@ -141,7 +140,6 @@ namespace RunningBox
             {
                 _PropertyScraping = new PropertyScraping(ScrapDrawObject, ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
-            _PropertyScraping.Affix = SpecialStatus.Remain;
             Owner.Propertys.Add(_PropertyScraping);
         }
 
@@ -152,6 +150,7 @@ namespace RunningBox
                 if (ShrinkTime.IsFull)
                 {
                     _PropertyScraping.End(PropertyEndType.Finish);
+                    End(PropertyEndType.Finish);
                 }
                 else
                 {

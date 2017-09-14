@@ -21,12 +21,12 @@ namespace RunningBox
         /// <summary>
         /// 發生於特性群組所有者變更
         /// </summary>
-        public event EventHandler OwnerChanged;
+        public event ValueChangedEnentHandle OwnerChanged;
 
         /// <summary>
         /// 發生於特性群組所有者變更
         /// </summary>
-        public void OnOwnerChanged()
+        public void OnOwnerChanged(object oldValue, object newValue)
         {
             foreach (PropertyBase item in _Collection)
             {
@@ -35,7 +35,7 @@ namespace RunningBox
 
             if (OwnerChanged != null)
             {
-                OwnerChanged(this, new EventArgs());
+                OwnerChanged(this, oldValue, newValue);
             }
         }
 
@@ -51,17 +51,18 @@ namespace RunningBox
             {
                 if (value == null) throw new ArgumentNullException();
                 if (value == null) return;
+                object oldValue = _Owner;
                 _Owner = value;
-                OnOwnerChanged();
+                OnOwnerChanged(oldValue, value);
             }
         }
 
         /// <summary>
         /// 為true時須重新取得狀態值
         /// </summary>
-        private bool _SpecialStatusChanged = true;
+        private bool _AffixChanged = true;
 
-        private SpecialStatus _SpecialStatus;
+        private SpecialStatus _Affix;
         /// <summary>
         /// 附加於群組所有者上的特殊狀態(由群組內特性物件旗標組合)
         /// </summary>
@@ -69,7 +70,7 @@ namespace RunningBox
         {
             get
             {
-                if (_SpecialStatusChanged)
+                if (_AffixChanged)
                 {
                     SpecialStatus result = RunningBox.SpecialStatus.None;
                     foreach (PropertyBase item in _Collection)
@@ -79,10 +80,10 @@ namespace RunningBox
                             result |= item.Affix;
                         }
                     }
-                    _SpecialStatus = result;
-                    _SpecialStatusChanged = false;
+                    _Affix = result;
+                    _AffixChanged = false;
                 }
-                return _SpecialStatus;
+                return _Affix;
             }
         }
 
@@ -123,10 +124,10 @@ namespace RunningBox
         {
             item.Owner = Owner;
             item.StatusChanged += ItemStatusChanged;
-            item.SpecialStatusChanged += ItemSpecialStatusChanged;
+            item.AffixChanged += ItemAffixChanged;
             if (item.Status == PropertyStatus.Enabled)
             {
-                _SpecialStatus |= item.Affix;
+                _Affix |= item.Affix;
             }
             _Collection.Add(item);
         }
@@ -143,10 +144,10 @@ namespace RunningBox
             {
                 if (item.Status == PropertyStatus.Enabled)
                 {
-                    _SpecialStatusChanged = true;
+                    _AffixChanged = true;
                 }
                 item.StatusChanged -= ItemStatusChanged;
-                item.SpecialStatusChanged -= ItemSpecialStatusChanged;
+                item.AffixChanged -= ItemAffixChanged;
                 item.End(PropertyEndType.Break);
             }
             return result;
@@ -160,11 +161,11 @@ namespace RunningBox
             for (int i = 0; i < _Collection.Count; i++)
             {
                 _Collection[i].StatusChanged -= ItemStatusChanged;
-                _Collection[i].SpecialStatusChanged -= ItemSpecialStatusChanged;
+                _Collection[i].AffixChanged -= ItemAffixChanged;
                 _Collection[i].End(PropertyEndType.Break);
             }
-            _SpecialStatus = RunningBox.SpecialStatus.None;
-            _SpecialStatusChanged = false;
+            _Affix = RunningBox.SpecialStatus.None;
+            _AffixChanged = false;
             _Collection.Clear();
         }
 
@@ -187,7 +188,7 @@ namespace RunningBox
             foreach (PropertyBase disabledProperty in disabledPropertys)
             {
                 disabledProperty.StatusChanged -= ItemStatusChanged;
-                disabledProperty.SpecialStatusChanged -= ItemSpecialStatusChanged;
+                disabledProperty.AffixChanged -= ItemAffixChanged;
                 _Collection.Remove(disabledProperty);
             }
         }
@@ -300,7 +301,7 @@ namespace RunningBox
         /// 所有集合內特性物件執行DoAfterDead方法
         /// </summary>
         /// <param name="g">Graphics物件</param>
-        public void AllDoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public void AllDoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
@@ -351,26 +352,26 @@ namespace RunningBox
         /// <summary>
         /// 集合內特性狀態變更動作
         /// </summary>
-        private void ItemStatusChanged(object sender, EventArgs e)
+        private void ItemStatusChanged(object sender, object oldValue, object newValue)
         {
             PropertyBase item = sender as PropertyBase;
             if (item.Affix == RunningBox.SpecialStatus.None) return;
             if (item.Status == PropertyStatus.Enabled)
             {
-                _SpecialStatus |= item.Affix;
+                _Affix |= item.Affix;
             }
             else
             {
-                _SpecialStatusChanged = true;
+                _AffixChanged = true;
             }
         }
 
         /// <summary>
         /// 集合內特性狀態變更動作
         /// </summary>
-        private void ItemSpecialStatusChanged(object sender, EventArgs e)
+        private void ItemAffixChanged(object sender, object oldValue, object newValue)
         {
-            _SpecialStatusChanged = true;
+            _AffixChanged = true;
         }
 
         //禁用Foreach避免新增時錯誤

@@ -33,7 +33,6 @@ namespace RunningBox
         /// <param name="size">UI尺寸</param>
         /// <param name="drawObject">繪製物件</param>
         public PropertyUI(int duration, Size size, DrawBase drawObject)
-            : base(TargetNull.Value)
         {
             Size = size;
             DrawObject = drawObject;

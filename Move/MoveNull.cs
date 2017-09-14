@@ -16,7 +16,7 @@ namespace RunningBox
         /// <summary>
         /// 表示無效的移動物件
         /// </summary>
-        private MoveNull() : base(TargetNull.Value, 1, 0, 0) { }
+        private MoveNull() : base(null, 1, 0, 0) { }
         public override void Plan() { }
         public override void Move() { }
     }

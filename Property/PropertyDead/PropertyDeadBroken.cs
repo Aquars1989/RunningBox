@@ -112,7 +112,6 @@ namespace RunningBox
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
         public PropertyDeadBroken(int scrapCount, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int radiation, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
-            : base(TargetNull.Value)
         {
             DeadType = deadType;
             ScrapCount = scrapCount;
@@ -125,7 +124,7 @@ namespace RunningBox
             ScrapLifeMin = scrapLifeMin;
         }
 
-        public override void DoAfterDead(ObjectActive killer, ObjectDeadType deadType)
+        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
             if (Owner.DrawObject == DrawNull.Value || (DeadType & deadType) != deadType) return;
 
@@ -136,8 +135,8 @@ namespace RunningBox
                 int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
 
-                TargetOffset moveTarget = new TargetOffset(TargetNull.Value, scrapDirection, 1000);
-                MoveStraight moveObject = new MoveStraight(moveTarget, 1, speed, 1, 0, 1);
+                MoveStraight moveObject = new MoveStraight(null, 1, speed, 1, 0, 1);
+                moveObject.Target.SetOffsetByAngle(scrapDirection, 1000);
                 ObjectScrap newObject;
                 if (ScrapDrawObject == null)
                 {
@@ -156,7 +155,7 @@ namespace RunningBox
                     }
                     newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
                 }
-                moveTarget.Target = new TargetObject(newObject);
+                moveObject.Target.SetObject(newObject);
                 Owner.Container.Add(newObject);
             }
         }

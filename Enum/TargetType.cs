@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,34 +7,31 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 方向列舉
+    /// 目標纇型
     /// </summary>
-    [Flags]
-    public enum DirectionType
+    public enum TargetType
     {
-        /// <summary>
-        /// 中心
-        /// </summary>
-        Center = 0,
+        //無
+        None,
 
         /// <summary>
-        /// 左
+        /// 座標點
         /// </summary>
-        Left = 1,
+        Point,
 
         /// <summary>
-        /// 右
+        /// 遊戲物件
         /// </summary>
-        Right = 2,
+        GameObejct,
 
         /// <summary>
-        /// 上
+        /// 位置配置物件
         /// </summary>
-        Top = 4,
+        Layout,
 
         /// <summary>
-        /// 下
+        /// 場景
         /// </summary>
-        Bottom = 8
+        Scene
     }
 }
