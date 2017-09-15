@@ -73,7 +73,7 @@ namespace RunningBox
                         Status = SkillStatus.Channeled;
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(Color.FromArgb(160, 210, 100), Color.Black, Color.White, 1, true, Channeled));
                         Owner.Propertys.Add(_MiniBar);
-                        PushSycle.Value = Owner.Scene.SceneIntervalOfRound;
+                        PushSycle.Value = Scene.SceneIntervalOfRound;
                         break;
                     }
                 case SkillStatus.Channeled:
@@ -103,7 +103,7 @@ namespace RunningBox
                         }
 
                         Color waveColor = Color.FromArgb(150, Owner.DrawObject.MainColor);
-                        ObjectWave wave = new ObjectWave(0, 0, 0, 0, Range, Range, Owner.Scene.Sec(0.15F), Owner.Scene.Sec(0.1F), new DrawPen(waveColor, ShapeType.Ellipse, 1), MoveNull.Value);
+                        ObjectWave wave = new ObjectWave(0, 0, 0, 0, Range, Range, Scene.Sec(0.15F), Scene.Sec(0.1F), new DrawPen(waveColor, ShapeType.Ellipse, 1), MoveNull.Value);
                         wave.Layout.Depend.SetObject(Owner);
                         wave.DiffusionOpacity = 0.1F;
                         wave.FadeOpacity = 0.5F;
@@ -112,7 +112,7 @@ namespace RunningBox
                     }
                     else
                     {
-                        PushSycle.Value += Owner.Scene.SceneIntervalOfRound;
+                        PushSycle.Value += Scene.SceneIntervalOfRound;
                     }
                     break;
             }
@@ -124,12 +124,12 @@ namespace RunningBox
             {
                 case SkillEndType.ChanneledBreak:
                     {
-                        _MiniBar.End(PropertyEndType.Break);
+                        _MiniBar.Break();
                     }
                     break;
                 case SkillEndType.Finish:
                     {
-                        _MiniBar.End(PropertyEndType.Finish);
+                        _MiniBar.Break();
                     }
                     break;
             }

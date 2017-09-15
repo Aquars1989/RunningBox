@@ -18,42 +18,52 @@ namespace RunningBox
         /// </summary>
         private List<PropertyBase> _Collection = new List<PropertyBase>();
 
+        #region ===== 事件 =====
         /// <summary>
-        /// 發生於特性群組所有者變更
+        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
         /// </summary>
-        public event ValueChangedEnentHandle OwnerChanged;
+        public event EventHandler BindingChanged;
+        #endregion
 
+        #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於特性群組所有者變更
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
         /// </summary>
-        public void OnOwnerChanged(object oldValue, object newValue)
+        protected virtual void OnBindingChanged()
         {
-            foreach (PropertyBase item in _Collection)
+            if (BindingChanged != null)
             {
-                item.Owner = Owner;
-            }
-
-            if (OwnerChanged != null)
-            {
-                OwnerChanged(this, oldValue, newValue);
+                BindingChanged(this, new EventArgs());
             }
         }
+        #endregion
 
         #region ===== 屬性 =====
         private ObjectBase _Owner;
         /// <summary>
-        /// 依附的活動物件,即為群組所有者(必要)
+        /// 取得歸屬的活動物件
         /// </summary>
         public ObjectBase Owner
         {
             get { return _Owner; }
-            set
+            private set
             {
-                if (value == null) throw new ArgumentNullException();
-                if (value == null) return;
-                object oldValue = _Owner;
+                if (_Owner == value) return;
                 _Owner = value;
-                OnOwnerChanged(oldValue, value);
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬的場景物件
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Owner == null ? _Scene : Owner.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
             }
         }
 
@@ -96,33 +106,70 @@ namespace RunningBox
         }
         #endregion
 
+        #region ***** 建構式 *****
         /// <summary>
         /// 初始化特性物件集合
         /// </summary>
         /// <param name="scene">所屬活動物件</param>
         public PropertyCollection(ObjectBase owner)
         {
-            Owner = owner;
+            Binding(owner);
         }
 
         /// <summary>
-        /// 取得指定之索引處的元素。
+        /// 初始化特性物件集合,不指定所有者
         /// </summary>
-        /// <param name="index">要取得之項目的以零為起始的索引。</param>
-        /// <returns>指定之索引處的項目。</returns>
-        public PropertyBase this[int index]
+        /// <param name="scene">所屬場景</param>
+        public PropertyCollection(SceneBase scene)
         {
-            get { return _Collection[index]; }
+            Binding(scene);
+        }
+        #endregion
+
+        #region ===== 方法 =====
+        /// <summary>
+        /// 綁定技能到場景
+        /// </summary>
+        public void Binding(SceneBase scene)
+        {
+            if (_Scene == scene) return;
+            AllBreak();
+            Owner = null;
+            Scene = Scene;
+            OnBindingChanged();
         }
 
-        #region ===== 集合項目調整 =====
+        /// <summary>
+        /// 綁定技能到物件
+        /// </summary>
+        public void Binding(ObjectBase owner)
+        {
+            if (_Owner == owner) return;
+            AllBreak();
+            Owner = owner;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public void ClearBinding()
+        {
+            AllBreak();
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        #region ##### 集合項目調整 #####
         /// <summary>
         /// 增加特性物件到活動集合內
         /// </summary>
         /// <param name="item">特性物件</param>
         public void Add(PropertyBase item)
         {
-            item.Owner = Owner;
+            item.Binding(this);
             item.StatusChanged += ItemStatusChanged;
             item.AffixChanged += ItemAffixChanged;
             if (item.Status == PropertyStatus.Enabled)
@@ -148,7 +195,7 @@ namespace RunningBox
                 }
                 item.StatusChanged -= ItemStatusChanged;
                 item.AffixChanged -= ItemAffixChanged;
-                item.End(PropertyEndType.Break);
+                item.Binding(Scene);
             }
             return result;
         }
@@ -162,7 +209,7 @@ namespace RunningBox
             {
                 _Collection[i].StatusChanged -= ItemStatusChanged;
                 _Collection[i].AffixChanged -= ItemAffixChanged;
-                _Collection[i].End(PropertyEndType.Break);
+                _Collection[i].Binding(Scene);
             }
             _Affix = RunningBox.SpecialStatus.None;
             _AffixChanged = false;
@@ -190,11 +237,50 @@ namespace RunningBox
                 disabledProperty.StatusChanged -= ItemStatusChanged;
                 disabledProperty.AffixChanged -= ItemAffixChanged;
                 _Collection.Remove(disabledProperty);
+                disabledProperty.Binding(Scene);
             }
+        }
+
+        /// <summary>
+        /// 取得指定之索引處的元素。
+        /// </summary>
+        /// <param name="index">要取得之項目的以零為起始的索引。</param>
+        /// <returns>指定之索引處的項目。</returns>
+        public PropertyBase this[int index]
+        {
+            get { return _Collection[index]; }
+        }
+
+        /// <summary>
+        /// 判斷指定特性物件是否存在集合內
+        /// </summary>
+        /// <param name="item">特性物件</param>
+        /// <returns>如果特性物件在集合中則為 true，否則為 false。</returns>
+        public bool Contains(PropertyBase item)
+        {
+            return _Collection.Contains(item);
+        }
+
+        /// <summary>
+        /// 取得指定類型的特性
+        /// </summary>
+        /// <param name="item">特性物件</param>
+        public List<T> GetPropertyByType<T>() where T : PropertyBase
+        {
+            List<T> result = new List<T>();
+            foreach (PropertyBase property in _Collection)
+            {
+                T converted = property as T;
+                if (converted != null)
+                {
+                    result.Add(converted);
+                }
+            }
+            return result;
         }
         #endregion
 
-        #region ===== 集合項目動作 =====
+        #region ##### 場景中動作(須有所有者) #####
         /// <summary>
         /// 所有集合內特性物件執行DoBeforeRound方法
         /// </summary>
@@ -316,38 +402,10 @@ namespace RunningBox
         {
             for (int i = 0; i < _Collection.Count; i++)
             {
-                _Collection[i].End(PropertyEndType.Break);
+                _Collection[i].Break();
             }
         }
         #endregion
-
-        /// <summary>
-        /// 判斷指定特性物件是否存在集合內
-        /// </summary>
-        /// <param name="item">特性物件</param>
-        /// <returns>如果特性物件在集合中則為 true，否則為 false。</returns>
-        public bool Contains(PropertyBase item)
-        {
-            return _Collection.Contains(item);
-        }
-
-        /// <summary>
-        /// 取得指定類型的特性
-        /// </summary>
-        /// <param name="item">特性物件</param>
-        public List<T> GetPropertyByType<T>() where T : PropertyBase
-        {
-            List<T> result = new List<T>();
-            foreach (PropertyBase property in _Collection)
-            {
-                T converted = property as T;
-                if (converted != null)
-                {
-                    result.Add(converted);
-                }
-            }
-            return result;
-        }
 
         /// <summary>
         /// 集合內特性狀態變更動作
@@ -373,6 +431,7 @@ namespace RunningBox
         {
             _AffixChanged = true;
         }
+        #endregion
 
         //禁用Foreach避免新增時錯誤
         //public IEnumerator<PropertyBase> GetEnumerator()

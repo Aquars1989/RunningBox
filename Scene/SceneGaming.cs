@@ -546,7 +546,7 @@ namespace RunningBox
         {
             if (Skill1 != null)
             {
-                Skill1.Use(this);
+                Skill1.Cast(this);
             }
         }
 
@@ -557,7 +557,7 @@ namespace RunningBox
         {
             if (Skill2 != null)
             {
-                Skill2.Use(this);
+                Skill2.Cast(this);
             }
         }
 

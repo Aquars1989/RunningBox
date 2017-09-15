@@ -12,6 +12,11 @@ namespace RunningBox
     class PropertyShadow : PropertyBase
     {
         /// <summary>
+        /// 參考的繪圖物件
+        /// </summary>
+        private DrawBase _BaseDrawObject;
+
+        /// <summary>
         /// 繪製物件
         /// </summary>
         private DrawBase _DrawObject;
@@ -46,29 +51,6 @@ namespace RunningBox
         /// </summary>
         public PropertyShadow() { }
 
-        protected override void OnOwnerChanged(object oldValue, object newValue)
-        {
-            if (oldValue != null)
-            {
-                (oldValue as ObjectBase).DrawObjectChanged -= Owner_DrawObjectChanged;
-            }
-
-            if (_DrawObject != null)
-            {
-                _DrawObject.Dispose();
-            }
-
-            BackDrawObject();
-            Owner.DrawObjectChanged += Owner_DrawObjectChanged;
-            base.OnOwnerChanged(oldValue, newValue);
-        }
-
-        //todo
-        private void Owner_DrawObjectChanged(object sender, EventArgs e)
-        {
-            BackDrawObject();
-        }
-
         public override void DoBeforeDraw(Graphics g)
         {
             GetDrawObject();
@@ -85,24 +67,21 @@ namespace RunningBox
 
         private void GetDrawObject()
         {
-            if (_DrawObject == null)
-            {
-                _DrawObject = Owner.DrawObject.Copy();
-                _DrawObject.Colors.RFix = -1;
-                _DrawObject.Colors.GFix = -1;
-                _DrawObject.Colors.BFix = -1;
-            }
-        }
-
-        private void BackDrawObject()
-        {
-            if (_DrawObject != null)
+            if (_BaseDrawObject != Owner.DrawObject && _DrawObject != null)
             {
                 if (_DrawObject != DrawNull.Value)
                 {
                     _DrawObject.Dispose();
                 }
                 _DrawObject = null;
+            }
+
+            if (_DrawObject == null)
+            {
+                _DrawObject = Owner.DrawObject.Copy();
+                _DrawObject.Colors.RFix = -1;
+                _DrawObject.Colors.GFix = -1;
+                _DrawObject.Colors.BFix = -1;
             }
         }
     }

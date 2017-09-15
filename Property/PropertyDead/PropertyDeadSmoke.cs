@@ -11,6 +11,8 @@ namespace RunningBox
     /// </summary>
     class PropertyDeadSmoke : PropertyBase
     {
+        private bool _Enabled = false; 
+
         /// <summary>
         /// 縮小時間計時器(毫秒)
         /// </summary>
@@ -33,13 +35,23 @@ namespace RunningBox
             Affix = SpecialStatus.Remain;
         }
 
+        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
+        {
+            if ((DeadType & deadType) != deadType) return;
+
+            Affix = SpecialStatus.Remain;
+            ShrinkTime.Value = 0;
+            _Enabled = true;
+
+        }
         public override void DoAfterAction()
         {
             if (Owner.Status == ObjectStatus.Dead)
             {
                 if (ShrinkTime.IsFull)
                 {
-                    End(PropertyEndType.Finish);
+                    Affix = SpecialStatus.None;
+                    _Enabled = false;
                 }
                 else
                 {

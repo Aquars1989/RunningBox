@@ -64,7 +64,7 @@ namespace RunningBox
                 case SkillStatus.Enabled:
                     {
                         _SceneSlow = SlowRate;
-                        Owner.Scene.SceneSlow += _SceneSlow;
+                        Scene.SceneSlow += _SceneSlow;
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.White, 1, false, Owner.Energy));
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
@@ -82,14 +82,14 @@ namespace RunningBox
             {
                 case SkillEndType.ChanneledBreak:
                     {
-                        Owner.Scene.SceneSlow -= _SceneSlow;
-                        _MiniBar.End(PropertyEndType.Break);
+                        Scene.SceneSlow -= _SceneSlow;
+                        _MiniBar.Break();
                     }
                     break;
                 case SkillEndType.Finish:
                     {
-                        Owner.Scene.SceneSlow -= _SceneSlow;
-                        _MiniBar.End(PropertyEndType.Finish);
+                        Scene.SceneSlow -= _SceneSlow;
+                        _MiniBar.Break();
                     }
                     break;
             }

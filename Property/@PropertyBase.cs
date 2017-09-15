@@ -28,9 +28,14 @@ namespace RunningBox
         public event ValueChangedEnentHandle StatusChanged;
 
         /// <summary>
-        /// 發生於所有者變更
+        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
         /// </summary>
-        public event ValueChangedEnentHandle OwnerChanged;
+        public event EventHandler BindingChanged;
+
+        /// <summary>
+        /// 發生於特性結束時
+        /// </summary>
+        public event PropertyEndEnentHandle End;
         #endregion
 
         #region ===== 引發事件 =====
@@ -68,18 +73,49 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生所有者變更
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
         /// </summary>
-        protected virtual void OnOwnerChanged(object oldValue, object newValue)
+        protected virtual void OnBindingChanged()
         {
-            if (OwnerChanged != null)
+            if (BindingChanged != null)
             {
-                OwnerChanged(this, oldValue, newValue);
+                BindingChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於技能結束時
+        /// </summary>
+        /// <param name="endType">結束方式</param>
+        protected virtual void OnEnd(PropertyEndType endType)
+        {
+            DoBeforeEnd(endType);
+            Status = PropertyStatus.Disabled;
+
+            if (End != null)
+            {
+                End(this, endType);
             }
         }
         #endregion
 
         #region ===== 屬性 =====
+        private bool _BreakAfterDead = true;
+        /// <summary>
+        /// 死亡時是否中斷
+        /// </summary>
+        public bool BreakAfterDead
+        {
+            get { return _BreakAfterDead; }
+            set
+            {
+                if (_Affix == value) return;
+                object oldValue = _Affix;
+                _Affix = value;
+                OnAffixChanged(oldValue, value);
+            }
+        }
+
         private SpecialStatus _Affix = SpecialStatus.None;
         /// <summary>
         /// 附加特殊狀態
@@ -96,20 +132,45 @@ namespace RunningBox
             }
         }
 
+        private PropertyCollection _Container;
+        /// <summary>
+        /// 取得特性歸屬集合
+        /// </summary>
+        public PropertyCollection Container
+        {
+            get { return _Container; }
+            private set
+            {
+                if (_Container == value) return;
+                _Container = value;
+            }
+        }
+
         private ObjectBase _Owner;
         /// <summary>
-        /// 特性所有者(必要,上層設定)
+        /// 取得特性所有人
         /// </summary>
         public ObjectBase Owner
         {
-            get { return _Owner; }
-            set
+            get { return Container == null ? _Owner : Container.Owner; }
+            private set
             {
-                if (value == null) throw new ArgumentNullException();
                 if (_Owner == value) return;
-                object oldValue = _Owner;
                 _Owner = value;
-                OnOwnerChanged(oldValue, value);
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬場景
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Container == null ? Owner == null ? _Scene : Owner.Scene : Container.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
             }
         }
 
@@ -140,6 +201,7 @@ namespace RunningBox
         public CounterObject DurationTime { get; private set; }
         #endregion
 
+        #region ***** 建構式 *****
         /// <summary>
         /// 特性基礎物件初始化
         /// </summary>
@@ -150,17 +212,88 @@ namespace RunningBox
 
             Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o, n); };
         }
+        #endregion
 
         #region ===== 方法 =====
         /// <summary>
+        /// 綁定特性到場景
+        /// </summary>
+        public void Binding(SceneBase scene, bool skipCheck = false)
+        {
+            if (_Scene == scene) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("特性已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = null;
+            Scene = Scene;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定特性到物件
+        /// </summary>
+        public void Binding(ObjectActive owner, bool skipCheck = false)
+        {
+            if (_Owner == owner) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("特性已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = owner;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定特性到集合(集合內綁定)
+        /// </summary>
+        public void Binding(PropertyCollection collection, bool skipCheck = false)
+        {
+            if (_Container == collection) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("特性已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = collection;
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public void ClearBinding(bool skipCheck = false)
+        {
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("特性已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        #region ##### 場景中動作(須有所有者) #####
+        /// <summary>
         /// 取消特性效果
         /// </summary>
-        public virtual void End(PropertyEndType endType)
+        public virtual void Break()
         {
             if (Status == PropertyStatus.Disabled) return;
-
-            DoBeforeEnd(endType);
-            Status = PropertyStatus.Disabled;
+            OnEnd(PropertyEndType.Break);
         }
 
         /// <summary>
@@ -172,7 +305,7 @@ namespace RunningBox
             {
                 if (DurationTime.IsFull)
                 {
-                    End(PropertyEndType.Finish);
+                    OnEnd(PropertyEndType.Finish);
                 }
                 else
                 {
@@ -186,7 +319,7 @@ namespace RunningBox
         /// </summary>
         public virtual void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
         {
-            End(PropertyEndType.Break);
+            Break();
         }
 
         /// <summary>
@@ -233,6 +366,7 @@ namespace RunningBox
         /// 特性結束前執行(供上層呼叫)
         /// </summary>
         public virtual void DoBeforeEnd(PropertyEndType endType) { }
+        #endregion
         #endregion
     }
 }

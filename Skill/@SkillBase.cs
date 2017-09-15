@@ -14,6 +14,98 @@ namespace RunningBox
     /// </summary>
     public abstract class SkillBase
     {
+        #region ===== 事件 =====
+        /// <summary>
+        /// 發生於自動施放物件變更時
+        /// </summary>
+        public event ValueChangedEnentHandle AutoCastObjectChanged;
+
+        /// <summary>
+        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// </summary>
+        public event EventHandler BindingChanged;
+
+        /// <summary>
+        /// 發生於技能狀態變更時
+        /// </summary>
+        public event ValueChangedEnentHandle StatusChanged;
+
+        /// <summary>
+        /// 發生於技能施放時
+        /// </summary>
+        public event EventHandler Start;
+
+        /// <summary>
+        /// 發生於技能結束時
+        /// </summary>
+        public event SkillEndEnentHandle End;
+        #endregion
+
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於自動施放物件變更時
+        /// </summary>
+        protected virtual void OnAutoCastObjectChanged(object oldValue, object newValue)
+        {
+            if (AutoCastObjectChanged != null)
+            {
+                AutoCastObjectChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// </summary>
+        protected virtual void OnBindingChanged()
+        {
+            if (BindingChanged != null)
+            {
+                BindingChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於技能狀態變更時
+        /// </summary>
+        protected virtual void OnStatusChanged(object oldValue, object newValue)
+        {
+            if (StatusChanged != null)
+            {
+                StatusChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於技能施放時
+        /// </summary>
+        /// <param name="target">技能目標</param>
+        protected virtual void OnStart(ITargetability target)
+        {
+            Status = SkillStatus.Enabled;
+            Target.SetObject(target);
+
+            if (Start != null)
+            {
+                Start(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於技能結束時
+        /// </summary>
+        /// <param name="endType">結束方式</param>
+        protected virtual void OnEnd(SkillEndType endType)
+        {
+            DoAfterEnd(endType);
+
+            if (End != null)
+            {
+                End(this, endType);
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
         //說明文字用
         private static Font _InfoFont = new Font("微軟正黑體", 12);
 
@@ -22,20 +114,68 @@ namespace RunningBox
         /// </summary>
         public abstract string Info { get; }
 
+        private AutoCastBase _AutoCastObject;
         /// <summary>
         /// 自動施放物件
         /// </summary>
-        public AutoCastBase AutoCastObject { get; set; }
+        public AutoCastBase AutoCastObject
+        {
+            get { return _AutoCastObject; }
+            set
+            {
+                if (_AutoCastObject == value) return;
+                object oldValue = _AutoCastObject;
+                _AutoCastObject = value;
+                OnAutoCastObjectChanged(oldValue, value);
+            }
+        }
 
         /// <summary>
         /// 技能目標(必要)
         /// </summary>
         public TargetSet Target { get; private set; }
 
+        private SkillCollection _Container;
         /// <summary>
-        /// 技能所有人
+        /// 取得技能歸屬集合
         /// </summary>
-        public ObjectActive Owner { get; set; }
+        public SkillCollection Container
+        {
+            get { return _Container; }
+            private set
+            {
+                if (_Container == value) return;
+                _Container = value;
+            }
+        }
+
+        private ObjectActive _Owner;
+        /// <summary>
+        /// 取得技能所有人
+        /// </summary>
+        public ObjectActive Owner
+        {
+            get { return Container == null ? _Owner : Container.Owner; }
+            private set
+            {
+                if (_Owner == value) return;
+                _Owner = value;
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬場景
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Container == null ? Owner == null ? _Scene : Owner.Scene : Container.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
+            }
+        }
 
         /// <summary>
         /// 技能冷卻時間計數器(毫秒)
@@ -67,7 +207,7 @@ namespace RunningBox
             set
             {
                 if (_Status == value) return;
-
+                object oldValue = _Status;
                 _Status = value;
                 switch (_Status)
                 {
@@ -78,81 +218,109 @@ namespace RunningBox
                         Channeled.Value = 0;
                         break;
                 }
+                OnStatusChanged(oldValue, value);
             }
         }
+        #endregion
 
+        #region ***** 建構式 *****
         public SkillBase()
         {
             Target = new TargetSet();
         }
+        #endregion
 
+        #region ===== 方法 =====
+        /// <summary>
+        /// 綁定技能到場景
+        /// </summary>
+        public void Binding(SceneBase scene, bool skipCheck = false)
+        {
+            if (_Scene == scene) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("技能已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = null;
+            Scene = Scene;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定技能到物件
+        /// </summary>
+        public void Binding(ObjectActive owner, bool skipCheck = false)
+        {
+            if (_Owner == owner) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("技能已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = owner;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定技能到集合(集合內綁定)
+        /// </summary>
+        public void Binding(SkillCollection collection, bool skipCheck = false)
+        {
+            if (_Container == collection) return;
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("技能已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = collection;
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public void ClearBinding(bool skipCheck = false)
+        {
+            if (!skipCheck && Container != null && Container.Contains(this))
+            {
+                throw new Exception("技能已在集合內無法手動綁定");
+            }
+
+            Break();
+            Container = null;
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        #region ##### 場景中動作(須有所有者) #####
         /// <summary>
         /// 使用技能
         /// </summary>
         /// <param name="target">技能目標</param>
-        public virtual void Use(ITargetability target)
+        public virtual void Cast(ITargetability target)
         {
+            if (Owner == null) return;
+
             switch (Status)
             {
                 case SkillStatus.Channeled:
                     DoUseWhenEfficacy(target);
                     break;
                 case SkillStatus.Disabled:
-                    if (Owner == null)
-                    {
-                        Status = SkillStatus.Enabled;
-                        Target.SetObject(target);
-                    }
-                    else if (Owner.Status == ObjectStatus.Alive && Owner.Energy.Value > CostEnergy)
+                    if (Owner.Status == ObjectStatus.Alive && Owner.Energy.Value > CostEnergy)
                     {
                         Owner.Energy.Value -= CostEnergy;
-                        Status = SkillStatus.Enabled;
-                        Target.SetObject(target);
-                    }
-                    break;
-            }
-
-        }
-
-        /// <summary>
-        /// 在回合動作最後執行
-        /// </summary>
-        public virtual void Settlement()
-        {
-            switch (Status)
-            {
-                case SkillStatus.Channeled:
-                    if (Channeled.IsFull)
-                    {
-                        Status = SkillStatus.Cooldown;
-                        DoAfterEnd(SkillEndType.Finish);
-                        goto case SkillStatus.Cooldown;
-                    }
-                    else
-                    {
-                        Channeled.Value += Owner.Scene.SceneIntervalOfRound;
-                    }
-
-                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec + 0.5F);
-                    if (Owner.Energy.Value >= costEnergy)
-                    {
-                        Owner.Energy.Value -= costEnergy;
-                    }
-                    else
-                    {
-                        Status = SkillStatus.Cooldown;
-                        DoAfterEnd(SkillEndType.ChanneledBreak);
-                        goto case SkillStatus.Cooldown;
-                    }
-                    break;
-                case SkillStatus.Cooldown:
-                    if (Cooldown.IsFull)
-                    {
-                        Status = SkillStatus.Disabled;
-                    }
-                    else
-                    {
-                        Cooldown.Value += Owner.Scene.SceneIntervalOfRound;
+                        OnStart(target);
                     }
                     break;
             }
@@ -168,11 +336,55 @@ namespace RunningBox
                 case SkillStatus.Enabled:
                     Owner.Energy.Value += CostEnergy;
                     Status = SkillStatus.Disabled;
-                    DoAfterEnd(SkillEndType.CastBreak);
+                    OnEnd(SkillEndType.CastBreak);
                     break;
                 case SkillStatus.Channeled:
                     Status = SkillStatus.Cooldown;
-                    DoAfterEnd(SkillEndType.ChanneledBreak);
+                    OnEnd(SkillEndType.ChanneledBreak);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 在回合動作最後執行
+        /// </summary>
+        public virtual void Settlement()
+        {
+            switch (Status)
+            {
+                case SkillStatus.Channeled:
+                    if (Channeled.IsFull)
+                    {
+                        Status = SkillStatus.Cooldown;
+                        OnEnd(SkillEndType.Finish);
+                        goto case SkillStatus.Cooldown;
+                    }
+                    else
+                    {
+                        Channeled.Value += Owner.Scene.SceneIntervalOfRound;
+                    }
+
+                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec + 0.5F);
+                    if (Owner.Energy.Value >= costEnergy)
+                    {
+                        Owner.Energy.Value -= costEnergy;
+                    }
+                    else
+                    {
+                        Status = SkillStatus.Cooldown;
+                        OnEnd(SkillEndType.ChanneledBreak);
+                        goto case SkillStatus.Cooldown;
+                    }
+                    break;
+                case SkillStatus.Cooldown:
+                    if (Cooldown.IsFull)
+                    {
+                        Status = SkillStatus.Disabled;
+                    }
+                    else
+                    {
+                        Cooldown.Value += Owner.Scene.SceneIntervalOfRound;
+                    }
                     break;
             }
         }
@@ -238,6 +450,7 @@ namespace RunningBox
         /// 技能結束卻後(包含中斷)執行
         /// </summary>
         public virtual void DoAfterEnd(SkillEndType endType) { }
+        #endregion
 
         /// <summary>
         /// 取得繪圖物件
@@ -256,5 +469,6 @@ namespace RunningBox
             DrawUITextFrame result = new DrawUITextFrame(color, Color.WhiteSmoke, backColor, borderColor, 2, 10, Info, _InfoFont, GlobalFormat.TopLeft);
             return result;
         }
+        #endregion
     }
 }

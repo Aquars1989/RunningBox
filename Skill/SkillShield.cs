@@ -74,8 +74,8 @@ namespace RunningBox
                         DrawPolygon drawScrap = new DrawPolygon(Color.Empty, color, 2, 1, 0, 360);
                         _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, drawShield, MoveNull.Value);
 
-                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(drawScrap, 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Owner.Scene.Sec(0.4F), Owner.Scene.Sec(0.6F)));
-                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 1, Owner.Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Owner.Scene.Sec(0.2F), Owner.Scene.Sec(0.3F)));
+                        _ShieldObject.Propertys.Add(new PropertyDeadBroken(drawScrap, 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Scene.Sec(0.4F), Scene.Sec(0.6F)));
+                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 1, Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Scene.Sec(0.2F), Scene.Sec(0.3F)));
                         _ShieldObject.Propertys.Add(new PropertyCollision(1));
                         _ShieldObject.Layout.Depend.SetObject(Owner);
                         Owner.Container.Add(_ShieldObject);
@@ -105,13 +105,13 @@ namespace RunningBox
                 case SkillEndType.ChanneledBreak:
                     {
                         _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
-                        _MiniBar.End(PropertyEndType.Break);
+                        _MiniBar.Break();
                     }
                     break;
                 case SkillEndType.Finish:
                     {
                         _ShieldObject.Kill(null, ObjectDeadType.LifeEnd);
-                        _MiniBar.End(PropertyEndType.Finish);
+                        _MiniBar.Break();
                     }
                     break;
             }

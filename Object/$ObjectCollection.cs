@@ -20,7 +20,6 @@ namespace RunningBox
         /// </summary>
         public ObjectDeadEventHandle ObjectDead;
 
-
         private SceneBase _Scene;
         /// <summary>
         /// 歸屬的場景物件(必要)

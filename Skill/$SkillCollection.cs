@@ -13,12 +13,59 @@ namespace RunningBox
     /// </summary>
     public class SkillCollection
     {
-        private List<SkillBase> _Collection;
-
         /// <summary>
-        /// 歸屬的活動物件
+        /// 內部集合物件
         /// </summary>
-        public ObjectActive Owner { get; set; }
+        private List<SkillBase> _Collection = new List<SkillBase>();
+
+        #region ===== 事件 =====
+        /// <summary>
+        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// </summary>
+        public event EventHandler BindingChanged;
+        #endregion
+
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// </summary>
+        protected virtual void OnBindingChanged()
+        {
+            if (BindingChanged != null)
+            {
+                BindingChanged(this, new EventArgs());
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
+        private ObjectActive _Owner;
+        /// <summary>
+        /// 取得歸屬的活動物件
+        /// </summary>
+        public ObjectActive Owner
+        {
+            get { return _Owner; }
+            private set
+            {
+                if (_Owner == value) return;
+                _Owner = value;
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬的場景物件
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Owner == null ? _Scene : Owner.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
+            }
+        }
 
         /// <summary>
         /// 集合物件數量
@@ -27,17 +74,65 @@ namespace RunningBox
         {
             get { return _Collection.Count; }
         }
+        #endregion
 
+        #region ***** 建構式 *****
         /// <summary>
         /// 初始化技能物件集合
         /// </summary>
         /// <param name="scene">所屬活動物件</param>
         public SkillCollection(ObjectActive owner)
         {
-            Owner = owner;
-            _Collection = new List<SkillBase>();
+            Binding(owner);
         }
 
+        /// <summary>
+        /// 初始化技能物件集合,不指定所有者
+        /// </summary>
+        /// <param name="scene">所屬場景</param>
+        public SkillCollection(SceneBase scene)
+        {
+            Binding(scene);
+        }
+        #endregion
+
+        #region ===== 方法 =====
+        /// <summary>
+        /// 綁定技能到場景
+        /// </summary>
+        public void Binding(SceneBase scene)
+        {
+            if (_Scene == scene) return;
+            AllBreak();
+            Owner = null;
+            Scene = Scene;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定技能到物件
+        /// </summary>
+        public void Binding(ObjectActive owner)
+        {
+            if (_Owner == owner) return;
+            AllBreak();
+            Owner = owner;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public void ClearBinding()
+        {
+            AllBreak();
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        #region ##### 集合項目調整 #####
         /// <summary>
         /// 取得指定之索引處的元素。
         /// </summary>
@@ -54,7 +149,7 @@ namespace RunningBox
         /// <param name="item">技能物件</param>
         public void Add(SkillBase item)
         {
-            item.Owner = Owner;
+            item.Binding(this);
             _Collection.Add(item);
         }
 
@@ -68,7 +163,7 @@ namespace RunningBox
             bool result = _Collection.Remove(item);
             if (result)
             {
-                item.Owner = null;
+                item.Binding(Scene);
             }
             return result;
         }
@@ -81,7 +176,7 @@ namespace RunningBox
             for (int i = 0; i < _Collection.Count; i++)
             {
                 SkillBase item = _Collection[i];
-                item.Owner = null;
+                item.Binding(Scene);
             }
             _Collection.Clear();
         }
@@ -95,7 +190,9 @@ namespace RunningBox
         {
             return _Collection.Contains(item);
         }
+        #endregion
 
+        #region ##### 場景中動作(須有所有者) #####
         /// <summary>
         /// 所有集合內技能物件檢查自動施放方法
         /// </summary>
@@ -231,11 +328,13 @@ namespace RunningBox
                 item.Break();
             }
         }
+        #endregion
 
         //禁用Foreach避免新增時錯誤
         //public IEnumerator<SkillBase> GetEnumerator()
         //{
         //    return _Collection.GetEnumerator();
         //}
+        #endregion
     }
 }

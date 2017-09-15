@@ -70,10 +70,15 @@ namespace RunningBox
         /// </summary>
         public TargetType TargetType { get; private set; }
 
+        private DirectionType _Anchor = DirectionType.Center;
         /// <summary>
-        /// 目標為單位時的定位點
+        /// 目標為單位時的定位點(預設為中心)
         /// </summary>
-        public DirectionType Anchor { get; set; }
+        public DirectionType Anchor
+        {
+            get { return _Anchor; }
+            set { _Anchor = value; }
+        }
 
         /// <summary>
         /// 取得目標X軸偏移位置
@@ -153,7 +158,7 @@ namespace RunningBox
         /// <param name="targetObject">目標物件</param>
         public TargetSet(ITargetability targetObject)
         {
-            Object = targetObject;
+            SetObject(targetObject);
         }
 
         /// <summary>
@@ -275,7 +280,7 @@ namespace RunningBox
             if (target is SceneBase) TargetType = TargetType.Scene;
             else if (target is ObjectBase) TargetType = TargetType.GameObejct;
             else if (target is LayoutSet) TargetType = TargetType.Layout;
-            else if (target is PointF) TargetType = TargetType.Point;
+            else if (target is PointObject) TargetType = TargetType.Point;
             else TargetType = TargetType.None;
             Object = target;
         }

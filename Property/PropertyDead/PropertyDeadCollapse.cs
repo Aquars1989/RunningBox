@@ -12,6 +12,7 @@ namespace RunningBox
     class PropertyDeadCollapse : PropertyBase
     {
         private PropertyScraping _PropertyScraping; //碎裂特性
+        private bool _Enabled = false; 
 
         /// <summary>
         /// 碎片寬度
@@ -124,7 +125,6 @@ namespace RunningBox
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
-            Affix = SpecialStatus.Remain;
         }
 
 
@@ -141,16 +141,20 @@ namespace RunningBox
                 _PropertyScraping = new PropertyScraping(ScrapDrawObject, ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             Owner.Propertys.Add(_PropertyScraping);
+            Affix = SpecialStatus.Remain;
+            ShrinkTime.Value = 0;
+            _Enabled = true;
         }
 
         public override void DoAfterAction()
         {
-            if (Owner.Status == ObjectStatus.Dead)
+            if (Owner.Status == ObjectStatus.Dead && _Enabled)
             {
                 if (ShrinkTime.IsFull)
                 {
-                    _PropertyScraping.End(PropertyEndType.Finish);
-                    End(PropertyEndType.Finish);
+                    _PropertyScraping.Break();
+                    Affix = SpecialStatus.None;
+                    _Enabled = false;
                 }
                 else
                 {

@@ -71,7 +71,7 @@ namespace RunningBox
 
                         if (Smoking)
                         {
-                            Owner.Propertys.Add(new PropertySmoking(Owner.Scene.Round(Owner.MoveObject.OffsetsLimit), Owner.Scene.Sec(0.2F)));
+                            Owner.Propertys.Add(new PropertySmoking(Scene.Round(Owner.MoveObject.OffsetsLimit), Scene.Sec(0.2F)));
                         }
                         Status = SkillStatus.Cooldown;
                     }

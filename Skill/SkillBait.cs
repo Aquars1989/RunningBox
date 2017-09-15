@@ -78,10 +78,10 @@ namespace RunningBox
                         //新增雜訊物件
                         int noiseWidth = Owner.Layout.Width + 2;
                         int noiseHeight = (int)(Owner.Layout.Height * 1.3F + 0.5F) + 5;
-                        ObjectWave noise = new ObjectWave(0, 0, noiseWidth, noiseHeight, noiseWidth * 3, noiseHeight * 3, -1, 0, new DrawNoise(Owner.DrawObject.MainColor, Color.White, 1), MoveNull.Value);
+                        DrawNoise drawNoise = new DrawNoise(Owner.DrawObject.MainColor, Color.White, 1);
+                        ObjectWave noise = new ObjectWave(0, 0, noiseWidth, noiseHeight, noiseWidth * 3, noiseHeight * 3, -1, 0, drawNoise, MoveNull.Value);
                         noise.DiffusionOpacity = 0;
                         noise.Layout.Depend.SetObject(bait);
-
                         Owner.Container.Add(bait);
                         Owner.Container.Add(noise);
 
@@ -98,7 +98,7 @@ namespace RunningBox
 
                         bait.Dead += (s, e, t) =>
                             {
-                                noise.DiffusionTime.Limit = Owner.Scene.Sec(0.2F);
+                                noise.DiffusionTime.Limit = Scene.Sec(0.2F);
                                 noise.DiffusionTime.Value = 0;
 
                                 for (int i = 0; i < Owner.Container.Count; i++)

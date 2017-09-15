@@ -93,6 +93,8 @@
     <Compile Include="Enum\Status\EffectStatus.cs" />
     <Compile Include="Enum\SkillKeyType.cs" />
     <Compile Include="Enum\TargetType.cs" />
+    <Compile Include="Handle\PropertyEndEnentHandle.cs" />
+    <Compile Include="Handle\SkillEndEnentHandle.cs" />
     <Compile Include="Handle\ValueChangedEnentHandle.cs" />
     <Compile Include="Handle\DrawColorsEnentHandle.cs" />
     <Compile Include="Handle\DrawObjectEnentHandle.cs" />
