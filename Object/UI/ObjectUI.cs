@@ -87,13 +87,13 @@ namespace RunningBox
 
         private bool _FocusSwitch = false;
         private DrawBase DrawObjectOrigin;
-        protected override void OnDrawObjectChanged()
+        protected override void OnDrawObjectChanged(object oldValue, object newValue)
         {
             if (!_FocusSwitch)
             {
                 DrawObjectOrigin = DrawObject;
             }
-            base.OnDrawObjectChanged();
+            base.OnDrawObjectChanged(oldValue, newValue);
         }
 
         /// <summary>

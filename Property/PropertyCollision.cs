@@ -84,6 +84,7 @@ namespace RunningBox
                     }
                 }
             }
+            base.DoActionMoving();
         }
 
         protected override void OnTargetObjectChanged(object oldValue, object newValue)

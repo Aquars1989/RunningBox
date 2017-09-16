@@ -234,10 +234,10 @@ namespace RunningBox
         /// <summary>
         /// 綁定技能到場景
         /// </summary>
-        public void Binding(SceneBase scene, bool skipCheck = false)
+        public void Binding(SceneBase scene)
         {
             if (_Scene == scene) return;
-            if (!skipCheck && Container != null && Container.Contains(this))
+            if (Container != null && Container.Contains(this))
             {
                 throw new Exception("技能已在集合內無法手動綁定");
             }
@@ -245,17 +245,17 @@ namespace RunningBox
             Break();
             Container = null;
             Owner = null;
-            Scene = Scene;
+            Scene = scene;
             OnBindingChanged();
         }
 
         /// <summary>
         /// 綁定技能到物件
         /// </summary>
-        public void Binding(ObjectActive owner, bool skipCheck = false)
+        public void Binding(ObjectActive owner)
         {
             if (_Owner == owner) return;
-            if (!skipCheck && Container != null && Container.Contains(this))
+            if (Container != null && Container.Contains(this))
             {
                 throw new Exception("技能已在集合內無法手動綁定");
             }
@@ -268,16 +268,19 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 綁定技能到集合(集合內綁定)
+        /// 綁定技能到集合(集合內綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(SkillCollection collection, bool skipCheck = false)
+        public void Binding(SkillCollection collection)
         {
             if (_Container == collection) return;
-            if (!skipCheck && Container != null && Container.Contains(this))
+            if (Container != null && Container.Contains(this))
             {
                 throw new Exception("技能已在集合內無法手動綁定");
             }
-
+            if (collection != null && !collection.Contains(this))
+            {
+                throw new Exception("技能不在集合中");
+            }
             Break();
             Container = collection;
             Owner = null;
@@ -288,9 +291,9 @@ namespace RunningBox
         /// <summary>
         /// 清除綁定
         /// </summary>
-        public void ClearBinding(bool skipCheck = false)
+        public void ClearBinding()
         {
-            if (!skipCheck && Container != null && Container.Contains(this))
+            if (Container != null && Container.Contains(this))
             {
                 throw new Exception("技能已在集合內無法手動綁定");
             }

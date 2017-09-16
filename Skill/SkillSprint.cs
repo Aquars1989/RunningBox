@@ -77,6 +77,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoBeforeActionMove();
         }
 
         /// <summary>

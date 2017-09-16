@@ -52,6 +52,8 @@ namespace RunningBox
         public override void DoUseWhenEfficacy(ITargetability target)
         {
             Break();
+
+            base.DoUseWhenEfficacy(target);
         }
 
         /// <summary>
@@ -71,6 +73,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoBeforeAction();
         }
 
         /// <summary>
@@ -93,6 +97,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoAfterEnd(endType);
         }
 
         /// <summary>

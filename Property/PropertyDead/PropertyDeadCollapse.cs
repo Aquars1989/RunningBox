@@ -125,6 +125,7 @@ namespace RunningBox
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
+            BreakAfterDead = false;
         }
 
 
@@ -144,6 +145,8 @@ namespace RunningBox
             Affix = SpecialStatus.Remain;
             ShrinkTime.Value = 0;
             _Enabled = true;
+
+            base.DoAfterDead(killer, deadType);
         }
 
         public override void DoAfterAction()
@@ -162,6 +165,8 @@ namespace RunningBox
                     ShrinkTime.Value += Owner.Scene.SceneIntervalOfRound;
                 }
             }
+
+            base.DoAfterAction();
         }
     }
 }

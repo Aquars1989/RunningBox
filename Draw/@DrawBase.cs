@@ -243,7 +243,7 @@ namespace RunningBox
         protected abstract void OnDraw(Graphics g, Rectangle rectangle);
 
         /// <summary>
-        /// 試放物件時執行動作
+        /// 釋放物件時執行動作
         /// </summary>
         protected virtual void OnDispose() 
         {

@@ -35,3 +35,4 @@ C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneNull.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneMain.resources
+E:\VsProject\RunningBox\RunningBox\bin\Debug\Lib2013.xml

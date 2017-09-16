@@ -53,7 +53,6 @@ namespace RunningBox
             : base(drawObject, moveObject)
         {
             Layout.CollisonShape = ShapeType.Ellipse;
-            Layout.Anchor = DirectionType.Center;
             Layout.X = x;
             Layout.Y = y;
             Layout.Width = width;

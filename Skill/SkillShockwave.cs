@@ -116,6 +116,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoBeforeActionMove();
         }
 
         public override void DoAfterEnd(SkillEndType endType)
@@ -133,6 +135,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoAfterEnd(endType);
         }
 
         /// <summary>

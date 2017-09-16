@@ -46,6 +46,8 @@ namespace RunningBox
             Rectangle drawRectangle = new Rectangle(new Point(drawX, drawY), Size);
             DrawObject.Draw(g, drawRectangle);
             Owner.UIOffSetY += Size.Height + 5;
+
+            base.DoAfterDraw(g);
         }
     }
 }

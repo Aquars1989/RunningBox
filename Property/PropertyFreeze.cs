@@ -23,6 +23,8 @@ namespace RunningBox
         public override void DoBeforeActionMove()
         {
             Owner.MoveObject.ClearOffset();
+
+            base.DoBeforeActionMove();
         }
     }
 }

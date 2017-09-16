@@ -20,7 +20,7 @@ namespace RunningBox
 
         #region ===== 事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
         /// </summary>
         public event EventHandler BindingChanged;
         #endregion
@@ -110,11 +110,7 @@ namespace RunningBox
         /// <summary>
         /// 初始化特性物件集合
         /// </summary>
-        /// <param name="scene">所屬活動物件</param>
-        public PropertyCollection(ObjectBase owner)
-        {
-            Binding(owner);
-        }
+        public PropertyCollection() { }
 
         /// <summary>
         /// 初始化特性物件集合,不指定所有者
@@ -128,24 +124,34 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定技能到場景
+        /// 綁定特性群組到場景
         /// </summary>
         public void Binding(SceneBase scene)
         {
             if (_Scene == scene) return;
-            AllBreak();
+            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (_Owner != null)
+            {
+                AllBreak();
+            }
             Owner = null;
-            Scene = Scene;
+            Scene = scene;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定技能到物件
+        /// 綁定特性群組到物件(由所有者綁定,除此之外勿使用此函數)
         /// </summary>
         public void Binding(ObjectBase owner)
         {
             if (_Owner == owner) return;
-            AllBreak();
+            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (owner != null && owner.Propertys != this) throw new Exception("所有者的特性群組物件不符");
+
+            if (_Owner != null)
+            {
+                AllBreak();
+            }
             Owner = owner;
             Scene = null;
             OnBindingChanged();
@@ -156,7 +162,11 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            AllBreak();
+            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (_Owner != null)
+            {
+                AllBreak();
+            }
             Owner = null;
             Scene = null;
             OnBindingChanged();
@@ -169,7 +179,6 @@ namespace RunningBox
         /// <param name="item">特性物件</param>
         public void Add(PropertyBase item)
         {
-            item.Binding(this);
             item.StatusChanged += ItemStatusChanged;
             item.AffixChanged += ItemAffixChanged;
             if (item.Status == PropertyStatus.Enabled)
@@ -177,6 +186,7 @@ namespace RunningBox
                 _Affix |= item.Affix;
             }
             _Collection.Add(item);
+            item.Binding(this);
         }
 
         /// <summary>
@@ -201,19 +211,22 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 清空技能集合
+        /// 清空特性集合
         /// </summary>
         public void Clear()
         {
-            for (int i = 0; i < _Collection.Count; i++)
+            PropertyBase[] remove = new PropertyBase[_Collection.Count];
+            _Collection.CopyTo(remove, 0);
+            _Collection.Clear();
+
+            for (int i = 0; i < remove.Length; i++)
             {
-                _Collection[i].StatusChanged -= ItemStatusChanged;
-                _Collection[i].AffixChanged -= ItemAffixChanged;
-                _Collection[i].Binding(Scene);
+                remove[i].StatusChanged -= ItemStatusChanged;
+                remove[i].AffixChanged -= ItemAffixChanged;
+                remove[i].Binding(Scene);
             }
             _Affix = RunningBox.SpecialStatus.None;
             _AffixChanged = false;
-            _Collection.Clear();
         }
 
         /// <summary>

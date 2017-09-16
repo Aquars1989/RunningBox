@@ -33,6 +33,8 @@ namespace RunningBox
             {
                 _InRect = inRect;
             }
+
+            base.DoAfterAction();
         }
     }
 }

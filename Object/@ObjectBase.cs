@@ -30,27 +30,27 @@ namespace RunningBox
         /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
-        public event EventHandler StatusChanged;
+        public event ValueChangedEnentHandle StatusChanged;
 
         /// <summary>
         /// 發生於繪圖物件變更
         /// </summary>
-        public event EventHandler DrawObjectChanged;
+        public event ValueChangedEnentHandle DrawObjectChanged;
 
         /// <summary>
         /// 發生於移動物件變更
         /// </summary>
-        public event EventHandler MoveObjectChanged;
+        public event ValueChangedEnentHandle MoveObjectChanged;
 
         /// <summary>
-        /// 發生於歸屬群組變更
+        /// 發生於特性集合變更
         /// </summary>
-        public event EventHandler ContainerChanged;
+        public event ValueChangedEnentHandle PropertysChanged;
 
         /// <summary>
-        /// 發生於歸屬場景變更
+        /// 發生於依附物件變更時(依附物件可為集合 場景)
         /// </summary>
-        public event EventHandler SceneChanged;
+        public event EventHandler BindingChanged;
         #endregion
 
         #region ===== 引發事件 =====
@@ -63,7 +63,6 @@ namespace RunningBox
             {
                 AfterAction(this, new EventArgs());
             }
-
         }
 
         /// <summary>
@@ -75,24 +74,23 @@ namespace RunningBox
             {
                 VisibleChanged(this, new EventArgs());
             }
-
         }
 
         /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
-        protected virtual void OnStatusChanged()
+        protected virtual void OnStatusChanged(object oldValue, object newValue)
         {
             if (StatusChanged != null)
             {
-                StatusChanged(this, new EventArgs());
+                StatusChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於繪圖物件變更
         /// </summary>
-        protected virtual void OnDrawObjectChanged()
+        protected virtual void OnDrawObjectChanged(object oldValue, object newValue)
         {
             if (DrawObject != null)
             {
@@ -101,50 +99,62 @@ namespace RunningBox
 
             if (DrawObjectChanged != null)
             {
-                DrawObjectChanged(this, new EventArgs());
+                DrawObjectChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於移動物件變更
         /// </summary>
-        protected virtual void OnMoveObjectChanged()
+        protected virtual void OnMoveObjectChanged(MoveBase oldValue, MoveBase newValue)
         {
-            if (MoveObject != null)
+            if (oldValue != null)
             {
-                MoveObject.Owner = this;
+                oldValue.Moving -= MoveObject_Moving;
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Moving += MoveObject_Moving;
+                newValue.Binding(this);
             }
 
             if (MoveObjectChanged != null)
             {
-                MoveObjectChanged(this, new EventArgs());
+                MoveObjectChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
-        /// 發生於歸屬群組變更
+        /// 發生於特性集合變更
         /// </summary>
-        protected virtual void OnContainerChanged()
+        protected virtual void OnPropertysChanged(PropertyCollection oldValue, PropertyCollection newValue)
         {
-            if (ContainerChanged != null)
+            if (oldValue != null)
             {
-                ContainerChanged(this, new EventArgs());
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this);
+            }
+
+            if (PropertysChanged != null)
+            {
+                PropertysChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
-        /// 發生於歸屬場景變更
+        /// 發生於依附物件變更時(依附物件可為集合 場景)
         /// </summary>
-        protected virtual void OnSceneChanged()
+        protected virtual void OnBindingChanged()
         {
-            if (DrawObject != null)
+            if (BindingChanged != null)
             {
-                DrawObject.Scene = Scene;
-            }
-
-            if (SceneChanged != null)
-            {
-                SceneChanged(this, new EventArgs());
+                BindingChanged(this, new EventArgs());
             }
         }
 
@@ -178,35 +188,31 @@ namespace RunningBox
             }
         }
 
-        private SceneBase _Scene;
-        /// <summary>
-        /// 物件歸屬場景(必要,上層設定)
-        /// </summary>
-        public SceneBase Scene
-        {
-            get { return _Scene; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException();
-                if (_Scene == value) return;
-                _Scene = value;
-                OnSceneChanged();
-            }
-        }
-
         private ObjectCollection _Container;
         /// <summary>
-        /// 物件歸屬集合(必要,上層設定)
+        /// 取得物件歸屬集合
         /// </summary>
         public ObjectCollection Container
         {
             get { return _Container; }
-            set
+            private set
             {
-                if (value == null) throw new ArgumentNullException();
                 if (_Container == value) return;
                 _Container = value;
-                OnContainerChanged();
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬場景
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Container == null ? _Scene : Container.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
             }
         }
 
@@ -221,8 +227,10 @@ namespace RunningBox
             {
                 if (value == null) throw new ArgumentNullException();
                 if (_DrawObject == value) return;
+
+                object oldValue = _DrawObject;
                 _DrawObject = value;
-                OnDrawObjectChanged();
+                OnDrawObjectChanged(oldValue, value);
             }
         }
 
@@ -238,25 +246,27 @@ namespace RunningBox
                 if (value == null) throw new ArgumentNullException();
                 if (_MoveObject == value) return;
 
-                if (MoveObject != null)
-                {
-                    MoveObject.Moving -= MoveObject_Moving;
-                }
-
+                MoveBase oldValue = _MoveObject;
                 _MoveObject = value;
-
-                if (MoveObject != null)
-                {
-                    MoveObject.Moving += MoveObject_Moving;
-                }
-                OnMoveObjectChanged();
+                OnMoveObjectChanged(oldValue, value);
             }
         }
 
+        private PropertyCollection _Propertys;
         /// <summary>
         /// 物件擁有的特性群組
         /// </summary>
-        public PropertyCollection Propertys { get; set; }
+        public PropertyCollection Propertys
+        {
+            get { return _Propertys; }
+            set
+            {
+                if (_Propertys == value) return;
+                PropertyCollection oldValue = _Propertys;
+                _Propertys = value;
+                OnPropertysChanged(oldValue, value);
+            }
+        }
 
         private LayoutSet _Layout;
         /// <summary>
@@ -282,8 +292,9 @@ namespace RunningBox
             protected set
             {
                 if (_Status == value) return;
+                object oldValue = _Status;
                 _Status = value;
-                OnStatusChanged();
+                OnStatusChanged(oldValue, value);
             }
         }
 
@@ -314,12 +325,63 @@ namespace RunningBox
             Status = ObjectStatus.Alive;
             League = LeagueType.None;
             Life = new CounterObject(-1);
-            Propertys = new PropertyCollection(this);
+            Propertys = new PropertyCollection();
             DrawObject = drawObject;
             MoveObject = moveObject;
         }
 
         #region ===== 方法 =====
+        /// <summary>
+        /// 綁定物件到場景
+        /// </summary>
+        public void Binding(SceneBase scene)
+        {
+            if (_Scene == scene) return;
+            if (Container != null && Container.Contains(this))
+            {
+                throw new Exception("物件已在集合內無法手動綁定");
+            }
+
+            Container = null;
+            Scene = scene;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定物件到集合(集合內綁定,除此之外勿使用此函數)
+        /// </summary>
+        public void Binding(ObjectCollection collection)
+        {
+            if (_Container == collection) return;
+            if (Container != null && Container.Contains(this))
+            {
+                throw new Exception("物件已在集合內無法手動綁定");
+            }
+            if (collection != null && !collection.Contains(this))
+            {
+                throw new Exception("物件不在集合中");
+            }
+
+            Container = collection;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public void ClearBinding(bool skipCheck = false)
+        {
+            if (Container != null && Container.Contains(this))
+            {
+                throw new Exception("物件已在集合內無法手動綁定");
+            }
+
+            Container = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
         /// <summary>
         /// 殺死此物件
         /// </summary>
@@ -393,6 +455,20 @@ namespace RunningBox
         {
             Moving();
         }
+
+        /// <summary>
+        /// 釋放物件時執行動作
+        /// </summary>
+        protected virtual void OnDispose()
+        {
+            if (DrawObject != null)
+            {
+                DrawObject.Dispose();
+            }
+
+            Propertys.Clear();
+            MoveObject = MoveNull.Value;
+        }
         #endregion
 
         #region ===== 實作ITargetability =====
@@ -436,10 +512,7 @@ namespace RunningBox
             {
                 if (disposing)
                 {
-                    if (DrawObject != null)
-                    {
-                        DrawObject.Dispose();
-                    }
+                    OnDispose();
                 }
                 disposedValue = true;
             }

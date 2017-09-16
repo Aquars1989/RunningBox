@@ -93,6 +93,7 @@ namespace RunningBox
                     }
                     break;
             }
+            base.DoBeforeAction();
         }
 
         /// <summary>
@@ -115,6 +116,7 @@ namespace RunningBox
                     }
                     break;
             }
+            base.DoAfterEnd(endType);
         }
 
         /// <summary>

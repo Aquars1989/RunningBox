@@ -19,9 +19,9 @@ namespace RunningBox
         public event EventHandler Moving;
 
         /// <summary>
-        /// 發生於所有者變更
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
         /// </summary>
-        public event ValueChangedEnentHandle OwnerChanged;
+        public event EventHandler BindingChanged;
 
         /// <summary>
         /// 發生於目標變更
@@ -67,13 +67,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於所有者變更
+        /// 發生於依附物件變更時(依附物件可為場景 物件)
         /// </summary>
-        protected void OnOwnerChanged(object oldValue, object newValue)
+        protected virtual void OnBindingChanged()
         {
-            if (OwnerChanged != null)
+            if (BindingChanged != null)
             {
-                OwnerChanged(this, oldValue, newValue);
+                BindingChanged(this, new EventArgs());
             }
         }
 
@@ -153,18 +153,29 @@ namespace RunningBox
 
         private ObjectBase _Owner;
         /// <summary>
-        /// 所有者(必要,由上層設定)
+        /// 取得歸屬的活動物件
         /// </summary>
         public ObjectBase Owner
         {
             get { return _Owner; }
-            set
+            private set
             {
-                if (value == null) throw new ArgumentNullException();
                 if (_Owner == value) return;
-                object oldValue = _Owner;
                 _Owner = value;
-                OnOwnerChanged(oldValue, value);
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬的場景物件
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Owner == null ? _Scene : Owner.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
             }
         }
 
@@ -259,6 +270,43 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
+        /// 綁定場景到移動物件
+        /// </summary>
+        public virtual void Binding(SceneBase scene)
+        {
+            if (_Scene == scene) return;
+            if (_Owner != null && _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+
+            Owner = null;
+            Scene = scene;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定物件到移動物件(由所有者綁定,除此之外勿使用此函數)
+        /// </summary>
+        public virtual void Binding(ObjectBase owner)
+        {
+            if (_Owner == owner) return;
+            if (_Owner != null &&  _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+            if (owner != null && owner.MoveObject != this) throw new Exception("所有者的移動物件不符");
+            Owner = owner;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public virtual void ClearBinding()
+        {
+            if (_Owner != null && _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
         /// 規劃移動調整值
         /// </summary>
         public abstract void Plan();
@@ -268,8 +316,8 @@ namespace RunningBox
         /// </summary>
         public virtual void Move()
         {
-            float moveX = MoveX / Owner.Scene.SceneRoundPerSec / Weight;
-            float moveY = MoveY / Owner.Scene.SceneRoundPerSec / Weight;
+            float moveX = MoveX / Scene.SceneRoundPerSec / Weight;
+            float moveY = MoveY / Scene.SceneRoundPerSec / Weight;
             if (MoveX != 0 || MoveY != 0)
             {
                 ObjectActive ownerActive = Owner as ObjectActive;

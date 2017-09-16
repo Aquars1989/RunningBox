@@ -76,6 +76,7 @@ namespace RunningBox
             Color = color;
             OwnerScaleFix = ownerScaleFix;
             OwnerRFix = ownerRFix;
+            BreakAfterDead = false;
         }
 
 
@@ -121,6 +122,8 @@ namespace RunningBox
                     objectBase.Kill(Owner,ObjectDeadType.Collision);
                 }
             }
+
+            base.DoAfterDead(killer, deadType);
         }
 
         public override void DoBeforeDraw(Graphics g)
@@ -154,6 +157,8 @@ namespace RunningBox
                 _OwnerScaleFix = 0;
                 _OwnerRFix = 0;
             }
+
+            base.DoBeforeDraw(g);
         }
 
         public override void DoAfterDraw(Graphics g)
@@ -163,6 +168,8 @@ namespace RunningBox
                 Owner.DrawObject.Scale -= _OwnerScaleFix;
                 Owner.DrawObject.Colors.RFix -= _OwnerRFix;
             }
+
+            base.DoAfterDraw(g);
         }
     }
 }

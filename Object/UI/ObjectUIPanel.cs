@@ -14,15 +14,6 @@ namespace RunningBox
     {
         public ObjectCollection UIObjects { get; private set; }
 
-        protected override void OnSceneChanged()
-        {
-            if (Scene != null)
-            {
-                UIObjects.Scene = Scene;
-            }
-            base.OnSceneChanged();
-        }
-
         /// <summary>
         /// 使用指定的定位點和移動物件建立介面物件
         /// </summary>

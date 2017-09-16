@@ -32,7 +32,7 @@ namespace RunningBox
         {
             DeadType = deadType;
             ShrinkTime = new CounterObject(shrinkTime);
-            Affix = SpecialStatus.Remain;
+            BreakAfterDead = false;
         }
 
         public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
@@ -43,10 +43,11 @@ namespace RunningBox
             ShrinkTime.Value = 0;
             _Enabled = true;
 
+            base.DoAfterDead(killer, deadType);
         }
         public override void DoAfterAction()
         {
-            if (Owner.Status == ObjectStatus.Dead)
+            if (Owner.Status == ObjectStatus.Dead && _Enabled)
             {
                 if (ShrinkTime.IsFull)
                 {
@@ -59,6 +60,8 @@ namespace RunningBox
                     ShrinkTime.Value += Owner.Scene.SceneIntervalOfRound;
                 }
             }
+
+            base.DoAfterAction();
         }
     }
 }

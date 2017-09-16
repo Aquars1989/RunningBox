@@ -108,6 +108,7 @@ namespace RunningBox
             ScrapSpeedMin = scrapSpeedMin;
             ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
+            BreakAfterDead = false;
         }
 
         public override void DoAfterAction()
@@ -143,11 +144,8 @@ namespace RunningBox
                 moveObject.Target.SetObject(newObject);
                 Owner.Container.Add(newObject);
             }
-        }
 
-        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
-        {
-            //死亡不中斷
+            base.DoAfterAction();
         }
     }
 }

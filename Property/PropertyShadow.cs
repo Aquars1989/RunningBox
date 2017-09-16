@@ -49,19 +49,45 @@ namespace RunningBox
         /// <summary>
         /// 新增陰影特性,物件下方產生陰影
         /// </summary>
-        public PropertyShadow() { }
+        /// <param name="offsetX">陰影位置X軸偏移</param>
+        /// <param name="offsetY">陰影位置Y軸偏移</param>
+        /// <param name="scaleX">陰影寬度縮放</param>
+        /// <param name="scaleY">陰影高度縮放</param>
+        /// <param name="opacity">陰影不透明度</param>
+        public PropertyShadow(int offsetX, int offsetY, float scaleX = 1, float scaleY = 1, float opacity = 0.2F)
+        {
+            OffsetX = offsetX;
+            OffsetY = offsetY;
+            ScaleX = scaleX;
+            ScaleY = scaleY;
+            Opacity = opacity;
+            BreakAfterDead = false;
+        }
 
         public override void DoBeforeDraw(Graphics g)
         {
             GetDrawObject();
-            int drawWidth = ScaleX == 1 ? Owner.Layout.Rectangle.Width : (int)(Owner.Layout.Rectangle.Width * ScaleX + 0.5F);
-            int drawHeight = ScaleY == 1 ? Owner.Layout.Rectangle.Height : (int)(Owner.Layout.Rectangle.Height * ScaleY + 0.5F);
-            int drawX = (int)(Owner.Layout.CenterX - drawWidth / 2F + OffsetX);
-            int drawY = (int)(Owner.Layout.CenterY - drawWidth / 2F + OffsetY);
-            Rectangle drawRect = new Rectangle(drawX, drawY, drawWidth, drawHeight);
+            int drawWidth = Owner.Layout.Rectangle.Width;
+            int drawHeight = Owner.Layout.Rectangle.Height;
+            float drawX = Owner.Layout.LeftTopX + OffsetX;
+            float drawY = Owner.Layout.LeftTopY + OffsetY;
+            if (ScaleX != 1)
+            {
+                drawWidth = (int)(drawWidth * ScaleX + 0.5F);
+                drawX += (Owner.Layout.RectWidth - drawWidth) / 2;
+            }
+
+            if (ScaleY != 1)
+            {
+                drawHeight = (int)(drawHeight * ScaleY + 0.5F);
+                drawY += (Owner.Layout.RectHeight - drawHeight) / 2;
+            }
+
+            Rectangle drawRect = new Rectangle((int)drawX, (int)drawY, drawWidth, drawHeight);
             _DrawObject.Colors.Opacity = Opacity;
             _DrawObject.Scene = Owner.Scene;
             _DrawObject.Draw(g, drawRect);
+
             base.DoBeforeDraw(g);
         }
 
@@ -78,7 +104,8 @@ namespace RunningBox
 
             if (_DrawObject == null)
             {
-                _DrawObject = Owner.DrawObject.Copy();
+                _BaseDrawObject = Owner.DrawObject;
+                _DrawObject = _BaseDrawObject.Copy();
                 _DrawObject.Colors.RFix = -1;
                 _DrawObject.Colors.GFix = -1;
                 _DrawObject.Colors.BFix = -1;

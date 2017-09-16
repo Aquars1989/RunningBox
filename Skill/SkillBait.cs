@@ -101,6 +101,7 @@ namespace RunningBox
                                 noise.DiffusionTime.Limit = Scene.Sec(0.2F);
                                 noise.DiffusionTime.Value = 0;
 
+                                if (Owner == null) return;
                                 for (int i = 0; i < Owner.Container.Count; i++)
                                 {
                                     ObjectBase objectBase = Owner.Container[i];
@@ -115,6 +116,8 @@ namespace RunningBox
                     }
                     break;
             }
+
+            base.DoBeforeActionMove();
         }
 
         /// <summary>

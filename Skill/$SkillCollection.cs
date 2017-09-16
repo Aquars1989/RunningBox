@@ -80,11 +80,7 @@ namespace RunningBox
         /// <summary>
         /// 初始化技能物件集合
         /// </summary>
-        /// <param name="scene">所屬活動物件</param>
-        public SkillCollection(ObjectActive owner)
-        {
-            Binding(owner);
-        }
+        public SkillCollection() { }
 
         /// <summary>
         /// 初始化技能物件集合,不指定所有者
@@ -103,18 +99,23 @@ namespace RunningBox
         public void Binding(SceneBase scene)
         {
             if (_Scene == scene) return;
+            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+
             AllBreak();
             Owner = null;
-            Scene = Scene;
+            Scene = scene;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定技能到物件
+        /// 綁定技能到物件(由所有者綁定,除此之外勿使用此函數)
         /// </summary>
         public void Binding(ObjectActive owner)
         {
             if (_Owner == owner) return;
+            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+            if (owner != null && owner.Skills != this) throw new Exception("所有者的技能集合物件不符");
+
             AllBreak();
             Owner = owner;
             Scene = null;
@@ -126,6 +127,8 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
+            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+
             AllBreak();
             Owner = null;
             Scene = null;
@@ -149,8 +152,8 @@ namespace RunningBox
         /// <param name="item">技能物件</param>
         public void Add(SkillBase item)
         {
-            item.Binding(this);
             _Collection.Add(item);
+            item.Binding(this);
         }
 
         /// <summary>
@@ -173,12 +176,14 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            for (int i = 0; i < _Collection.Count; i++)
-            {
-                SkillBase item = _Collection[i];
-                item.Binding(Scene);
-            }
+            SkillBase[] remove = new SkillBase[_Collection.Count];
+            _Collection.CopyTo(remove,0);
             _Collection.Clear();
+
+            for (int i = 0; i < remove.Length; i++)
+            {
+                remove[i].Binding(Scene);
+            }
         }
 
         /// <summary>

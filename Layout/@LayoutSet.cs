@@ -17,12 +17,12 @@ namespace RunningBox
         /// <summary>
         /// 定位點位於寬度的位置
         /// </summary>
-        private float _AnchorOfWidth;
+        private float _AnchorOfWidth = 0.5F;
 
         /// <summary>
         /// 定位點位於高度的位置
         /// </summary>
-        private float _AnchorOfHeight;
+        private float _AnchorOfHeight = 0.5F;
 
         #region ===== 事件 =====
         /// <summary>

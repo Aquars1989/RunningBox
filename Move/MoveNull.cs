@@ -19,5 +19,8 @@ namespace RunningBox
         private MoveNull() : base(null, 1, 0, 0) { }
         public override void Plan() { }
         public override void Move() { }
+        public override void Binding(ObjectBase owner) { }
+        public override void Binding(SceneBase scene) { }
+        public override void ClearBinding() { }
     }
 }

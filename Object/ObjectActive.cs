@@ -11,6 +11,37 @@ namespace RunningBox
     /// </summary>
     public class ObjectActive : ObjectBase
     {
+        #region ===== 事件 =====
+        /// <summary>
+        /// 發生於技能集合變更
+        /// </summary>
+        public event ValueChangedEnentHandle SkillsChanged;
+        #endregion
+
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 發生於技能集合變更
+        /// </summary>
+        protected virtual void OnSkillsChanged(SkillCollection oldValue, SkillCollection newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this);
+            }
+
+            if (SkillsChanged != null)
+            {
+                SkillsChanged(this, oldValue, newValue);
+            }
+        }
+        #endregion
+
+        #region ===== 屬性 =====
         /// <summary>
         /// 能量計數物件
         /// </summary>
@@ -21,10 +52,22 @@ namespace RunningBox
         /// </summary>
         public int EnergyGetPerSec { get; set; }
 
+        private SkillCollection _Skills;
         /// <summary>
         /// 活動物件擁有的技能群組
         /// </summary>
-        public SkillCollection Skills { get; set; }
+        public SkillCollection Skills
+        {
+            get { return _Skills; }
+            set
+            {
+                if (_Skills == value) return;
+                SkillCollection oldValue = _Skills;
+                _Skills = value;
+                OnSkillsChanged(oldValue, value);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// 使用繪製物件和移動物件建立互動性活動物件
@@ -34,7 +77,7 @@ namespace RunningBox
         public ObjectActive(DrawBase drawObject, MoveBase moveObject)
             : base(drawObject, moveObject)
         {
-            Skills = new SkillCollection(this);
+            Skills = new SkillCollection();
             Energy = new CounterObject(Global.DefaultEnergyLimit, Global.DefaultEnergyLimit, false);
             EnergyGetPerSec = Global.DefaultEnergyGetPerSec;
         }
@@ -160,6 +203,12 @@ namespace RunningBox
                 Propertys.AllDoAfterDraw(g);
                 Skills.AllDoAfterDraw(g);
             }
+        }
+
+        protected override void OnDispose()
+        {
+            Skills.Clear();
+            base.OnDispose();
         }
     }
 }

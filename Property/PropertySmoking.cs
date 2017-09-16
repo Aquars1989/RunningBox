@@ -32,6 +32,7 @@ namespace RunningBox
             DurationTime.Limit = duration;
             ShrinkLimit = shrinkTime;
             SmokeOpacity = smokeOpacity;
+            BreakAfterDead = false;
         }
 
         public override void DoAfterAction()
@@ -41,11 +42,8 @@ namespace RunningBox
             DrawBase drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Colors.Opacity *= SmokeOpacity;
             Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke, MoveNull.Value));
-        }
 
-        public override void DoAfterDead(ObjectBase killer, ObjectDeadType deadType)
-        {
-            //死亡不中斷
+            base.DoAfterAction();
         }
     }
 }
