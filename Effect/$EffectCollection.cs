@@ -130,8 +130,8 @@ namespace RunningBox
         /// <param name="item">特效物件</param>
         public void Add(EffectBase item)
         {
-            item.Binding(this, true);
             _Collection.Add(item);
+            item.Binding(this, true);
         }
 
         /// <summary>

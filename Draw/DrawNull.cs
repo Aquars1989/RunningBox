@@ -24,7 +24,10 @@ namespace RunningBox
         private DrawNull() { }
 
         protected override void OnDraw(Graphics g, Rectangle rectangle) { }
-
+        public override void Binding(DrawBase drawBase, bool bindingLock = false) { }
+        public override void Binding(ObjectBase owner, bool bindingLock = false) { }
+        public override void Binding(SceneBase scene, bool bindingLock = false) { }
+        public override void ClearBinding() { }
         public override DrawBase Copy()
         {
             return Value;

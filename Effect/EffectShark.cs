@@ -50,40 +50,42 @@ namespace RunningBox
             Power = power;
         }
 
-        public void DoAfterRound()
+        public override void DoAfterRound()
         {
-            if (Status == EffectStatus.Enabled)
+            switch (Status)
             {
-                if (DurationTime.IsFull)
-                {
-                    Status = EffectStatus.Disabled;
-                }
-                else
-                {
-                    DurationTime.Value += Scene.SceneIntervalOfRound;
-                }
+                case EffectStatus.Enabled:
+                    if (DurationTime.IsFull)
+                    {
+                        OnEnd(EffectEndType.Finish, EffectStatus.Disabled);
+                    }
+                    else
+                    {
+                        DurationTime.Value += Scene.SceneIntervalOfRound;
+                    }
+                    break;
             }
+
+            base.DoAfterRound();
         }
 
-        public void DoBeforeDraw(Graphics g)
+        public override void DoBeforeDraw(Graphics g)
         {
             int shakeX = Global.Rand.Next(-Power, Power);
             int shakeY = Global.Rand.Next(-Power, Power);
             g.TranslateTransform(shakeX, shakeY, System.Drawing.Drawing2D.MatrixOrder.Append);
+
+            base.DoBeforeDraw(g);
         }
 
-        public void Break()
+        protected override void OnEnd(EffectEndType endType)
         {
-            if (CanBreak)
+            Status = EffectStatus.Disabling;
+
+            if (End != null)
             {
-                Status = EffectStatus.Disabled;
+                End(this, endType);
             }
         }
-
-        public void DoBeforeRound() { }
-        public void DoBeforeDrawFloor(Graphics g) { }
-        public void DoBeforeDrawObject(Graphics g) { }
-        public void DoAfterDraw(Graphics g) { }
-        public void DoBeforeDrawUI(Graphics g) { }
     }
 }

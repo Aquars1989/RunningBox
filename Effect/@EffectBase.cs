@@ -17,7 +17,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於特性結束時
         /// </summary>
-        public event PropertyEndEnentHandle End;
+        public event EffectEndEnentHandle End;
 
         /// <summary>
         /// 發生於所屬物件變更時(所屬物件可為集合>場景)
@@ -52,10 +52,9 @@ namespace RunningBox
         /// 發生特效結束時
         /// </summary>
         /// <param name="endType">結束方式</param>
-        protected virtual void OnEnd(PropertyEndType endType)
+        protected virtual void OnEnd(EffectEndType endType)
         {
             DoBeforeEnd(endType);
-            Status = PropertyStatus.Disabled;
 
             if (End != null)
             {
@@ -103,14 +102,14 @@ namespace RunningBox
         /// </summary>
         public bool CanBreak { get; set; }
 
-        private EffectStatus _Status;
+        private EffectStatus _Status = EffectStatus.Enabling;
         /// <summary>
         /// 特性狀態
         /// </summary>
         public EffectStatus Status
         {
             get { return _Status; }
-            private set
+            protected set
             {
                 if (_Status == value) return;
                 EffectStatus oldValue = _Status;
@@ -181,7 +180,12 @@ namespace RunningBox
         /// <summary>
         /// 中斷特效
         /// </summary>
-        public virtual void Break();
+        public virtual void Break()
+        {
+            if (!CanBreak || Status == EffectStatus.Disabled || Status == EffectStatus.Disabling) return;
+            OnEnd(EffectEndType.Break);
+        }
+
 
         /// <summary>
         /// 物件活動前執行動作
@@ -217,6 +221,11 @@ namespace RunningBox
         /// 繪製後執行動作
         /// </summary>
         public virtual void DoAfterDraw(Graphics g) { }
+
+        /// <summary>
+        /// 特效結束前執行
+        /// </summary>
+        public virtual void DoBeforeEnd(EffectEndType endType) { }
         #endregion
         #endregion
     }
