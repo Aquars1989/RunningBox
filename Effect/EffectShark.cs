@@ -10,7 +10,7 @@ namespace RunningBox
     /// <summary>
     /// 畫面震動的特效
     /// </summary>
-    public class EffectShark : IEffect
+    public class EffectShark : EffectBase
     {
         /// <summary>
         /// 特效是否可被中斷

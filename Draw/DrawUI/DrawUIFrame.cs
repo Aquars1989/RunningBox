@@ -31,41 +31,46 @@ namespace RunningBox
         /// <summary>
         /// 發生於內部繪置物件變更
         /// </summary>
-        public event EventHandler IconDrawObjectChanged;
+        public event ValueChangedEnentHandle<DrawBase> IconDrawObjectChanged;
 
         /// <summary>
         /// 發生於圓角大小變更
         /// </summary>
-        public event EventHandler ReadiusChanged;
+        public event ValueChangedEnentHandle<int> ReadiusChanged;
 
         /// <summary>
         /// 發生於框線粗細變更
         /// </summary>
-        public event EventHandler BorderWidtrhChanged;
+        public event ValueChangedEnentHandle<int> BorderWidthChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
         /// 發生於內部繪置物件變更
         /// </summary>
-        protected virtual void OnDrawObjectInsideChanged()
+        protected virtual void OnDrawObjectInsideChanged(DrawBase oldValue, DrawBase newValue)
         {
-            if (DrawObjectInside != null)
+            if (oldValue != null)
             {
-                DrawObjectInside.Scene = this.Scene;
-                DrawObjectInside.Owner = this.Owner;
+                newValue.BindingUnlock();
+                newValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
             }
 
             if (IconDrawObjectChanged != null)
             {
-                IconDrawObjectChanged(this, new EventArgs());
+                IconDrawObjectChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於圓角大小變更
         /// </summary>
-        protected virtual void OnReadiusChanged()
+        protected virtual void OnReadiusChanged(int oldValue, int newValue)
         {
             if (_BackFrame != null)
             {
@@ -80,18 +85,18 @@ namespace RunningBox
 
             if (ReadiusChanged != null)
             {
-                ReadiusChanged(this, new EventArgs());
+                ReadiusChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於框線粗細變更
         /// </summary>
-        protected virtual void OnBorderWidtrhChanged()
+        protected virtual void OnBorderWidthChanged(int oldValue, int newValue)
         {
-            if (BorderWidtrhChanged != null)
+            if (BorderWidthChanged != null)
             {
-                BorderWidtrhChanged(this, new EventArgs());
+                BorderWidthChanged(this, oldValue, newValue);
             }
         }
 
@@ -123,18 +128,19 @@ namespace RunningBox
             get { return Colors.GetColor("Border"); }
         }
 
-        private int _BorderWidtrh;
+        private int _BorderWidth;
         /// <summary>
         /// 框線粗細
         /// </summary>
-        public int BorderWidtrh
+        public int BorderWidth
         {
-            get { return _BorderWidtrh; }
+            get { return _BorderWidth; }
             set
             {
-                if (_BorderWidtrh == value) return;
-                _BorderWidtrh = value;
-                OnBorderWidtrhChanged();
+                if (_BorderWidth == value) return;
+                int oldValue = _BorderWidth;
+                _BorderWidth = value;
+                OnBorderWidthChanged(oldValue, value);
             }
         }
 
@@ -148,8 +154,9 @@ namespace RunningBox
             set
             {
                 if (_Readius == value) return;
+                int oldValue = _Readius;
                 _Readius = value;
-                OnReadiusChanged();
+                OnReadiusChanged(oldValue, value);
             }
         }
 
@@ -164,8 +171,9 @@ namespace RunningBox
             {
                 if (value == null) throw new ArgumentNullException();
                 if (_DrawObjectInside == value) return;
+                DrawBase oldValue = _DrawObjectInside;
                 _DrawObjectInside = value;
-                OnDrawObjectInsideChanged();
+                OnDrawObjectInsideChanged(oldValue, value);
             }
         }
         #endregion
@@ -180,7 +188,7 @@ namespace RunningBox
         public DrawUIFrame(DrawColors drawColor, int borderWidtrh, int readius, DrawBase iconDrawObject)
             : base(drawColor)
         {
-            BorderWidtrh = borderWidtrh;
+            BorderWidth = borderWidtrh;
             Readius = readius;
             DrawObjectInside = iconDrawObject;
         }
@@ -206,7 +214,7 @@ namespace RunningBox
         {
             Colors.SetColor("Border", borderColor);
             Colors.SetColor("Back", backColor);
-            BorderWidtrh = borderWidtrh;
+            BorderWidth = borderWidtrh;
             Readius = readius;
             DrawObjectInside = iconDrawObject;
         }
@@ -232,7 +240,7 @@ namespace RunningBox
 
             SolidBrush brushBack = Colors.GetBrush("Back");
             Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidtrh;
+            penBorder.Width = BorderWidth;
 
             GetBackFrame(drawRectangle);
             g.FillPath(brushBack, _BackFrame);
@@ -267,15 +275,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件)
+        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件,未綁定物件)
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUIFrame(Colors.Copy(), BorderWidtrh, Readius)
+            return new DrawUIFrame(Colors.Copy(), BorderWidth, Readius)
             {
-                Scene = this.Scene,
-                Owner = this.Owner,
                 Scale = this.Scale
             };
         }

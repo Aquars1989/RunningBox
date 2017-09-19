@@ -30,25 +30,30 @@ namespace RunningBox
         /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
-        public event ValueChangedEnentHandle StatusChanged;
+        public event ValueChangedEnentHandle<ObjectStatus> StatusChanged;
 
         /// <summary>
         /// 發生於繪圖物件變更
         /// </summary>
-        public event ValueChangedEnentHandle DrawObjectChanged;
+        public event ValueChangedEnentHandle<DrawBase> DrawObjectChanged;
+
+        /// <summary>
+        /// 發生於配置物件變更
+        /// </summary>
+        public event ValueChangedEnentHandle<LayoutSet> LayoutObjectChanged;
 
         /// <summary>
         /// 發生於移動物件變更
         /// </summary>
-        public event ValueChangedEnentHandle MoveObjectChanged;
+        public event ValueChangedEnentHandle<MoveBase> MoveObjectChanged;
 
         /// <summary>
         /// 發生於特性集合變更
         /// </summary>
-        public event ValueChangedEnentHandle PropertysChanged;
+        public event ValueChangedEnentHandle<PropertyCollection> PropertysChanged;
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景)
+        /// 發生於所屬物件變更時(所屬物件可為集合>場景)
         /// </summary>
         public event EventHandler BindingChanged;
         #endregion
@@ -79,7 +84,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於物件狀態變更
         /// </summary>
-        protected virtual void OnStatusChanged(object oldValue, object newValue)
+        protected virtual void OnStatusChanged(ObjectStatus oldValue, ObjectStatus newValue)
         {
             if (StatusChanged != null)
             {
@@ -90,16 +95,44 @@ namespace RunningBox
         /// <summary>
         /// 發生於繪圖物件變更
         /// </summary>
-        protected virtual void OnDrawObjectChanged(object oldValue, object newValue)
+        protected virtual void OnDrawObjectChanged(DrawBase oldValue, DrawBase newValue)
         {
-            if (DrawObject != null)
+            if (oldValue != null)
             {
-                DrawObject.Scene = Scene;
+                oldValue.BindingUnlock();
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
             }
 
             if (DrawObjectChanged != null)
             {
                 DrawObjectChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於配置物件變更
+        /// </summary>
+        protected virtual void OnLayoutObjectChanged(LayoutSet oldValue, LayoutSet newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.BindingUnlock();
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
+            }
+
+            if (LayoutObjectChanged != null)
+            {
+                LayoutObjectChanged(this, oldValue, newValue);
             }
         }
 
@@ -111,13 +144,14 @@ namespace RunningBox
             if (oldValue != null)
             {
                 oldValue.Moving -= MoveObject_Moving;
+                oldValue.BindingUnlock();
                 oldValue.Binding(Scene);
             }
 
             if (newValue != null)
             {
                 newValue.Moving += MoveObject_Moving;
-                newValue.Binding(this);
+                newValue.Binding(this, true);
             }
 
             if (MoveObjectChanged != null)
@@ -133,12 +167,13 @@ namespace RunningBox
         {
             if (oldValue != null)
             {
+                oldValue.BindingUnlock();
                 oldValue.Binding(Scene);
             }
 
             if (newValue != null)
             {
-                newValue.Binding(this);
+                newValue.Binding(this, true);
             }
 
             if (PropertysChanged != null)
@@ -148,7 +183,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景)
+        /// 發生於所屬物件變更時(所屬物件可為集合>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -173,6 +208,11 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private bool _Visible = true;
         /// <summary>
         /// 是否顯示物件
@@ -228,7 +268,7 @@ namespace RunningBox
                 if (value == null) throw new ArgumentNullException();
                 if (_DrawObject == value) return;
 
-                object oldValue = _DrawObject;
+                DrawBase oldValue = _DrawObject;
                 _DrawObject = value;
                 OnDrawObjectChanged(oldValue, value);
             }
@@ -275,10 +315,14 @@ namespace RunningBox
         public LayoutSet Layout
         {
             get { return _Layout; }
-            private set
+            set
             {
                 if (value == null) throw new ArgumentNullException();
+                if (_Layout == value) return;
+
+                LayoutSet oldValue = _Layout;
                 _Layout = value;
+                OnLayoutObjectChanged(oldValue, value);
             }
         }
 
@@ -292,7 +336,7 @@ namespace RunningBox
             protected set
             {
                 if (_Status == value) return;
-                object oldValue = _Status;
+                ObjectStatus oldValue = _Status;
                 _Status = value;
                 OnStatusChanged(oldValue, value);
             }
@@ -334,29 +378,28 @@ namespace RunningBox
         /// <summary>
         /// 綁定物件到場景
         /// </summary>
-        public void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("物件已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("物件已被鎖定無法綁定");
 
             Container = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
         /// 綁定物件到集合(集合內綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(ObjectCollection collection)
+        /// <param name="collection">集合</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(ObjectCollection collection, bool bindingLock = false)
         {
             if (_Container == collection) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("物件已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("物件已被鎖定無法綁定");
             if (collection != null && !collection.Contains(this))
             {
                 throw new Exception("物件不在集合中");
@@ -364,22 +407,28 @@ namespace RunningBox
 
             Container = collection;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
         /// 清除綁定
         /// </summary>
-        public void ClearBinding(bool skipCheck = false)
+        public void ClearBinding()
         {
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("物件已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("物件已被鎖定無法解除綁定");
 
             Container = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         /// <summary>

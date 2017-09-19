@@ -94,15 +94,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 複製繪圖物件
+        /// 複製繪圖物件,未綁定物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
             return new DrawSkillBulletTime(Colors.Copy(), BindingSkill)
             {
-                Scene = this.Scene,
-                Owner = this.Owner,
                 Scale = this.Scale
             };
         }

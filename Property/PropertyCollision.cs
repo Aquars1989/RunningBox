@@ -87,7 +87,7 @@ namespace RunningBox
             base.DoActionMoving();
         }
 
-        protected override void OnTargetObjectChanged(object oldValue, object newValue)
+        protected override void OnTargetObjectChanged(ITargetability oldValue, ITargetability newValue)
         {
             if (Target.TargetType != TargetType.GameObejct)
             {

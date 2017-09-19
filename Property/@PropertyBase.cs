@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,20 +16,20 @@ namespace RunningBox
         /// <summary>
         /// 發生於目標內容變更
         /// </summary>
-        public event ValueChangedEnentHandle TargetObjectChanged;
+        public event ValueChangedEnentHandle<ITargetability> TargetObjectChanged;
 
         /// <summary>
         /// 發生於附加於物件的特殊狀態變更
         /// </summary>
-        public event ValueChangedEnentHandle AffixChanged;
+        public event ValueChangedEnentHandle<SpecialStatus> AffixChanged;
 
         /// <summary>
         /// 發生於特性狀態變更
         /// </summary>
-        public event ValueChangedEnentHandle StatusChanged;
+        public event ValueChangedEnentHandle<PropertyStatus> StatusChanged;
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為集合>所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
 
@@ -42,7 +43,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於目標內容變更
         /// </summary>
-        protected virtual void OnTargetObjectChanged(object oldValue, object newValue)
+        protected virtual void OnTargetObjectChanged(ITargetability oldValue, ITargetability newValue)
         {
             if (TargetObjectChanged != null)
             {
@@ -53,7 +54,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於附加於物件的特殊狀態變更
         /// </summary>
-        protected virtual void OnAffixChanged(object oldValue, object newValue)
+        protected virtual void OnAffixChanged(SpecialStatus oldValue, SpecialStatus newValue)
         {
             if (AffixChanged != null)
             {
@@ -64,7 +65,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於特性狀態變更
         /// </summary>
-        protected virtual void OnStatusChanged(object oldValue, object newValue)
+        protected virtual void OnStatusChanged(PropertyStatus oldValue, PropertyStatus newValue)
         {
             if (StatusChanged != null)
             {
@@ -73,7 +74,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為集合>所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -100,6 +101,11 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private bool _BreakAfterDead = true;
         /// <summary>
         /// 死亡時是否中斷
@@ -120,7 +126,7 @@ namespace RunningBox
             set
             {
                 if (_Affix == value) return;
-                object oldValue = _Affix;
+                SpecialStatus oldValue = _Affix;
                 _Affix = value;
                 OnAffixChanged(oldValue, value);
             }
@@ -128,7 +134,7 @@ namespace RunningBox
 
         private PropertyCollection _Container;
         /// <summary>
-        /// 取得特性歸屬集合
+        /// 取得特性歸屬集合(集合>所有人>場景)
         /// </summary>
         public PropertyCollection Container
         {
@@ -142,7 +148,7 @@ namespace RunningBox
 
         private ObjectBase _Owner;
         /// <summary>
-        /// 取得特性所有人
+        /// 取得特性所有人(集合>所有人>場景)
         /// </summary>
         public ObjectBase Owner
         {
@@ -156,7 +162,7 @@ namespace RunningBox
 
         private SceneBase _Scene;
         /// <summary>
-        /// 取得歸屬場景
+        /// 取得歸屬場景(集合>所有人>場景)
         /// </summary>
         public SceneBase Scene
         {
@@ -178,7 +184,7 @@ namespace RunningBox
             private set
             {
                 if (_Status == value) return;
-                object oldValue = _Status;
+                PropertyStatus oldValue = _Status;
                 _Status = value;
                 OnStatusChanged(oldValue, value);
             }
@@ -210,16 +216,14 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定特性到場景
+        /// 綁定特性到場景(集合>所有人>場景)
         /// </summary>
-        public void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("特性已在集合內無法手動綁定");
-            }
-
+            if (BindingLock) throw new Exception("特性已被鎖定無法綁定");
             if (Owner != null)
             {
                 Break();
@@ -227,20 +231,19 @@ namespace RunningBox
             Container = null;
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定特性到物件
+        /// 綁定特性到所有人物件(集合>所有人>場景)
         /// </summary>
-        public void Binding(ObjectActive owner)
+        /// <param name="owner">所有人物件</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(ObjectActive owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("特性已在集合內無法手動綁定");
-            }
-
+            if (BindingLock) throw new Exception("特性已被鎖定無法綁定");
             if (Owner != null)
             {
                 Break();
@@ -248,19 +251,19 @@ namespace RunningBox
             Container = null;
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定特性到集合(集合內綁定,除此之外勿使用此函數)
+        /// 綁定特性到集合(集合>所有人>場景,集合內綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(PropertyCollection collection)
+        /// <param name="collection">集合</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(PropertyCollection collection, bool bindingLock = false)
         {
             if (_Container == collection) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("特性已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("特性已被鎖定無法綁定");
             if (collection != null && !collection.Contains(this))
             {
                 throw new Exception("特性不在集合中");
@@ -273,6 +276,7 @@ namespace RunningBox
             Container = collection;
             Owner = null;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -281,11 +285,7 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("特性已在集合內無法手動綁定");
-            }
-
+            if (BindingLock) throw new Exception("特性已被鎖定無法解除綁定");
             if (Owner != null)
             {
                 Break();
@@ -294,6 +294,14 @@ namespace RunningBox
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ##### 場景中動作(須有所有者) #####

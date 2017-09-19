@@ -14,24 +14,24 @@ namespace RunningBox
         /// <summary>
         /// 發生於計數值變更
         /// </summary>
-        public event ValueChangedEnentHandle ValueChanged;
+        public event ValueChangedEnentHandle<int> ValueChanged;
 
         /// <summary>
         /// 發生於上限值變更
         /// </summary>
-        public event ValueChangedEnentHandle LimitChanged;
+        public event ValueChangedEnentHandle<int> LimitChanged;
 
         /// <summary>
         /// 發生於是否可超出最大值變更
         /// </summary>
-        public event ValueChangedEnentHandle OverloadChanged;
+        public event ValueChangedEnentHandle<bool> OverloadChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
         /// 發生於計數值變更
         /// </summary>
-        protected void OnValueChanged(object oldValue, object newValue)
+        protected void OnValueChanged(int oldValue, int newValue)
         {
             if (ValueChanged != null)
             {
@@ -42,7 +42,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於上限值變更
         /// </summary>
-        protected void OnLimitChanged(object oldValue, object newValue)
+        protected void OnLimitChanged(int oldValue, int newValue)
         {
             if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
             if (LimitChanged != null)
@@ -54,7 +54,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於是否可超出最大值變更
         /// </summary>
-        protected void OnOverloadChanged(object oldValue, object newValue)
+        protected void OnOverloadChanged(bool oldValue, bool newValue)
         {
             if (Limit >= 0 && _Value > Limit && !Overload) _Value = Limit;
             if (OverloadChanged != null)
@@ -80,7 +80,7 @@ namespace RunningBox
             set
             {
                 if (_Limit == value) return;
-                object oldValue = _Limit;
+                int oldValue = _Limit;
                 _Limit = value;
                 OnLimitChanged(oldValue, value);
             }
@@ -99,7 +99,7 @@ namespace RunningBox
                 else if (Limit >= 0 && value > Limit && !Overload) value = Limit;
 
                 if (_Value == value) return;
-                object oldValue = _Value;
+                int oldValue = _Value;
                 _Value = value;
                 OnValueChanged(oldValue, value);
             }
@@ -115,7 +115,7 @@ namespace RunningBox
             set
             {
                 if (_Overload == value) return;
-                object oldValue = _Overload;
+                bool oldValue = _Overload;
                 _Overload = value;
                 OnOverloadChanged(oldValue, value);
             }

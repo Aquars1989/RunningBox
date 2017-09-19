@@ -101,24 +101,22 @@ namespace RunningBox
             g.DrawString(Text, Font, brushText, textRectangle, DrawFormat);
             g.ResetClip();
 
-            if (BorderWidtrh > 0)
+            if (BorderWidth > 0)
             {
                 Pen penBorder = Colors.GetPen("Border");
-                penBorder.Width = BorderWidtrh;
+                penBorder.Width = BorderWidth;
                 g.DrawPath(penBorder, _BackFrame);
             }
         }
 
         /// <summary>
-        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件)
+        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件,未綁定物件)
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUITextFrame(Colors.Copy(), BorderWidtrh, Readius, Text, Font, DrawFormat)
+            return new DrawUITextFrame(Colors.Copy(), BorderWidth, Readius, Text, Font, DrawFormat)
             {
-                Scene = this.Scene,
-                Owner = this.Owner,
                 Scale = this.Scale,
                 TextPadding = this.TextPadding
             };

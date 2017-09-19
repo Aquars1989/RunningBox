@@ -125,7 +125,7 @@
     <Compile Include="Effect\EffectDyeing.cs" />
     <Compile Include="Effect\EffectShark.cs" />
     <Compile Include="Effect\EffectShrink.cs" />
-    <Compile Include="Effect\%40IEffect.cs" />
+    <Compile Include="Effect\%40EffectBase.cs" />
     <Compile Include="Class\Function.cs" />
     <Compile Include="Class\Global.cs" />
     <Compile Include="Object\ObjectActive.cs" />

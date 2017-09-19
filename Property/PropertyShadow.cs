@@ -85,7 +85,6 @@ namespace RunningBox
 
             Rectangle drawRect = new Rectangle((int)drawX, (int)drawY, drawWidth, drawHeight);
             _DrawObject.Colors.Opacity = Opacity;
-            _DrawObject.Scene = Owner.Scene;
             _DrawObject.Draw(g, drawRect);
 
             base.DoBeforeDraw(g);
@@ -109,6 +108,7 @@ namespace RunningBox
                 _DrawObject.Colors.RFix = -1;
                 _DrawObject.Colors.GFix = -1;
                 _DrawObject.Colors.BFix = -1;
+                _DrawObject.Binding(_BaseDrawObject);
             }
         }
     }

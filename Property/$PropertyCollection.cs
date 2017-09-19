@@ -20,14 +20,14 @@ namespace RunningBox
 
         #region ===== 事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -39,9 +39,14 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private ObjectBase _Owner;
         /// <summary>
-        /// 取得歸屬的活動物件
+        /// 取得歸屬的活動物件(所有人>場景)
         /// </summary>
         public ObjectBase Owner
         {
@@ -55,7 +60,7 @@ namespace RunningBox
 
         private SceneBase _Scene;
         /// <summary>
-        /// 取得歸屬的場景物件
+        /// 取得歸屬的場景物件(所有人>場景)
         /// </summary>
         public SceneBase Scene
         {
@@ -124,28 +129,33 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定特性群組到場景
+        /// 綁定特性群組到場景(所有人>場景)
         /// </summary>
-        public void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (BindingLock) throw new Exception("特性群組已被鎖定無法綁定");
             if (_Owner != null)
             {
                 AllBreak();
             }
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定特性群組到物件(由所有者綁定,除此之外勿使用此函數)
+        /// 綁定特性群組到所有人物件(所有人>場景,由所有者綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(ObjectBase owner)
+        /// <param name="owner">所有人</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(ObjectBase owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (BindingLock) throw new Exception("特性群組已被鎖定無法綁定");
             if (owner != null && owner.Propertys != this) throw new Exception("所有者的特性群組物件不符");
 
             if (_Owner != null)
@@ -154,6 +164,7 @@ namespace RunningBox
             }
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -162,7 +173,7 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            if (_Owner != null && _Owner.Propertys == this) throw new Exception("特性群組已被綁定");
+            if (BindingLock) throw new Exception("特性群組已被鎖定無法解除綁定");
             if (_Owner != null)
             {
                 AllBreak();
@@ -170,6 +181,14 @@ namespace RunningBox
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ##### 集合項目調整 #####
@@ -186,7 +205,7 @@ namespace RunningBox
                 _Affix |= item.Affix;
             }
             _Collection.Add(item);
-            item.Binding(this);
+            item.Binding(this, true);
         }
 
         /// <summary>
@@ -205,6 +224,7 @@ namespace RunningBox
                 }
                 item.StatusChanged -= ItemStatusChanged;
                 item.AffixChanged -= ItemAffixChanged;
+                item.BindingUnlock();
                 item.Binding(Scene);
             }
             return result;
@@ -215,18 +235,16 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            PropertyBase[] remove = new PropertyBase[_Collection.Count];
-            _Collection.CopyTo(remove, 0);
-            _Collection.Clear();
-
-            for (int i = 0; i < remove.Length; i++)
+            for (int i = 0; i < _Collection.Count; i++)
             {
-                remove[i].StatusChanged -= ItemStatusChanged;
-                remove[i].AffixChanged -= ItemAffixChanged;
-                remove[i].Binding(Scene);
+                _Collection[i].StatusChanged -= ItemStatusChanged;
+                _Collection[i].AffixChanged -= ItemAffixChanged;
+                _Collection[i].BindingUnlock();
+                _Collection[i].Binding(Scene);
             }
             _Affix = RunningBox.SpecialStatus.None;
             _AffixChanged = false;
+            _Collection.Clear();
         }
 
         /// <summary>
@@ -249,8 +267,9 @@ namespace RunningBox
             {
                 disabledProperty.StatusChanged -= ItemStatusChanged;
                 disabledProperty.AffixChanged -= ItemAffixChanged;
+                disabledProperty.BindingUnlock();
+                disabledProperty.Binding(Scene, false);
                 _Collection.Remove(disabledProperty);
-                disabledProperty.Binding(Scene);
             }
         }
 
@@ -423,7 +442,7 @@ namespace RunningBox
         /// <summary>
         /// 集合內特性狀態變更動作
         /// </summary>
-        private void ItemStatusChanged(object sender, object oldValue, object newValue)
+        private void ItemStatusChanged(object sender, PropertyStatus oldValue, PropertyStatus newValue)
         {
             PropertyBase item = sender as PropertyBase;
             if (item.Affix == RunningBox.SpecialStatus.None) return;
@@ -440,7 +459,7 @@ namespace RunningBox
         /// <summary>
         /// 集合內特性狀態變更動作
         /// </summary>
-        private void ItemAffixChanged(object sender, object oldValue, object newValue)
+        private void ItemAffixChanged(object sender, SpecialStatus oldValue, SpecialStatus newValue)
         {
             _AffixChanged = true;
         }

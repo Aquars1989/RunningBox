@@ -19,24 +19,24 @@ namespace RunningBox
         public event EventHandler Moving;
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
 
         /// <summary>
         /// 發生於目標變更
         /// </summary>
-        public event ValueChangedEnentHandle TargetObjectChanged;
+        public event ValueChangedEnentHandle<ITargetability> TargetObjectChanged;
 
         /// <summary>
         /// 發生於移動調整值最大數量變更
         /// </summary>
-        public event ValueChangedEnentHandle OffsetsLimitChanged;
+        public event ValueChangedEnentHandle<int> OffsetsLimitChanged;
 
         /// <summary>
         /// 發生於移動速度變更
         /// </summary>
-        public event ValueChangedEnentHandle SpeedChanged;
+        public event ValueChangedEnentHandle<float> SpeedChanged;
 
         /// <summary>
         /// 發生於移動調整值列表內容變更
@@ -67,7 +67,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -80,7 +80,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於目標變更
         /// </summary>
-        protected void OnTargetObjectChanged(object oldValue, object newValue)
+        protected void OnTargetObjectChanged(ITargetability oldValue, ITargetability newValue)
         {
             if (TargetObjectChanged != null)
             {
@@ -91,7 +91,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於移動調整值最大數量變更
         /// </summary>
-        protected void OnOffsetsLimitChanged(object oldValue, object newValue)
+        protected void OnOffsetsLimitChanged(int oldValue, int newValue)
         {
             CheckOffset();
             if (OffsetsLimitChanged != null)
@@ -114,7 +114,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於移動速度變更
         /// </summary>
-        protected void OnSpeedChanged(object oldValue, object newValue)
+        protected void OnSpeedChanged(float oldValue, float newValue)
         {
             if (SpeedChanged != null)
             {
@@ -147,13 +147,18 @@ namespace RunningBox
 
         #region ===== 屬性 =====
         /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
+        /// <summary>
         /// 移動調整值列表
         /// </summary>
         private List<PointF> Offsets { get; set; }
 
         private ObjectBase _Owner;
         /// <summary>
-        /// 取得歸屬的活動物件
+        /// 取得歸屬的活動物件(所有人>場景)
         /// </summary>
         public ObjectBase Owner
         {
@@ -167,7 +172,7 @@ namespace RunningBox
 
         private SceneBase _Scene;
         /// <summary>
-        /// 取得歸屬的場景物件
+        /// 取得歸屬的場景物件(所有人>場景)
         /// </summary>
         public SceneBase Scene
         {
@@ -199,7 +204,7 @@ namespace RunningBox
             set
             {
                 if (_OffsetsLimit == value) return;
-                object oldValue = _OffsetsLimit;
+                int oldValue = _OffsetsLimit;
                 _OffsetsLimit = value;
                 _SpeedPerOffsets = _Speed / _OffsetsLimit;
                 OnOffsetsLimitChanged(oldValue, value);
@@ -221,7 +226,7 @@ namespace RunningBox
             set
             {
                 if (_Speed == value) return;
-                object oldValue = _Speed;
+                float oldValue = _Speed;
                 _Speed = value;
                 _SpeedPerOffsets = _Speed / _OffsetsLimit;
                 OnSpeedChanged(oldValue, value);
@@ -238,10 +243,10 @@ namespace RunningBox
             set
             {
                 if (_SpeedPerOffsets == value) return;
-                object oldValue = _SpeedPerOffsets;
+                float oldValue = _Speed;
                 _SpeedPerOffsets = value;
                 _Speed = _SpeedPerOffsets * _OffsetsLimit;
-                OnSpeedChanged(oldValue, value);
+                OnSpeedChanged(oldValue, _Speed);
             }
         }
 
@@ -265,33 +270,39 @@ namespace RunningBox
             Weight = weight;
             Speed = speed;
             Target = new TargetSet(target);
-            Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o,n); };
+            Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o, n); };
         }
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定場景到移動物件
+        /// 綁定移動物件到場景(所有人>場景)
         /// </summary>
-        public virtual void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (_Owner != null && _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+            if (BindingLock) throw new Exception("移動物件已被鎖定無法綁定");
 
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定物件到移動物件(由所有者綁定,除此之外勿使用此函數)
+        /// 綁定移動物件到所有人物件(所有人>場景,由所有者綁定,除此之外勿使用此函數)
         /// </summary>
-        public virtual void Binding(ObjectBase owner)
+        /// <param name="owner">所有人物件</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(ObjectBase owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (_Owner != null &&  _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+            if (BindingLock) throw new Exception("移動物件已被鎖定無法綁定");
             if (owner != null && owner.MoveObject != this) throw new Exception("所有者的移動物件不符");
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -300,10 +311,18 @@ namespace RunningBox
         /// </summary>
         public virtual void ClearBinding()
         {
-            if (_Owner != null && _Owner.MoveObject == this) throw new Exception("移動物件已被綁定");
+            if (BindingLock) throw new Exception("移動物件已被鎖定無法解除綁定");
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         /// <summary>

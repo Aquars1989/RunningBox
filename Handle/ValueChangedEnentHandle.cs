@@ -12,5 +12,5 @@ namespace RunningBox
     /// <param name="sender">觸發物件</param>
     /// <param name="oldVlaue">舊值</param>
     /// <param name="newValue">新值</param>
-    public delegate void ValueChangedEnentHandle(object sender,object oldVlaue,object newValue);
+    public delegate void ValueChangedEnentHandle<T>(object sender,T oldVlaue,T newValue);
 }

@@ -16,7 +16,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於關聯物件變更
         /// </summary>
-        public event ValueChangedEnentHandle ObjectChanged;
+        public event ValueChangedEnentHandle<ITargetability> ObjectChanged;
 
         /// <summary>
         /// 發生於偏移值變更
@@ -28,7 +28,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於關聯物件變更
         /// </summary>
-        protected void OnObjectChanged(object oldValue, object newValue)
+        protected void OnObjectChanged(ITargetability oldValue, ITargetability newValue)
         {
             if (ObjectChanged != null)
             {
@@ -59,7 +59,7 @@ namespace RunningBox
             private set
             {
                 if (_Object == value) return;
-                object oldValue = _Object;
+                ITargetability oldValue = _Object;
                 _Object = value;
                 OnObjectChanged(oldValue, value);
             }

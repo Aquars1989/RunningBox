@@ -28,34 +28,39 @@ namespace RunningBox
         /// <summary>
         /// 發生於依附目標變更
         /// </summary>
-        public event ValueChangedEnentHandle DependObjectChanged;
+        public event ValueChangedEnentHandle<ITargetability> DependObjectChanged;
+
+        /// <summary>
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
+        /// </summary>
+        public event EventHandler BindingChanged;
 
         /// <summary>
         /// 發生於碰撞形狀變更
         /// </summary>
-        public event ValueChangedEnentHandle CollisonShapeChanged;
+        public event ValueChangedEnentHandle<ShapeType> CollisonShapeChanged;
 
         /// <summary>
         /// 發生於物件的定位位置變更時
         /// </summary>
-        public event ValueChangedEnentHandle AnchorChanged;
+        public event ValueChangedEnentHandle<DirectionType> AnchorChanged;
 
         /// <summary>
         /// 發生於尺寸變化時
         /// </summary>
-        public event ValueChangedEnentHandle SizeChanged;
+        public event ValueChangedEnentHandle<Size> SizeChanged;
 
         /// <summary>
         /// 發生於定位點變化時
         /// </summary>
-        public event ValueChangedEnentHandle LocationChanged;
+        public event ValueChangedEnentHandle<PointF> LocationChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
         /// 發生於依附目標變更
         /// </summary>
-        protected virtual void OnDependObjectChanged(object oldValue, object newValue)
+        protected virtual void OnDependObjectChanged(ITargetability oldValue, ITargetability newValue)
         {
             if (DependObjectChanged != null)
             {
@@ -64,9 +69,20 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
+        /// </summary>
+        public virtual void OnBindingChanged()
+        {
+            if (BindingChanged != null)
+            {
+                BindingChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
         /// 發生於碰撞形狀變更
         /// </summary>
-        protected virtual void OnCollisonShapeChanged(object oldValue, object newValue)
+        protected virtual void OnCollisonShapeChanged(ShapeType oldValue, ShapeType newValue)
         {
             if (CollisonShapeChanged != null)
             {
@@ -77,7 +93,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於物件的定位位置變更時
         /// </summary>
-        protected virtual void OnAnchorChanged(object oldValue, object newValue)
+        protected virtual void OnAnchorChanged(DirectionType oldValue, DirectionType newValue)
         {
             if (AnchorChanged != null)
             {
@@ -111,6 +127,39 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
+        private ObjectBase _Owner;
+        /// <summary>
+        /// 取得歸屬的活動物件(所有人>場景)
+        /// </summary>
+        public ObjectBase Owner
+        {
+            get { return _Owner; }
+            private set
+            {
+                if (_Owner == value) return;
+                _Owner = value;
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬的場景物件(所有人>場景)
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return Owner == null ? _Scene : Owner.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
+            }
+        }
+
         private ShapeType _CollisonShape = ShapeType.Ellipse;
         /// <summary>
         /// 碰撞形狀
@@ -121,7 +170,7 @@ namespace RunningBox
             set
             {
                 if (_CollisonShape == value) return;
-                object oldValue = _CollisonShape;
+                ShapeType oldValue = _CollisonShape;
                 _CollisonShape = value;
                 OnCollisonShapeChanged(oldValue, value);
             }
@@ -275,7 +324,7 @@ namespace RunningBox
             {
                 if (_Anchor == value) return;
 
-                object oldValue = _Anchor;
+                DirectionType oldValue = _Anchor;
                 _Anchor = value;
 
                 if ((_Anchor & DirectionType.Left) == DirectionType.Left)
@@ -476,6 +525,57 @@ namespace RunningBox
         {
             Depend = new TargetSet();
             Depend.ObjectChanged += (s, o, n) => { OnDependObjectChanged(o, n); };
+        }
+
+        /// <summary>
+        /// 綁定移動物件到場景(所有人>場景)
+        /// </summary>
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(SceneBase scene, bool bindingLock = false)
+        {
+            if (_Scene == scene) return;
+            if (BindingLock) throw new Exception("配置物件已被鎖定無法綁定");
+
+            Owner = null;
+            Scene = scene;
+            BindingLock = bindingLock;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定移動物件到所有人物件(所有人>場景,由所有者綁定,除此之外勿使用此函數)
+        /// </summary>
+        /// <param name="owner">所有人物件</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(ObjectBase owner, bool bindingLock = false)
+        {
+            if (_Owner == owner) return;
+            if (BindingLock) throw new Exception("配置物件已被鎖定無法綁定");
+            if (owner != null && owner.Layout != this) throw new Exception("所有者的配置物件不符");
+            Owner = owner;
+            Scene = null;
+            BindingLock = bindingLock;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public virtual void ClearBinding()
+        {
+            if (BindingLock) throw new Exception("配置物件已被鎖定無法解除綁定");
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ===== 實作ITargetability =====

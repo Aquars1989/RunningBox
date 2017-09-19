@@ -23,14 +23,9 @@ namespace RunningBox
         public event DrawObjectEnentHandle AfterDraw;
 
         /// <summary>
-        /// 發生於場景物件改變時
+        /// 發生於所屬物件變更時(所屬物件可為繪圖物件>所有人>場景)
         /// </summary>
-        public event EventHandler SceneChanged;
-
-        /// <summary>
-        /// 發生於所有者改變時
-        /// </summary>
-        public event EventHandler OwnerChanged;
+        public event EventHandler BindingChanged;
 
         /// <summary>
         /// 發生於顏色改變時
@@ -50,24 +45,13 @@ namespace RunningBox
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於場景物件改變時
+        /// 發生於所屬物件變更時(所屬物件可為繪圖物件>所有人>場景)
         /// </summary>
-        protected virtual void OnSceneChanged()
+        protected virtual void OnBindingChanged()
         {
-            if (SceneChanged != null)
+            if (BindingChanged != null)
             {
-                SceneChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於所有者改變時
-        /// </summary>
-        protected virtual void OnOwnerChanged()
-        {
-            if (OwnerChanged != null)
-            {
-                OwnerChanged(this, new EventArgs());
+                BindingChanged(this, new EventArgs());
             }
         }
 
@@ -129,37 +113,54 @@ namespace RunningBox
 
         #region ===== 屬性 =====
         /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
+        /// <summary>
         /// 繪製顏色管理物件
         /// </summary>
         public DrawColors Colors { get; private set; }
 
-        private SceneBase _Scene;
+        private DrawBase _BindDraw;
         /// <summary>
-        /// 所在的場景物件
+        /// 取得綁定的繪製物件(繪圖物件>所有人>場景)
         /// </summary>
-        public SceneBase Scene
+        public DrawBase BindDraw
         {
-            get { return _Scene; }
-            set
+            get { return _BindDraw; }
+            private set
             {
-                if (_Scene == value) return;
-                _Scene = value;
-                OnSceneChanged();
+                if (_BindDraw == value) return;
+                _BindDraw = value;
             }
         }
 
         private ObjectBase _Owner;
         /// <summary>
-        /// 依附的活動物件
+        /// 取得歸屬的活動物件(繪圖物件>所有人>場景)
         /// </summary>
         public ObjectBase Owner
         {
-            get { return _Owner; }
-            set
+            get { return BindDraw == null ? _Owner : BindDraw.Owner; }
+            private set
             {
                 if (_Owner == value) return;
                 _Owner = value;
-                OnOwnerChanged();
+            }
+        }
+
+        private SceneBase _Scene;
+        /// <summary>
+        /// 取得歸屬的場景物件(繪圖物件>所有人>場景)
+        /// </summary>
+        public SceneBase Scene
+        {
+            get { return BindDraw == null ? Owner == null ? _Scene : Owner.Scene : BindDraw.Scene; }
+            private set
+            {
+                if (_Scene == value) return;
+                _Scene = value;
             }
         }
 
@@ -204,6 +205,77 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
+        /// 綁定繪製物件到另一個繪製物件(繪圖物件>物件>場景)
+        /// </summary>
+        /// <param name="drawBase">繪圖物件</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(DrawBase drawBase, bool bindingLock = false)
+        {
+            if (_BindDraw == drawBase) return;
+            if (BindingLock) throw new Exception("繪製物件已被鎖定無法綁定");
+
+            BindDraw = drawBase;
+            Owner = null;
+            Scene = null;
+            BindingLock = bindingLock;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定繪製物件到場景(繪圖物件>物件>場景)
+        /// </summary>
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(SceneBase scene, bool bindingLock = false)
+        {
+            if (_Scene == scene) return;
+            if (BindingLock) throw new Exception("繪製物件已被鎖定無法綁定");
+
+            BindDraw = null;
+            Owner = null;
+            Scene = scene;
+            BindingLock = bindingLock;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 綁定繪製物件到所有人物件(繪圖物件>物件>場景,由所有者綁定,除此之外勿使用此函數)
+        /// </summary>
+        /// <param name="owner">所有者</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public virtual void Binding(ObjectBase owner, bool bindingLock = false)
+        {
+            if (_Owner == owner) return;
+            if (BindingLock) throw new Exception("繪製物件已被鎖定無法綁定");
+            if (owner != null && owner.DrawObject != this) throw new Exception("所有者的繪製物件不符");
+            BindDraw = null;
+            Owner = owner;
+            Scene = null;
+            BindingLock = bindingLock;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 清除綁定
+        /// </summary>
+        public virtual void ClearBinding()
+        {
+            if (BindingLock) throw new Exception("繪製物件已被鎖定無法解除綁定");
+            BindDraw = null;
+            Owner = null;
+            Scene = null;
+            OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
+        }
+
+        /// <summary>
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>
@@ -216,7 +288,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 複製繪圖物件及內部的繪圖工具管理物件
+        /// 複製繪圖物件及內部的繪圖工具管理物件,未綁定物件
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public abstract DrawBase Copy();
@@ -245,7 +317,7 @@ namespace RunningBox
         /// <summary>
         /// 釋放物件時執行動作
         /// </summary>
-        protected virtual void OnDispose() 
+        protected virtual void OnDispose()
         {
             Colors.Dispose();
         }

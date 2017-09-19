@@ -20,14 +20,14 @@ namespace RunningBox
 
         #region ===== 事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -39,6 +39,11 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private ObjectActive _Owner;
         /// <summary>
         /// 取得歸屬的活動物件
@@ -94,31 +99,33 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定技能到場景
+        /// 綁定技能集合到場景(所有人>場景)
         /// </summary>
-        public void Binding(SceneBase scene)
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+            if (BindingLock) throw new Exception("技能集合已被鎖定無法綁定");
 
             AllBreak();
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定技能到物件(由所有者綁定,除此之外勿使用此函數)
+        /// 綁定技能集合到所有人物件(所有人>場景,由所有者綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(ObjectActive owner)
+        public void Binding(ObjectActive owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+            if (BindingLock) throw new Exception("技能集合已被鎖定無法綁定");
             if (owner != null && owner.Skills != this) throw new Exception("所有者的技能集合物件不符");
 
             AllBreak();
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -127,12 +134,20 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            if (_Owner != null && _Owner.Skills == this) throw new Exception("技能集合已被綁定");
+            if (BindingLock) throw new Exception("技能集合已被鎖定無法綁定");
 
             AllBreak();
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ##### 集合項目調整 #####
@@ -153,7 +168,7 @@ namespace RunningBox
         public void Add(SkillBase item)
         {
             _Collection.Add(item);
-            item.Binding(this);
+            item.Binding(this, true);
         }
 
         /// <summary>
@@ -166,6 +181,7 @@ namespace RunningBox
             bool result = _Collection.Remove(item);
             if (result)
             {
+                item.BindingUnlock();
                 item.Binding(Scene);
             }
             return result;
@@ -176,14 +192,12 @@ namespace RunningBox
         /// </summary>
         public void Clear()
         {
-            SkillBase[] remove = new SkillBase[_Collection.Count];
-            _Collection.CopyTo(remove,0);
-            _Collection.Clear();
-
-            for (int i = 0; i < remove.Length; i++)
+            for (int i = 0; i < _Collection.Count; i++)
             {
-                remove[i].Binding(Scene);
+                _Collection[i].BindingUnlock();
+                _Collection[i].Binding(Scene);
             }
+            _Collection.Clear();
         }
 
         /// <summary>

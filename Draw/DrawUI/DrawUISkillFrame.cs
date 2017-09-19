@@ -100,7 +100,7 @@ namespace RunningBox
 
             SolidBrush brushBack = Colors.GetBrush("Back");
             Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidtrh;
+            penBorder.Width = BorderWidth;
 
             GetBackFrame(drawRectangle);
             DrawSkillBase drawSkillBase = DrawObjectInside as DrawSkillBase;
@@ -187,15 +187,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件)
+        /// 複製繪圖物件及內部的繪圖工具管理物件(不包含內部物件,未綁定物件)
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUISkillFrame(Colors.Copy(), BorderWidtrh, Readius, DrawButton)
+            return new DrawUISkillFrame(Colors.Copy(), BorderWidth, Readius, DrawButton)
             {
-                Scene = this.Scene,
-                Owner = this.Owner,
                 Scale = this.Scale
             };
         }

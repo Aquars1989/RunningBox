@@ -32,15 +32,13 @@ namespace RunningBox
         public DrawCustom() { }
 
         /// <summary>
-        /// 複製繪圖物件及內部的繪圖工具管理物件(不含事件)
+        /// 複製繪圖物件及內部的繪圖工具管理物件(不含事件,未綁定物件)
         /// </summary>
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
             return new DrawCustom(Colors.Copy())
             {
-                Scene = this.Scene,
-                Owner = this.Owner,
                 Scale = this.Scale
             };
         }

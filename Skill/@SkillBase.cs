@@ -18,17 +18,17 @@ namespace RunningBox
         /// <summary>
         /// 發生於自動施放物件變更時
         /// </summary>
-        public event ValueChangedEnentHandle AutoCastObjectChanged;
+        public event ValueChangedEnentHandle<AutoCastBase> AutoCastObjectChanged;
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為集合>所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
 
         /// <summary>
         /// 發生於技能狀態變更時
         /// </summary>
-        public event ValueChangedEnentHandle StatusChanged;
+        public event ValueChangedEnentHandle<SkillStatus> StatusChanged;
 
         /// <summary>
         /// 發生於技能施放時
@@ -45,7 +45,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於自動施放物件變更時
         /// </summary>
-        protected virtual void OnAutoCastObjectChanged(object oldValue, object newValue)
+        protected virtual void OnAutoCastObjectChanged(AutoCastBase oldValue, AutoCastBase newValue)
         {
             if (AutoCastObjectChanged != null)
             {
@@ -54,7 +54,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為集合 場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為集合>所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -67,7 +67,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於技能狀態變更時
         /// </summary>
-        protected virtual void OnStatusChanged(object oldValue, object newValue)
+        protected virtual void OnStatusChanged(SkillStatus oldValue, SkillStatus newValue)
         {
             if (StatusChanged != null)
             {
@@ -114,6 +114,11 @@ namespace RunningBox
         /// </summary>
         public abstract string Info { get; }
 
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private AutoCastBase _AutoCastObject;
         /// <summary>
         /// 自動施放物件
@@ -124,7 +129,7 @@ namespace RunningBox
             set
             {
                 if (_AutoCastObject == value) return;
-                object oldValue = _AutoCastObject;
+                AutoCastBase oldValue = _AutoCastObject;
                 _AutoCastObject = value;
                 OnAutoCastObjectChanged(oldValue, value);
             }
@@ -207,7 +212,7 @@ namespace RunningBox
             set
             {
                 if (_Status == value) return;
-                object oldValue = _Status;
+                SkillStatus oldValue = _Status;
                 _Status = value;
                 switch (_Status)
                 {
@@ -232,51 +237,50 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定技能到場景
+        /// 綁定技能到場景(集合>所有人>場景)
         /// </summary>
-        public void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("技能已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("技能已被鎖定無法綁定");
 
             Break();
             Container = null;
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定技能到物件
+        /// 綁定技能到所有人物件(集合>所有人>場景)
         /// </summary>
-        public void Binding(ObjectActive owner)
+        /// <param name="owner">所有人</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(ObjectActive owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("技能已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("技能已被鎖定無法綁定");
 
             Break();
             Container = null;
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定技能到集合(集合內綁定,除此之外勿使用此函數)
+        /// 綁定技能到集合(集合>所有人>場景,集合內綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(SkillCollection collection)
+        /// <param name="collection">集合</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SkillCollection collection, bool bindingLock = false)
         {
             if (_Container == collection) return;
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("技能已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("技能已被鎖定無法綁定");
             if (collection != null && !collection.Contains(this))
             {
                 throw new Exception("技能不在集合中");
@@ -285,6 +289,7 @@ namespace RunningBox
             Container = collection;
             Owner = null;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -293,16 +298,21 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            if (Container != null && Container.Contains(this))
-            {
-                throw new Exception("技能已在集合內無法手動綁定");
-            }
+            if (BindingLock) throw new Exception("技能已被鎖定無法解除綁定");
 
             Break();
             Container = null;
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ##### 場景中動作(須有所有者) #####

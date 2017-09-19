@@ -25,14 +25,14 @@ namespace RunningBox
         public ObjectDeadEventHandle ObjectDead;
 
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所屬物件可為所有人>場景)
         /// </summary>
         public event EventHandler BindingChanged;
         #endregion
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 發生於依附物件變更時(依附物件可為場景 物件)
+        /// 發生於所屬物件變更時(所有人>場景)
         /// </summary>
         protected virtual void OnBindingChanged()
         {
@@ -44,9 +44,14 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 是否鎖定綁定功能
+        /// </summary>
+        public bool BindingLock { get; private set; }
+
         private ObjectUIPanel _Owner;
         /// <summary>
-        /// 取得歸屬的活動物件
+        /// 取得歸屬的活動物件(所有人>場景)
         /// </summary>
         public ObjectUIPanel Owner
         {
@@ -60,7 +65,7 @@ namespace RunningBox
 
         private SceneBase _Scene;
         /// <summary>
-        /// 取得歸屬的場景物件
+        /// 取得歸屬的場景物件(所有人>場景)
         /// </summary>
         public SceneBase Scene
         {
@@ -100,29 +105,35 @@ namespace RunningBox
 
         #region ===== 方法 =====
         /// <summary>
-        /// 綁定活動物件群組到場景
+        /// 綁定活動物件群組到場景(所有人>場景)
         /// </summary>
-        public void Binding(SceneBase scene)
+        /// <param name="scene">場景</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(SceneBase scene, bool bindingLock = false)
         {
             if (_Scene == scene) return;
-            if (_Owner != null && _Owner.UIObjects == this) throw new Exception("活動物件群組已被綁定");
- 
+            if (BindingLock) throw new Exception("物件已被鎖定無法綁定");
+
             Owner = null;
             Scene = scene;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
         /// <summary>
-        /// 綁定活動物件群組到物件(由所有者綁定,除此之外勿使用此函數)
+        /// 綁定活動物件群組到物件(所有人>場景,由所有者綁定,除此之外勿使用此函數)
         /// </summary>
-        public void Binding(ObjectUIPanel owner)
+        /// <param name="owner">所有人</param>
+        /// <param name="bindingLock">綁定後是否鎖定綁定功能</param>
+        public void Binding(ObjectUIPanel owner, bool bindingLock = false)
         {
             if (_Owner == owner) return;
-            if (_Owner != null && _Owner.UIObjects == this) throw new Exception("活動物件群組已被綁定");
+            if (BindingLock) throw new Exception("物件已被鎖定無法綁定");
             if (owner != null && owner.UIObjects != this) throw new Exception("所有者的子群組不符");
 
             Owner = owner;
             Scene = null;
+            BindingLock = bindingLock;
             OnBindingChanged();
         }
 
@@ -131,10 +142,18 @@ namespace RunningBox
         /// </summary>
         public void ClearBinding()
         {
-            if (_Owner != null && _Owner.UIObjects == this) throw new Exception("活動物件群組已被綁定");
+            if (BindingLock) throw new Exception("物件已被鎖定無法解除綁定");
             Owner = null;
             Scene = null;
             OnBindingChanged();
+        }
+
+        /// <summary>
+        /// 解除綁定鎖定
+        /// </summary>
+        public void BindingUnlock()
+        {
+            BindingLock = false;
         }
 
         #region ##### 集合項目調整 #####
@@ -155,7 +174,7 @@ namespace RunningBox
         public void Add(ObjectBase item)
         {
             _Collection.Add(item);
-            item.Binding(this);
+            item.Binding(this,true);
             item.Dead += OnObjectDead;
         }
 

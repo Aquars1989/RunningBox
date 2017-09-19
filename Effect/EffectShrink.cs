@@ -10,7 +10,7 @@ namespace RunningBox
     /// <summary>
     /// 逐漸限縮場地範圍的特效
     /// </summary>
-    class EffectShrink : IEffect
+    class EffectShrink : EffectBase
     {
         private Padding _Shrinked;//實際已縮小值
 

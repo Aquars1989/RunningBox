@@ -15,7 +15,7 @@ namespace RunningBox
         /// <summary>
         /// 發生於技能集合變更
         /// </summary>
-        public event ValueChangedEnentHandle SkillsChanged;
+        public event ValueChangedEnentHandle<SkillCollection> SkillsChanged;
         #endregion
 
         #region ===== 引發事件 =====
@@ -26,12 +26,13 @@ namespace RunningBox
         {
             if (oldValue != null)
             {
+                oldValue.BindingUnlock();
                 oldValue.Binding(Scene);
             }
 
             if (newValue != null)
             {
-                newValue.Binding(this);
+                newValue.Binding(this,true);
             }
 
             if (SkillsChanged != null)

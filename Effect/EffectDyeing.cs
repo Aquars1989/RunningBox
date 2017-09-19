@@ -10,23 +10,8 @@ namespace RunningBox
     /// <summary>
     /// 逐漸改變畫面顏色的特效
     /// </summary>
-    public class EffectDyeing : IEffect
+    public class EffectDyeing : EffectBase
     {
-        /// <summary>
-        /// 特效是否可被中斷
-        /// </summary>
-        public bool CanBreak { get; set; }
-
-        /// <summary>
-        /// 作用場景物件
-        /// </summary>
-        public SceneBase Scene { get; set; }
-
-        /// <summary>
-        /// 特效狀態
-        /// </summary>
-        public EffectStatus Status { get; private set; }
-
         /// <summary>
         /// 渲染色彩
         /// </summary>
