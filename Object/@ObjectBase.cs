@@ -452,13 +452,22 @@ namespace RunningBox
         public virtual void Action()
         {
             UIOffSetY = 0;
+            //回合前
             Propertys.AllDoBeforeAction();
+            //移動規劃前
             Propertys.AllDoBeforeActionPlan();
+            //移動規劃
             MoveObject.Plan();
+            //移動動作前
             Propertys.AllDoBeforeActionMove();
+            //移動動作
             MoveObject.Move();
+            //回合後
+            Propertys.AllDoAfterAction();
+            //結算
             Settlement();
             Propertys.AllSettlement();
+
             OnAfterAction();
             Propertys.ClearAllDisabled();
         }

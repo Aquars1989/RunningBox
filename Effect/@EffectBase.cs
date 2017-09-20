@@ -55,6 +55,7 @@ namespace RunningBox
         protected virtual void OnEnd(EffectEndType endType)
         {
             DoBeforeEnd(endType);
+            Status = DisablingTime.Limit == 0 ? EffectStatus.Disabled : EffectStatus.Disabling;
 
             if (End != null)
             {
@@ -102,7 +103,7 @@ namespace RunningBox
         /// </summary>
         public bool CanBreak { get; set; }
 
-        private EffectStatus _Status = EffectStatus.Enabling;
+        private EffectStatus _Status;
         /// <summary>
         /// 特性狀態
         /// </summary>
@@ -116,6 +117,38 @@ namespace RunningBox
                 _Status = value;
                 OnStatusChanged(oldValue, value);
             }
+        }
+
+        /// <summary>
+        /// 生效時間計時器(毫秒)
+        /// </summary>
+        public CounterObject DurationTime { get; private set; }
+
+        /// <summary>
+        /// 持續時間計時器(毫秒)
+        /// </summary>
+        public CounterObject EnablingTime { get; private set; }
+
+        /// <summary>
+        /// 消退時間計時器(毫秒)
+        /// </summary>
+        public CounterObject DisablingTime { get; private set; }
+        #endregion
+
+        #region ***** 建構式 *****
+        /// <summary>
+        /// 基本特效建構式
+        /// </summary>
+        /// <param name="enablingTime">生效時間</param>
+        /// <param name="durationTime">持續時間</param>
+        /// <param name="disablingTime">消退時間</param>
+        public EffectBase(int enablingTime, int durationTime, int disablingTime)
+        {
+            EnablingTime = new CounterObject(enablingTime);
+            DurationTime = new CounterObject(durationTime);
+            DisablingTime = new CounterObject(disablingTime);
+            _Status = enablingTime == 0 ? EffectStatus.Enabled : EffectStatus.Enabling;
+            CanBreak = true;
         }
         #endregion
 
@@ -226,6 +259,48 @@ namespace RunningBox
         /// 特效結束前執行
         /// </summary>
         public virtual void DoBeforeEnd(EffectEndType endType) { }
+
+        /// <summary>
+        /// 在回合動作最後執行
+        /// </summary>
+        public virtual void Settlement()
+        {
+            switch (Status)
+            {
+                case EffectStatus.Enabling:
+                    if (EnablingTime.IsFull)
+                    {
+                        Status = EffectStatus.Enabled;
+                        goto case EffectStatus.Enabled;
+                    }
+                    else
+                    {
+                        EnablingTime.Value += Scene.SceneIntervalOfRound;
+                    }
+                    break;
+                case EffectStatus.Enabled:
+                    if (DurationTime.IsFull)
+                    {
+                        Status = EffectStatus.Disabling;
+                        goto case EffectStatus.Disabling;
+                    }
+                    else
+                    {
+                        DurationTime.Value += Scene.SceneIntervalOfRound;
+                    }
+                    break;
+                case EffectStatus.Disabling:
+                    if (DisablingTime.IsFull)
+                    {
+                        Status = EffectStatus.Disabled;
+                    }
+                    else
+                    {
+                        DisablingTime.Value += Scene.SceneIntervalOfRound;
+                    }
+                    break;
+            }
+        }
         #endregion
         #endregion
     }

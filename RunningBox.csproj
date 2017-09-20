@@ -132,7 +132,6 @@
     <Compile Include="Class\Global.cs" />
     <Compile Include="Object\ObjectActive.cs" />
     <Compile Include="Object\%24ObjectCollection.cs" />
-    <Compile Include="Object\ObjectScrap.cs" />
     <Compile Include="Object\ObjectSmoke.cs" />
     <Compile Include="Object\ObjectPlayer.cs" />
     <Compile Include="Object\%40ObjectBase.cs" />

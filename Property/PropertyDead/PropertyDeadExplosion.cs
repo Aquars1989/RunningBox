@@ -87,13 +87,13 @@ namespace RunningBox
             Owner.Scene.EffectObjects.Add(new EffectShark(Owner.Scene.Sec(0.2F), 5));
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
 
-            ObjectScrap explosionObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, Owner.Scene.Sec(0.6F), Color, MoveNull.Value);
+            ObjectSmoke explosionObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 1, 0, Owner.Scene.Sec(0.6F), Color, MoveNull.Value);
             Owner.Container.Add(explosionObject);
 
             for (int i = 0; i < Owner.Container.Count; i++)
             {
                 ObjectBase objectBase = Owner.Container[i];
-                if (objectBase.Status != ObjectStatus.Alive || Function.IsFriendly(objectBase.League,CollisionLeague)) continue;
+                if (objectBase.Status != ObjectStatus.Alive || Function.IsFriendly(objectBase.League, CollisionLeague)) continue;
 
                 //特殊狀態判定 具碰撞 非鬼魂
                 if ((objectBase.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
@@ -119,7 +119,7 @@ namespace RunningBox
                 if (colliderPower < 0) continue;
                 if (colliderPower <= CollisionPower)
                 {
-                    objectBase.Kill(Owner,ObjectDeadType.Collision);
+                    objectBase.Kill(Owner, ObjectDeadType.Collision);
                 }
             }
 

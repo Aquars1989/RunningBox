@@ -15,36 +15,6 @@ namespace RunningBox
         private Padding _Shrinked;//實際已縮小值
 
         /// <summary>
-        /// 特效是否可被中斷
-        /// </summary>
-        public bool CanBreak { get; set; }
-
-        /// <summary>
-        /// 作用場景物件
-        /// </summary>
-        public SceneBase Scene { get; set; }
-
-        /// <summary>
-        /// 特效狀態
-        /// </summary>
-        public EffectStatus Status { get; private set; }
-
-        /// <summary>
-        /// 縮小持續的時間計時器(毫秒)
-        /// </summary>
-        public CounterObject DurationTime { get; private set; }
-
-        /// <summary>
-        /// 用來縮小的時間計時器(毫秒)
-        /// </summary>
-        public CounterObject EnablingTime { get; private set; }
-
-        /// <summary>
-        /// 用來還原的時間計時器(毫秒)
-        /// </summary>
-        public CounterObject DisablingTime { get; private set; }
-
-        /// <summary>
         /// 各邊界縮小值
         /// </summary>
         public Padding ShrinkValue { get; private set; }
@@ -56,17 +26,13 @@ namespace RunningBox
         /// <param name="durationTime">縮小持續的時間(毫秒),小於0為永久</param>
         /// <param name="enablingTime">用來縮小的時間(毫秒)</param>
         /// <param name="disablingTime">用來恢復的時間(毫秒)</param>
-        public EffectShrink(Padding shrinkValue, int durationTime, int enablingTime, int disablingTime)
+        public EffectShrink(Padding shrinkValue, int enablingTime, int durationTime, int disablingTime)
+            : base(enablingTime, durationTime, disablingTime)
         {
-            CanBreak = true;
-            Status = EffectStatus.Enabling;
             ShrinkValue = shrinkValue;
-            DurationTime = new CounterObject(durationTime);
-            EnablingTime = new CounterObject(enablingTime);
-            DisablingTime = new CounterObject(disablingTime);
         }
 
-        public void DoAfterRound()
+        public override void DoAfterRound()
         {
             switch (Status)
             {
@@ -88,7 +54,6 @@ namespace RunningBox
                             Scene.MainRectangle.Height - top - bottom
                         );
                         _Shrinked = new Padding(_Shrinked.Left + left, _Shrinked.Top + top, _Shrinked.Right + right, _Shrinked.Bottom + bottom);
-                        EnablingTime.Value += Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -101,20 +66,6 @@ namespace RunningBox
                             Scene.MainRectangle.Height + _Shrinked.Vertical - ShrinkValue.Vertical
                         );
                         _Shrinked = ShrinkValue;
-
-                        Status = EffectStatus.Enabled;
-                        goto case EffectStatus.Enabled;
-                    }
-                    break;
-                case EffectStatus.Enabled: //維持階段
-                    if (DurationTime.IsFull)
-                    {
-                        Status = EffectStatus.Disabling;
-                        goto case EffectStatus.Disabling;
-                    }
-                    else
-                    {
-                        DurationTime.Value += Scene.SceneIntervalOfRound;
                     }
                     break;
                 case EffectStatus.Disabling: //恢復階段
@@ -135,7 +86,6 @@ namespace RunningBox
                             Scene.MainRectangle.Height + top + botton
                         );
                         _Shrinked = new Padding(_Shrinked.Left - left, _Shrinked.Top - top, _Shrinked.Right - right, _Shrinked.Bottom - botton);
-                        DisablingTime.Value += Scene.SceneIntervalOfRound;
                     }
                     else
                     {
@@ -148,26 +98,12 @@ namespace RunningBox
                             Scene.MainRectangle.Height + _Shrinked.Vertical
                         );
                         _Shrinked = Padding.Empty;
-                        Status = EffectStatus.Disabled;
                         break;
                     }
                     break;
             }
-        }
 
-        public void Break()
-        {
-            if (CanBreak)
-            {
-                Status = EffectStatus.Disabling;
-            }
+            base.DoAfterRound();
         }
-
-        public void DoBeforeDraw(Graphics g) { }
-        public void DoBeforeDrawObject(Graphics g) { }
-        public void DoBeforeDrawFloor(Graphics g) { }
-        public void DoAfterDraw(Graphics g) { }
-        public void DoBeforeRound() { }
-        public void DoBeforeDrawUI(Graphics g) { }
     }
 }

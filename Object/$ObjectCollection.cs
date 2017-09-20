@@ -230,8 +230,7 @@ namespace RunningBox
                 ObjectBase item = _Collection[i];
                 if (item.Status == ObjectStatus.Dead)
                 {
-                    ObjectActive itemA = item as ObjectActive;
-                    if (itemA == null || (itemA.Propertys.Affix & SpecialStatus.Remain) != SpecialStatus.Remain)
+                    if ((item.Propertys.Affix & SpecialStatus.Remain) != SpecialStatus.Remain)
                     {
                         deadObjects.Add(item);
                     }

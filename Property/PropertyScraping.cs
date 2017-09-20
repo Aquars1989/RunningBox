@@ -123,10 +123,10 @@ namespace RunningBox
 
                 MoveStraight moveObject = new MoveStraight(null, 1, speed, 1, 0, 1);
                 moveObject.Target.SetOffsetByAngle(scrapDirection, 1000);
-                ObjectScrap newObject;
+                ObjectSmoke newObject;
                 if (ScrapDrawObject == null)
                 {
-                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.MainColor, moveObject);
+                    newObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, 1, 0, Owner.DrawObject.MainColor, moveObject);
                 }
                 else
                 {
@@ -139,7 +139,7 @@ namespace RunningBox
                         scrapDrawPolygon.Angle = Global.Rand.Next(360);
                         scrapDrawPolygon.RotatingPerSec = Global.Rand.Next(280, 520);
                     }
-                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
+                    newObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, 1, 0, scrapDraw, moveObject);
                 }
                 moveObject.Target.SetObject(newObject);
                 Owner.Container.Add(newObject);

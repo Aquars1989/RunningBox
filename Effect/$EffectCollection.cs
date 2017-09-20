@@ -13,7 +13,7 @@ namespace RunningBox
     /// </summary>
     public class EffectCollection
     {
-        private List<EffectBase> _Collection;
+        private List<EffectBase> _Collection = new List<EffectBase>();
 
         /// <summary>
         /// 發生於所屬物件變更時(所屬物件可為場景)
@@ -66,8 +66,7 @@ namespace RunningBox
         /// <param name="scene">所屬場景物件</param>
         public EffectCollection(SceneBase scene)
         {
-            _Scene = scene;
-            _Collection = new List<EffectBase>();
+            Binding(scene);
         }
 
         #region ===== 方法 =====
@@ -285,6 +284,18 @@ namespace RunningBox
             {
                 EffectBase item = _Collection[i];
                 item.DoBeforeDrawUI(g);
+            }
+        }
+
+        /// <summary>
+        /// 所有特效進入回合結算
+        /// </summary>
+        public void AllSettlement()
+        {
+            for (int i = 0; i < _Collection.Count; i++)
+            {
+                EffectBase item = _Collection[i];
+                item.Settlement();
             }
         }
 

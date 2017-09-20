@@ -120,8 +120,8 @@ namespace RunningBox
             Radiation = radiation;
             ScrapSpeedMax = scrapSpeedMax;
             ScrapSpeedMin = scrapSpeedMin;
-            ScrapLifeMax = scrapLifeMax;
             ScrapLifeMin = scrapLifeMin;
+            ScrapLifeMax = scrapLifeMax;
             BreakAfterDead = false;
         }
 
@@ -132,16 +132,16 @@ namespace RunningBox
             double angle = Function.GetAngle(0, 0, Owner.MoveObject.MoveX, Owner.MoveObject.MoveY);
             for (int i = 0; i < ScrapCount; i++)
             {
-                int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax) + 1);
-                int life = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax) + 1);
+                int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax));
+                int fadeTime = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax));
                 double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
 
                 MoveStraight moveObject = new MoveStraight(null, 1, speed, 1, 0, 1);
                 moveObject.Target.SetOffsetByAngle(scrapDirection, 1000);
-                ObjectScrap newObject;
+                ObjectSmoke newObject;
                 if (ScrapDrawObject == null)
                 {
-                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, Owner.DrawObject.MainColor, moveObject);
+                    newObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, fadeTime, 1, 0, Owner.DrawObject.MainColor, moveObject);
                 }
                 else
                 {
@@ -154,7 +154,7 @@ namespace RunningBox
                         scrapDrawPolygon.Angle = Global.Rand.Next(360);
                         scrapDrawPolygon.RotatingPerSec = Global.Rand.Next(280, 520);
                     }
-                    newObject = new ObjectScrap(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, life, scrapDraw, moveObject);
+                    newObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, fadeTime, 1, 0, scrapDraw, moveObject);
                 }
                 moveObject.Target.SetObject(newObject);
                 Owner.Container.Add(newObject);

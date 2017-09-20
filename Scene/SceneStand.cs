@@ -23,7 +23,7 @@ namespace RunningBox
             //場景:畫面變黑暗
             WaveEvents.Add("@Dark", (n) =>
                 {
-                    EffectObjects.Add(new EffectDyeing(Color.Black, Wave(Math.Max(n - 1, 0)), Wave(0.5F), Wave(0.5F)));
+                    EffectObjects.Add(new EffectDyeing(Color.Black, Wave(0.5F), Wave(Math.Max(n - 1, 0)), Wave(0.5F)));
                 });
 
             //場景:邊界縮小
@@ -40,7 +40,7 @@ namespace RunningBox
                 int limitDown = limitY - limitTop;
 
                 Padding shrinkPerRound = new Padding(limitLeft, limitTop, limitRight, limitDown);
-                EffectObjects.Add(new EffectShrink(shrinkPerRound, Wave(Math.Max(n - 1, 0)), Wave(0.5F), Wave(0.5F)));
+                EffectObjects.Add(new EffectShrink(shrinkPerRound, Wave(0.5F), Wave(Math.Max(n - 1, 0)), Wave(0.5F)));
             });
 
             //物件:追捕者
@@ -61,7 +61,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
-                    newObject.Propertys.Add(new PropertyShadow(2,3));
+                    newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
                 }
             });
@@ -133,7 +133,7 @@ namespace RunningBox
                     MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 0, 1F);
                     moveObject.Target.SetOffsetByXY(1000F, 0);
                     ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy1, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
-                    newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.8F), Sec(1.4F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     newObject.Propertys.Add(new PropertyOutClear());
@@ -276,8 +276,9 @@ namespace RunningBox
             MovePlayer moveObject = new MovePlayer(this, 1, 200, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
             PlayerObject.Propertys.Add(new PropertyCollision(1));
-            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
+            PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 100, 200, Sec(0.1F), Sec(1F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
+            //PlayerObject.Propertys.Add(new PropertySmoking(-1, 500));
             return PlayerObject;
         }
 

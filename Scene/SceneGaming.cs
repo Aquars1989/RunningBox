@@ -35,7 +35,139 @@ namespace RunningBox
         /// <summary>
         /// 每波時間變更
         /// </summary>
-        public event EventHandler IntervalOfWaveChanged;
+        public event ValueChangedEnentHandle<int> IntervalOfWaveChanged;
+        #endregion
+
+        #region ===== 引發事件 =====
+        /// <summary>
+        /// 每波時間變更
+        /// </summary>
+        protected virtual void OnIntervalOfWaveChanged(int oldValue, int newValue)
+        {
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            RoundPerWave = IntervalOfWave / IntervalOfRound;
+            if (IntervalOfWaveChanged != null)
+            {
+                IntervalOfWaveChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 回合時間變更
+        /// </summary>
+        protected override void OnIntervalOfRoundChanged(int oldValue, int newValue)
+        {
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            RoundPerWave = IntervalOfWave / IntervalOfRound;
+            base.OnIntervalOfRoundChanged(oldValue, newValue);
+        }
+
+        /// <summary>
+        /// 物件死亡時
+        /// </summary>
+        protected virtual void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
+        {
+            if (sender.Equals(PlayerObject))
+            {
+                SetEnd();
+            }
+        }
+
+        /// <summary>
+        /// 位置重新配置時
+        /// </summary>
+        protected override void OnReLayout()
+        {
+            base.OnReLayout();
+
+            Padding padding = Global.DefaultMainRectanglePadding;
+            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
+
+            _UIDarkCover.Layout.Width = Width;
+            _UIDarkCover.Layout.Height = Height;
+            _UICommandRetry.Layout.Y = (Height - _UICommandRetry.Layout.Height) / 2;
+            _UICommandBack.Layout.Y = (Height - _UICommandBack.Layout.Height) / 2;
+            _UICommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
+            _UICommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _UICommandBack.Layout.Width;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (!ShowMenu)
+            {
+                if (IsStart)
+                {
+                    switch (e.Button)
+                    {
+                        case System.Windows.Forms.MouseButtons.Left:
+                            UsePlayerSkill1();
+                            break;
+                        case System.Windows.Forms.MouseButtons.Right:
+                            UsePlayerSkill2();
+                            break;
+                    }
+                }
+                else
+                {
+                    SetStart(e.X, e.Y);
+                }
+            }
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            TrackPoint = e.Location;
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && PlayerObject != null)
+            {
+                PlayerObject.Kill(null, ObjectDeadType.Clear);
+                EndDelay.Value = EndDelay.Limit;
+            }
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnDrawFloor(Graphics g)
+        {
+            if (MainRectangle != null)
+            {
+                g.DrawRectangle(_PenRectGaming, MainRectangle);
+            }
+            base.OnDrawFloor(g);
+        }
+
+        protected override void OnAfterDrawUI(Graphics g)
+        {
+            g.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
+
+            //顯示FPS
+            if (Global.DebugMode)
+            {
+                g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
+            }
+            base.OnAfterDrawUI(g);
+        }
+
+        /// <summary>
+        /// 回合後執行動作
+        /// </summary>
+        protected override void OnAfterRound()
+        {
+            if (IsStart && !IsEnding)
+            {
+                Score.Value += IntervalOfRound;
+                if (Score.IsFull)
+                {
+                    SetEnd();
+                }
+            }
+
+            base.OnAfterRound();
+        }
         #endregion
 
         #region ===== 繪製物件 =====
@@ -136,8 +268,10 @@ namespace RunningBox
             get { return _WaveCounter.Limit; }
             set
             {
+                if (_WaveCounter.Limit == value) return;
+                int oldValue = _WaveCounter.Limit;
                 _WaveCounter.Limit = value;
-                OnIntervalOfWaveChanged();
+                OnIntervalOfWaveChanged(oldValue, value);
             }
         }
 
@@ -260,6 +394,7 @@ namespace RunningBox
             EffectObjects.AllDoAfterRound();
             OnAfterRound();
 
+            EffectObjects.AllSettlement();
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
@@ -373,44 +508,6 @@ namespace RunningBox
             DoAfterStart();
         }
 
-        protected override void OnDrawFloor(Graphics g)
-        {
-            if (MainRectangle != null)
-            {
-                g.DrawRectangle(_PenRectGaming, MainRectangle);
-            }
-            base.OnDrawFloor(g);
-        }
-
-        protected override void OnAfterDrawUI(Graphics g)
-        {
-            g.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
-
-            //顯示FPS
-            if (Global.DebugMode)
-            {
-                g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
-            }
-            base.OnAfterDrawUI(g);
-        }
-
-        /// <summary>
-        /// 回合後執行動作
-        /// </summary>
-        protected override void OnAfterRound()
-        {
-            if (IsStart && !IsEnding)
-            {
-                Score.Value += IntervalOfRound;
-                if (Score.IsFull)
-                {
-                    SetEnd();
-                }
-            }
-
-            base.OnAfterRound();
-        }
-
         /// <summary>
         /// 關卡設置
         /// </summary>
@@ -435,97 +532,6 @@ namespace RunningBox
         /// 建立玩家物件
         /// </summary>
         public abstract ObjectActive CreatePlayerObject(int potX, int potY);
-
-        /// <summary>
-        /// 每波時間變更
-        /// </summary>
-        protected virtual void OnIntervalOfWaveChanged()
-        {
-            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
-            RoundPerWave = IntervalOfWave / IntervalOfRound;
-            if (IntervalOfWaveChanged != null)
-            {
-                IntervalOfWaveChanged(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 回合時間變更
-        /// </summary>
-        protected override void OnIntervalOfRoundChanged()
-        {
-            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
-            RoundPerWave = IntervalOfWave / IntervalOfRound;
-            base.OnIntervalOfRoundChanged();
-        }
-
-        /// <summary>
-        /// 物件死亡時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
-        {
-            if (sender.Equals(PlayerObject))
-            {
-                SetEnd();
-            }
-        }
-
-        protected override void OnReLayout()
-        {
-            base.OnReLayout();
-
-            Padding padding = Global.DefaultMainRectanglePadding;
-            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
-
-            _UIDarkCover.Layout.Width = Width;
-            _UIDarkCover.Layout.Height = Height;
-            _UICommandRetry.Layout.Y = (Height - _UICommandRetry.Layout.Height) / 2;
-            _UICommandBack.Layout.Y = (Height - _UICommandBack.Layout.Height) / 2;
-            _UICommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
-            _UICommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _UICommandBack.Layout.Width;
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (!ShowMenu)
-            {
-                if (IsStart)
-                {
-                    switch (e.Button)
-                    {
-                        case System.Windows.Forms.MouseButtons.Left:
-                            UsePlayerSkill1();
-                            break;
-                        case System.Windows.Forms.MouseButtons.Right:
-                            UsePlayerSkill2();
-                            break;
-                    }
-                }
-                else
-                {
-                    SetStart(e.X, e.Y);
-                }
-            }
-            base.OnMouseDown(e);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            TrackPoint = e.Location;
-            base.OnMouseMove(e);
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape && PlayerObject != null)
-            {
-                PlayerObject.Kill(null, ObjectDeadType.Clear);
-                EndDelay.Value = EndDelay.Limit;
-            }
-            base.OnKeyDown(e);
-        }
 
         /// <summary>
         /// 結束遊戲

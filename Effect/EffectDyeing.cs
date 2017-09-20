@@ -18,77 +18,20 @@ namespace RunningBox
         public Color Color { get; set; }
 
         /// <summary>
-        /// 渲染時間計時器(毫秒)
-        /// </summary>
-        public CounterObject DurationTime { get; private set; }
-
-        /// <summary>
-        /// 渲染啟用時間計時器(毫秒)
-        /// </summary>
-        public CounterObject EnablingTime { get; private set; }
-
-        /// <summary>
-        /// 渲染消退時間計時器(毫秒)
-        /// </summary>
-        public CounterObject DisablingTime { get; private set; }
-
-        /// <summary>
         /// 新增逐漸改變畫面顏色的特效
         /// </summary>
         /// <param name="color">要繪製的顏色</param>
         /// <param name="durationTime">渲染時間(毫秒),小於0為永久</param>
         /// <param name="enablingTime">渲染啟用時間(毫秒)</param>
         /// <param name="disablingTime">渲染消退時間(毫秒)</param>
-        public EffectDyeing(Color color, int durationTime, int enablingTime, int disablingTime)
+        public EffectDyeing(Color color, int enablingTime, int durationTime, int disablingTime)
+            : base(enablingTime, durationTime, disablingTime)
         {
-            CanBreak = true;
             Status = EffectStatus.Enabling;
             Color = color;
-            DurationTime = new CounterObject(durationTime);
-            EnablingTime = new CounterObject(enablingTime);
-            DisablingTime = new CounterObject(disablingTime);
         }
 
-        public void DoAfterRound()
-        {
-            switch (Status)
-            {
-                case EffectStatus.Enabling:
-                    if (EnablingTime.IsFull)
-                    {
-                        Status = EffectStatus.Enabled;
-                        goto case EffectStatus.Enabled;
-                    }
-                    else
-                    {
-                        EnablingTime.Value += Scene.SceneIntervalOfRound;
-                    }
-                    break;
-                case EffectStatus.Enabled:
-                    if (DurationTime.IsFull)
-                    {
-                        Status = EffectStatus.Disabling;
-                        goto case EffectStatus.Disabling;
-                    }
-                    else
-                    {
-                        DurationTime.Value += Scene.SceneIntervalOfRound;
-                    }
-                    break;
-                case EffectStatus.Disabling:
-                    if (DisablingTime.IsFull)
-                    {
-                        Status = EffectStatus.Disabled;
-                    }
-                    else
-                    {
-                        DisablingTime.Value += Scene.SceneIntervalOfRound;
-                    }
-                    break;
-            }
-        }
-
-        public void DoBeforeDrawFloor(Graphics g)
+        public override void DoBeforeDrawFloor(Graphics g)
         {
             switch (Status)
             {
@@ -124,20 +67,8 @@ namespace RunningBox
                     }
                     break;
             }
-        }
 
-        public void Break()
-        {
-            if (CanBreak)
-            {
-                Status = EffectStatus.Disabling;
-            }
+            base.DoBeforeDrawFloor(g);
         }
-
-        public void DoBeforeRound() { }
-        public void DoBeforeDraw(Graphics g) { }
-        public void DoBeforeDrawObject(Graphics g) { }
-        public void DoAfterDraw(Graphics g) { }
-        public void DoBeforeDrawUI(Graphics g) { }
     }
 }

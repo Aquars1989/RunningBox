@@ -27,7 +27,7 @@ namespace RunningBox
         /// <param name="duration">持續時間(毫秒),小於0為永久</param>
         /// <param name="shrinkTime">smoke縮小時間(毫秒),小於0為永久</param>
         /// <param name="smokeOpacity">smoke物件的不透明度</param>
-        public PropertySmoking(int duration, int shrinkTime, float smokeOpacity=0.2F)
+        public PropertySmoking(int duration, int shrinkTime, float smokeOpacity = 0.2F)
         {
             DurationTime.Limit = duration;
             ShrinkLimit = shrinkTime;
@@ -41,8 +41,7 @@ namespace RunningBox
 
             DrawBase drawSmoke = Owner.DrawObject.Copy();
             drawSmoke.Colors.Opacity *= SmokeOpacity;
-            Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, drawSmoke, MoveNull.Value));
-
+            Owner.Container.Add(new ObjectSmoke(Owner.Layout, ShrinkLimit, 0, 0, drawSmoke, MoveNull.Value));
             base.DoAfterAction();
         }
     }

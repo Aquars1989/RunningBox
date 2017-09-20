@@ -113,6 +113,11 @@ namespace RunningBox
 
         #region ===== 屬性 =====
         /// <summary>
+        /// 旋轉角度
+        /// </summary>
+        public float Angle { get; set; }
+
+        /// <summary>
         /// 是否鎖定綁定功能
         /// </summary>
         public bool BindingLock { get; private set; }

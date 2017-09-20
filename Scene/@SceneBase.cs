@@ -60,22 +60,37 @@ namespace RunningBox
         /// <summary>
         /// 發生於場景追蹤點變更
         /// </summary>
-        public event EventHandler TrackPointChanged;
+        public event ValueChangedEnentHandle<Point> TrackPointChanged;
 
         /// <summary>
         /// 發生於目前獲得焦點的UI變更
         /// </summary>
-        public event EventHandler FocusObjectUIChanged;
+        public event ValueChangedEnentHandle<ObjectUI> FocusObjectUIChanged;
 
         /// <summary>
         /// 發生於場景速度減慢值變更
         /// </summary>
-        public event EventHandler SceneSlowChanged;
+        public event ValueChangedEnentHandle<float> SceneSlowChanged;
 
         /// <summary>
         /// 發生於回合時間變更
         /// </summary>
-        public event EventHandler IntervalOfRoundChanged;
+        public event ValueChangedEnentHandle<int> IntervalOfRoundChanged;
+
+        /// <summary>
+        /// 發生於UI物件集合變更
+        /// </summary>
+        public event ValueChangedEnentHandle<ObjectCollection> UIObjectsChanged;
+
+        /// <summary>
+        /// 發生於活動物件集合變更
+        /// </summary>
+        public event ValueChangedEnentHandle<ObjectCollection> GameObjectsChanged;
+
+        /// <summary>
+        /// 發生於特效物件集合變更
+        /// </summary>
+        public event ValueChangedEnentHandle<EffectCollection> EffectObjectsChanged;
 
         /// <summary>
         /// 發生於回合開始前
@@ -169,31 +184,53 @@ namespace RunningBox
         /// <summary>
         /// 發生於場景追蹤點變更
         /// </summary>
-        protected virtual void OnTrackPointChanged()
+        protected virtual void OnTrackPointChanged(Point oldValue, Point newValue)
         {
             SearchFocusObjectUI();
 
             if (TrackPointChanged != null)
             {
-                TrackPointChanged(this, new EventArgs());
+                TrackPointChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於目前獲得焦點的UI變更
         /// </summary>
-        protected virtual void OnFocusObjectUIChanged()
+        protected virtual void OnFocusObjectUIChanged(ObjectUI oldValue, ObjectUI newValue)
         {
+            if (oldValue != null)
+            {
+                oldValue.OnLostFocus();
+            }
+
+            if (newValue != null)
+            {
+                newValue.OnGetFocus();
+                if (newValue.HasClickEnevt)
+                {
+                    Cursor = Cursors.Hand;
+                }
+                else
+                {
+                    Cursor = DefaultCursor;
+                }
+            }
+            else
+            {
+                Cursor = DefaultCursor;
+            }
+
             if (FocusObjectUIChanged != null)
             {
-                FocusObjectUIChanged(this, new EventArgs());
+                FocusObjectUIChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於回合時間變更
         /// </summary>
-        protected virtual void OnIntervalOfRoundChanged()
+        protected virtual void OnIntervalOfRoundChanged(int oldValue, int newValue)
         {
             RoundPerSec = 1000F / IntervalOfRound;
             SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
@@ -201,20 +238,83 @@ namespace RunningBox
 
             if (IntervalOfRoundChanged != null)
             {
-                IntervalOfRoundChanged(this, new EventArgs());
+                IntervalOfRoundChanged(this, oldValue, newValue);
             }
         }
 
         /// <summary>
         /// 發生於場景速度減慢值變更
         /// </summary>
-        protected virtual void OnSceneSlowChanged()
+        protected virtual void OnSceneSlowChanged(float oldValue, float newValue)
         {
             SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
             SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
             if (SceneSlowChanged != null)
             {
-                SceneSlowChanged(this, new EventArgs());
+                SceneSlowChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於UI物件集合變更
+        /// </summary>
+        protected virtual void OnUIObjectsChanged(ObjectCollection oldValue, ObjectCollection newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.BindingUnlock();
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
+            }
+
+            if (UIObjectsChanged != null)
+            {
+                UIObjectsChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於活動物件集合變更
+        /// </summary>
+        protected virtual void OnGameObjectsChanged(ObjectCollection oldValue, ObjectCollection newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.BindingUnlock();
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
+            }
+
+            if (GameObjectsChanged != null)
+            {
+                GameObjectsChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
+        /// 發生於活動物件集合變更
+        /// </summary>
+        protected virtual void OnEffectObjectsChanged(EffectCollection oldValue, EffectCollection newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.BindingUnlock();
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
+            }
+
+            if (EffectObjectsChanged != null)
+            {
+                EffectObjectsChanged(this, oldValue, newValue);
             }
         }
 
@@ -319,30 +419,9 @@ namespace RunningBox
             private set
             {
                 if (_FocusObjectUI == value) return;
-                if (_FocusObjectUI != null)
-                {
-                    _FocusObjectUI.OnLostFocus();
-                }
-
+                ObjectUI oldValue = _FocusObjectUI;
                 _FocusObjectUI = value;
-
-                if (_FocusObjectUI != null)
-                {
-                    _FocusObjectUI.OnGetFocus();
-                    if (_FocusObjectUI.HasClickEnevt)
-                    {
-                        Cursor = Cursors.Hand;
-                    }
-                    else
-                    {
-                        Cursor = DefaultCursor;
-                    }
-                }
-                else
-                {
-                    Cursor = DefaultCursor;
-                }
-                OnFocusObjectUIChanged();
+                OnFocusObjectUIChanged(oldValue, value);
             }
         }
 
@@ -369,8 +448,10 @@ namespace RunningBox
             get { return RoundTimer.Interval; }
             set
             {
+                if (RoundTimer.Interval == value) return;
+                int oldValue = RoundTimer.Interval;
                 RoundTimer.Interval = value;
-                OnIntervalOfRoundChanged();
+                OnIntervalOfRoundChanged(oldValue, value);
             }
         }
 
@@ -383,8 +464,10 @@ namespace RunningBox
             get { return _SceneSlow; }
             set
             {
+                if (_SceneSlow == value) return;
+                float oldValue = _SceneSlow;
                 _SceneSlow = value;
-                OnSceneSlowChanged();
+                OnSceneSlowChanged(oldValue, value);
             }
         }
 
@@ -398,8 +481,9 @@ namespace RunningBox
             set
             {
                 if (_TrackPoint == value) return;
+                Point oldValue = _TrackPoint;
                 _TrackPoint = value;
-                OnTrackPointChanged();
+                OnTrackPointChanged(oldValue, value);
             }
         }
 
@@ -408,20 +492,59 @@ namespace RunningBox
         /// </summary>
         public Rectangle MainRectangle { get; set; }
 
+        private ObjectCollection _UIObjects;
         /// <summary>
         /// UI物件集合
         /// </summary>
-        public ObjectCollection UIObjects { get; private set; }
+        public ObjectCollection UIObjects
+        {
+            get { return _UIObjects; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                if (_UIObjects == value) return;
 
+                ObjectCollection oldValue = _UIObjects;
+                _UIObjects = value;
+                OnUIObjectsChanged(oldValue, value);
+            }
+        }
+
+        private ObjectCollection _GameObjects;
         /// <summary>
         /// 場景物件集合
         /// </summary>
-        public ObjectCollection GameObjects { get; private set; }
+        public ObjectCollection GameObjects
+        {
+            get { return _GameObjects; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                if (_GameObjects == value) return;
 
+                ObjectCollection oldValue = _GameObjects;
+                _GameObjects = value;
+                OnGameObjectsChanged(oldValue, value);
+            }
+        }
+
+        private EffectCollection _EffectObjects;
         /// <summary>
         /// 場景特效集合
         /// </summary>
-        public EffectCollection EffectObjects { get; private set; }
+        public EffectCollection EffectObjects
+        {
+            get { return _EffectObjects; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                if (_EffectObjects == value) return;
+
+                EffectCollection oldValue = _EffectObjects;
+                _EffectObjects = value;
+                OnEffectObjectsChanged(oldValue, value);
+            }
+        }
         #endregion
 
         /// <summary>
@@ -508,6 +631,8 @@ namespace RunningBox
             OnAfterRound();
 
             UIObjects.AllAction();
+            EffectObjects.AllSettlement();
+
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
