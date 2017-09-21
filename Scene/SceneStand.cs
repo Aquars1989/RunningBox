@@ -132,7 +132,7 @@ namespace RunningBox
                     int life = Sec(5F);
                     MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 0, 1F);
                     moveObject.Target.SetOffsetByXY(1000F, 0);
-                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy1, ShapeType.Rectangle, new DrawBrush(Color.Orchid, ShapeType.Rectangle), moveObject);
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 28, 28, life, LeagueType.Ememy1, ShapeType.Rectangle, new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0, 600), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));

@@ -31,11 +31,6 @@ namespace RunningBox
         public int NumberOfSides { get; set; }
 
         /// <summary>
-        /// 旋轉角度
-        /// </summary>
-        public float Angle { get; set; }
-
-        /// <summary>
         /// 每秒旋轉角度
         /// </summary>
         public float RotatingPerSec { get; set; }
@@ -60,8 +55,8 @@ namespace RunningBox
         /// <summary>
         /// 新增畫筆繪圖物件
         /// </summary>
-        /// <param name="backColor">框架顏色</param>
-        /// <param name="borderColor">填滿顏色</param>
+        /// <param name="backColor">填滿顏色</param>
+        /// <param name="borderColor">框架顏色</param>
         /// <param name="numberOfSides">多邊形邊數,2為直線</param>
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="angle">旋轉角度</param>

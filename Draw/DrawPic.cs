@@ -55,7 +55,22 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            ColorFix.DrawImage(g, Image, drawRectangle, Colors.Opacity, Colors.RFix, Colors.GFix, Colors.BFix);
+            if (Angle != 0)
+            {
+                float baseX = drawRectangle.Left + drawRectangle.Width / 2;
+                float baseY = drawRectangle.Top + drawRectangle.Height / 2;
+                var oldTransform = g.Transform;
+                g.TranslateTransform(baseX, baseY);
+                g.RotateTransform(Angle);
+                g.TranslateTransform(-baseX, -baseY);
+                ColorFix.DrawImage(g, Image, drawRectangle, Colors.Opacity, Colors.RFix, Colors.GFix, Colors.BFix);
+                g.Transform.Dispose();
+                g.Transform = oldTransform;
+            }
+            else
+            {
+                ColorFix.DrawImage(g, Image, drawRectangle, Colors.Opacity, Colors.RFix, Colors.GFix, Colors.BFix);
+            }
         }
 
         /// <summary>
