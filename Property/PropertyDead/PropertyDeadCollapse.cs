@@ -12,7 +12,7 @@ namespace RunningBox
     class PropertyDeadCollapse : PropertyBase
     {
         private PropertyScraping _PropertyScraping; //碎裂特性
-        private bool _Enabled = false; 
+        private bool _Enabled = false;
 
         /// <summary>
         /// 碎片寬度
@@ -135,11 +135,11 @@ namespace RunningBox
 
             if (ScrapDrawObject == null)
             {
-                _PropertyScraping = new PropertyScraping(ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping(ShrinkTime.Limit, Scene.Sec(0.1F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             else
             {
-                _PropertyScraping = new PropertyScraping(ScrapDrawObject, ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping(ScrapDrawObject, Scene.Sec(0.1F), ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             Owner.Propertys.Add(_PropertyScraping);
             Affix = SpecialStatus.Remain;
@@ -162,7 +162,7 @@ namespace RunningBox
                 else
                 {
                     Owner.Layout.Scale = 1F - ShrinkTime.GetRatio();
-                    ShrinkTime.Value += Owner.Scene.SceneIntervalOfRound;
+                    ShrinkTime.Value += Scene.SceneIntervalOfRound;
                 }
             }
 

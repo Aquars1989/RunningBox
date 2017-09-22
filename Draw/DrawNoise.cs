@@ -86,7 +86,10 @@ namespace RunningBox
         {
             return new DrawNoise(Colors.Copy(), MaxBorderWidth)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

@@ -25,7 +25,7 @@ namespace RunningBox
         /// 建立直行移動物件,靠近目標後會依距離減緩速度
         /// </summary>
         /// <param name="target">追蹤目標</param>
-        /// <param name="weight">重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
+        /// <param name="weight">阻力,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
         /// <param name="speed">移動速度,決定每個移動調整值的最大距離</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
         /// <param name="closeRange">定義鄰近距離,與目標距離小於此值會開始減速</param>

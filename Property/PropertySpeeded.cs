@@ -34,7 +34,7 @@ namespace RunningBox
 
         public override void DoAfterAction()
         {
-            float speeded = SpeededPerSec / Owner.Scene.SceneRoundPerSec;
+            float speeded = SpeededPerSec / Scene.SceneRoundPerSec;
             Owner.MoveObject.Speed += speeded;
             _SpeededToatl += speeded;
 

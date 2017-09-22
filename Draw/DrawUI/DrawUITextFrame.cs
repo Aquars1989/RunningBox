@@ -118,7 +118,10 @@ namespace RunningBox
             return new DrawUITextFrame(Colors.Copy(), BorderWidth, Readius, Text, Font, DrawFormat)
             {
                 Scale = this.Scale,
-                TextPadding = this.TextPadding
+                TextPadding = this.TextPadding,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

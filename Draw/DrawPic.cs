@@ -81,7 +81,10 @@ namespace RunningBox
         {
             return new DrawImage(Colors.Copy(), Image)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

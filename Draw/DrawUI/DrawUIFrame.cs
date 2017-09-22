@@ -282,7 +282,10 @@ namespace RunningBox
         {
             return new DrawUIFrame(Colors.Copy(), BorderWidth, Readius)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

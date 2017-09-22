@@ -9,7 +9,7 @@ namespace RunningBox
     /// <summary>
     /// 基礎活動物件
     /// </summary>
-    public abstract class ObjectBase : IDisposable, ITargetability
+    public class ObjectBase : IDisposable, ITargetability
     {
         #region ===== 事件 =====
         /// <summary>

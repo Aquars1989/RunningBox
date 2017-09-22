@@ -39,7 +39,10 @@ namespace RunningBox
         {
             return new DrawCustom(Colors.Copy())
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
 

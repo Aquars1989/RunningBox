@@ -196,6 +196,7 @@ namespace RunningBox
             {
                 ObjectUI inRect = InRectangle(Scene.TrackPoint);
                 base.Action();
+
                 if (inRect != InRectangle(Scene.TrackPoint))
                 {
                     Scene.SearchFocusObjectUI();

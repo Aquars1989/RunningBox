@@ -212,13 +212,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)
+        /// 阻力,最終移動速度會受到此值影響(finalSpeed = speeed/Resistance)
         /// </summary>
-        public float Weight;
+        public float Resistance { get; set; }
 
         private float _Speed;
         /// <summary>
-        /// 總體移動速度最大值(排除重量影響)
+        /// 總體移動速度最大值(排除阻力影響)
         /// </summary>
         public float Speed
         {
@@ -235,7 +235,7 @@ namespace RunningBox
 
         private float _SpeedPerOffsets;
         /// <summary>
-        /// 移動速度,決定每個移動調整值的最大距離(排除重量影響)
+        /// 移動速度,決定每個移動調整值的最大距離(排除阻力影響)
         /// </summary>
         public float SpeedPerOffsets
         {
@@ -256,22 +256,24 @@ namespace RunningBox
         public TargetSet Target { get; private set; }
         #endregion
 
+        #region ***** 建構式 *****
         /// <summary>
         /// 基本移動物件建構式
         /// </summary>
         /// <param name="Target">追蹤目標</param>
-        /// <param name="weight">重量,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
-        /// <param name="speed">總體移動速度最大值(排除重量影響)</param>
+        /// <param name="weight">阻力,最終移動速度會受到此值影響(finalSpeed = speeed/Weight)</param>
+        /// <param name="speed">總體移動速度最大值(排除阻力影響)</param>
         /// <param name="offsetsLimit">移動調整值列表最大數量</param>
         public MoveBase(ITargetability target, float weight, float speed, int offsetsLimit)
         {
             Offsets = new List<PointF>();
             OffsetsLimit = offsetsLimit;
-            Weight = weight;
+            Resistance = weight;
             Speed = speed;
             Target = new TargetSet(target);
             Target.ObjectChanged += (s, o, n) => { OnTargetObjectChanged(o, n); };
         }
+        #endregion
 
         #region ===== 方法 =====
         /// <summary>
@@ -335,8 +337,8 @@ namespace RunningBox
         /// </summary>
         public virtual void Move()
         {
-            float moveX = MoveX / Scene.SceneRoundPerSec / Weight;
-            float moveY = MoveY / Scene.SceneRoundPerSec / Weight;
+            float moveX = MoveX / Scene.SceneRoundPerSec / Resistance;
+            float moveY = MoveY / Scene.SceneRoundPerSec / Resistance;
             if (MoveX != 0 || MoveY != 0)
             {
                 ObjectActive ownerActive = Owner as ObjectActive;
@@ -441,7 +443,7 @@ namespace RunningBox
         public PointF GetOffsetByXY(float x, float y, float speed)
         {
             double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, x, y);
-            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Weight);
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Resistance);
         }
 
         /// <summary>
@@ -452,7 +454,7 @@ namespace RunningBox
         /// <returns>位移值</returns>
         public PointF GetOffsetByAngle(double angle, float speed)
         {
-            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Weight);
+            return Function.GetOffsetPoint(0, 0, angle, speed / _OffsetsLimit / Resistance);
         }
         #endregion
     }

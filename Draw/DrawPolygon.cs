@@ -31,11 +31,6 @@ namespace RunningBox
         public int NumberOfSides { get; set; }
 
         /// <summary>
-        /// 每秒旋轉角度
-        /// </summary>
-        public float RotatingPerSec { get; set; }
-
-        /// <summary>
         /// 由繪圖工具管理物件新增畫筆繪圖物件
         /// </summary>
         /// <param name="drawColor">繪圖工具管理物件</param>
@@ -43,13 +38,12 @@ namespace RunningBox
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="angle">旋轉角度</param>
         /// <param name="rotatingPerSec">每秒旋轉角度</param>
-        public DrawPolygon(DrawColors drawColor, int numberOfSides, int borderWidth, float angle, float rotatingPerSec)
+        public DrawPolygon(DrawColors drawColor, int numberOfSides, int borderWidth, float angle)
             : base(drawColor)
         {
             BorderWidth = borderWidth;
             NumberOfSides = numberOfSides;
             Angle = angle;
-            RotatingPerSec = rotatingPerSec;
         }
 
         /// <summary>
@@ -61,14 +55,13 @@ namespace RunningBox
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="angle">旋轉角度</param>
         /// <param name="rotatingPerSec">每秒旋轉角度</param>
-        public DrawPolygon(Color backColor, Color borderColor, int numberOfSides, int borderWidth, float angle, float rotatingPerSec)
+        public DrawPolygon(Color backColor, Color borderColor, int numberOfSides, int borderWidth, float angle)
         {
             Colors.SetColor("Main", backColor);
             Colors.SetColor("Border", borderColor);
             BorderWidth = borderWidth;
             NumberOfSides = numberOfSides;
             Angle = angle;
-            RotatingPerSec = rotatingPerSec;
         }
 
         /// <summary>
@@ -109,11 +102,6 @@ namespace RunningBox
             {
                 g.DrawLine(penBorder, pots[0], pots[1]);
             }
-
-            if (Scene != null)
-            {
-                Angle += RotatingPerSec / Scene.SceneRoundPerSec;
-            }
         }
 
         /// <summary>
@@ -122,9 +110,12 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawPolygon(Colors.Copy(), NumberOfSides, BorderWidth, Angle, RotatingPerSec)
+            return new DrawPolygon(Colors.Copy(), NumberOfSides, BorderWidth, Angle)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

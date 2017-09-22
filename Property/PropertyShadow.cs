@@ -34,17 +34,32 @@ namespace RunningBox
         /// <summary>
         /// 陰影寬度縮放
         /// </summary>
-        public float ScaleX { get; private set; }
+        public float ScaleX { get; set; }
 
         /// <summary>
         /// 陰影高度縮放
         /// </summary>
-        public float ScaleY { get; private set; }
+        public float ScaleY { get; set; }
 
         /// <summary>
         /// 陰影不透明度
         /// </summary>
-        public float Opacity { get; private set; }
+        public float Opacity { get; set; }
+
+        /// <summary>
+        /// 陰影紅色調整值
+        /// </summary>
+        public float RFix { get; set; }
+
+        /// <summary>
+        /// 陰影綠色調整值
+        /// </summary>
+        public float GFix { get; set; }
+
+        /// <summary>
+        /// 陰影藍色調整值
+        /// </summary>
+        public float BFix { get; set; }
 
         /// <summary>
         /// 新增陰影特性,物件下方產生陰影
@@ -61,6 +76,9 @@ namespace RunningBox
             ScaleX = scaleX;
             ScaleY = scaleY;
             Opacity = opacity;
+            RFix = -1;
+            GFix = -1;
+            BFix = -1;
             BreakAfterDead = false;
         }
 
@@ -69,8 +87,8 @@ namespace RunningBox
             GetDrawObject();
             int drawWidth = Owner.Layout.Rectangle.Width;
             int drawHeight = Owner.Layout.Rectangle.Height;
-            float drawX = Owner.Layout.LeftTopX + OffsetX;
-            float drawY = Owner.Layout.LeftTopY + OffsetY;
+            float drawX = Owner.Layout.Rectangle.Left + OffsetX;
+            float drawY = Owner.Layout.Rectangle.Top + OffsetY;
             if (ScaleX != 1)
             {
                 drawWidth = (int)(drawWidth * ScaleX + 0.5F);
@@ -84,7 +102,8 @@ namespace RunningBox
             }
 
             Rectangle drawRect = new Rectangle((int)drawX, (int)drawY, drawWidth, drawHeight);
-            _DrawObject.Colors.Opacity = Opacity;
+            _DrawObject.Colors.Opacity = _BaseDrawObject.Colors.Opacity * Opacity;
+            _DrawObject.Angle = _BaseDrawObject.Angle;
             _DrawObject.Draw(g, drawRect);
 
             base.DoBeforeDraw(g);
@@ -105,9 +124,9 @@ namespace RunningBox
             {
                 _BaseDrawObject = Owner.DrawObject;
                 _DrawObject = _BaseDrawObject.Copy();
-                _DrawObject.Colors.RFix = -1;
-                _DrawObject.Colors.GFix = -1;
-                _DrawObject.Colors.BFix = -1;
+                _DrawObject.Colors.RFix = RFix;
+                _DrawObject.Colors.GFix = GFix;
+                _DrawObject.Colors.BFix = BFix;
                 _DrawObject.Binding(_BaseDrawObject);
             }
         }

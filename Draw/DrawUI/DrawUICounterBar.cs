@@ -105,7 +105,10 @@ namespace RunningBox
         {
             return new DrawUICounterBar(Colors.Copy(), BorderWidth, Reverse, BindingCounter)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

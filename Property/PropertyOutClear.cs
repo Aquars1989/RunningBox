@@ -20,8 +20,8 @@ namespace RunningBox
 
         public override void DoAfterAction()
         {
-            bool inRect = Owner.Layout.LeftTopX < Owner.Scene.Width &&
-                          Owner.Layout.LeftTopY < Owner.Scene.Height &&
+            bool inRect = Owner.Layout.LeftTopX < Scene.Width &&
+                          Owner.Layout.LeftTopY < Scene.Height &&
                           Owner.Layout.LeftTopX + Owner.Layout.Width > 0 &&
                           Owner.Layout.LeftTopY + Owner.Layout.Height > 0;
             if (_InRect == inRect) return;

@@ -374,10 +374,10 @@ namespace RunningBox
                     }
                     else
                     {
-                        Channeled.Value += Owner.Scene.SceneIntervalOfRound;
+                        Channeled.Value += Scene.SceneIntervalOfRound;
                     }
 
-                    int costEnergy = (int)(CostEnergyPerSec / Owner.Scene.SceneRoundPerSec + 0.5F);
+                    int costEnergy = (int)(CostEnergyPerSec / Scene.SceneRoundPerSec + 0.5F);
                     if (Owner.Energy.Value >= costEnergy)
                     {
                         Owner.Energy.Value -= costEnergy;
@@ -396,7 +396,7 @@ namespace RunningBox
                     }
                     else
                     {
-                        Cooldown.Value += Owner.Scene.SceneIntervalOfRound;
+                        Cooldown.Value += Scene.SceneIntervalOfRound;
                     }
                     break;
             }

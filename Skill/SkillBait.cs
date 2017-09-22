@@ -64,7 +64,7 @@ namespace RunningBox
                         //新增誘餌物件
                         double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
 
-                        MoveStraight move = new MoveStraight(null, Owner.MoveObject.Weight, BaitSpeed, 1, 0, 1F);
+                        MoveStraight move = new MoveStraight(null, Owner.MoveObject.Resistance, BaitSpeed, 1, 0, 1F);
                         move.Target.SetOffsetByAngle(angle, 1000);
 
                         DrawBase draw = Owner.DrawObject.Copy();

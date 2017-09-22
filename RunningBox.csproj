@@ -77,7 +77,7 @@
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillSprint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBase.cs" />
+    <Compile Include="Draw\DrawUI\DrawSkill\%40DrawSkillBase.cs" />
     <Compile Include="Draw\DrawUI\DrawUICounterBar.cs" />
     <Compile Include="Draw\%40DrawColors.cs" />
     <Compile Include="Enum\DirectionType.cs" />
@@ -110,7 +110,12 @@
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUIPanel.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
+    <Compile Include="Property\PropertyAlert.cs" />
     <Compile Include="Property\PropertyAffix.cs" />
+    <Compile Include="Property\PropertyRotateTarget.cs" />
+    <Compile Include="Property\PropertyBomber.cs" />
+    <Compile Include="Property\PropertyShark.cs" />
+    <Compile Include="Property\PropertyRotate.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadSmoke.cs" />
     <Compile Include="Property\PropertyShadow.cs" />
     <Compile Include="Property\PropertyFreeze.cs" />

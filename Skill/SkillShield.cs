@@ -70,10 +70,11 @@ namespace RunningBox
 
                         Color color = Owner.DrawObject.MainColor;
                         Color colorBack = Color.FromArgb(50, color);
-                        DrawPolygon drawShield =new DrawPolygon(colorBack, color, 6, 1, 0, 360);
-                        DrawPolygon drawScrap = new DrawPolygon(Color.Empty, color, 2, 1, 0, 360);
+                        DrawPolygon drawShield = new DrawPolygon(colorBack, color, 6, 1, 0) { RotateEnabled = true };
+                        DrawPolygon drawScrap = new DrawPolygon(Color.Empty, color, 2, 1, 0) { RotateEnabled = true };
                         _ShieldObject = new ObjectActive(0, 0, effectWidth, effectHeight, -1, Owner.League, ShapeType.Ellipse, drawShield, MoveNull.Value);
 
+                        _ShieldObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(-360, 360), false, true));
                         _ShieldObject.Propertys.Add(new PropertyDeadBroken(drawScrap, 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Scene.Sec(0.4F), Scene.Sec(0.6F)));
                         _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 1, Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Scene.Sec(0.2F), Scene.Sec(0.3F)));
                         _ShieldObject.Propertys.Add(new PropertyCollision(1));

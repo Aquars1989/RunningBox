@@ -84,7 +84,7 @@ namespace RunningBox
         {
             get { return _Collection.Count; }
         }
-        #endregion 
+        #endregion
 
         #region ***** 建構式 *****
         /// <summary>
@@ -97,9 +97,8 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 初始化活動物件集合,指定所有者
+        /// 初始化活動物件集合
         /// </summary>
-        /// <param name="owner">所屬活動物件</param>
         public ObjectCollection() { }
         #endregion
 
@@ -129,7 +128,6 @@ namespace RunningBox
         {
             if (_Owner == owner) return;
             if (BindingLock) throw new Exception("物件已被鎖定無法綁定");
-            if (owner != null && owner.UIObjects != this) throw new Exception("所有者的子群組不符");
 
             Owner = owner;
             Scene = null;
@@ -166,7 +164,7 @@ namespace RunningBox
         {
             get { return _Collection[index]; }
         }
-        
+
         /// <summary>
         /// 增加活動物件到活動集合內
         /// </summary>
@@ -174,7 +172,7 @@ namespace RunningBox
         public void Add(ObjectBase item)
         {
             _Collection.Add(item);
-            item.Binding(this,true);
+            item.Binding(this, true);
             item.Dead += OnObjectDead;
         }
 
@@ -288,7 +286,7 @@ namespace RunningBox
                 ObjectBase item = _Collection[i];
                 item.Draw(g);
             }
-        }       
+        }
         #endregion
 
         protected void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)

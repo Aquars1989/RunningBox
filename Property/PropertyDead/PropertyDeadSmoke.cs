@@ -83,7 +83,7 @@ namespace RunningBox
                     {
                         Owner.DrawObject.Colors.Opacity = _BaseOpacity * (1F - FadeTime.GetRatio() * (1F - FinelOpacity));
                     }
-                    FadeTime.Value += Owner.Scene.SceneIntervalOfRound;
+                    FadeTime.Value += Scene.SceneIntervalOfRound;
                 }
             }
 

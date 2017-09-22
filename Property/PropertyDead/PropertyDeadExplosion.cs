@@ -25,6 +25,11 @@ namespace RunningBox
         public int RangeConstant { get; set; }
 
         /// <summary>
+        /// 是否標示爆炸範圍
+        /// </summary>
+        public bool DrawRange { get; set; }
+
+        /// <summary>
         /// 爆炸的撞擊力量,撞擊力量小於等於此值會被毀滅
         /// </summary>
         public int CollisionPower { get; set; }
@@ -33,6 +38,11 @@ namespace RunningBox
         /// 爆炸的陣營判定,符合此陣營不會被傷害
         /// </summary>
         public LeagueType CollisionLeague { get; set; }
+
+        /// <summary>
+        /// 爆炸搖晃效果
+        /// </summary>
+        public int SharkPower { get; set; }
 
         /// <summary>
         /// 爆炸顏色
@@ -49,7 +59,6 @@ namespace RunningBox
         /// </summary>
         public float OwnerRFix { get; set; }
 
-
         /// <summary>
         /// 符合指定的死亡方式才會觸發
         /// </summary>
@@ -65,8 +74,9 @@ namespace RunningBox
         /// <param name="color">爆炸顏色</param>
         /// <param name="ownerScaleFix">快爆炸時的大小調整倍數</param>
         /// <param name="ownerRFix">快爆炸時的紅色調整倍數</param>
+        /// <param name="sharkPower">爆炸搖晃效果</param>
         /// <param name="deadType">符合指定的死亡方式才會觸發</param>
-        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, LeagueType collisionLeague, Color color, float ownerScaleFix, float ownerRFix, ObjectDeadType deadType)
+        public PropertyDeadExplosion(float rangeMultiple, int rangeConstant, int collisionPower, LeagueType collisionLeague, Color color, float ownerScaleFix, float ownerRFix, int sharkPower, ObjectDeadType deadType)
         {
             DeadType = deadType;
             RangeMultiple = rangeMultiple;
@@ -76,7 +86,9 @@ namespace RunningBox
             Color = color;
             OwnerScaleFix = ownerScaleFix;
             OwnerRFix = ownerRFix;
+            SharkPower = sharkPower;
             BreakAfterDead = false;
+            DrawRange = true;
         }
 
 
@@ -84,10 +96,14 @@ namespace RunningBox
         {
             if ((DeadType & deadType) != deadType) return;
 
-            Owner.Scene.EffectObjects.Add(new EffectShark(Owner.Scene.Sec(0.2F), 5));
+            if (SharkPower > 0)
+            {
+                Scene.EffectObjects.Add(new EffectShark(Scene.Sec(0.2F), SharkPower));
+            }
+
             int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
 
-            ObjectSmoke explosionObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, 1, 0, Owner.Scene.Sec(0.6F), Color, MoveNull.Value);
+            ObjectSmoke explosionObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, explosionSize, explosionSize, Scene.Sec(0.6F), 0.9F, 0, Color, MoveNull.Value);
             Owner.Container.Add(explosionObject);
 
             for (int i = 0; i < Owner.Container.Count; i++)
@@ -134,21 +150,24 @@ namespace RunningBox
             if ((DeadType & ObjectDeadType.LifeEnd) == ObjectDeadType.LifeEnd && Owner.Life.Limit >= 0 && Owner.DrawObject != null)
             {
                 int life = Owner.Life.Limit - Owner.Life.Value;
-                if (life < Owner.Scene.Sec(1F))
+                if (life < Scene.Sec(1F))
                 {
-                    int animation = (life / Owner.Scene.Sec(0.05F)) % 5;
-                    int animation2 = (life / Owner.Scene.Sec(0.05F));
+                    int animation = (life / Scene.Sec(0.05F)) % 5;
+                    int animation2 = (life / Scene.Sec(0.05F));
                     if (animation2 > 15) animation2 = 15;
                     _OwnerScaleFix = animation * OwnerScaleFix;
                     _OwnerRFix = animation * OwnerRFix;
                     Owner.DrawObject.Scale += _OwnerScaleFix;
                     Owner.DrawObject.Colors.RFix += _OwnerRFix;
 
-                    int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
-                    Rectangle rectRange = new Rectangle((int)(Owner.Layout.CenterX - explosionSize / 2), (int)(Owner.Layout.CenterY - explosionSize / 2), explosionSize, explosionSize);
-                    using (Pen pen = new Pen(Color.FromArgb(60 - animation2 * 4, 255, 50, 50)))
+                    if (DrawRange)
                     {
-                        g.DrawEllipse(pen, rectRange);
+                        int explosionSize = (int)(RangeMultiple * (Owner.Layout.RectWidth + Owner.Layout.RectHeight) / 2) + RangeConstant;
+                        Rectangle rectRange = new Rectangle((int)(Owner.Layout.CenterX - explosionSize / 2), (int)(Owner.Layout.CenterY - explosionSize / 2), explosionSize, explosionSize);
+                        using (Pen pen = new Pen(Color.FromArgb(60 - animation2 * 4, 255, 50, 50)))
+                        {
+                            g.DrawEllipse(pen, rectRange);
+                        }
                     }
                 }
             }

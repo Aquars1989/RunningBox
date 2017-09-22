@@ -194,7 +194,10 @@ namespace RunningBox
         {
             return new DrawUISkillFrame(Colors.Copy(), BorderWidth, Readius, DrawButton)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

@@ -12,7 +12,45 @@ namespace RunningBox
     /// </summary>
     public class ObjectUIPanel : ObjectUI
     {
-        public ObjectCollection UIObjects { get; private set; }
+        /// <summary>
+        /// 發生於特性集合變更
+        /// </summary>
+        public event ValueChangedEnentHandle<ObjectCollection> UIObjectsChanged;
+
+        /// <summary>
+        /// 發生於特性集合變更
+        /// </summary>
+        protected virtual void OnUIObjectsChanged(ObjectCollection oldValue, ObjectCollection newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.BindingUnlock();
+                oldValue.Binding(Scene);
+            }
+
+            if (newValue != null)
+            {
+                newValue.Binding(this, true);
+            }
+
+            if (UIObjectsChanged != null)
+            {
+                UIObjectsChanged(this, oldValue, newValue);
+            }
+        }
+
+        private ObjectCollection _UIObjects;
+        public ObjectCollection UIObjects
+        {
+            get { return _UIObjects; }
+            private set
+            {
+                if (_UIObjects == value) return;
+                ObjectCollection oldValue = _UIObjects;
+                _UIObjects = value;
+                OnUIObjectsChanged(oldValue, value);
+            }
+        }
 
         /// <summary>
         /// 使用指定的定位點和移動物件建立介面物件
@@ -26,7 +64,7 @@ namespace RunningBox
         public ObjectUIPanel(DirectionType anchor, int x, int y, int width, int height, DrawBase drawObject, MoveBase moveObject)
             : base(anchor, x, y, width, height, drawObject, moveObject)
         {
-            UIObjects = new ObjectCollection(SceneNull.Value);
+            UIObjects = new ObjectCollection();
         }
 
         /// <summary>
@@ -56,7 +94,7 @@ namespace RunningBox
         public ObjectUIPanel(int x, int y, int width, int height, DrawBase drawObject)
             : this(DirectionType.Left | DirectionType.Top, x, y, width, height, drawObject)
         {
-            UIObjects = new ObjectCollection(SceneNull.Value);
+            UIObjects = new ObjectCollection();
         }
 
         /// <summary>
@@ -71,12 +109,12 @@ namespace RunningBox
             for (int i = UIObjects.Count - 1; i >= 0; i--)
             {
                 ObjectUI child = UIObjects[i] as ObjectUI;
-                if (child != null)
+                if (child != null && child.Visible)
                 {
                     ObjectUI chileFocus = child.InRectangle(point);
                     if (chileFocus != null)
                     {
-                        return chileFocus;
+                        return chileFocus.Enabled ? chileFocus : result;
                     }
                 }
             }

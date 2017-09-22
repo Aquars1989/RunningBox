@@ -697,7 +697,29 @@ namespace RunningBox
         /// <returns>物件進入點</returns>
         public Point GetEnterPoint()
         {
-            return GetEnterPoint((DirectionType)Global.Rand.Next(4));
+            return GetEnterPoint(Global.Rand.Next(4));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="directIdx">物件進入點(1:左 2:上 3:右 4:下 5:左...)</param>
+        /// <returns></returns>
+        public Point GetEnterPoint(int directIdx)
+        {
+            switch (directIdx)
+            {
+                case 0:
+                    return GetEnterPoint(DirectionType.Left);
+                case 1:
+                    return GetEnterPoint(DirectionType.Top);
+                case 2:
+                    return GetEnterPoint(DirectionType.Right);
+                case 3:
+                    return GetEnterPoint(DirectionType.Bottom);
+                default:
+                    return GetEnterPoint(directIdx % 4);
+            }
         }
 
         /// <summary>

@@ -146,15 +146,9 @@ namespace RunningBox
                 else
                 {
                     DrawBase scrapDraw = ScrapDrawObject.Copy();
-                    DrawPolygon scrapDrawPolygon = scrapDraw as DrawPolygon;
-
-                    //多邊型時旋轉方向
-                    if (scrapDrawPolygon != null)
-                    {
-                        scrapDrawPolygon.Angle = Global.Rand.Next(360);
-                        scrapDrawPolygon.RotatingPerSec = Global.Rand.Next(280, 520);
-                    }
+                    scrapDraw.Angle = Global.Rand.Next(360);
                     newObject = new ObjectSmoke(Owner.Layout.CenterX, Owner.Layout.CenterY, ScrapWidth, ScrapHeight, fadeTime, 1, 0, scrapDraw, moveObject);
+                    newObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(280, 520), false, true));
                 }
                 moveObject.Target.SetObject(newObject);
                 Owner.Container.Add(newObject);

@@ -58,7 +58,22 @@ namespace RunningBox
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:
-                    g.FillRectangle(brushBack, drawRectangle);
+                    if (Angle != 0)
+                    {
+                        float baseX = drawRectangle.Left + drawRectangle.Width / 2;
+                        float baseY = drawRectangle.Top + drawRectangle.Height / 2;
+                        var oldTransform = g.Transform;
+                        g.TranslateTransform(baseX, baseY);
+                        g.RotateTransform(Angle);
+                        g.TranslateTransform(-baseX, -baseY);
+                        g.FillRectangle(brushBack, drawRectangle);
+                        g.Transform.Dispose();
+                        g.Transform = oldTransform;
+                    }
+                    else
+                    {
+                        g.FillRectangle(brushBack, drawRectangle);
+                    }
                     break;
                 case RunningBox.ShapeType.Ellipse:
                     g.FillEllipse(brushBack, drawRectangle);
@@ -74,7 +89,10 @@ namespace RunningBox
         {
             return new DrawBrush(Colors.Copy(), DrawShape)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }

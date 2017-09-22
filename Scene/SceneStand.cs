@@ -46,6 +46,7 @@ namespace RunningBox
             //物件:追捕者
             WaveEvents.Add("Catcher", (n) =>
             {
+                int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
                 {
                     int size = Global.Rand.Next(7, 12);
@@ -53,7 +54,8 @@ namespace RunningBox
                     float speed = Global.Rand.Next(320, 380) * _SpeedFix;
                     float weight = 0.3F + size * 0.1F;
                     int life = Sec(3.5F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint();
+                    Point enterPoint = GetEnterPoint(roundIdx);
+
                     MoveStraight moveObject = new MoveStraight(PlayerObject, weight, speed, offsetLimit, 100, 0.5F);
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
                     newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
@@ -63,12 +65,14 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
                 }
             });
 
             //物件:快速追捕者 速度更快 更常使用加速
             WaveEvents.Add("Faster", (n) =>
             {
+                int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
                 {
                     int size = Global.Rand.Next(6, 8);
@@ -76,7 +80,7 @@ namespace RunningBox
                     float speed = Global.Rand.Next(400, 460) * _SpeedFix;
                     float weight = 0.3F + size * 0.1F;
                     int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint();
+                    Point enterPoint = GetEnterPoint(roundIdx);
 
                     MoveStraight moveObject = new MoveStraight(PlayerObject, weight, speed, offsetLimit, 100, 0.5F);
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), moveObject);
@@ -87,10 +91,11 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
                 }
             });
 
-            //物件:包圍 四面八方的直線前進物件
+            //物件:流星 四面八方的直線前進物件
             WaveEvents.Add("Meteor", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -101,7 +106,7 @@ namespace RunningBox
                     float speed = 500 * _SpeedFix;
                     float weight = 0.3F + size * 0.1F;
                     int life = Sec(5F + 0.2F * i);
-                    Point enterPoint = GetEnterPoint((DirectionType)roundIdx);
+                    Point enterPoint = GetEnterPoint(roundIdx);
 
                     double angel = Function.GetAngle(enterPoint.X, enterPoint.Y, PlayerObject.Layout.CenterX, PlayerObject.Layout.CenterY) + Global.Rand.Next(-20, 20);
                     MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 0, 1F);
@@ -132,7 +137,9 @@ namespace RunningBox
                     int life = Sec(5F);
                     MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 0, 1F);
                     moveObject.Target.SetOffsetByXY(1000F, 0);
-                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 28, 28, life, LeagueType.Ememy1, ShapeType.Rectangle, new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0, 600), moveObject);
+                    DrawPolygon drawObject = new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0) { RotateEnabled = true };
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 28, 28, life, LeagueType.Ememy1, ShapeType.Rectangle, drawObject, moveObject);
+                    newObject.Propertys.Add(new PropertyRotate(-1, 780, false, true));
                     newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
@@ -187,9 +194,39 @@ namespace RunningBox
                 }
             });
 
+            //物件:轟炸機
+            WaveEvents.Add("Bomber", (n) =>
+            {
+                int roundIdx = Global.Rand.Next(4);
+                for (int i = 0; i < n; i++)
+                {
+                    Point enterPoint = GetEnterPoint(roundIdx);
+                    int size = Global.Rand.Next(18, 22);
+                    int movesCount = 6;
+                    float speed = Global.Rand.Next(300, 380);
+                    float weight = 0.3F + size * 0.1F;
+                    double angle = Function.GetAngle(enterPoint.X, enterPoint.Y, MainRectangle.Left + MainRectangle.Width / 2, MainRectangle.Top + MainRectangle.Height / 2) + Global.Rand.Next(-20, 20);
+                    int life = Sec(5F);
+
+                    MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 30, 1F);
+                    DrawPolygon drawObject = new DrawPolygon(Color.SlateBlue, Color.SlateBlue, 3, 1, (float)angle);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    moveObject.Target.SetOffsetByAngle(angle, 1000);
+                    moveObject.Target.SetObject(newObject);
+
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.All, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
+                    newObject.Propertys.Add(new PropertyCollision(10));
+                    newObject.Propertys.Add(new PropertyShadow(2, 3));
+                    newObject.Propertys.Add(new PropertyBomber(-1, Sec(0.2F), 3, 8, 8, 5, 80, Sec(1F), Sec(1.4F)));
+                    GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
+                }
+            });
+
             //物件:攔截者 不會加速 但速度會越來越快
             WaveEvents.Add("Blocker", (n) =>
             {
+                int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
                 {
                     int size = Global.Rand.Next(14, 17);
@@ -197,16 +234,19 @@ namespace RunningBox
                     float weight = 0.3F + size * 0.1F;
                     float speed = 200 * _SpeedFix;
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint();
+                    Point enterPoint = GetEnterPoint(roundIdx);
 
                     MoveStraight moveObject = new MoveStraight(PlayerObject, weight, speed, movesCount, 100, 0.5F);
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0, 360), moveObject);
+                    DrawPolygon drawObject = new DrawPolygon(Color.Fuchsia, Color.Fuchsia, 3, 1, 0) { RotateEnabled = true, Resistance = weight };
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    newObject.Propertys.Add(new PropertyRotate(-1, 360, false, false));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(10));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 100));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
                 }
             });
 
@@ -249,8 +289,10 @@ namespace RunningBox
                     }
 
                     MoveStraight moveObject = new MoveStraight(new PointObject(targetX, targetY), weight, speed, movesCount, 100, 0.5F);
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawImage(Color.Black, Properties.Resources.Mine), moveObject);
-                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                    DrawImage drawObject = new DrawImage(Color.Black, Properties.Resources.Mine) { RotateEnabled = true, Resistance = weight };
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    newObject.Propertys.Add(new PropertyRotate(-1, 280, false, false));
+                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -262,11 +304,11 @@ namespace RunningBox
         public override void SetWave()
         {
             //                                 123456789012345678901234567890123456789012345678901234
-            Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
+            //Waves.Add(new WaveLine("Catcher", "111111 111111 111111 111111 111111 111111 111111 11111"));
             //Waves.Add(new WaveLine("Faster ", "1      1      1             1      1             1     "));
-            Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
-            Waves.Add(new WaveLine("WallA  ", "1          4               5                  6    "));
-            Waves.Add(new WaveLine("Mine   ", "3         4            5           6        7          "));
+            //Waves.Add(new WaveLine("Blocker", "1                   1                    1            "));
+            Waves.Add(new WaveLine("Bomber  ", "1          4               5                  6    "));
+            //Waves.Add(new WaveLine("Mine   ", "3         4            5           6        7          "));
             //Waves.Add(new WaveLine("@Dark  ", "              +++               +++            +++    "));
             //Waves.Add(new WaveLine("@Shrink", "        +++              +++              +++         "));
         }

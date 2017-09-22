@@ -112,8 +112,27 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+
+        private bool _RotateEnabled;
         /// <summary>
-        /// 旋轉角度
+        /// 是否開啟旋轉
+        /// </summary>
+        public bool RotateEnabled
+        {
+            get { return _RotateEnabled; }
+            set
+            {
+                _RotateEnabled = value;
+            }
+        }
+
+        /// <summary>
+        /// 阻力,最終移動速度會受到此值影響(finalRotate = Rotate/Resistance)
+        /// </summary>
+        public float Resistance { get; set; }
+
+        /// <summary>
+        /// 目前旋轉角度
         /// </summary>
         public float Angle { get; set; }
 
@@ -191,12 +210,15 @@ namespace RunningBox
         }
         #endregion
 
+        #region ***** 建構式 *****
         /// <summary>
         /// 使用指定管理物件建立繪圖物件
         /// </summary>
         /// <param name="drawColor"></param>
         public DrawBase(DrawColors drawColor)
         {
+            RotateEnabled = false;
+            Resistance = 1;
             Colors = drawColor;
             drawColor.ColorFixChanged += (x, e) => { OnColorFixChanged(); };
             drawColor.ColorChanged += (x, e) => { OnColorChanged(e); };
@@ -207,6 +229,7 @@ namespace RunningBox
         /// </summary>
         public DrawBase()
             : this(new DrawColors()) { }
+        #endregion
 
         #region ===== 方法 =====
         /// <summary>
@@ -310,6 +333,17 @@ namespace RunningBox
             int scaleX = (int)(((rectangle.Width * Scale) - rectangle.Width) / 2);
             int scaleY = (int)(((rectangle.Height * Scale) - rectangle.Height) / 2);
             return new Rectangle(rectangle.Left - scaleX, rectangle.Top - scaleY, rectangle.Width + scaleX * 2, rectangle.Height + scaleY * 2);
+        }
+
+        /// <summary>
+        /// 使用指定值旋轉角度
+        /// </summary>
+        /// <param name="rotate">旋轉值</param>
+        /// <param name="ignoreResistance">是否忽略阻力</param>
+        public void Rotate(float rotate, bool ignoreResistance = false)
+        {
+            if (!RotateEnabled) return;
+            Angle += (ignoreResistance ? rotate : rotate / Resistance);
         }
 
         /// <summary>

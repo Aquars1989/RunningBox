@@ -327,7 +327,7 @@ namespace RunningBox
                 }
                 else
                 {
-                    DurationTime.Value += Owner.Scene.SceneIntervalOfRound;
+                    DurationTime.Value += Scene.SceneIntervalOfRound;
                 }
             }
         }

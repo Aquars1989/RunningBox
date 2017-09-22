@@ -108,7 +108,10 @@ namespace RunningBox
         {
             return new DrawSkillSprint(Colors.Copy(), BindingSkill)
             {
-                Scale = this.Scale
+                Scale = this.Scale,
+                Angle = this.Angle,
+                Resistance = this.Resistance,
+                RotateEnabled = this.RotateEnabled
             };
         }
     }
