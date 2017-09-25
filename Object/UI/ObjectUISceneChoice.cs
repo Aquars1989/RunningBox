@@ -56,6 +56,9 @@ namespace RunningBox
             }
         }
 
+        private DrawUITextFrame _DrawObject1;
+        private DrawUITextFrame _DrawObject2;
+
         private ObjectUI _UIBack;
         private ObjectUI _UIGroup1;
         private ObjectUI _UIGroup2;
@@ -64,15 +67,34 @@ namespace RunningBox
             : base(x, y, width, height, new DrawBrush(Color.White, ShapeType.Rectangle))
         {
             BackObjects = new ObjectCollection();
-            _UIBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.LightYellow, Color.WhiteSmoke, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
-            _UIGroup1 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, DrawNull.Value, new MoveStraight(this, 1, 3000, 1, 100, 1F));
-            _UIGroup2 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, DrawNull.Value, new MoveStraight(this, 1, 3000, 1, 100, 1F));
-            _UIGroup1.DrawObject = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(255, 255, 220), Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18), GlobalFormat.MiddleLeft);
-            _UIGroup2.DrawObject = new DrawUITextFrame(Color.Black, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleLeft);
+            _UIBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.DarkSlateBlue, Color.Gray, Color.LightYellow, Color.DarkSlateBlue, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
+
+            _DrawObject1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.MiddleBottom);
+            _DrawObject2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleBottom);
+            _DrawObject1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
+
+
+
+            _UIGroup1 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, _DrawObject1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
+            _UIGroup2 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, _DrawObject2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
+            _UIGroup1.GetFocus += (s, e) =>
+                {
+                    _DrawObject1.Colors.SetColor("Back", Color.FromArgb(255, 255, 220));
+                    _DrawObject1.DrawObjectInside.Colors.SetColor("Player", Color.Black);
+                    _DrawObject1.DrawObjectInside.Colors.SetColor("Ememy", Color.Red);
+                };
+
+            _UIGroup1.LostFocus += (s, e) =>
+                {
+                    _DrawObject1.Colors.SetColor("Back", Color.AliceBlue);
+                    _DrawObject1.DrawObjectInside.Colors.SetColor("Player", Color.LightSteelBlue);
+                    _DrawObject1.DrawObjectInside.Colors.SetColor("Ememy", Color.LightSteelBlue);
+                };
+
 
             _UIBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 1, GFix = 1 });
-            _UIGroup1.Propertys.Add(new PropertyShadow(10, 8));
-            _UIGroup2.Propertys.Add(new PropertyShadow(-10, 8));
+            _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
+            _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));
 
             _UIBack.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
             _UIGroup1.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
@@ -196,7 +218,7 @@ namespace RunningBox
             if (_BackBuildCounter.IsFull)
             {
                 int Size = Global.Rand.Next(2, 5);
-                int top = Layout.Rectangle.Top + Global.Rand.Next(5, Layout.Rectangle.Height - 10);
+                int top = Layout.Rectangle.Top + Global.Rand.Next(5, Layout.RectHeight - 10);
                 MoveStraight moveObject = new MoveStraight(null, 1, Size * Global.Rand.Next(80, 120), 1, 100, 0);
                 ObjectSmoke newObject = new ObjectSmoke(-10, top, Size, Size, -1, 1, 1, Color.Gray, moveObject);
                 newObject.DrawObject.Colors.RFix = newObject.DrawObject.Colors.GFix = _BackDrak * 1F;
@@ -217,9 +239,11 @@ namespace RunningBox
         {
             if (Visible)
             {
+                Propertys.AllDoBeforeDraw(g);
                 DrawObject.Draw(g, Layout.Rectangle);
                 BackObjects.AllDrawSelf(g);
                 UIObjects.AllDrawSelf(g);
+                Propertys.AllDoAfterDraw(g);
             }
         }
     }

@@ -58,7 +58,7 @@ namespace RunningBox
 
             _UICommandOK.Click += (x, e) =>
             {
-                OnGoScene(new SceneStand()
+                OnGoScene(new SceneStand(1)
                 {
                     Skill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill,
                     Skill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill

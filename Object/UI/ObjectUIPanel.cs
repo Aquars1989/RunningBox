@@ -132,8 +132,10 @@ namespace RunningBox
         {
             if (Visible)
             {
+                Propertys.AllDoBeforeDraw(g);
                 DrawObject.Draw(g, Layout.Rectangle);
                 UIObjects.AllDrawSelf(g);
+                Propertys.AllDoAfterDraw(g);
             }
         }
     }

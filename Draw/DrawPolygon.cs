@@ -37,7 +37,6 @@ namespace RunningBox
         /// <param name="numberOfSides">多邊形邊數,2為直線</param>
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="angle">旋轉角度</param>
-        /// <param name="rotatingPerSec">每秒旋轉角度</param>
         public DrawPolygon(DrawColors drawColor, int numberOfSides, int borderWidth, float angle)
             : base(drawColor)
         {
@@ -54,7 +53,6 @@ namespace RunningBox
         /// <param name="numberOfSides">多邊形邊數,2為直線</param>
         /// <param name="borderWidth">框線粗細</param>
         /// <param name="angle">旋轉角度</param>
-        /// <param name="rotatingPerSec">每秒旋轉角度</param>
         public DrawPolygon(Color backColor, Color borderColor, int numberOfSides, int borderWidth, float angle)
         {
             Colors.SetColor("Main", backColor);
@@ -86,7 +84,7 @@ namespace RunningBox
             float partAngle = 360F / NumberOfSides;
             for (int i = 0; i < NumberOfSides; i++)
             {
-                float angle = 180 - i * partAngle + Angle;
+                float angle = i * partAngle + Angle;
                 int x = (int)(Math.Sin(angle / 180F * Math.PI) * helfWidth);
                 int y = (int)(Math.Cos(angle / 180F * Math.PI) * helfHeight);
                 pots[i] = new Point(midX + x, midY + y);

@@ -61,6 +61,7 @@
     <Compile Include="Class\GlobalColors.cs" />
     <Compile Include="Class\CounterObject.cs" />
     <Compile Include="Class\SQLobject.cs" />
+    <Compile Include="Wave\SceneSet.cs" />
     <Compile Include="Draw\DrawCustom.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -71,6 +72,7 @@
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShield.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillShockwave.cs" />
     <Compile Include="Draw\DrawUI\DrawUIFrame.cs" />
+    <Compile Include="Draw\DrawUI\DrawSceneTypeA.cs" />
     <Compile Include="Draw\DrawUI\DrawUITextFrame.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
     <Compile Include="Draw\DrawUI\DrawSkill\DrawSkillBulletTime.cs" />
@@ -257,6 +259,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assemblies\MySql.Data.dll" />
     <Content Include="ICON.ico" />
+    <None Include="Resources\Bomber.png" />
     <Content Include="Resources\Mine.png" />
   </ItemGroup>
   <ItemGroup />

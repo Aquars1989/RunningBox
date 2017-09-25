@@ -10,7 +10,7 @@ namespace RunningBox
     /// <summary>
     /// 圖片繪圖物件
     /// </summary>
-    public class DrawImage : DrawBase
+    public class DrawPic : DrawBase
     {
         /// <summary>
         /// 主要繪製顏色(供碎片物件使用)
@@ -30,10 +30,12 @@ namespace RunningBox
         /// </summary>
         /// <param name="drawColor">繪圖工具管理物件</param>
         /// <param name="image">繪製圖片</param>
-        public DrawImage(DrawColors drawColor, Image image)
+        /// <param name="angle">旋轉角度</param>
+        public DrawPic(DrawColors drawColor, Image image, float angle)
             : base(drawColor)
         {
             Image = image;
+            Angle = angle;
         }
 
         /// <summary>
@@ -41,10 +43,12 @@ namespace RunningBox
         /// </summary>
         /// <param name="backColor">繪製顏色(供技能/特效使用)</param>
         /// <param name="image">繪製圖片</param>
-        public DrawImage(Color backColor, Image image)
+        /// <param name="angle">旋轉角度</param>
+        public DrawPic(Color backColor, Image image, float angle)
         {
             Colors.SetColor("Back", backColor);
             Image = image;
+            Angle = angle;
         }
 
         /// <summary>
@@ -79,10 +83,9 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawImage(Colors.Copy(), Image)
+            return new DrawPic(Colors.Copy(), Image, Angle)
             {
                 Scale = this.Scale,
-                Angle = this.Angle,
                 Resistance = this.Resistance,
                 RotateEnabled = this.RotateEnabled
             };

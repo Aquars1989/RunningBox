@@ -63,19 +63,20 @@ namespace RunningBox.Properties {
         /// <summary>
         ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
-        internal static System.Drawing.Bitmap Mine {
+        internal static System.Drawing.Bitmap Bomber {
             get {
-                object obj = ResourceManager.GetObject("Mine", resourceCulture);
+                object obj = ResourceManager.GetObject("Bomber", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   查詢類似  的當地語系化字串。
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
-        internal static string MySQLConnand {
+        internal static System.Drawing.Bitmap Mine {
             get {
-                return ResourceManager.GetString("MySQLConnand", resourceCulture);
+                object obj = ResourceManager.GetObject("Mine", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
