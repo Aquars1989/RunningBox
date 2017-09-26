@@ -22,6 +22,11 @@ namespace RunningBox
         /// 發生於偏移值變更
         /// </summary>
         public event EventHandler OffsetChanged;
+
+        /// <summary>
+        /// 發生於物件的定位位置變更時
+        /// </summary>
+        public event ValueChangedEnentHandle<DirectionType> AnchorChanged;
         #endregion
 
         #region ===== 引發事件 =====
@@ -44,6 +49,17 @@ namespace RunningBox
             if (OffsetChanged != null)
             {
                 OffsetChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於物件的定位位置變更時
+        /// </summary>
+        protected virtual void OnAnchorChanged(DirectionType oldValue, DirectionType newValue)
+        {
+            if (AnchorChanged != null)
+            {
+                AnchorChanged(this, oldValue, newValue);
             }
         }
         #endregion
@@ -77,7 +93,13 @@ namespace RunningBox
         public DirectionType Anchor
         {
             get { return _Anchor; }
-            set { _Anchor = value; }
+            set
+            {
+                if (_Anchor == value) return;
+                DirectionType oldValue = _Anchor;
+                _Anchor = value;
+                OnAnchorChanged(oldValue, value);
+            }
         }
 
         /// <summary>

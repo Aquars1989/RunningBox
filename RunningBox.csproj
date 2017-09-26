@@ -57,11 +57,21 @@
   <ItemGroup>
     <Compile Include="AutoCast\AutoCastNormal.cs" />
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
-    <Compile Include="Class\GlobalFormat.cs" />
-    <Compile Include="Class\GlobalColors.cs" />
-    <Compile Include="Class\CounterObject.cs" />
-    <Compile Include="Class\SQLobject.cs" />
-    <Compile Include="Wave\SceneSet.cs" />
+    <Compile Include="Class\Function\FunctionInGame.cs" />
+    <Compile Include="Class\Function\FunctionConvert.cs" />
+    <Compile Include="Class\Global\GlobalScenes.cs" />
+    <Compile Include="Class\Global\GlobalFormat.cs" />
+    <Compile Include="Class\Global\GlobalColors.cs" />
+    <Compile Include="Class\Object\CounterObject.cs" />
+    <Compile Include="Class\Object\SQLobject.cs" />
+    <Compile Include="Handle\SceneInfoEnentHandle.cs" />
+    <Compile Include="Handle\WaveEventHandle.cs" />
+    <Compile Include="Handle\GoSceneEventHandle.cs" />
+    <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
+    <Compile Include="SceneInfo\ISceneInfo.cs" />
+    <Compile Include="SceneInfo\SceneLevelInfo.cs" />
+    <Compile Include="SceneInfo\SceneManager.cs" />
+    <Compile Include="SceneInfo\SceneInfo.cs" />
     <Compile Include="Draw\DrawCustom.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,7 +135,7 @@
     <Compile Include="Property\PropertyUI.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadExplosion.cs" />
     <Compile Include="Property\PropertySpeeded.cs" />
-    <Compile Include="Class\ColorFix.cs" />
+    <Compile Include="Class\Function\ColorFix.cs" />
     <Compile Include="Draw\DrawPic.cs" />
     <Compile Include="Draw\DrawPen.cs" />
     <Compile Include="Draw\DrawBrush.cs" />
@@ -135,8 +145,7 @@
     <Compile Include="Effect\EffectShark.cs" />
     <Compile Include="Effect\EffectShrink.cs" />
     <Compile Include="Effect\%40EffectBase.cs" />
-    <Compile Include="Class\Function.cs" />
-    <Compile Include="Class\Global.cs" />
+    <Compile Include="Class\Global\Global.cs" />
     <Compile Include="Object\ObjectActive.cs" />
     <Compile Include="Object\%24ObjectCollection.cs" />
     <Compile Include="Object\ObjectSmoke.cs" />

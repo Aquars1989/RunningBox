@@ -23,29 +23,56 @@ namespace RunningBox
 
         public override void Plan()
         {
+            float ownerX, ownerY;
+            if ((Anchor & DirectionType.Left) == DirectionType.Left)
+            {
+                ownerX = Owner.Layout.LeftTopX;
+            }
+            else if ((Anchor & DirectionType.Right) == DirectionType.Right)
+            {
+                ownerX = Owner.Layout.RightBottomX;
+            }
+            else
+            {
+                ownerX = Owner.Layout.CenterX;
+            }
+
+            if ((Anchor & DirectionType.Top) == DirectionType.Top)
+            {
+                ownerY = Owner.Layout.LeftTopY;
+            }
+            else if ((Anchor & DirectionType.Bottom) == DirectionType.Bottom)
+            {
+                ownerY = Owner.Layout.RightBottomY;
+            }
+            else
+            {
+                ownerY = Owner.Layout.CenterY;
+            }
+
             Rectangle rectScene = Scene.MainRectangle;
-            double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Target.X, Target.Y);
-            float speed = (Math.Abs(Target.X - Owner.Layout.CenterX) + Math.Abs(Target.Y - Owner.Layout.CenterY)) + 10;
+            double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y);
+            float speed = (Math.Abs(Target.X - ownerX) + Math.Abs(Target.Y - ownerY)) + 10;
             if (speed > Speed) speed = Speed;
 
             PointF move = Function.GetOffsetPoint(0, 0, direction, speed);
             float moveX = move.X;
             float moveY = move.Y;
 
-            if (Owner.Layout.CenterX < rectScene.Left)
+            if (ownerX  < rectScene.Left)
             {
                 moveX = Math.Abs(moveX) * 2 + 2;
             }
-            else if (Owner.Layout.CenterX > rectScene.Left + rectScene.Width)
+            else if (ownerX > rectScene.Left + rectScene.Width)
             {
                 moveX = -Math.Abs(moveX) * 2 - 2;
             }
 
-            if (Owner.Layout.CenterY < rectScene.Top)
+            if (ownerY < rectScene.Top)
             {
                 moveY = Math.Abs(moveY) * 2 + 2;
             }
-            else if (Owner.Layout.CenterY > rectScene.Top + rectScene.Height)
+            else if (ownerY > rectScene.Top + rectScene.Height)
             {
                 moveY = -Math.Abs(moveY) * 2 - 2;
             }

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace RunningBox
 {
-    class Function
+    public partial class Function
     {
         /// <summary>
         /// 兩陣營是否友好
@@ -216,44 +215,6 @@ namespace RunningBox
                 //左上角
                 result.AddArc(rectangle.Left, rectangle.Top, radius, radius, 180, 90);
                 result.CloseAllFigures();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// byte陣列轉int32陣列
-        /// </summary>
-        /// <param name="byteArray">byte陣列</param>
-        /// <returns>int32陣列</returns>
-        public static int[] ByteToInt(byte[] byteArray)
-        {
-            if (byteArray.Length % 4 > 0) return null;
-
-            int[] result = new int[byteArray.Length / 4];
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = BitConverter.ToInt32(byteArray, i * 4);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// int32陣列轉byte陣列
-        /// </summary>
-        /// <param name="intArray">int陣列</param>
-        /// <returns>byte陣列</returns>
-        public static byte[] IntToByte(int[] intArray)
-        {
-            byte[] result;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                for (int i = 0; i < intArray.Length; i++)
-                {
-                    ms.Write(BitConverter.GetBytes(intArray[i]), 0, 4);
-                }
-
-                result = ms.ToArray();
-                ms.Close();
             }
             return result;
         }

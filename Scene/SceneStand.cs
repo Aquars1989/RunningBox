@@ -13,12 +13,10 @@ namespace RunningBox
 {
     public partial class SceneStand : SceneGaming
     {
-        private int _SceneNo;
         private float _SpeedFix = 1;
         private float _LifeFix = 1;
 
-
-        public SceneStand(int sceneNo)
+        public SceneStand()
         {
             InitializeComponent();
 
@@ -421,13 +419,11 @@ namespace RunningBox
                 };
                 GameObjects.Add(newObject);
             });
-
-            _SceneNo = sceneNo;
         }
 
         public override void SetWave()
         {
-            switch (_SceneNo)
+            switch (Level)
             {
                 case 1:
                     //                                    123456789012345678901234567890123456789012345678901234567890
@@ -450,7 +446,7 @@ namespace RunningBox
                     Waves.Add(new WaveLine("@Shrink   ", "        +++              +++              +++               "));
                     break;
             }
-           
+
         }
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)

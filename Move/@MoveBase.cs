@@ -44,6 +44,11 @@ namespace RunningBox
         public event EventHandler OffsetsChanged;
 
         /// <summary>
+        /// 發生於物件的定位位置變更時
+        /// </summary>
+        public event ValueChangedEnentHandle<DirectionType> AnchorChanged;
+
+        /// <summary>
         /// 發生於移動規劃後
         /// </summary>
         public event EventHandler AfterPlan;
@@ -108,6 +113,17 @@ namespace RunningBox
             if (OffsetsChanged != null)
             {
                 OffsetsChanged(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// 發生於物件的定位位置變更時
+        /// </summary>
+        protected virtual void OnAnchorChanged(DirectionType oldValue, DirectionType newValue)
+        {
+            if (AnchorChanged != null)
+            {
+                AnchorChanged(this, oldValue, newValue);
             }
         }
 
@@ -181,6 +197,22 @@ namespace RunningBox
             {
                 if (_Scene == value) return;
                 _Scene = value;
+            }
+        }
+
+        private DirectionType _Anchor = DirectionType.Center;
+        /// <summary>
+        /// 以哪個基準點計算和目標的位置差異(預設為中心)
+        /// </summary>
+        public DirectionType Anchor
+        {
+            get { return _Anchor; }
+            set
+            {
+                if (_Anchor == value) return;
+                DirectionType oldValue = _Anchor;
+                _Anchor = value;
+                OnAnchorChanged(oldValue, value);
             }
         }
 

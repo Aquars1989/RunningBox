@@ -1,11 +1,3 @@
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.exe
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.MainForm.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.Properties.Resources.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csproj.GenerateResource.Cache
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.exe
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneStand.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.MainForm.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneStand.resources
@@ -15,24 +7,32 @@ E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.exe
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.exe
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.exe.config
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\Lib2013.dll
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\Lib2013.xml
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.exe.config
 E:\VsProject\RunningBox\RunningBox\bin\Debug\MySql.Data.dll
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneMain.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneNull.resources
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneNull.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneMain.resources
 E:\VsProject\RunningBox\RunningBox\bin\Debug\Lib2013.xml
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csprojResolveAssemblyReference.cache
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneNull.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneGaming.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneMain.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.MainForm.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneStand.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.Properties.Resources.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.csproj.GenerateResource.Cache
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.exe.config
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.exe
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\RunningBox.pdb
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\Lib2013.dll
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\Lib2013.xml
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.exe
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.pdb

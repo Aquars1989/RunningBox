@@ -41,8 +41,35 @@ namespace RunningBox
         {
             if (Target.Object != null)
             {
-                double distance = Function.GetDistance(Owner.Layout.CenterX, Owner.Layout.CenterY, Target.X, Target.Y);
-                double direction = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Target.X, Target.Y);
+                float ownerX, ownerY;
+                if ((Anchor & DirectionType.Left) == DirectionType.Left)
+                {
+                    ownerX = Owner.Layout.LeftTopX;
+                }
+                else if ((Anchor & DirectionType.Right) == DirectionType.Right)
+                {
+                    ownerX = Owner.Layout.RightBottomX;
+                }
+                else
+                {
+                    ownerX = Owner.Layout.CenterX;
+                }
+
+                if ((Anchor & DirectionType.Top) == DirectionType.Top)
+                {
+                    ownerY = Owner.Layout.LeftTopY;
+                }
+                else if ((Anchor & DirectionType.Bottom) == DirectionType.Bottom)
+                {
+                    ownerY = Owner.Layout.RightBottomY;
+                }
+                else
+                {
+                    ownerY = Owner.Layout.CenterY;
+                }
+
+                double distance = Function.GetDistance(ownerX, ownerY, Target.X, Target.Y);
+                double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y);
 
                 float speed = SpeedPerOffsets;
                 if (distance < CloseRange)

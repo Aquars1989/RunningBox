@@ -13,13 +13,36 @@ namespace RunningBox
     /// </summary>
     public class ObjectUISceneChoice : ObjectUIPanel
     {
+        private float _PaddingX = 20;
+        private float _PaddingY = 60;
+        private float _ItemPaddingX = 20;
+        private float _ItemPaddingY = 20;
+
         /// <summary>
-        /// 發生於特性集合變更
+        /// 發生於場景被選取時
+        /// </summary>
+        public event SceneInfoEnentHandle SceneChoice;
+
+        /// <summary>
+        /// 發生於背景集合變更
         /// </summary>
         public event ValueChangedEnentHandle<ObjectCollection> BackObjectsChanged;
 
         /// <summary>
-        /// 發生於特性集合變更
+        /// 發生於場景被選取時
+        /// </summary>
+        /// <param name="sceneInfo">場景資訊</param>
+        /// <param name="level">關卡等級</param>
+        protected virtual void OnSceneChoice(ISceneInfo sceneInfo, int level)
+        {
+            if (SceneChoice != null)
+            {
+                SceneChoice(this, sceneInfo, level);
+            }
+        }
+
+        /// <summary>
+        /// 發生於背景集合變更
         /// </summary>
         protected virtual void OnBackObjectsChanged(ObjectCollection oldValue, ObjectCollection newValue)
         {
@@ -56,76 +79,123 @@ namespace RunningBox
             }
         }
 
-        private DrawUITextFrame _DrawObject1;
-        private DrawUITextFrame _DrawObject2;
+        private DrawUITextFrame _DrawGroup1;
+        private DrawUITextFrame _DrawGroup2;
 
-        private ObjectUI _UIBack;
+        private ObjectUI _CommandBack;
         private ObjectUI _UIGroup1;
         private ObjectUI _UIGroup2;
+
+        private ObjectUISceneInfo[] _UIScenes;
+        private PointF[] _UIScenesLocation;
 
         public ObjectUISceneChoice(int x, int y, int width, int height)
             : base(x, y, width, height, new DrawBrush(Color.White, ShapeType.Rectangle))
         {
             BackObjects = new ObjectCollection();
-            _UIBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.DarkSlateBlue, Color.Gray, Color.LightYellow, Color.DarkSlateBlue, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
 
-            _DrawObject1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.MiddleBottom);
-            _DrawObject2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleBottom);
-            _DrawObject1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
+            var ScenesItems = GlobalScenes.Scenes.GetItems();
+            int group1Idx = 0;
+            int group1Cot = ScenesItems.Count;
+            _UIScenes = new ObjectUISceneInfo[group1Cot];
+            _UIScenesLocation = new PointF[group1Cot];
 
+            foreach (ISceneInfo sceneInfo in ScenesItems)
+            {
+                _UIScenes[group1Idx] = new ObjectUISceneInfo(DirectionType.Left | DirectionType.Top, 0, 0, new MoveStraight(this, 1, 3000, 1, 100, 1F));
+                _UIScenes[group1Idx].MoveObject.Target.Anchor = DirectionType.Left | DirectionType.Top;
+                _UIScenes[group1Idx].MoveObject.Anchor = DirectionType.Left | DirectionType.Top;
+                _UIScenes[group1Idx].Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+                _UIScenes[group1Idx].Layout.Depend.SetObject(this);
+                _UIScenes[group1Idx].BindingScene = sceneInfo;
+                _UIScenes[group1Idx].SceneChoice += (s, i, l) => { OnSceneChoice(i, l); };
+                UIObjects.Add(_UIScenes[group1Idx]);
+                group1Idx++;
+            }
 
+            if (group1Cot > 0)
+            {
+                int maxH = (int)((width - _PaddingX * 2 + _ItemPaddingX) / (_UIScenes[0].Layout.RectWidth + _ItemPaddingX)); //橫向最多項目數
 
-            _UIGroup1 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, _DrawObject1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
-            _UIGroup2 = new ObjectUI(DirectionType.Center, 0, 0, 200, 200, _DrawObject2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
-            _UIGroup1.GetFocus += (s, e) =>
+                int cotX = group1Cot > maxH ? maxH : group1Cot; //橫向數量
+                int cotY = (group1Cot - 1) / maxH + 1;          //縱向數量
+
+                float baseX = (width - (_UIScenes[0].Layout.RectWidth * cotX) - (_ItemPaddingX * (cotX - 1))) / 2;
+                float baseY = _PaddingY + (height - (_UIScenes[0].Layout.RectWidth * cotY) - (_ItemPaddingY * (cotY - 1))) / 2;
+                float originX = baseX;
+
+                for (int i = 0; i < _UIScenes.Length; i++)
                 {
-                    _DrawObject1.Colors.SetColor("Back", Color.FromArgb(255, 255, 220));
-                    _DrawObject1.DrawObjectInside.Colors.SetColor("Player", Color.Black);
-                    _DrawObject1.DrawObjectInside.Colors.SetColor("Ememy", Color.Red);
-                };
+                    _UIScenesLocation[i] = new PointF(baseX, baseY);
+                    _UIScenes[i].Layout.X = baseX;
+                    _UIScenes[i].Layout.Y = baseY + height;
+                    _UIScenes[i].MoveObject.Target.SetOffsetByXY(baseX, baseY + height);
+
+                    if (i > 0 && i % cotX == 0)
+                    {
+                        baseX = originX;
+                        baseY += _UIScenes[0].Layout.RectHeight + _ItemPaddingY;
+                    }
+                    else
+                    {
+                        baseX += _UIScenes[i].Layout.RectWidth + _ItemPaddingX;
+                    }
+                }
+            }
+
+            _DrawGroup1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.MiddleBottom);
+            _DrawGroup1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
+            _UIGroup1 = new ObjectUI(DirectionType.Center, -200, height / 2, 200, 200, _DrawGroup1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
+            _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
+            _UIGroup1.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            _UIGroup1.Layout.Depend.SetObject(this);
+            _UIGroup1.GetFocus += (s, e) =>
+            {
+                _DrawGroup1.Colors.SetColor("Back", Color.FromArgb(255, 255, 220));
+                _DrawGroup1.DrawObjectInside.Colors.SetColor("Player", Color.Black);
+                _DrawGroup1.DrawObjectInside.Colors.SetColor("Ememy", Color.Red);
+            };
 
             _UIGroup1.LostFocus += (s, e) =>
-                {
-                    _DrawObject1.Colors.SetColor("Back", Color.AliceBlue);
-                    _DrawObject1.DrawObjectInside.Colors.SetColor("Player", Color.LightSteelBlue);
-                    _DrawObject1.DrawObjectInside.Colors.SetColor("Ememy", Color.LightSteelBlue);
-                };
+            {
+                _DrawGroup1.Colors.SetColor("Back", Color.AliceBlue);
+                _DrawGroup1.DrawObjectInside.Colors.SetColor("Player", Color.LightSteelBlue);
+                _DrawGroup1.DrawObjectInside.Colors.SetColor("Ememy", Color.LightSteelBlue);
+            };
+
+            _UIGroup1.Click += (s, e) =>
+            {
+                Mode = 1;
+            };
 
 
-            _UIBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 1, GFix = 1 });
-            _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
+            _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleBottom);
+            _UIGroup2 = new ObjectUI(DirectionType.Center, width + 200, height / 2, 200, 200, _DrawGroup2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));
-
-            _UIBack.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
-            _UIGroup1.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
             _UIGroup2.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
-            _UIBack.Layout.Depend.SetObject(this);
-            _UIGroup1.Layout.Depend.SetObject(this);
             _UIGroup2.Layout.Depend.SetObject(this);
-            _UIGroup1.Layout.X = -_UIGroup1.Layout.Width;
-            _UIGroup2.Layout.X = width + _UIGroup1.Layout.Width;
-            _UIGroup1.Layout.Y = height / 2;
-            _UIGroup2.Layout.Y = height / 2;
 
-            _UIGroup1.MoveObject.Target.SetOffsetByXY(-130, 0);
-            _UIGroup2.MoveObject.Target.SetOffsetByXY(130, 0);
-            _UIBack.Click += (s, e) =>
+            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.LightYellow, Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
+            _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0.5F, GFix = 0.5F });
+            _CommandBack.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            _CommandBack.Layout.Depend.SetObject(this);
+            _CommandBack.Visible = false;
+            _CommandBack.Click += (s, e) =>
                 {
                     Mode = 0;
                 };
 
-            _UIGroup1.Click += (s, e) =>
-                {
-                    Mode = 1;
-                };
 
-            UIObjects.Add(_UIBack);
+
+            UIObjects.Add(_CommandBack);
             UIObjects.Add(_UIGroup1);
             UIObjects.Add(_UIGroup2);
+
+            Mode = 0;
         }
 
 
-        private int _Mode = 0;
+        private int _Mode = -1;
         public int Mode
         {
             get { return _Mode; }
@@ -142,6 +212,15 @@ namespace RunningBox
                         {
                             BackObjects[i].MoveObject.Resistance = 1;
                         }
+
+                        if (_UIScenes.Length > 0)
+                        {
+                            for (int i = 0; i < _UIScenes.Length; i++)
+                            {
+                                _UIScenes[i].MoveObject.Target.SetOffsetByXY(_UIScenesLocation[i].X, _UIScenesLocation[i].Y + Layout.RectHeight);
+                            }
+                        }
+
                         _BackBuildCounter.Limit = 50;
                         break;
                     case 1:
@@ -150,10 +229,18 @@ namespace RunningBox
                             BackObjects[i].MoveObject.Resistance = 10;
                         }
 
+                        if (_UIScenes.Length > 0)
+                        {
+                            for (int i = 0; i < _UIScenes.Length; i++)
+                            {
+                                _UIScenes[i].MoveObject.Target.SetOffsetByXY(_UIScenesLocation[i].X, _UIScenesLocation[i].Y);
+                            }
+                        }
+
                         _UIGroup1.MoveObject.Target.SetOffsetByXY(-1000 + 130, 0);
                         _UIGroup2.MoveObject.Target.SetOffsetByXY(1000 - 130, 0);
-                        _UIBack.DrawObject.Colors.Opacity = 0;
-                        _UIBack.Visible = true;
+                        _CommandBack.DrawObject.Colors.Opacity = 0;
+                        _CommandBack.Visible = true;
                         _BackBuildCounter.Limit = 500;
                         break;
                 }
@@ -174,9 +261,9 @@ namespace RunningBox
             switch (_Mode)
             {
                 case 1:
-                    if (_UIBack.DrawObject.Colors.Opacity < 1)
+                    if (_CommandBack.DrawObject.Colors.Opacity < 1)
                     {
-                        _UIBack.DrawObject.Colors.Opacity += 0.05F;
+                        _CommandBack.DrawObject.Colors.Opacity += 0.05F;
                     }
 
                     if (_BackDrak < 1)
@@ -192,12 +279,12 @@ namespace RunningBox
                     }
                     break;
                 case 0:
-                    if (_UIBack.DrawObject.Colors.Opacity > 0)
+                    if (_CommandBack.DrawObject.Colors.Opacity > 0)
                     {
-                        _UIBack.DrawObject.Colors.Opacity -= 0.1F;
-                        if (_UIBack.DrawObject.Colors.Opacity <= 0)
+                        _CommandBack.DrawObject.Colors.Opacity -= 0.1F;
+                        if (_CommandBack.DrawObject.Colors.Opacity <= 0)
                         {
-                            _UIBack.Visible = false;
+                            _CommandBack.Visible = false;
                         }
                     }
 

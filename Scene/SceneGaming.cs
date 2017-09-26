@@ -22,15 +22,6 @@ namespace RunningBox
         private int _FPSTick = 0;
         private string _FPSText = "";
 
-        #region ===== 委派 =====
-        /// <summary>
-        /// 處理關卡事件
-        /// </summary>
-        /// <param name="value">事件參數值</param>
-        /// <returns>回傳是否引發事件</returns>
-        public delegate void WaveEventHandle(int value);
-        #endregion
-
         #region ===== 事件 =====
         /// <summary>
         /// 每波時間變更
@@ -249,6 +240,16 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 場景ID
+        /// </summary>
+        public string SceneID { get; set; }
+
+        /// <summary>
+        /// 關卡等級
+        /// </summary>
+        public int Level { get; set; }
+
         /// <summary>
         /// 每波回合數
         /// </summary>

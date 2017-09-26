@@ -34,18 +34,26 @@ namespace RunningBox
         protected override void OnLoadComplete()
         {
             _UITopbar = new ObjectUI(0, 0, 0, 90, new DrawUIFrame(Color.Wheat, Color.DarkSlateBlue, 1, 0));
-            _UIInfo = new ObjectUI(5, 5, 200, 80, new DrawCustom());
-            _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
-            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.Left | DirectionType.Top, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
-            _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);
 
+            _UIInfo = new ObjectUI(5, 5, 200, 80, new DrawCustom());
             _UIInfo.DrawObject.BeforeDraw += (x, g, r) =>
             {
                 g.DrawRectangle(Pens.CornflowerBlue, r);
             };
-
             _UIInfo.Click += (x, e) => { PlayerInfoShow = true; };
+
+            _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
+
+            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.Left | DirectionType.Top, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
             _UIPlayerInfo.Close += (x, e) => { PlayerInfoShow = false; };
+
+            _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);
+            _UISceneChoice.SceneChoice += (x, i, l) =>
+            {
+                GlobalScenes.ChoiceScene = i;
+                GlobalScenes.ChoiceLevel = l;
+                OnGoScene(new SceneSkill());
+            };
 
             UIObjects.Add(_UITopbar);
             UIObjects.Add(_UISceneChoice);

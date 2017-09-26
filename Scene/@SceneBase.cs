@@ -16,8 +16,6 @@ namespace RunningBox
     /// </summary>
     public class SceneBase : Control, ITargetability
     {
-        public delegate void GoSceneEventHandle(object sender, SceneBase scene);
-
         protected new Cursor DefaultCursor { get; set; }
 
         /// <summary>
@@ -563,16 +561,24 @@ namespace RunningBox
             EffectObjects = new EffectCollection(this);
             GameObjects = new ObjectCollection(this);
             RoundTimer.Tick += RoundTimer_Tick;
+        }
 
-            Timer loadTimer = new Timer() { Interval = 1 };
-            loadTimer.Tick += (x, te) =>
+        private Timer _LoadTimer;
+        protected override void OnParentChanged(EventArgs e)
+        {
+            if (Parent != null && !IsLoadComplete && _LoadTimer == null)
             {
-                Timer s = x as Timer;
-                s.Enabled = false;
-                OnLoadComplete();
-                s.Dispose();
-            };
-            loadTimer.Enabled = true;
+                _LoadTimer = new Timer() { Interval = 1 };
+                _LoadTimer.Tick += (x, te) =>
+                {
+                    Timer s = x as Timer;
+                    s.Enabled = false;
+                    OnLoadComplete();
+                    s.Dispose();
+                };
+                _LoadTimer.Enabled = true;
+            }
+            base.OnParentChanged(e);
         }
 
         protected override void Dispose(bool disposing)

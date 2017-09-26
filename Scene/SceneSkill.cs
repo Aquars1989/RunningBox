@@ -58,11 +58,10 @@ namespace RunningBox
 
             _UICommandOK.Click += (x, e) =>
             {
-                OnGoScene(new SceneStand(1)
-                {
-                    Skill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill,
-                    Skill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill
-                });
+                SceneGaming scene = GlobalScenes.ChoiceScene.CreateScene(GlobalScenes.ChoiceLevel);
+                scene.Skill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill;
+                scene.Skill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill;
+                OnGoScene(scene);
             };
 
             _UICommandCancel.Click += (x, e) =>
