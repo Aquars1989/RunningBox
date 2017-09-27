@@ -28,8 +28,8 @@ namespace RunningBox
             //}
             //Global.SQL.CloseConn();
             //return;
-            Controls.Add(new SceneMain() { Dock = DockStyle.Fill });
-            //Controls.Add(new SceneStand() { Dock = DockStyle.Fill, Skill1 = new SkillBait(5000, 1500, 1500, 200) });
+            //Controls.Add(new SceneMain() { Dock = DockStyle.Fill });
+            Controls.Add(new SceneStand() { Dock = DockStyle.Fill, Skill1 = new SkillBait(5000, 1500, 1500, 200) });
             return;
             Controls.Add(new SceneSkill() { Dock = DockStyle.Fill });
             return;

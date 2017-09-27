@@ -44,7 +44,7 @@ namespace RunningBox
 
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
 
-            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.Left | DirectionType.Top, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
+            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.TopLeft, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
             _UIPlayerInfo.Close += (x, e) => { PlayerInfoShow = false; };
 
             _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);

@@ -92,7 +92,7 @@ namespace RunningBox
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUIPanel(int x, int y, int width, int height, DrawBase drawObject)
-            : this(DirectionType.Left | DirectionType.Top, x, y, width, height, drawObject)
+            : this(DirectionType.TopLeft, x, y, width, height, drawObject)
         {
             UIObjects = new ObjectCollection();
         }

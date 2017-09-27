@@ -103,10 +103,10 @@ namespace RunningBox
 
             foreach (ISceneInfo sceneInfo in ScenesItems)
             {
-                _UIScenes[group1Idx] = new ObjectUISceneInfo(DirectionType.Left | DirectionType.Top, 0, 0, new MoveStraight(this, 1, 3000, 1, 100, 1F));
-                _UIScenes[group1Idx].MoveObject.Target.Anchor = DirectionType.Left | DirectionType.Top;
-                _UIScenes[group1Idx].MoveObject.Anchor = DirectionType.Left | DirectionType.Top;
-                _UIScenes[group1Idx].Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+                _UIScenes[group1Idx] = new ObjectUISceneInfo(DirectionType.TopLeft, 0, 0, new MoveStraight(this, 1, 3000, 1, 100, 1F));
+                _UIScenes[group1Idx].MoveObject.Target.Anchor = DirectionType.TopLeft;
+                _UIScenes[group1Idx].MoveObject.Anchor = DirectionType.TopLeft;
+                _UIScenes[group1Idx].Layout.Depend.Anchor = DirectionType.TopLeft;
                 _UIScenes[group1Idx].Layout.Depend.SetObject(this);
                 _UIScenes[group1Idx].BindingScene = sceneInfo;
                 _UIScenes[group1Idx].SceneChoice += (s, i, l) => { OnSceneChoice(i, l); };
@@ -150,7 +150,7 @@ namespace RunningBox
             _DrawGroup1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
             _UIGroup1 = new ObjectUI(DirectionType.Center, -200, height / 2, 200, 200, _DrawGroup1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
-            _UIGroup1.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            _UIGroup1.Layout.Depend.Anchor = DirectionType.TopLeft;
             _UIGroup1.Layout.Depend.SetObject(this);
             _UIGroup1.GetFocus += (s, e) =>
             {
@@ -175,12 +175,12 @@ namespace RunningBox
             _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.BottomCenter);
             _UIGroup2 = new ObjectUI(DirectionType.Center, width + 200, height / 2, 200, 200, _DrawGroup2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));
-            _UIGroup2.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            _UIGroup2.Layout.Depend.Anchor = DirectionType.TopLeft;
             _UIGroup2.Layout.Depend.SetObject(this);
 
             _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.LightYellow, Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
             _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0.5F, GFix = 0.5F });
-            _CommandBack.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            _CommandBack.Layout.Depend.Anchor = DirectionType.TopLeft;
             _CommandBack.Layout.Depend.SetObject(this);
             _CommandBack.Visible = false;
             _CommandBack.Click += (s, e) =>

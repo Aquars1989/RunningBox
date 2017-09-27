@@ -43,9 +43,9 @@ namespace RunningBox
             DrawUITextFrame drawCommandCloseHover = new DrawUITextFrame(Color.Red, Color.Empty, Color.Empty, Color.Empty, 0, 0, "X", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
             ObjectUI uiCommandClose = new ObjectUI(290, 15, 30, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
 
-            uiPlayerName.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
-            uiCommandBuildName.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
-            uiCommandClose.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+            uiPlayerName.Layout.Depend.Anchor = DirectionType.TopLeft;
+            uiCommandBuildName.Layout.Depend.Anchor = DirectionType.TopLeft;
+            uiCommandClose.Layout.Depend.Anchor = DirectionType.TopLeft;
 
             uiCommandBuildName.Layout.Depend.SetObject(this);
             uiPlayerName.Layout.Depend.SetObject(this);

@@ -63,7 +63,7 @@ namespace RunningBox
                     DrawUIFrame drawObject = new DrawUIFrame(Color.Empty, Color.Empty, 1, 8) { Scale = 0.8F };
                     ObjectUI newObject = new ObjectUI(left, top, itemWidth, itemHeight, drawObject);
                     newObject.Layout.Depend.SetObject(this);
-                    newObject.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+                    newObject.Layout.Depend.Anchor = DirectionType.TopLeft;
                     newObject.Propertys.Add(new PropertyShadow(3, 3) { Opacity = 0.2F, ScaleX = 0.95F, ScaleY = 0.95F });
                     UIObjects.Add(newObject);
                     left += itemWidth;

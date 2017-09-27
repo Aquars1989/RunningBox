@@ -72,10 +72,8 @@ namespace RunningBox
 
             _UIDarkCover.Layout.Width = Width;
             _UIDarkCover.Layout.Height = Height;
-            _UICommandRetry.Layout.Y = (Height - _UICommandRetry.Layout.Height) / 2;
-            _UICommandBack.Layout.Y = (Height - _UICommandBack.Layout.Height) / 2;
-            _UICommandRetry.Layout.X = Width / 2 + (int)(Width * 0.05F);
-            _UICommandBack.Layout.X = Width / 2 - (int)(Width * 0.05F) - _UICommandBack.Layout.Width;
+            _UIMenu.Layout.X = Width / 2;
+            _UIMenu.Layout.Y = Height / 2;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -177,14 +175,9 @@ namespace RunningBox
         private ObjectUI _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
 
         /// <summary>
-        /// 重試按鈕
+        /// 遊戲選單
         /// </summary>
-        private ObjectUI _UICommandRetry = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "重試", Global.CommandFont, GlobalFormat.MiddleCenter));
-
-        /// <summary>
-        /// 返回按鈕
-        /// </summary>
-        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter));
+        private ObjectUIGameMenu _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value) ;
 
         /// <summary>
         /// 能量條物件
@@ -305,13 +298,11 @@ namespace RunningBox
             {
                 _ShowMenu = value;
                 _UIDarkCover.Visible = value;
-                _UICommandBack.Visible = value;
-                _UICommandRetry.Visible = value;
+                _UIMenu.Visible = value;
 
                 if (value)
                 {
                     IsStart = false;
-                    (_UICommandRetry.DrawObject as DrawUITextFrame).Text = PlayerObject != null ? "繼續" : "重試";
                 }
             }
         }
@@ -381,26 +372,27 @@ namespace RunningBox
             _UISkillIcon1 = new ObjectUI(300, 10, 50, 50, _DrawSkill1);
             _UISkillIcon2 = new ObjectUI(380, 10, 50, 50, _DrawSkill2);
 
-            _UICommandRetry.Click += (x, e) =>
+            _UIMenu.RetryButtonClick += (x, e) =>
             {
                 ShowMenu = false;
 
                 if (PlayerObject == null)
                 {
-                    SetStart(e.X, e.Y);
+                    SetStart(0, 0);
                 }
                 else
                 {
                     IsStart = true;
                 }
             };
-            _UICommandBack.Click += (x, e) => { OnGoScene(new SceneSkill()); };
+
+            _UIMenu.BackButtonClick += (x, e) => { OnGoScene(new SceneSkill()); };
+
             UIObjects.Add(_UISkillIcon1);
             UIObjects.Add(_UISkillIcon2);
             UIObjects.Add(_UIEnergyBar);
             UIObjects.Add(_UIDarkCover);
-            UIObjects.Add(_UICommandBack);
-            UIObjects.Add(_UICommandRetry);
+            UIObjects.Add(_UIMenu);
             GameObjects.ObjectDead += OnObjectDead;
             ShowMenu = false;
         }

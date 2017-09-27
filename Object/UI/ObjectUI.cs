@@ -142,7 +142,7 @@ namespace RunningBox
         /// <param name="DrawObjectHover">滑鼠滑過時顯示的繪圖物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectUI(int x, int y, int width, int height, DrawBase drawObject)
-            : this(DirectionType.Left | DirectionType.Top, x, y, width, height, drawObject) { }
+            : this(DirectionType.TopLeft, x, y, width, height, drawObject) { }
 
         /// <summary>
         /// 檢查座標落在哪個物件內

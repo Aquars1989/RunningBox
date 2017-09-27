@@ -34,6 +34,26 @@ namespace RunningBox
         /// <summary>
         /// 下
         /// </summary>
-        Bottom = 8
+        Bottom = 8,
+
+        /// <summary>
+        /// 左上
+        /// </summary>
+        TopLeft = 5,
+
+        /// <summary>
+        /// 右上
+        /// </summary>
+        TopRight = 6,
+
+        /// <summary>
+        /// 左下
+        /// </summary>
+        BottomLeft =9,
+        
+        /// <summary>
+        /// 右下
+        /// </summary>
+        BottomRight = 10
     }
 }
