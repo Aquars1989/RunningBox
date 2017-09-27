@@ -14,7 +14,8 @@ namespace RunningBox
     public class ObjectUISceneChoice : ObjectUIPanel
     {
         private float _PaddingX = 20;
-        private float _PaddingY = 60;
+        private float _PaddingY = 20;
+        private float _ItemMinY = 100;
         private float _ItemPaddingX = 20;
         private float _ItemPaddingY = 20;
 
@@ -122,6 +123,8 @@ namespace RunningBox
 
                 float baseX = (width - (_UIScenes[0].Layout.RectWidth * cotX) - (_ItemPaddingX * (cotX - 1))) / 2;
                 float baseY = _PaddingY + (height - (_UIScenes[0].Layout.RectWidth * cotY) - (_ItemPaddingY * (cotY - 1))) / 2;
+                baseY = Math.Max(_ItemMinY, baseY);
+
                 float originX = baseX;
 
                 for (int i = 0; i < _UIScenes.Length; i++)
@@ -131,7 +134,7 @@ namespace RunningBox
                     _UIScenes[i].Layout.Y = baseY + height;
                     _UIScenes[i].MoveObject.Target.SetOffsetByXY(baseX, baseY + height);
 
-                    if (i > 0 && i % cotX == 0)
+                    if (i > 0 && i - 1 % cotX == 0)
                     {
                         baseX = originX;
                         baseY += _UIScenes[0].Layout.RectHeight + _ItemPaddingY;
@@ -143,7 +146,7 @@ namespace RunningBox
                 }
             }
 
-            _DrawGroup1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.MiddleBottom);
+            _DrawGroup1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.BottomCenter);
             _DrawGroup1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
             _UIGroup1 = new ObjectUI(DirectionType.Center, -200, height / 2, 200, 200, _DrawGroup1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
@@ -169,7 +172,7 @@ namespace RunningBox
             };
 
 
-            _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.MiddleBottom);
+            _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.BottomCenter);
             _UIGroup2 = new ObjectUI(DirectionType.Center, width + 200, height / 2, 200, 200, _DrawGroup2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));
             _UIGroup2.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;

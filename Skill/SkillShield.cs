@@ -76,7 +76,7 @@ namespace RunningBox
 
                         _ShieldObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(-360, 360), false, true));
                         _ShieldObject.Propertys.Add(new PropertyDeadBroken(drawScrap, 6, 10, 10, ObjectDeadType.Collision, 360, 100, 150, Scene.Sec(0.4F), Scene.Sec(0.6F)));
-                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 1, Scene.Sec(0.2F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Scene.Sec(0.2F), Scene.Sec(0.3F)));
+                        _ShieldObject.Propertys.Add(new PropertyDeadCollapse(drawScrap, 3, Scene.Sec(0.2F), Scene.Sec(0.05F), 10, 10, ObjectDeadType.LifeEnd, 100, 200, Scene.Sec(0.2F), Scene.Sec(0.3F)));
                         _ShieldObject.Propertys.Add(new PropertyCollision(1));
                         _ShieldObject.Layout.Depend.SetObject(Owner);
                         Owner.Container.Add(_ShieldObject);

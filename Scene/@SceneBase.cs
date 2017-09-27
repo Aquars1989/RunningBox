@@ -14,8 +14,13 @@ namespace RunningBox
     /// <summary>
     /// 基本場景物件
     /// </summary>
-    public class SceneBase : Control, ITargetability
+    public class SceneBase : Control, ITargetability, IDisposable
     {
+        private static Font _FPSFont = new Font("Arial", 12);
+        private Stopwatch _FPSWatch = new Stopwatch();
+        private int _FPSTick = 0;
+        private string _FPSText = "";
+
         protected new Cursor DefaultCursor { get; set; }
 
         /// <summary>
@@ -177,6 +182,7 @@ namespace RunningBox
             {
                 GoScene(this, scene);
             }
+            this.Dispose();
         }
 
         /// <summary>
@@ -376,6 +382,12 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnAfterDrawUI(Graphics g)
         {
+            //顯示FPS
+            if (Global.DebugMode)
+            {
+                g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
+            }
+
             if (AfterDrawUI != null)
             {
                 AfterDrawUI(this, new PaintEventArgs(g, this.ClientRectangle));
@@ -581,15 +593,6 @@ namespace RunningBox
             base.OnParentChanged(e);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                RoundTimer.Enabled = false;
-            }
-            base.Dispose(disposing);
-        }
-
         private void InitializeComponent()
         {
             this.SuspendLayout();
@@ -608,7 +611,7 @@ namespace RunningBox
         {
             if (!Visible) return;
             Form form = FindForm();
-            if (IsDisposed || form == null || form.WindowState == FormWindowState.Minimized) return;
+            if (IsDisposed || form == null || form.WindowState == FormWindowState.Minimized || !IsLoadComplete) return;
             OnReLayout();
         }
 
@@ -622,7 +625,24 @@ namespace RunningBox
 
         private void RoundTimer_Tick(object sender, EventArgs e)
         {
+            //計算FPS
+            _FPSTick--;
+            bool refreshFPS = false;
+            if (_FPSTick <= 0)
+            {
+                _FPSTick = 10;
+                _FPSWatch.Restart();
+                refreshFPS = true;
+            }
+
             Round();
+
+            //計算FPS
+            if (refreshFPS)
+            {
+                _FPSWatch.Stop();
+                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
+            }
         }
 
         /// <summary>
@@ -809,6 +829,26 @@ namespace RunningBox
         public PointF GetTargetPoint(DirectionType anchor)
         {
             return TrackPoint;
+        }
+        #endregion
+
+        #region IDisposable Support
+        private bool disposedValue = false; // 偵測多餘的呼叫
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    EffectObjects.Clear();
+                    GameObjects.Clear();
+                    UIObjects.Clear();
+                    RoundTimer.Enabled = false;
+                    RoundTimer.Dispose();
+                }
+                disposedValue = true;
+            }
+            base.Dispose(disposing);
         }
         #endregion
     }

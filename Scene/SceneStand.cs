@@ -61,7 +61,7 @@ namespace RunningBox
                     newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -87,7 +87,7 @@ namespace RunningBox
                     newObject.Skills.Add(new SkillSprint(0, Sec(1F), 8, 0, true) { AutoCastObject = new AutoCastNormal(1F) });
                     newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 4, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -113,7 +113,7 @@ namespace RunningBox
                     moveObject.Target.SetOffsetByAngle(angel, 1000F);
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Orchid, ShapeType.Ellipse), moveObject);
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertySmoking(-1, Sec(0.2F)));
                     newObject.Propertys.Add(new PropertyFreeze(Sec(0.2F * i)));
                     newObject.Propertys.Add(new PropertyCollision(1));
@@ -218,7 +218,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.DarkOrange, ShapeType.Ellipse), moveObject);
                     newObject.Propertys.Add(new PropertyFreeze(Sec(i * 0.05F)));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.2F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -288,7 +288,7 @@ namespace RunningBox
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
                     newObject.Propertys.Add(new PropertyRotate(-1, 360, false, false));
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 200, 600, Sec(0.2F), Sec(0.5F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(10));
                     newObject.Propertys.Add(new PropertySpeeded(-1, 100));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
@@ -427,13 +427,7 @@ namespace RunningBox
             {
                 case 1:
                     //                                    123456789012345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Catcher   ", "111111 111111 111111 111111 111111 111111 111111 11111      "));
-                    Waves.Add(new WaveLine("Faster    ", "1      1      1             1      1             1          "));
-                    Waves.Add(new WaveLine("Blocker   ", "1                   1                    1                  "));
-                    Waves.Add(new WaveLine("WallB     ", "999          4               5                  6           "));
-                    Waves.Add(new WaveLine("Mine      ", "3         4            5           6        7               "));
-                    Waves.Add(new WaveLine("@Dark     ", "              +++               +++            +++          "));
-                    Waves.Add(new WaveLine("@Shrink   ", "        +++              +++              +++               "));
+                    Waves.Add(new WaveLine("Catcher   ", "1"));
                     break;
                 case 2:
                     //                                    123456789012345678901234567890123456789012345678901234567890

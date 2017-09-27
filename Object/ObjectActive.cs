@@ -134,7 +134,6 @@ namespace RunningBox
         /// </summary>
         public override void Action()
         {
-            UIOffSetY = 0;
             Skills.AllDoAutoCast();
             //回合前
             Skills.AllDoBeforeAction();
@@ -198,6 +197,7 @@ namespace RunningBox
         {
             if (Visible)
             {
+                UIOffSetY = 0; 
                 Skills.AllDoBeforeDraw(g);
                 Propertys.AllDoBeforeDraw(g);
                 DrawObject.Draw(g, Layout.Rectangle);

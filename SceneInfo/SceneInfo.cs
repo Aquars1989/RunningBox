@@ -16,6 +16,11 @@ namespace RunningBox
         private SceneLevelInfo[] SceneLevels { get; set; }
 
         /// <summary>
+        /// 取得場景名稱
+        /// </summary>
+        public string SceneName { get; private set; }
+
+        /// <summary>
         /// 取得場景ID
         /// </summary>
         public string SceneID { get; private set; }
@@ -48,10 +53,12 @@ namespace RunningBox
         /// <summary>
         /// 新增場景資訊記錄
         /// </summary>
+        /// <param name="sceneID">場景名稱</param>
         /// <param name="sceneID">場景ID</param>
         /// <param name="levelMax">最大關卡數</param>
-        public SceneInfo(string sceneID, int levelMax)
+        public SceneInfo(string sceneName, string sceneID, int levelMax)
         {
+            SceneName = sceneName;
             SceneID = sceneID;
             MaxLevel = levelMax;
             SceneLevels = new SceneLevelInfo[MaxLevel];
@@ -61,6 +68,11 @@ namespace RunningBox
             }
         }
 
+        /// <summary>
+        /// 建立場景實體
+        /// </summary>
+        /// <param name="level">關卡等級</param>
+        /// <returns>場景實體</returns>
         public SceneGaming CreateScene(int level)
         {
             return new T()
@@ -68,6 +80,54 @@ namespace RunningBox
                 SceneID = this.SceneID,
                 Level = level
             };
+        }
+
+        /// <summary>
+        /// 取得指定等級是否完成
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>是否完成</returns>
+        public bool GetComplete(int level)
+        {
+            if (level < 1 || level > MaxLevel) return false;
+            int idx = level - 1;
+            return SceneLevels[idx].Complete;
+        }
+
+        /// <summary>
+        /// 取得指定等級的挑戰次數
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>挑戰次數</returns>
+        public int GetCountOfChallenge(int level)
+        {
+            if (level < 1 || level > MaxLevel) return 0;
+            int idx = level - 1;
+            return SceneLevels[idx].CountOfChallenge;
+        }
+
+        /// <summary>
+        /// 取得指定等級的挑戰時間
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>挑戰時間</returns>
+        public long GetTimeOfChallenge(int level)
+        {
+            if (level < 1 || level > MaxLevel) return 0;
+            int idx = level - 1;
+            return SceneLevels[idx].TimeOfChallenge;
+        }
+
+        /// <summary>
+        /// 取得指定等級的最高分數
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>最高分數</returns>
+        public int GetHighScore(int level)
+        {
+            if (level < 1 || level > MaxLevel) return 0;
+            int idx = level - 1;
+            return SceneLevels[idx].HighScore;
         }
 
         /// <summary>

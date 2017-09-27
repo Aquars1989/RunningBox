@@ -67,6 +67,7 @@
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
     <Compile Include="Handle\GoSceneEventHandle.cs" />
+    <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
     <Compile Include="SceneInfo\ISceneInfo.cs" />
     <Compile Include="SceneInfo\SceneLevelInfo.cs" />

@@ -66,7 +66,7 @@ namespace RunningBox
 
             _UICommandCancel.Click += (x, e) =>
             {
-                OnGoScene(new SceneWelcome());
+                OnGoScene(new SceneMain() { });
             };
         }
 

@@ -25,6 +25,11 @@ namespace RunningBox
         public int ScrapHeight { get; set; }
 
         /// <summary>
+        /// 產生碎片週期(毫秒)
+        /// </summary>
+        public int BuildTime { get; set; }
+
+        /// <summary>
         /// 每回合產生碎片數量
         /// </summary>
         public int ScrapCount { get; set; }
@@ -68,6 +73,7 @@ namespace RunningBox
         /// 新增崩塌特性且指定碎片外觀,擁有此特性的物件死亡時會逐漸縮小並碎裂
         /// </summary>
         /// <param name="scrapDrawObject">碎片外觀範本繪圖物件</param>
+        /// <param name="buildTime">產生碎片週期(毫秒)</param>
         /// <param name="scrapCount">每回合產生碎片數量</param>
         /// <param name="shrinkTime">縮小時間(毫秒)</param>
         /// <param name="scrapWidth">碎片寬度</param>
@@ -77,8 +83,8 @@ namespace RunningBox
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadCollapse(DrawBase scrapDrawObject, int scrapCount, int shrinkTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
-            : this(scrapCount, shrinkTime, scrapWidth, scrapHeight, deadType, scrapSpeedMin, scrapSpeedMax, scrapLifeMin, scrapLifeMax)
+        public PropertyDeadCollapse(DrawBase scrapDrawObject, int scrapCount, int shrinkTime, int buildTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+            : this(scrapCount, shrinkTime, buildTime, scrapWidth, scrapHeight, deadType, scrapSpeedMin, scrapSpeedMax, scrapLifeMin, scrapLifeMax)
         {
             ScrapDrawObject = scrapDrawObject;
         }
@@ -87,6 +93,7 @@ namespace RunningBox
         /// 新增崩塌特性且指定碎片顏色,擁有此特性的物件死亡時會逐漸縮小並碎裂
         /// </summary>
         /// <param name="color">產生碎片顏色</param>
+        /// <param name="buildTime">產生碎片週期(毫秒)</param>
         /// <param name="scrapCount">每回合產生碎片數量</param>
         /// <param name="shrinkTime">縮小時間(毫秒)</param>
         /// <param name="scrapWidth">碎片寬度</param>
@@ -96,8 +103,8 @@ namespace RunningBox
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadCollapse(Color color, int scrapCount, int shrinkTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
-            : this(scrapCount, shrinkTime, scrapWidth, scrapHeight, deadType, scrapSpeedMin, scrapSpeedMax, scrapLifeMin, scrapLifeMax)
+        public PropertyDeadCollapse(Color color, int scrapCount, int shrinkTime, int buildTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+            : this(scrapCount, shrinkTime, buildTime, scrapWidth, scrapHeight, deadType, scrapSpeedMin, scrapSpeedMax, scrapLifeMin, scrapLifeMax)
         {
             ScrapDrawObject = new DrawBrush(color, ShapeType.Ellipse);
         }
@@ -105,6 +112,7 @@ namespace RunningBox
         /// <summary>
         /// 新增崩塌特性且使用所有者顏色,擁有此特性的物件死亡時會逐漸縮小並碎裂
         /// </summary>
+        /// <param name="buildTime">產生碎片週期(毫秒)</param>
         /// <param name="scrapCount">每回合產生碎片數量</param>
         /// <param name="shrinkTime">縮小時間(毫秒)</param>
         /// <param name="scrapWidth">碎片寬度</param>
@@ -114,9 +122,10 @@ namespace RunningBox
         /// <param name="scrapSpeedMin">碎片移動速度最小值</param>
         /// <param name="scrapLifeMax">碎片生命週期最大值</param>
         /// <param name="scrapLifeMin">碎片生命週期最小值</param>
-        public PropertyDeadCollapse(int scrapCount, int shrinkTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
+        public PropertyDeadCollapse(int scrapCount, int shrinkTime, int buildTime, int scrapWidth, int scrapHeight, ObjectDeadType deadType, int scrapSpeedMin, int scrapSpeedMax, int scrapLifeMin, int scrapLifeMax)
         {
             DeadType = deadType;
+            BuildTime = buildTime;
             ScrapCount = scrapCount;
             ScrapWidth = scrapWidth;
             ScrapHeight = scrapHeight;
@@ -135,11 +144,11 @@ namespace RunningBox
 
             if (ScrapDrawObject == null)
             {
-                _PropertyScraping = new PropertyScraping(ShrinkTime.Limit, Scene.Sec(0.1F), ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping((int)(ShrinkTime.Limit * 0.8F), BuildTime, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             else
             {
-                _PropertyScraping = new PropertyScraping(ScrapDrawObject, Scene.Sec(0.1F), ShrinkTime.Limit, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
+                _PropertyScraping = new PropertyScraping(ScrapDrawObject, (int)(ShrinkTime.Limit * 0.8F), BuildTime, ScrapCount, ScrapWidth, ScrapHeight, ScrapSpeedMin, ScrapSpeedMax, ScrapLifeMin, ScrapLifeMax);
             }
             Owner.Propertys.Add(_PropertyScraping);
             Affix = SpecialStatus.Remain;

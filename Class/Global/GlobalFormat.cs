@@ -11,9 +11,13 @@ namespace RunningBox
     class GlobalFormat
     {
         public static StringFormat TopLeft = new StringFormat() { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Near };
-        public static StringFormat MiddleCenter = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+        public static StringFormat TopCenter = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near };
+        public static StringFormat TopRight = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Near };
         public static StringFormat MiddleLeft = new StringFormat() { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
-        public static StringFormat MiddleBottom = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
-        public static StringFormat RightBottom = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
+        public static StringFormat MiddleCenter = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+        public static StringFormat MiddleRight = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
+        public static StringFormat BottomLeft = new StringFormat() { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Far }; 
+        public static StringFormat BottomCenter = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
+        public static StringFormat BottomRight = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
     }
 }

@@ -451,7 +451,6 @@ namespace RunningBox
         /// </summary>
         public virtual void Action()
         {
-            UIOffSetY = 0;
             //回合前
             Propertys.AllDoBeforeAction();
             //移動規劃前
@@ -503,6 +502,7 @@ namespace RunningBox
         {
             if (Visible)
             {
+                UIOffSetY = 0;
                 Propertys.AllDoBeforeDraw(g);
                 DrawObject.Draw(g, Layout.Rectangle);
                 Propertys.AllDoAfterDraw(g);

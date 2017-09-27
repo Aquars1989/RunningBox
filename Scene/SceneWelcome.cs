@@ -34,7 +34,7 @@ namespace RunningBox
             _TimerOfEnter.Tick += (x, e) =>
             {
                 _TimerOfEnter.Enabled = false;
-                OnGoScene(new SceneSkill());
+                OnGoScene(new SceneMain());
             };
         }
 

@@ -54,6 +54,7 @@ namespace RunningBox
                 GlobalScenes.ChoiceLevel = l;
                 OnGoScene(new SceneSkill());
             };
+            _UISceneChoice.Mode = GlobalScenes.ChoiceScene == null ? 0 : 1;
 
             UIObjects.Add(_UITopbar);
             UIObjects.Add(_UISceneChoice);

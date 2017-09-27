@@ -17,10 +17,6 @@ namespace RunningBox
     public abstract class SceneGaming : SceneBase
     {
         private static Cursor _StartCursor = new Cursor(new Bitmap(1, 1).GetHicon());
-        private static Font _FPSFont = new Font("Arial", 12);
-        private Stopwatch _FPSWatch = new Stopwatch();
-        private int _FPSTick = 0;
-        private string _FPSText = "";
 
         #region ===== 事件 =====
         /// <summary>
@@ -116,8 +112,17 @@ namespace RunningBox
         {
             if (e.KeyCode == Keys.Escape && PlayerObject != null)
             {
-                PlayerObject.Kill(null, ObjectDeadType.Clear);
-                EndDelay.Value = EndDelay.Limit;
+                //PlayerObject.Kill(null, ObjectDeadType.Clear);
+                //EndDelay.Value = EndDelay.Limit;
+                if (ShowMenu)
+                {
+                    ShowMenu = false;
+                    IsStart = true;
+                }
+                else
+                {
+                    ShowMenu = true;
+                }
             }
             base.OnKeyDown(e);
         }
@@ -134,11 +139,9 @@ namespace RunningBox
         protected override void OnAfterDrawUI(Graphics g)
         {
             g.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
-
-            //顯示FPS
-            if (Global.DebugMode)
+            if (!IsStart && !ShowMenu)
             {
-                g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
+                g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
             }
             base.OnAfterDrawUI(g);
         }
@@ -181,7 +184,7 @@ namespace RunningBox
         /// <summary>
         /// 返回按鈕
         /// </summary>
-        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter));
+        private ObjectUI _UICommandBack = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.White, Color.White, Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter));
 
         /// <summary>
         /// 能量條物件
@@ -304,6 +307,12 @@ namespace RunningBox
                 _UIDarkCover.Visible = value;
                 _UICommandBack.Visible = value;
                 _UICommandRetry.Visible = value;
+
+                if (value)
+                {
+                    IsStart = false;
+                    (_UICommandRetry.DrawObject as DrawUITextFrame).Text = PlayerObject != null ? "繼續" : "重試";
+                }
             }
         }
 
@@ -317,10 +326,29 @@ namespace RunningBox
         /// </summary>
         public CounterObject WaveNo { get; set; }
 
+        private bool _IsStart;
         /// <summary>
         /// 是否開始遊戲
         /// </summary>
-        protected bool IsStart { get; set; }
+        protected bool IsStart
+        {
+            get { return _IsStart; }
+            set
+            {
+                if (_IsStart == value) return;
+                _IsStart = value;
+                if (value)
+                {
+                    Cursor = _StartCursor;
+                    DefaultCursor = _StartCursor;
+                }
+                else
+                {
+                    Cursor = Cursors.Default;
+                    DefaultCursor = Cursors.Default;
+                }
+            }
+        }
 
         /// <summary>
         /// 遊戲是否已結束
@@ -356,7 +384,15 @@ namespace RunningBox
             _UICommandRetry.Click += (x, e) =>
             {
                 ShowMenu = false;
-                SetStart(e.X, e.Y);
+
+                if (PlayerObject == null)
+                {
+                    SetStart(e.X, e.Y);
+                }
+                else
+                {
+                    IsStart = true;
+                }
             };
             _UICommandBack.Click += (x, e) => { OnGoScene(new SceneSkill()); };
             UIObjects.Add(_UISkillIcon1);
@@ -374,16 +410,6 @@ namespace RunningBox
         /// </summary>
         protected override void Round()
         {
-            //計算FPS
-            _FPSTick--;
-            bool refreshFPS = false;
-            if (_FPSTick <= 0)
-            {
-                _FPSTick = 10;
-                _FPSWatch.Restart();
-                refreshFPS = true;
-            }
-
             UIObjects.ClearAllDead();
 
             OnBeforeRound();
@@ -407,8 +433,6 @@ namespace RunningBox
                 {
                     if (EndDelay.IsFull)
                     {
-                        Cursor = Cursors.Default;
-                        DefaultCursor = Cursors.Default;
                         //Cursor.Show();
                         ShowMenu = true;
                         IsEnding = false;
@@ -432,13 +456,6 @@ namespace RunningBox
             }
 
             Drawing();
-
-            //計算FPS
-            if (refreshFPS)
-            {
-                _FPSWatch.Stop();
-                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
-            }
         }
 
         /// <summary>
@@ -502,8 +519,6 @@ namespace RunningBox
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
 
-            Cursor = _StartCursor;
-            DefaultCursor = _StartCursor;
             //Cursor.Hide();
             IsStart = true;
             DoAfterStart();
