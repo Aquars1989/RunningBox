@@ -227,7 +227,8 @@ namespace RunningBox
         /// <param name="borderWidtrh">框線粗細</param>
         /// <param name="borderWidtrh">框線粗細</param>
         public DrawUIFrame(Color backColor, Color borderColor, int borderWidtrh, int readius) :
-            this(backColor, borderColor, borderWidtrh, readius, DrawNull.Value) { }
+            this(backColor, borderColor, borderWidtrh, readius, DrawNull.Value)
+        { }
 
         /// <summary>
         /// 繪製到Graphics
@@ -256,7 +257,7 @@ namespace RunningBox
         /// <summary>
         /// 產生圓角區域
         /// </summary>
-        protected void GetBackFrame(Rectangle rectangle)
+        public GraphicsPath GetBackFrame(Rectangle rectangle)
         {
             if (_BackFrameRectangle != rectangle && _BackFrame != null)
             {
@@ -272,6 +273,8 @@ namespace RunningBox
                 _BackFrame = Function.GetRadiusFrame(rectangle, _Readius);
                 _BackRegion = new Region(_BackFrame);
             }
+
+            return _BackFrame;
         }
 
         /// <summary>

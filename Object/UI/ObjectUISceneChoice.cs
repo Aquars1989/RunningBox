@@ -178,8 +178,8 @@ namespace RunningBox
             _UIGroup2.Layout.Depend.Anchor = DirectionType.TopLeft;
             _UIGroup2.Layout.Depend.SetObject(this);
 
-            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.LightYellow, Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
-            _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0.5F, GFix = 0.5F });
+            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.FromArgb(200, 255, 255, 220), Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
+            _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0F, GFix = 0F, BFix = 0F });
             _CommandBack.Layout.Depend.Anchor = DirectionType.TopLeft;
             _CommandBack.Layout.Depend.SetObject(this);
             _CommandBack.Visible = false;

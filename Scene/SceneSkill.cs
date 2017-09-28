@@ -34,7 +34,7 @@ namespace RunningBox
                 new SkillShield(1, 6000, 0, Sec(1F), Sec(2.5F)),
                 new SkillShockwave(4000, 0, Sec(1F), Sec(2.5F), Sec(0.1F), 4000, 300),
                 new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
-                new SkillBait(6000, Sec(1.5F), Sec(1.5F), 200) 
+                new SkillBait(6000, Sec(1.5F), Sec(1.5F), 200)
             };
 
             int len = _Skills.Length;
@@ -55,14 +55,16 @@ namespace RunningBox
                 UIObjects.Add(_UISkillInfos[i]);
             }
 
-            DrawUITextFrame drawCommandOK =  new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandCancel =  new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandOKHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.LightYellow, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandCancelHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.LightYellow, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
-            _UICommandOK = new ObjectUI(0, 0, 150, 50,drawCommandOK);
+            DrawUITextFrame drawCommandOK = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandCancel = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandOKHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandCancelHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _UICommandOK = new ObjectUI(0, 0, 150, 50, drawCommandOK);
             _UICommandCancel = new ObjectUI(0, 0, 150, 50, drawCommandCancel);
             _UICommandOK.DrawObjectHover = drawCommandOKHover;
             _UICommandCancel.DrawObjectHover = drawCommandCancelHover;
+            _UICommandOK.Propertys.Add(new PropertyShadow(-4, 4) { RFix = 0, GFix = 0, BFix = 0 });
+            _UICommandCancel.Propertys.Add(new PropertyShadow(4, 4) { RFix = 0, GFix = 0, BFix = 0 });
 
             UIObjects.Add(_UICommandOK);
             UIObjects.Add(_UICommandCancel);
