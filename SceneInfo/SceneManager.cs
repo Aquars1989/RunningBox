@@ -6,12 +6,15 @@ using System.Text;
 
 namespace RunningBox
 {
+    /// <summary>
+    /// 管理場景資訊管理物件
+    /// </summary>
     public class SceneInfoManager
     {
         private Dictionary<string, ISceneInfo> _Items = new Dictionary<string, ISceneInfo>();
 
         /// <summary>
-        /// 增加場景資訊
+        /// 增加場景資訊管理物件
         /// </summary>
         /// <param name="sceneSet">場景資訊</param>
         public void AddScene(ISceneInfo sceneSet)

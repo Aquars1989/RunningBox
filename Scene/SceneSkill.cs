@@ -21,12 +21,13 @@ namespace RunningBox
         private ObjectUI[] _UISkillIcons;
         private ObjectUI[] _UISkillInfos;
 
-        private ObjectUI _UICommandOK = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter));
-        private ObjectUI _UICommandCancel = new ObjectUI(0, 0, 150, 50, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter));
+        private ObjectUI _UICommandOK;
+        private ObjectUI _UICommandCancel;
 
         public SceneSkill()
         {
             InitializeComponent();
+
             _Skills = new SkillBase[]
             {
                 new SkillSprint(3500, Sec(1), 0, 6000, true),
@@ -53,6 +54,16 @@ namespace RunningBox
                 UIObjects.Add(_UISkillIcons[i]);
                 UIObjects.Add(_UISkillInfos[i]);
             }
+
+            DrawUITextFrame drawCommandOK =  new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandCancel =  new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandOKHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.LightYellow, Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUITextFrame drawCommandCancelHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.LightYellow, Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _UICommandOK = new ObjectUI(0, 0, 150, 50,drawCommandOK);
+            _UICommandCancel = new ObjectUI(0, 0, 150, 50, drawCommandCancel);
+            _UICommandOK.DrawObjectHover = drawCommandOKHover;
+            _UICommandCancel.DrawObjectHover = drawCommandCancelHover;
+
             UIObjects.Add(_UICommandOK);
             UIObjects.Add(_UICommandCancel);
 

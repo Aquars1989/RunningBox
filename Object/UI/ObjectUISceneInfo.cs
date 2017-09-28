@@ -19,7 +19,7 @@ namespace RunningBox
         private static Font TitleFont2 = new Font("標楷體", 14, FontStyle.Bold);
         private static Font InfoFont = new Font("微軟正黑體", 11, FontStyle.Bold);
         private static SolidBrush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
-        
+
         /// <summary>
         /// 發生於場景被選取時
         /// </summary>
@@ -173,15 +173,15 @@ namespace RunningBox
             {
                 g.DrawString("等級" + Level.ToString(), TitleFont2, Brushes.LemonChiffon, titleBack2Rect, GlobalFormat.BottomLeft);
                 g.DrawString("等級" + Level.ToString(), TitleFont2, Brushes.DarkSlateBlue, title2Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("挑戰次數：{0:N0}", _BindingScene.GetCountOfChallenge(Level)), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("挑戰時間：{0:N2}", _BindingScene.GetTimeOfChallenge(Level) / 1000F), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("存活時間：{0:N2}", _BindingScene.GetHighScore(Level) / 1000F), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("挑戰次數：{0:N0}次", _BindingScene.GetCountOfChallenge(Level)), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("存活時間：{0:N0}秒", (int)(_BindingScene.GetHighPlayingTime(Level) / 1000F)), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("最高分數：{0:N0}分", _BindingScene.GetHighScore(Level)), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
             }
             else
             {
-                g.DrawString(string.Format("挑戰次數總計：{0:N0}", _BindingScene.CountOfChallenge), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("挑戰時間總計：{0:N2}", _BindingScene.TimeOfChallenge / 1000F), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("存活時間總計：{0:N2}", _BindingScene.HighScore / 1000F), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("挑戰次數總計：{0:N0}次", _BindingScene.CountOfChallenge), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("存活時間總計：{0:N0}秒", (int)(_BindingScene.HighPlayingTime / 1000F)), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("最高分數總計：{0:N0}分", _BindingScene.HighScore), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
             }
         }
     }

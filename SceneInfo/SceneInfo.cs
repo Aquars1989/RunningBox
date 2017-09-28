@@ -41,6 +41,11 @@ namespace RunningBox
         public long TimeOfChallenge { get; private set; }
 
         /// <summary>
+        /// 取得場景最高存活時間
+        /// </summary>
+        public int HighPlayingTime { get; private set; }
+
+        /// <summary>
         /// 取得場景最高分數
         /// </summary>
         public int HighScore { get; private set; }
@@ -56,7 +61,8 @@ namespace RunningBox
         /// <param name="sceneID">場景名稱</param>
         /// <param name="sceneID">場景ID</param>
         /// <param name="levelMax">最大關卡數</param>
-        public SceneInfo(string sceneName, string sceneID, int levelMax)
+        /// <param name="playingTimeLimit">預設時間限制(毫秒)</param>
+        public SceneInfo(string sceneName, string sceneID, int levelMax, int playingTimeLimit)
         {
             SceneName = sceneName;
             SceneID = sceneID;
@@ -64,7 +70,7 @@ namespace RunningBox
             SceneLevels = new SceneLevelInfo[MaxLevel];
             for (int i = 0; i < MaxLevel; i++)
             {
-                SceneLevels[i] = new SceneLevelInfo(SceneID, i + 1);
+                SceneLevels[i] = new SceneLevelInfo(SceneID, i + 1, playingTimeLimit);
             }
         }
 
@@ -75,10 +81,14 @@ namespace RunningBox
         /// <returns>場景實體</returns>
         public SceneGaming CreateScene(int level)
         {
+            if (level < 1 || level > MaxLevel) return null;
+            int idx = level - 1;
+
             return new T()
             {
                 SceneID = this.SceneID,
-                Level = level
+                Level = level,
+                PlayingTimeLimit = SceneLevels[idx].PlayingTimeLimit
             };
         }
 
@@ -119,6 +129,18 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得指定等級的最高存活時間
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>最高存活時間</returns>
+        public int GetHighPlayingTime(int level)
+        {
+            if (level < 1 || level > MaxLevel) return 0;
+            int idx = level - 1;
+            return SceneLevels[idx].HighPlayingTime;
+        }
+
+        /// <summary>
         /// 取得指定等級的最高分數
         /// </summary>
         /// <param name="level">指定等級</param>
@@ -136,9 +158,10 @@ namespace RunningBox
         /// <param name="level">關卡等級</param>
         /// <param name="countOfChallenge">挑戰次數</param>
         /// <param name="timeOfChallenge">挑戰時間</param>
+        /// <param name="highSurviveTime">最高存活時間</param>
         /// <param name="highScore">最高分數</param>
         /// <param name="complete">是否完成</param>
-        public void SetValue(int level, int countOfChallenge, long timeOfChallenge, int highScore, bool complete)
+        public void SetValue(int level, int countOfChallenge, long timeOfChallenge, int highSurviveTime, int highScore, bool complete)
         {
             if (level < 1 || level > MaxLevel) return;
 
@@ -150,6 +173,7 @@ namespace RunningBox
 
             SceneLevels[idx].CountOfChallenge = countOfChallenge;
             SceneLevels[idx].TimeOfChallenge = timeOfChallenge;
+            SceneLevels[idx].PlayingTimeLimit = highSurviveTime;
             SceneLevels[idx].HighScore = highScore;
             SceneLevels[idx].Complete = complete;
         }
@@ -158,19 +182,25 @@ namespace RunningBox
         /// 結算成績
         /// </summary>
         /// <param name="level">關卡等級</param>
-        /// <param name="timeOfChallenge">本次挑戰時間</param>
+        /// <param name="playingTime">本次存活時間</param>
         /// <param name="score">本次分數</param>
         /// <param name="complete">是否完成</param>
-        public void Settlement(int level, long timeOfChallenge, int score, bool complete)
+        public void Settlement(int level, int playingTime, int score, bool complete)
         {
             if (level < 1 || level > MaxLevel) return;
 
             int idx = level - 1;
             CountOfChallenge++;
-            TimeOfChallenge += timeOfChallenge;
+            TimeOfChallenge += playingTime;
 
             SceneLevels[idx].CountOfChallenge++;
-            SceneLevels[idx].TimeOfChallenge += timeOfChallenge;
+            SceneLevels[idx].TimeOfChallenge += playingTime;
+
+            if (playingTime > SceneLevels[idx].HighPlayingTime)
+            {
+                HighPlayingTime += playingTime - SceneLevels[idx].HighPlayingTime;
+                SceneLevels[idx].HighPlayingTime = playingTime;
+            }
 
             if (score > SceneLevels[idx].HighScore)
             {
@@ -183,6 +213,16 @@ namespace RunningBox
                 CountOfComplete++;
                 SceneLevels[idx].Complete = complete;
             }
+        }
+
+        /// <summary>
+        /// 結算成績
+        /// </summary>
+        /// <param name="playInfo">場景挑戰記錄</param>
+        public void Settlement(ScenePlayingInfo playInfo)
+        {
+            if (playInfo.SceneID != SceneID) return;
+            Settlement(playInfo.Level, playInfo.PlayingTime.Value, playInfo.Score, playInfo.Complete);
         }
     }
 }

@@ -32,6 +32,16 @@ namespace RunningBox
         public long TimeOfChallenge { get; set; }
 
         /// <summary>
+        /// 遊戲時間限制(毫秒)
+        /// </summary>
+        public int PlayingTimeLimit { get; set; }
+
+        /// <summary>
+        /// 最高存活時間(毫秒)
+        /// </summary>
+        public int HighPlayingTime { get; set; }
+
+        /// <summary>
         /// 最高分數
         /// </summary>
         public int HighScore { get; set; }
@@ -46,10 +56,12 @@ namespace RunningBox
         /// </summary>
         /// <param name="sceneID">場景ID</param>
         /// <param name="level">關卡等級</param>
-        public SceneLevelInfo(string sceneID, int level)
+        /// <param name="playingTimeLimit">遊戲時間限制</param>
+        public SceneLevelInfo(string sceneID, int level, int playingTimeLimit)
         {
             SceneID = SceneID;
             Level = level;
+            PlayingTimeLimit = playingTimeLimit;
         }
 
         public byte[] GetByte()
@@ -62,6 +74,7 @@ namespace RunningBox
                 ms.Write(BitConverter.GetBytes(Level), 0, 4);
                 ms.Write(BitConverter.GetBytes(CountOfChallenge), 0, 4);
                 ms.Write(BitConverter.GetBytes(TimeOfChallenge), 0, 8);
+                ms.Write(BitConverter.GetBytes(PlayingTimeLimit), 0, 4);
                 ms.Write(BitConverter.GetBytes(HighScore), 0, 4);
                 ms.Write(BitConverter.GetBytes(Complete), 0, 1);
                 result = ms.ToArray();

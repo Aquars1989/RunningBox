@@ -70,6 +70,7 @@
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
     <Compile Include="SceneInfo\ISceneInfo.cs" />
+    <Compile Include="SceneInfo\ScenePlayInfo.cs" />
     <Compile Include="SceneInfo\SceneLevelInfo.cs" />
     <Compile Include="SceneInfo\SceneManager.cs" />
     <Compile Include="SceneInfo\SceneInfo.cs" />

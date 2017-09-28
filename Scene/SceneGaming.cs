@@ -56,7 +56,7 @@ namespace RunningBox
         {
             if (sender.Equals(PlayerObject))
             {
-                SetEnd();
+                SetEnd(false);
             }
         }
 
@@ -134,12 +134,30 @@ namespace RunningBox
             base.OnDrawFloor(g);
         }
 
+        SolidBrush time = new SolidBrush(Color.FromArgb(120, 0, 255, 100));
+        Font timeFont = new Font("微軟正黑體", 38, FontStyle.Bold);
         protected override void OnAfterDrawUI(Graphics g)
         {
-            g.DrawString(string.Format("波數:{0:N0}    存活時間:{1:N2} 秒", WaveNo.Value, Score.Value / 1000F), Font, Brushes.Black, 85, 50);
-            if (!IsStart && !ShowMenu)
+            if (PlayingInfo != null)
             {
-                g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
+                g.DrawString(string.Format("波數:{0}/{1}    存活時間:{2:N2} 秒", WaveNo.Value, WaveNo.Limit, PlayingInfo.PlayingTime.Value / 1000F), Font, Brushes.Black, 85, 45);
+                g.DrawString(string.Format("分數:{0:N0}", PlayingInfo.Score), Font, Brushes.RoyalBlue, 85, 62);
+            }
+
+            if (IsStart)
+            {
+                int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / 1000 + 1;
+                if (lastTime < 10)
+                {
+                    g.DrawString(lastTime.ToString(), timeFont, time, MainRectangle, GlobalFormat.MiddleCenter);
+                }
+            }
+            else
+            {
+                if (!ShowMenu)
+                {
+                    g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
+                }
             }
             base.OnAfterDrawUI(g);
         }
@@ -151,10 +169,10 @@ namespace RunningBox
         {
             if (IsStart && !IsEnding)
             {
-                Score.Value += IntervalOfRound;
-                if (Score.IsFull)
+                PlayingInfo.PlayingTime.Value += SceneIntervalOfRound;
+                if (PlayingInfo.PlayingTime.IsFull)
                 {
-                    SetEnd();
+                    SetEnd(true);
                 }
             }
 
@@ -177,7 +195,7 @@ namespace RunningBox
         /// <summary>
         /// 遊戲選單
         /// </summary>
-        private ObjectUIGameMenu _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value) ;
+        private ObjectUIGameMenu _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value);
 
         /// <summary>
         /// 能量條物件
@@ -247,6 +265,11 @@ namespace RunningBox
         public int Level { get; set; }
 
         /// <summary>
+        /// 遊戲時間限制(毫秒)
+        /// </summary>
+        public int PlayingTimeLimit { get; set; }
+
+        /// <summary>
         /// 每波回合數
         /// </summary>
         public float RoundPerWave { get; private set; }
@@ -303,14 +326,31 @@ namespace RunningBox
                 if (value)
                 {
                     IsStart = false;
+                    if (PlayingInfo.PlayingTime.IsFull)
+                    {
+                        _UIMenu.Mode = 3;
+                    }
+                    else
+                    {
+                        _UIMenu.Mode = PlayerObject == null ? 2 : 1;
+                    }
                 }
             }
         }
 
+        private ScenePlayingInfo _PlayingInfo;
         /// <summary>
-        /// 分數
+        /// 場景挑戰記錄
         /// </summary>
-        public CounterObject Score { get; private set; }
+        public ScenePlayingInfo PlayingInfo
+        {
+            get { return _PlayingInfo; }
+            private set
+            {
+                _PlayingInfo = value;
+                _UIMenu.PlayingInfo = _PlayingInfo;
+            }
+        }
 
         /// <summary>
         /// 波數
@@ -364,26 +404,30 @@ namespace RunningBox
         {
             EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
-            Score = new CounterObject(Global.DefaultScoreMax);
-            WaveNo = new CounterObject(Global.DefaultWaveMax);
+            WaveNo = new CounterObject(0);
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
 
             _UISkillIcon1 = new ObjectUI(300, 10, 50, 50, _DrawSkill1);
             _UISkillIcon2 = new ObjectUI(380, 10, 50, 50, _DrawSkill2);
 
+            _UIMenu.NextButtonClick += (x, e) =>
+            {
+                ShowMenu = false;
+                Level++;
+                Reset();
+            };
+
             _UIMenu.RetryButtonClick += (x, e) =>
             {
                 ShowMenu = false;
+                Reset();
+            };
 
-                if (PlayerObject == null)
-                {
-                    SetStart(0, 0);
-                }
-                else
-                {
-                    IsStart = true;
-                }
+            _UIMenu.ResumeButtonClick += (x, e) =>
+            {
+                ShowMenu = false;
+                IsStart = true;
             };
 
             _UIMenu.BackButtonClick += (x, e) => { OnGoScene(new SceneSkill()); };
@@ -395,6 +439,12 @@ namespace RunningBox
             UIObjects.Add(_UIMenu);
             GameObjects.ObjectDead += OnObjectDead;
             ShowMenu = false;
+        }
+
+        protected override void OnLoadComplete()
+        {
+            Reset();
+            base.OnLoadComplete();
         }
 
         /// <summary>
@@ -483,15 +533,6 @@ namespace RunningBox
         /// <param name="potY">玩家起始點Y</param>
         public void SetStart(int potX, int potY)
         {
-            WaveNo.Value = 0;
-            Score.Value = 0;
-            SceneSlow = 1;
-
-            GameObjects.Clear();
-            EffectObjects.Clear();
-            Waves.Clear();
-            SetWave();
-
             PlayerObject = CreatePlayerObject(potX, potY);
             if (Skill1 != null)
             {
@@ -508,12 +549,35 @@ namespace RunningBox
             GameObjects.Add(PlayerObject);
             (_UIEnergyBar.DrawObject as DrawUICounterBar).BindingCounter = PlayerObject.Energy;
 
-            Padding padding = Global.DefaultMainRectanglePadding;
-            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
 
-            //Cursor.Hide();
             IsStart = true;
             DoAfterStart();
+        }
+
+        /// <summary>
+        /// 重設場景
+        /// </summary>
+        public void Reset()
+        {
+            IsStart = false;
+            IsEnding = false;
+            PlayingInfo = new ScenePlayingInfo(SceneID, Level, PlayingTimeLimit);
+            SceneSlow = 1;
+            GameObjects.Clear();
+            EffectObjects.Clear();
+            Waves.Clear();
+            SetWave();
+
+            int maxWave = 0;
+            foreach (WaveLine wave in Waves)
+            {
+                maxWave = Math.Max(maxWave, wave.Length);
+            }
+            WaveNo.Limit = maxWave;
+            WaveNo.Value = 0;
+
+            Padding padding = Global.DefaultMainRectanglePadding;
+            MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
         }
 
         /// <summary>
@@ -544,12 +608,24 @@ namespace RunningBox
         /// <summary>
         /// 結束遊戲
         /// </summary>
-        private void SetEnd()
+        /// <param name="complete">是否完成</param>
+        private void SetEnd(bool complete)
         {
             EffectObjects.AllBreak();
             PlayerObject = null;
-            IsEnding = true;
-            EndDelay.Value = 0;
+            if (complete)
+            {
+                IsStart = false;
+                ShowMenu = true;
+                PlayingInfo.Complete = true;
+            }
+            else
+            {
+                IsEnding = true;
+                EndDelay.Value = 0;
+            }
+
+            GlobalScenes.ChoiceScene.Settlement(PlayingInfo);
             DoAfterEnd();
         }
 
@@ -594,6 +670,11 @@ namespace RunningBox
             /// 此事件是否結束
             /// </summary>
             public bool IsEnd { get; private set; }
+
+            /// <summary>
+            /// 此事件波數長度
+            /// </summary>
+            public int Length { get { return _Value.Length; } }
 
             private string _Value;
             /// <summary>
