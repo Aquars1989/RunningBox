@@ -136,6 +136,10 @@ namespace RunningBox
                         _DrawCommandAction.Text = "下一關";
                         _DrawCommandActionHover.Text = "下一關";
                         break;
+                    case 4:
+                        _DrawCommandAction.Text = "重試";
+                        _DrawCommandActionHover.Text = "重試";
+                        break;
                 }
             }
         }
@@ -162,6 +166,9 @@ namespace RunningBox
                           break;
                       case 3:
                           OnNextButtonClick();
+                          break;
+                      case 4:
+                          OnRetryButtonClick();
                           break;
                   }
               };
@@ -225,6 +232,10 @@ namespace RunningBox
                         case 3:
                             g.DrawString("挑戰成功", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
                             g.DrawString("挑戰成功", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                            break;
+                        case 4:
+                            g.DrawString("完成全部關卡!!", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
+                            g.DrawString("完成全部關卡!!", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
                             break;
                     }
                 }

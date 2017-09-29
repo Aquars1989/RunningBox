@@ -11,7 +11,7 @@ namespace RunningBox
     class Global
     {
         public static SQLobject SQL = new SQLobject("server=104.199.150.7;uid=client;Password=playforfun;database=Survive100");
-        public static string RegistryAddr = "SOFTWARE\\Survive100\\";
+        public static string RegistryAddr = "SOFTWARE\\RunningBox\\";
 
         public static bool DebugMode = false;
         public static Random Rand = new Random(Guid.NewGuid().GetHashCode());

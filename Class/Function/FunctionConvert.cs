@@ -30,7 +30,7 @@ namespace RunningBox
                 _AesEncryptor.Key = rfcKey.GetBytes(32);
                 _AesEncryptor.IV = rfcIv.GetBytes(16);
 
-                using (ICryptoTransform encryptor = decrypt ? _AesEncryptor.CreateEncryptor() : _AesEncryptor.CreateDecryptor())
+                using (ICryptoTransform encryptor = decrypt ? _AesEncryptor.CreateDecryptor() : _AesEncryptor.CreateEncryptor())
                 using (MemoryStream ms = new MemoryStream())
                 using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
                 {
@@ -42,7 +42,7 @@ namespace RunningBox
                 }
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,28 +60,93 @@ namespace RunningBox
         /// <param name="playingTimeLimit">遊戲時間限制</param>
         public SceneLevelInfo(string sceneID, int level, int playingTimeLimit)
         {
-            SceneID = SceneID;
+            SceneID = sceneID;
             Level = level;
             PlayingTimeLimit = playingTimeLimit;
         }
 
-        public byte[] GetByte()
+        /// <summary>
+        /// 匯出二進位資料
+        /// </summary>
+        /// <returns>二進位資料</returns>
+        public byte[] OutPutBytes()
         {
             byte[] result;
             using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter writer = new BinaryWriter(ms))
             {
-                byte[] sceneID = Encoding.ASCII.GetBytes(SceneID);
-                ms.Write(sceneID, 0, sceneID.Length);
-                ms.Write(BitConverter.GetBytes(Level), 0, 4);
-                ms.Write(BitConverter.GetBytes(CountOfChallenge), 0, 4);
-                ms.Write(BitConverter.GetBytes(TimeOfChallenge), 0, 8);
-                ms.Write(BitConverter.GetBytes(PlayingTimeLimit), 0, 4);
-                ms.Write(BitConverter.GetBytes(HighScore), 0, 4);
-                ms.Write(BitConverter.GetBytes(Complete), 0, 1);
+                byte[] sceneID = Encoding.ASCII.GetBytes(SceneID.PadRight(10, ' '));
+                writer.Write(sceneID);
+                writer.Write(Level);
+                writer.Write(CountOfChallenge);
+                writer.Write(TimeOfChallenge);
+                writer.Write(HighPlayingTime);
+                writer.Write(HighScore);
+                writer.Write(Complete);
                 result = ms.ToArray();
+                writer.Close();
                 ms.Close();
             }
             return Function.EncryptByte(result, Global.UUID, Global.PlayerName, false);
+        }
+
+        /// <summary>
+        /// 解析二進位資料
+        /// </summary>
+        public void InPutBytes(byte[] input)
+        {
+            if (input == null) return;
+
+            byte[] infoBytes = Function.EncryptByte(input, Global.UUID, Global.PlayerName, true);
+            if (infoBytes == null || infoBytes.Length < 35) return;
+
+            using (MemoryStream ms = new MemoryStream(infoBytes))
+            using (BinaryReader reader = new BinaryReader(ms))
+            {
+                byte[] sceneIDByte = reader.ReadBytes(10);
+                string sceneID = Encoding.ASCII.GetString(sceneIDByte).Trim();
+                int level = reader.ReadInt32();
+                if (sceneID == SceneID && level == Level)
+                {
+                    CountOfChallenge = reader.ReadInt32();
+                    TimeOfChallenge = reader.ReadInt64();
+                    HighPlayingTime = reader.ReadInt32();
+                    HighScore = reader.ReadInt32();
+                    Complete = reader.ReadBoolean();
+                }
+                reader.Close();
+                ms.Close();
+            }
+        }
+
+        /// <summary>
+        /// 寫入機碼
+        /// </summary>
+        public void WriteRegistry()
+        {
+            string regAddr = Global.RegistryAddr + "SceneInfo\\";
+            string regName = SceneID + "_" + Level.ToString().PadLeft(2, '0');
+            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(regAddr))
+            {
+                byte[] bytes = OutPutBytes();
+                registryKey.SetValue(regName, bytes);
+                registryKey.Close();
+            }
+        }
+
+        /// <summary>
+        /// 讀取機碼
+        /// </summary>
+        public void ReadRegistry()
+        {
+            string regAddr = Global.RegistryAddr + "SceneInfo\\";
+            string regName = SceneID + "_" + Level.ToString().PadLeft(2, '0');
+            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(regAddr))
+            {
+                byte[] bytes = registryKey.GetValue(regName, null) as byte[];
+                InPutBytes(bytes);
+                registryKey.Close();
+            }
         }
     }
 }

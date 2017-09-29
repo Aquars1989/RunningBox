@@ -86,9 +86,8 @@ namespace RunningBox
 
             return new T()
             {
-                SceneID = this.SceneID,
-                Level = level,
-                PlayingTimeLimit = SceneLevels[idx].PlayingTimeLimit
+                SceneInfo = this,
+                Level = level
             };
         }
 
@@ -153,27 +152,40 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得指定等級的時間限制
+        /// </summary>
+        /// <param name="level">指定等級</param>
+        /// <returns>時間限制</returns>
+        public int GetPlayingTimeLimit(int level)
+        {
+            if (level < 1 || level > MaxLevel) return 0;
+            int idx = level - 1;
+            return SceneLevels[idx].PlayingTimeLimit;
+        }
+
+        /// <summary>
         /// 設定關卡資訊
         /// </summary>
         /// <param name="level">關卡等級</param>
         /// <param name="countOfChallenge">挑戰次數</param>
         /// <param name="timeOfChallenge">挑戰時間</param>
-        /// <param name="highSurviveTime">最高存活時間</param>
+        /// <param name="highPlayingTime">最高存活時間</param>
         /// <param name="highScore">最高分數</param>
         /// <param name="complete">是否完成</param>
-        public void SetValue(int level, int countOfChallenge, long timeOfChallenge, int highSurviveTime, int highScore, bool complete)
+        public void SetValue(int level, int countOfChallenge, long timeOfChallenge, int highPlayingTime, int highScore, bool complete)
         {
             if (level < 1 || level > MaxLevel) return;
 
             int idx = level - 1;
             CountOfChallenge += countOfChallenge - SceneLevels[idx].CountOfChallenge;
             TimeOfChallenge += timeOfChallenge - SceneLevels[idx].TimeOfChallenge;
+            HighPlayingTime += highPlayingTime - SceneLevels[idx].HighPlayingTime;
             HighScore += highScore - SceneLevels[idx].HighScore;
             CountOfComplete += (complete ? 1 : 0) - (SceneLevels[idx].Complete ? 1 : 0);
 
             SceneLevels[idx].CountOfChallenge = countOfChallenge;
             SceneLevels[idx].TimeOfChallenge = timeOfChallenge;
-            SceneLevels[idx].PlayingTimeLimit = highSurviveTime;
+            SceneLevels[idx].HighPlayingTime = highPlayingTime;
             SceneLevels[idx].HighScore = highScore;
             SceneLevels[idx].Complete = complete;
         }
@@ -213,6 +225,8 @@ namespace RunningBox
                 CountOfComplete++;
                 SceneLevels[idx].Complete = complete;
             }
+
+            SceneLevels[idx].WriteRegistry();
         }
 
         /// <summary>
@@ -223,6 +237,73 @@ namespace RunningBox
         {
             if (playInfo.SceneID != SceneID) return;
             Settlement(playInfo.Level, playInfo.PlayingTime.Value, playInfo.Score, playInfo.Complete);
+        }
+
+        /// <summary>
+        /// 將指定關卡等級資訊寫入機碼
+        /// </summary>
+        /// <param name="level">關卡等級</param>
+        public void WriteRegistry(int level)
+        {
+            if (level < 1 || level > MaxLevel) return;
+
+            int idx = level - 1;
+            SceneLevels[idx].WriteRegistry();
+        }
+
+        /// <summary>
+        /// 從機碼讀出指定關卡等級資訊
+        /// </summary>
+        /// <param name="level">關卡等級</param>
+        public void ReadRegistry(int level)
+        {
+            if (level < 1 || level > MaxLevel) return;
+
+            int idx = level - 1;
+            int oldCountOfChallenge = SceneLevels[idx].CountOfChallenge;
+            long oldTimeOfChallenge = SceneLevels[idx].TimeOfChallenge;
+            int oldHighPlayingTime = SceneLevels[idx].HighPlayingTime;
+            int oldHighScore = SceneLevels[idx].HighScore;
+            bool oldComplete = SceneLevels[idx].Complete;
+            SceneLevels[idx].ReadRegistry();
+            CountOfChallenge += SceneLevels[idx].CountOfChallenge - oldCountOfChallenge;
+            TimeOfChallenge += SceneLevels[idx].TimeOfChallenge - oldTimeOfChallenge;
+            HighPlayingTime += SceneLevels[idx].HighPlayingTime - oldHighPlayingTime;
+            HighScore += SceneLevels[idx].HighScore - oldHighScore;
+            CountOfComplete += (SceneLevels[idx].Complete ? 1 : 0) - (oldComplete ? 1 : 0);
+        }
+
+        /// <summary>
+        /// 將所有關卡等級資訊寫入機碼
+        /// </summary>
+        public void AllWriteRegistry()
+        {
+            for (int i = 1; i <= MaxLevel; i++)
+            {
+                SceneLevels[i].WriteRegistry();
+            }
+        }
+
+        /// <summary>
+        /// 從機碼讀出所有關卡等級資訊
+        /// </summary>
+        public void AllReadRegistry()
+        {
+            CountOfChallenge = 0;
+            TimeOfChallenge = 0;
+            HighPlayingTime = 0;
+            HighScore = 0;
+            CountOfComplete = 0;
+
+            for (int i = 0; i < MaxLevel; i++)
+            {
+                SceneLevels[i].ReadRegistry();
+                CountOfChallenge += SceneLevels[i].CountOfChallenge;
+                TimeOfChallenge += SceneLevels[i].TimeOfChallenge;
+                HighPlayingTime += SceneLevels[i].HighPlayingTime;
+                HighScore += SceneLevels[i].HighScore;
+                CountOfComplete += (SceneLevels[i].Complete ? 1 : 0);
+            }
         }
     }
 }

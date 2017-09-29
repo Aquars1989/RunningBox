@@ -16,6 +16,7 @@ namespace RunningBox
     /// </summary>
     public abstract class SceneGaming : SceneBase
     {
+        private static Font _LastTimeFont = new Font("微軟正黑體", 38, FontStyle.Bold);
         private static Cursor _StartCursor = new Cursor(new Bitmap(1, 1).GetHicon());
 
         #region ===== 事件 =====
@@ -27,7 +28,7 @@ namespace RunningBox
 
         #region ===== 引發事件 =====
         /// <summary>
-        /// 每波時間變更
+        /// 發生於每波時間變更
         /// </summary>
         protected virtual void OnIntervalOfWaveChanged(int oldValue, int newValue)
         {
@@ -40,17 +41,25 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 回合時間變更
+        /// 發生於回合時間變更
         /// </summary>
         protected override void OnIntervalOfRoundChanged(int oldValue, int newValue)
         {
-            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
             RoundPerWave = IntervalOfWave / IntervalOfRound;
             base.OnIntervalOfRoundChanged(oldValue, newValue);
         }
 
         /// <summary>
-        /// 物件死亡時
+        /// 發生於場景速度減慢值變更
+        /// </summary>
+        protected override void OnSceneSlowChanged(float oldValue, float newValue)
+        {
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            base.OnSceneSlowChanged(oldValue, newValue);
+        }
+
+        /// <summary>
+        /// 發生於物件死亡時
         /// </summary>
         protected virtual void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
         {
@@ -61,7 +70,7 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 位置重新配置時
+        /// 發生於位置重新配置時
         /// </summary>
         protected override void OnReLayout()
         {
@@ -110,8 +119,6 @@ namespace RunningBox
         {
             if (e.KeyCode == Keys.Escape && PlayerObject != null)
             {
-                //PlayerObject.Kill(null, ObjectDeadType.Clear);
-                //EndDelay.Value = EndDelay.Limit;
                 if (ShowMenu)
                 {
                     ShowMenu = false;
@@ -119,7 +126,11 @@ namespace RunningBox
                 }
                 else
                 {
-                    ShowMenu = true;
+                    if (MenuCooldownCounter.IsFull)
+                    {
+                        ShowMenu = true;
+                        MenuCooldownCounter.Value = 0;
+                    }
                 }
             }
             base.OnKeyDown(e);
@@ -134,8 +145,6 @@ namespace RunningBox
             base.OnDrawFloor(g);
         }
 
-        SolidBrush time = new SolidBrush(Color.FromArgb(120, 0, 255, 100));
-        Font timeFont = new Font("微軟正黑體", 38, FontStyle.Bold);
         protected override void OnAfterDrawUI(Graphics g)
         {
             if (PlayingInfo != null)
@@ -149,7 +158,7 @@ namespace RunningBox
                 int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / 1000 + 1;
                 if (lastTime < 10)
                 {
-                    g.DrawString(lastTime.ToString(), timeFont, time, MainRectangle, GlobalFormat.MiddleCenter);
+                    g.DrawString(lastTime.ToString(), _LastTimeFont, BrushLastTime, MainRectangle, GlobalFormat.MiddleCenter);
                 }
             }
             else
@@ -254,20 +263,35 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        private CounterObject _MenuCooldownCounter;
         /// <summary>
-        /// 場景ID
+        /// 選單冷卻計時器
         /// </summary>
-        public string SceneID { get; set; }
+        public CounterObject MenuCooldownCounter
+        {
+            get { return _MenuCooldownCounter; }
+            set { _MenuCooldownCounter = value; }
+        }
+
+        private CounterObject _WaveCounter = new CounterObject(0);
+        /// <summary>
+        /// 波數計時器
+        /// </summary>
+        public CounterObject WaveCounter
+        {
+            get { return _WaveCounter; }
+            set { _WaveCounter = value; }
+        }
+
+        /// <summary>
+        /// 場景關卡設定檔
+        /// </summary>
+        public ISceneInfo SceneInfo { get; set; }
 
         /// <summary>
         /// 關卡等級
         /// </summary>
         public int Level { get; set; }
-
-        /// <summary>
-        /// 遊戲時間限制(毫秒)
-        /// </summary>
-        public int PlayingTimeLimit { get; set; }
 
         /// <summary>
         /// 每波回合數
@@ -279,18 +303,17 @@ namespace RunningBox
         /// </summary>
         public int SceneIntervalOfWave { get; private set; }
 
-        private CounterObject _WaveCounter = new CounterObject(0);
         /// <summary>
         /// 每波時間(以毫秒為單位)
         /// </summary>
         public int IntervalOfWave
         {
-            get { return _WaveCounter.Limit; }
+            get { return WaveCounter.Limit; }
             set
             {
-                if (_WaveCounter.Limit == value) return;
-                int oldValue = _WaveCounter.Limit;
-                _WaveCounter.Limit = value;
+                if (WaveCounter.Limit == value) return;
+                int oldValue = WaveCounter.Limit;
+                WaveCounter.Limit = value;
                 OnIntervalOfWaveChanged(oldValue, value);
             }
         }
@@ -328,7 +351,7 @@ namespace RunningBox
                     IsStart = false;
                     if (PlayingInfo.PlayingTime.IsFull)
                     {
-                        _UIMenu.Mode = 3;
+                        _UIMenu.Mode = Level >= SceneInfo.MaxLevel ? 4 : 3;
                     }
                     else
                     {
@@ -386,17 +409,50 @@ namespace RunningBox
         /// </summary>
         protected bool IsEnding { get; set; }
 
+        private CounterObject _EndDelay;
         /// <summary>
         /// 遊戲結束延遲回合計時器
         /// </summary>
-        protected CounterObject EndDelay { get; private set; }
+        protected CounterObject EndDelay
+        {
+            get { return _EndDelay; }
+            set { _EndDelay = value; }
+        }
 
+        private SolidBrush _BrushLastTime = new SolidBrush(Color.LightGreen);
+        /// <summary>
+        /// 剩餘時間繪製筆刷
+        /// </summary>
+        public SolidBrush BrushLastTime
+        {
+            get { return _BrushLastTime; }
+            set
+            {
+                if (_BrushLastTime == value) return;
+                if (_BrushLastTime != null)
+                {
+                    _BrushLastTime.Dispose();
+                }
+                _BrushLastTime = value;
+            }
+        }
 
         private Pen _PenRectGaming = new Pen(Color.LightGreen, 2);
+        /// <summary>
+        /// 遊戲區域繪製畫筆
+        /// </summary>
         public Pen PenRectGaming
         {
             get { return _PenRectGaming; }
-            set { _PenRectGaming = value; }
+            set
+            {
+                if (_PenRectGaming == value) return;
+                if (_PenRectGaming != null)
+                {
+                    _PenRectGaming.Dispose();
+                }
+                _PenRectGaming = value;
+            }
         }
         #endregion
 
@@ -487,13 +543,18 @@ namespace RunningBox
                 }
                 else if (!WaveNo.IsFull)
                 {
-                    if (_WaveCounter.IsFull)
+                    if (WaveCounter.IsFull)
                     {
-                        _WaveCounter.Value = 0;
+                        WaveCounter.Value = 0;
                         WaveNo.Value++;
                         GoWave(WaveNo.Value);
                     }
-                    _WaveCounter.Value += SceneIntervalOfRound;
+                    WaveCounter.Value += SceneIntervalOfRound;
+                }
+
+                if (!MenuCooldownCounter.IsFull)
+                {
+                    MenuCooldownCounter.Value += IntervalOfRound;
                 }
             }
 
@@ -561,7 +622,7 @@ namespace RunningBox
         {
             IsStart = false;
             IsEnding = false;
-            PlayingInfo = new ScenePlayingInfo(SceneID, Level, PlayingTimeLimit);
+            PlayingInfo = new ScenePlayingInfo(SceneInfo.SceneID, Level, SceneInfo.GetPlayingTimeLimit(Level));
             SceneSlow = 1;
             GameObjects.Clear();
             EffectObjects.Clear();
@@ -575,6 +636,8 @@ namespace RunningBox
             }
             WaveNo.Limit = maxWave;
             WaveNo.Value = 0;
+            WaveCounter.Value = 0;
+            MenuCooldownCounter.Value = MenuCooldownCounter.Limit;
 
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);

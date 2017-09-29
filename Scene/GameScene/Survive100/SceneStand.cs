@@ -427,7 +427,11 @@ namespace RunningBox
             {
                 case 1:
                     //                                    123456789012345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Catcher   ", "1"));
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111111 222222"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1      1  1  1"));
+                    Waves.Add(new WaveLine("Blocker   ", "                    1                     1                 "));
+                    Waves.Add(new WaveLine("Mine      ", "        3                   4                  5            "));
+                    Waves.Add(new WaveLine("@Shrink   ", "              ++++                     ++++                 "));
                     break;
                 case 2:
                     //                                    123456789012345678901234567890123456789012345678901234567890

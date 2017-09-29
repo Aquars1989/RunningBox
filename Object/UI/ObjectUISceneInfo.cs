@@ -79,13 +79,20 @@ namespace RunningBox
 
                         drawObject.AfterDraw += (x, g, r) =>
                         {
-                            g.DrawString(idx.ToString(), _ItemFont, Brushes.Gray, r, GlobalFormat.MiddleCenter);
+                            g.DrawString(idx.ToString(), _ItemFont, Brushes.DarkGray, r, GlobalFormat.MiddleCenter);
                         };
                     }
                     else
                     {
                         drawObject.Colors.SetColor("Border", Color.FromArgb(100, 140, 255));
-                        drawObject.Colors.SetColor("Back", Color.FromArgb(200, 255, 255, 200));
+                        if (complete)
+                        {
+                            drawObject.Colors.SetColor("Back", Color.FromArgb(175, 180, 255, 220));
+                        }
+                        else
+                        {
+                            drawObject.Colors.SetColor("Back", Color.FromArgb(175, 255, 255, 180));
+                        }
 
                         newObject.GetFocus += (x, e) =>
                         {

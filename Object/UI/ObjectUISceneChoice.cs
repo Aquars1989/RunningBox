@@ -171,7 +171,6 @@ namespace RunningBox
                 Mode = 1;
             };
 
-
             _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.BottomCenter);
             _UIGroup2 = new ObjectUI(DirectionType.Center, width + 200, height / 2, 200, 200, _DrawGroup2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));

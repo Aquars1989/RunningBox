@@ -18,7 +18,12 @@ namespace RunningBox
         bool GetComplete(int level);
         int GetCountOfChallenge(int level);
         long GetTimeOfChallenge(int level);
+        int GetPlayingTimeLimit(int level);
         int GetHighPlayingTime(int level);
         int GetHighScore(int level);
+        void WriteRegistry(int level);
+        void ReadRegistry(int level);
+        void AllWriteRegistry();
+        void AllReadRegistry();
     }
 }

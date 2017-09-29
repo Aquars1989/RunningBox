@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,28 @@ namespace RunningBox
         public Dictionary<string, ISceneInfo>.ValueCollection GetItems()
         {
             return _Items.Values;
+        }
+
+        /// <summary>
+        /// 將所有場景資訊寫入機碼
+        /// </summary>
+        public void AllWriteRegistry()
+        {
+            foreach (ISceneInfo sceneInfo in _Items.Values)
+            {
+                sceneInfo.AllWriteRegistry();
+            }
+        }
+
+        /// <summary>
+        /// 從機碼讀出所有場景資訊
+        /// </summary>
+        public void AllReadRegistry()
+        {
+            foreach (ISceneInfo sceneInfo in _Items.Values)
+            {
+                sceneInfo.AllReadRegistry();
+            }
         }
     }
 }
