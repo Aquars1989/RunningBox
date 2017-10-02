@@ -112,7 +112,7 @@ namespace RunningBox
         protected override void OnDrawFloor(Graphics g)
         {
             Animaiton++;
-            int aniMax = 80;
+            int aniMax = 60;
             int aniHalf = aniMax / 2;
             if (Animaiton >= aniMax)
             {

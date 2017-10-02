@@ -66,11 +66,11 @@ namespace RunningBox
             Pen penIcon = Colors.GetPen("Icon", 1);
             g.DrawEllipse(penIcon, clockRect);
 
-            if (Animation > 2880)
+            if (Animation >= 1440)
             {
-                Animation %= 2880;
+                Animation %= 1440;
             }
-            int ani = Animation / 2;
+            int ani = Animation;
             float h = ani / 60F;
             int m = ani % 60;
 
@@ -89,7 +89,7 @@ namespace RunningBox
             PointF pointM = new PointF(point1.X + moveMX, point1.Y + moveMY);
             g.DrawLine(penIcon, point1, pointM);
 
-            Animation += BindingSkill != null && BindingSkill.Status == SkillStatus.Channeled ? 1 : 3;
+            Animation += BindingSkill != null && BindingSkill.Status == SkillStatus.Channeled ? 1 : 2;
         }
 
         /// <summary>

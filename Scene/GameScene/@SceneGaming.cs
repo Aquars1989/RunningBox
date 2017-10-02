@@ -458,6 +458,7 @@ namespace RunningBox
 
         public SceneGaming()
         {
+            MenuCooldownCounter = new CounterObject(Sec(5));
             EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
             WaveNo = new CounterObject(0);
