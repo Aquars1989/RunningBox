@@ -65,8 +65,7 @@ namespace RunningBox
             if (BorderWidth < 1) return;
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidth;
+            Pen penBorder = Colors.GetPen("Border", BorderWidth);
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:

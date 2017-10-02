@@ -17,6 +17,17 @@ namespace RunningBox
         /// </summary>
         public event EventHandler BindingSkillChanged;
 
+        /// <summary>
+        /// 發生在綁定技能物件變更時
+        /// </summary>
+        protected virtual void OnBindingSkillChanged()
+        {
+            if (BindingSkillChanged != null)
+            {
+                BindingSkillChanged(this, new EventArgs());
+            }
+        }
+
         private SkillBase _BindingSkill;
         /// <summary>
         /// 綁定技能物件
@@ -34,16 +45,5 @@ namespace RunningBox
 
         public DrawSkillBase(DrawColors drawColor) : base(drawColor) { }
         public DrawSkillBase() : base() { }
-
-        /// <summary>
-        /// 發生在綁定技能物件變更時
-        /// </summary>
-        protected virtual void OnBindingSkillChanged()
-        {
-            if (BindingSkillChanged != null)
-            {
-                BindingSkillChanged(this, new EventArgs());
-            }
-        }
     }
 }

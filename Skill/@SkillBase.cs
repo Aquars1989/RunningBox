@@ -106,8 +106,6 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
-        //說明文字用
-        private static Font _InfoFont = new Font("微軟正黑體", 12);
 
         /// <summary>
         /// 說明文字
@@ -477,9 +475,9 @@ namespace RunningBox
         /// </summary>
         /// <param name="color">繪製顏色</param>
         /// <returns>繪圖物件</returns>
-        public virtual DrawUITextFrame GetInfoObject(Color color, Color backColor, Color borderColor)
+        public virtual DrawUISkillText GetInfoObject(Color color, Color backColor, Color borderColor)
         {
-            DrawUITextFrame result = new DrawUITextFrame(color, Color.WhiteSmoke, backColor, borderColor, 2, 10, Info, _InfoFont, GlobalFormat.TopLeft);
+            DrawUISkillText result = new DrawUISkillText(color, Color.WhiteSmoke, backColor, borderColor, 1, 10) { BindingSkill = this };
             return result;
         }
         #endregion

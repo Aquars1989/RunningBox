@@ -58,10 +58,8 @@ namespace RunningBox
             if (MaxBorderWidth < 1) return;
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            Pen penBorder1 = Colors.GetPen("Border");
-            Pen penBorder2 = Colors.GetPen("Border2");
-            penBorder1.Width = 1;
-            penBorder2.Width = 1;
+            Pen penBorder1 = Colors.GetPen("Border", 1);
+            Pen penBorder2 = Colors.GetPen("Border2", 1);
             int lineHeight = drawRectangle.Height / 4;
             for (int i = 0; i <= drawRectangle.Width; )
             {

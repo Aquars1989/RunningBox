@@ -72,8 +72,6 @@ namespace RunningBox
             if (BorderWidth < 1 || NumberOfSides < 2) return;
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidth;
 
             int helfWidth = drawRectangle.Width / 2;
             int helfHeight = drawRectangle.Width / 2;
@@ -90,6 +88,7 @@ namespace RunningBox
                 pots[i] = new Point(midX + x, midY + y);
             }
 
+            Pen penBorder = Colors.GetPen("Border", BorderWidth);
             if (NumberOfSides > 2)
             {
                 SolidBrush brushBack = Colors.GetBrush("Main");

@@ -48,7 +48,7 @@ namespace RunningBox
             Animation = 0;
             BindingSkill = bindingSkill;
         }
-        
+
         /// <summary>
         /// 繪製到Graphics
         /// </summary>
@@ -72,13 +72,11 @@ namespace RunningBox
             int centerHeight = (int)(height * 0.25F + 0.5F);
             Rectangle centerRect = new Rectangle(left + (width - centerWidth) / 2, top + (height - centerHeight) / 2, centerWidth, centerHeight);
 
-            SolidBrush brushIcon = Colors.GetBrush("Icon");
-            Pen penIcon = Colors.GetPen("Icon");
-            penIcon.Width = 1;
             int ani = Animation;
             float size = drawRectangle.Width * 0.3F; //原始大小
             float maxWidth = width * 1.5F;
 
+            Pen penIcon = Colors.GetPen("Icon", 1);
             using (Region clip = new Region(drawRectangle))
             {
                 g.Clip = clip;
@@ -96,6 +94,7 @@ namespace RunningBox
                 g.ResetClip();
             }
 
+            SolidBrush brushIcon = Colors.GetBrush("Icon");
             g.FillEllipse(brushIcon, centerRect);
             Animation++;
         }

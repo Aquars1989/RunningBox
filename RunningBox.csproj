@@ -64,6 +64,7 @@
     <Compile Include="Class\Global\GlobalColors.cs" />
     <Compile Include="Class\Object\CounterObject.cs" />
     <Compile Include="Class\Object\SQLobject.cs" />
+    <Compile Include="Draw\DrawUI\DrawUISkillText.cs" />
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
     <Compile Include="Handle\GoSceneEventHandle.cs" />

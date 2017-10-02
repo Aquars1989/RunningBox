@@ -238,12 +238,9 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
+            GetBackFrame(drawRectangle);
 
             SolidBrush brushBack = Colors.GetBrush("Back");
-            Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidth;
-
-            GetBackFrame(drawRectangle);
             g.FillPath(brushBack, _BackFrame);
             if (DrawObjectInside != DrawNull.Value)
             {
@@ -251,6 +248,8 @@ namespace RunningBox
                 DrawObjectInside.Draw(g, drawRectangle);
                 g.ResetClip();
             }
+
+            Pen penBorder = Colors.GetPen("Border", BorderWidth);
             g.DrawPath(penBorder, _BackFrame);
         }
 

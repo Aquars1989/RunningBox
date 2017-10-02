@@ -14,6 +14,10 @@ namespace RunningBox
 {
     public partial class SceneSkill : SceneBase
     {
+        private static Font _TitleFont = new Font("標楷體", 30);
+        private static Rectangle _TitleRect = new Rectangle(20, 40, 300, 50);
+        private static LinearGradientBrush _TitleBrush = new LinearGradientBrush(_TitleRect, Color.FromArgb(210, 130, 50), Color.FromArgb(120, 60, 0), 135);
+
         private DrawUISkillFrame Skill1;
         private DrawUISkillFrame Skill2;
         private SkillBase[] _Skills;
@@ -46,11 +50,22 @@ namespace RunningBox
                 int top = i / 2 * 100 + 120;
                 DrawBase skillDraw = _Skills[i].GetDrawObject(Color.FromArgb(120, 60, 0));
                 _UISkillIcons[i] = new ObjectUI(left, top, 75, 75, new DrawUISkillFrame(Color.White, Color.FromArgb(210, 180, 50), 2, 10, SkillKeyType.None, skillDraw) { StaticMode = true });
+                _UISkillIcons[i].GetFocus += (s, e) =>
+                {
+                    (s as ObjectUI).DrawObject.Colors.SetColor("Border", Color.Chocolate);
+                    (s as ObjectUI).DrawObject.Scale = 1.1F;
+                };
+                _UISkillIcons[i].LostFocus += (s, e) =>
+                {
+                    (s as ObjectUI).DrawObject.Colors.SetColor("Border", Color.FromArgb(210, 180, 50));
+                    (s as ObjectUI).DrawObject.Scale = 1F;
+                };
                 _UISkillIcons[i].Click += IconClick;
 
-                DrawBase infoDraw = _Skills[i].GetInfoObject(Color.FromArgb(180, 80, 0), Color.FromArgb(255, 255, 240), Color.FromArgb(210, 180, 50));
-                _UISkillInfos[i] = new ObjectUI(left + 85, top, 170, 75, infoDraw);
+                DrawBase infoDraw = _Skills[i].GetInfoObject(Color.Chocolate, Color.Cornsilk, Color.FromArgb(180, 210, 180, 50));
+                _UISkillInfos[i] = new ObjectUI(left + 85, top + 6, 170, 75, infoDraw);
 
+                _UISkillIcons[i].Propertys.Add(new PropertyShadow(4, 6, 1, 1, 0.2F) { RFix = -0.3F, GFix = -0.3F, BFix = -0.3F });
                 UIObjects.Add(_UISkillIcons[i]);
                 UIObjects.Add(_UISkillInfos[i]);
             }
@@ -92,10 +107,32 @@ namespace RunningBox
             _UICommandCancel.Layout.X = 80;
         }
 
-        private static Font _TitleFont = new Font("標楷體", 30);
-        private static Rectangle _TitleRect = new Rectangle(20, 40, 300, 50);
 
-        private static LinearGradientBrush _TitleBrush = new LinearGradientBrush(_TitleRect, Color.FromArgb(210, 130, 50), Color.FromArgb(120, 60, 0), 135);
+        private int Animaiton;
+        protected override void OnDrawFloor(Graphics g)
+        {
+            Animaiton++;
+            int aniMax = 80;
+            int aniHalf = aniMax / 2;
+            if (Animaiton >= aniMax)
+            {
+                Animaiton %= aniMax;
+            }
+
+            float ratio = (Math.Abs(aniHalf - Animaiton) / (float)aniHalf);
+            int drawHeight = (int)(Height * 0.15F);
+            Rectangle drawRect1 = new Rectangle(0, 0, Width, drawHeight);
+            Rectangle drawRect2 = new Rectangle(0, Height - drawHeight, Width, drawHeight);
+            using (LinearGradientBrush brush1 = new LinearGradientBrush(drawRect1, Color.FromArgb(180, 200 + (int)(ratio * 55), 255, 190), Color.Empty, 90F))
+            using (LinearGradientBrush brush2 = new LinearGradientBrush(drawRect2, Color.FromArgb(180, 200 + (int)(ratio * 55), 255, 190), Color.Empty, 270F))
+            {
+                g.FillRectangle(brush1, drawRect1);
+                g.FillRectangle(brush2, drawRect2);
+            }
+
+            base.OnDrawFloor(g);
+        }
+
         protected override void OnAfterDrawUI(Graphics g)
         {
             g.DrawString("技能設定", _TitleFont, Brushes.DarkGray, _TitleRect.X + 1, _TitleRect.Y + 1);

@@ -60,11 +60,7 @@ namespace RunningBox
                 _DrawPlayer = new DrawBall(Scene.Sec(0.2F));
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            Pen penPlayer = Colors.GetPen("Player");
-            Pen penShadow = Colors.GetPen("Shadow");
-            SolidBrush brushEmemy = Colors.GetBrush("Ememy");
-            SolidBrush brushShadow = Colors.GetBrush("Shadow");
-            penPlayer.Width = penShadow.Width = drawRectangle.Width * 0.04F;
+
             _DrawPlayer.Animation.Value += Scene.IntervalOfRound;
             _DrawEmemy.RemoveAll((x) => { return x.Animation.IsFull; });
             foreach (DrawBall drawEmemy in _DrawEmemy)
@@ -139,15 +135,17 @@ namespace RunningBox
             float ballWidth2 = Math.Min(width, hetight) * 0.08F;
             float drawX = drawRectangle.Left + (_DrawPlayer.BaseX + (_DrawPlayer.TargetX - _DrawPlayer.BaseX) * _DrawPlayer.Animation.GetRatio()) * width - ballWidth / 2;
             float drawY = drawRectangle.Top + (_DrawPlayer.BaseY + (_DrawPlayer.TargetY - _DrawPlayer.BaseY) * _DrawPlayer.Animation.GetRatio()) * width - ballWidth / 2;
-            g.DrawEllipse(penShadow, drawX + 3, drawY + 4, ballWidth, ballWidth);
-            g.DrawEllipse(penPlayer, drawX, drawY, ballWidth, ballWidth);
+
+            float playenPenWidth = drawRectangle.Width * 0.04F;
+            g.DrawEllipse(Colors.GetPen("Shadow", playenPenWidth), drawX + 3, drawY + 4, ballWidth, ballWidth);
+            g.DrawEllipse(Colors.GetPen("Player", playenPenWidth), drawX, drawY, ballWidth, ballWidth);
 
             foreach (DrawBall drawEmemy in _DrawEmemy)
             {
                 float drawX2 = drawRectangle.Left + (drawEmemy.BaseX + (drawEmemy.TargetX - drawEmemy.BaseX) * drawEmemy.Animation.GetRatio()) * width - ballWidth2 / 2;
                 float drawY2 = drawRectangle.Top + (drawEmemy.BaseY + (drawEmemy.TargetY - drawEmemy.BaseY) * drawEmemy.Animation.GetRatio()) * hetight - ballWidth2 / 2;
-                g.FillEllipse(brushShadow, drawX2 + 4, drawY2 + 6, ballWidth2, ballWidth2);
-                g.FillEllipse(brushEmemy, drawX2, drawY2, ballWidth2, ballWidth2);
+                g.FillEllipse(Colors.GetBrush("Shadow"), drawX2 + 4, drawY2 + 6, ballWidth2, ballWidth2);
+                g.FillEllipse(Colors.GetBrush("Ememy"), drawX2, drawY2, ballWidth2, ballWidth2);
             }
         }
 

@@ -87,8 +87,7 @@ namespace RunningBox
                 float offsetX = (1 - (Math.Abs(aniStartMaxHalf - ani) / (float)aniStartMaxHalf)) * 2F;
                 if (offsetX > 1) offsetX = 1;
 
-                Pen penIcon = Colors.GetPen("Icon");
-
+                Pen penIcon = Colors.GetPen("Icon", 1);
                 g.DrawEllipse(penIcon, centLeft + offsetX * offsetWidth, centTop, centerWidth, centerHeight);
                 g.FillEllipse(brushIcon, centLeft - offsetX * offsetWidth, centTop, centerWidth, centerHeight);
 

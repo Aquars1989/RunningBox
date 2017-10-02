@@ -98,15 +98,11 @@ namespace RunningBox
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
 
-            SolidBrush brushBack = Colors.GetBrush("Back");
-            Pen penBorder = Colors.GetPen("Border");
-            penBorder.Width = BorderWidth;
-
             GetBackFrame(drawRectangle);
             DrawSkillBase drawSkillBase = DrawObjectInside as DrawSkillBase;
             SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill; //取得綁定技能
 
-            g.FillPath(brushBack, _BackFrame);
+            g.FillPath(Colors.GetBrush("Back"), _BackFrame);
             g.Clip = _BackRegion;
             if (bindingSkill != null && !StaticMode)
             {
@@ -159,12 +155,11 @@ namespace RunningBox
                 DrawObjectInside.Draw(g, drawRectangle);
             }
             g.ResetClip();
-            g.DrawPath(penBorder, _BackFrame);
+            g.DrawPath(Colors.GetPen("Border", BorderWidth), _BackFrame);
 
             if (DrawButton != RunningBox.SkillKeyType.None)
             {
-                Pen penBlack = Colors.GetPen("Button");
-                penBlack.Width = 2;
+                Pen penBlack = Colors.GetPen("Button", 2);
                 Rectangle keyRectangle = new Rectangle(drawRectangle.Left + drawRectangle.Width - 15, drawRectangle.Top + drawRectangle.Height - 15, 20, 25);
                 g.FillEllipse(Brushes.White, keyRectangle);
 

@@ -63,8 +63,7 @@ namespace RunningBox
             int paddingY = (int)(height * 0.1F);
             Rectangle clockRect = new Rectangle(drawRectangle.Left + paddingX, drawRectangle.Top + paddingY, width - paddingX * 2, height - paddingY * 2);
 
-            Pen penIcon = Colors.GetPen("Icon");
-            penIcon.Width = 1;
+            Pen penIcon = Colors.GetPen("Icon", 1);
             g.DrawEllipse(penIcon, clockRect);
 
             if (Animation > 2880)

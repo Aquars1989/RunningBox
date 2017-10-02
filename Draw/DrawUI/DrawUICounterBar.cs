@@ -79,9 +79,7 @@ namespace RunningBox
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
             SolidBrush brushMain = Colors.GetBrush("Main");
             SolidBrush brushBack = Colors.GetBrush("Back");
-            Pen penBorder = Colors.GetPen("Border");
-
-            penBorder.Width = BorderWidth;
+            Pen penBorder = Colors.GetPen("Border", BorderWidth);
             g.FillRectangle(brushBack, drawRectangle);
             g.DrawRectangle(penBorder, drawRectangle);
 

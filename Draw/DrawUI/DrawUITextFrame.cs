@@ -103,9 +103,7 @@ namespace RunningBox
 
             if (BorderWidth > 0)
             {
-                Pen penBorder = Colors.GetPen("Border");
-                penBorder.Width = BorderWidth;
-                g.DrawPath(penBorder, _BackFrame);
+                g.DrawPath(Colors.GetPen("Border", BorderWidth), _BackFrame);
             }
         }
 

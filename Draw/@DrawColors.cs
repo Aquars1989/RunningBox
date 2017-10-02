@@ -151,6 +151,22 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得指定索引的色彩畫筆並指定線條粗細
+        /// </summary>
+        /// <param name="colorID">色彩索引</param>
+        /// <param name="width">線條粗細</param>
+        /// <returns>取得畫筆</returns>
+        public Pen GetPen(string colorID, float width)
+        {
+            Pen result = GetPen(colorID);
+            if (result != _PenNull)
+            {
+                result.Width = width;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 取得指定索引的色彩筆刷
         /// </summary>
         /// <param name="colorID">色彩索引</param>
