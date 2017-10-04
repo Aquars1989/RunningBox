@@ -17,7 +17,7 @@ namespace RunningBox
 
         static GlobalScenes()
         {
-            Scenes.AddScene(new SceneInfo<SceneStand>("標準", "Stand", 6, 100000));
+            Scenes.AddScene(new SceneInfo<SceneStand>("標準", "Stand", 6, 60000));
         }
     }
 }

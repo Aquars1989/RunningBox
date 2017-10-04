@@ -19,7 +19,7 @@ namespace RunningBox
         public static Font CommandFont = new System.Drawing.Font("微軟正黑體", 20, FontStyle.Bold);
 
         public static int DefaultIntervalOfRound = 20;
-        public static int DefaultIntervalOfWave = 1500;
+        public static int DefaultIntervalOfWave = 1000;
         public static int DefaultEndDelayLimit = 1000;
         public static Padding DefaultMainRectanglePadding = new Padding(80, 80, 80, 80);
         public static int DefaultEnergyLimit = 10000;

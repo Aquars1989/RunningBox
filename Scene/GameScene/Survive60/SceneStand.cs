@@ -339,7 +339,7 @@ namespace RunningBox
                     DrawPic drawObject = new DrawPic(Color.Black, Properties.Resources.Mine, 0) { RotateEnabled = true, Resistance = weight };
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
                     newObject.Propertys.Add(new PropertyRotate(-1, 280, false, false));
-                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 255, 0, 0), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -365,7 +365,7 @@ namespace RunningBox
                 drawObject.Colors.BFix = 0.5F;
                 ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
                 newObject.Propertys.Add(new PropertyRotate(-1, 280, false, false));
-                newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                 newObject.Propertys.Add(new PropertyCollision(1));
                 newObject.Propertys.Add(new PropertyShadow(2, 3));
                 newObject.Dead += (x, e, t) =>
@@ -384,7 +384,7 @@ namespace RunningBox
                         drawObject2.Colors.BFix = 0.5F;
                         ObjectActive newObject2 = new ObjectActive(x.Layout.CenterX, x.Layout.CenterY, size2, size2, life2, LeagueType.Ememy1, ShapeType.Ellipse, drawObject2, moveObject2);
                         newObject2.Propertys.Add(new PropertyRotate(-1, 280, false, false));
-                        newObject2.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                        newObject2.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                         newObject2.Propertys.Add(new PropertyCollision(1));
                         newObject2.Propertys.Add(new PropertyShadow(2, 3));
                         moveObject2.Target.SetObject(newObject2);
@@ -404,7 +404,7 @@ namespace RunningBox
                                 drawObject3.Colors.BFix = 0.5F;
                                 ObjectActive newObject3 = new ObjectActive(x2.Layout.CenterX, x2.Layout.CenterY, size3, size3, life3, LeagueType.Ememy1, ShapeType.Ellipse, drawObject3, moveObject3);
                                 newObject3.Propertys.Add(new PropertyRotate(-1, 280, false, false));
-                                newObject3.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.Firebrick, 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                                newObject3.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                                 newObject3.Propertys.Add(new PropertyCollision(1));
                                 newObject3.Propertys.Add(new PropertyShadow(2, 3));
                                 moveObject3.Target.SetObject(newObject2);
@@ -426,22 +426,21 @@ namespace RunningBox
             switch (Level)
             {
                 case 1:
-                    //                                    123456789012345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111111 222222"));
-                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1      1  1  1"));
-                    Waves.Add(new WaveLine("Blocker   ", "                    1                     1                 "));
-                    Waves.Add(new WaveLine("Mine      ", "        3                   4                  5            "));
-                    Waves.Add(new WaveLine("@Shrink   ", "              ++++                     ++++                 "));
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Blocker   ", "                    1                     1       "));
+                    Waves.Add(new WaveLine("Mine      ", "        4                  5                  6   "));
+                    Waves.Add(new WaveLine("@Shrink   ", "              ++++                     ++++       "));
                     break;
                 case 2:
-                    //                                    123456789012345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Catcher   ", "111111 111111 111111 111111 111111 111111 111111 11111      "));
-                    Waves.Add(new WaveLine("Faster    ", "1      1      1             1      1             1          "));
-                    Waves.Add(new WaveLine("Blocker   ", "1                   1                    1                  "));
-                    Waves.Add(new WaveLine("WallB     ", "999          4               5                  6           "));
-                    Waves.Add(new WaveLine("Mine      ", "3         4            5           6        7               "));
-                    Waves.Add(new WaveLine("@Dark     ", "              +++               +++            +++          "));
-                    Waves.Add(new WaveLine("@Shrink   ", "        +++              +++              +++               "));
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Blocker   ", "        1           1            1          1     "));
+                    Waves.Add(new WaveLine("Mine      ", "              4               5                  6"));
+                    Waves.Add(new WaveLine("Meteor    ", "   4                4                  8          "));
+                    Waves.Add(new WaveLine("@Dark     ", "          ++                    ++                "));
                     break;
             }
 
@@ -451,7 +450,7 @@ namespace RunningBox
         {
             MovePlayer moveObject = new MovePlayer(this, 1, 200, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
-            PlayerObject.Propertys.Add(new PropertyCollision(1));
+            //PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 100, 200, Sec(0.1F), Sec(1F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             //PlayerObject.Propertys.Add(new PropertySmoking(-1, 500));
@@ -466,7 +465,7 @@ namespace RunningBox
 
         public override void DoAfterWave()
         {
-            _SpeedFix = 1F + WaveNo.Value * 0.015F;
+            _SpeedFix = 1F + WaveNo.Value * 0.01F;
             _LifeFix = 1F + WaveNo.Value * 0.01F;
         }
 

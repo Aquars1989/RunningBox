@@ -42,7 +42,7 @@ namespace RunningBox
                 }
                 return result;
             }
-            catch (Exception ex)
+            catch 
             {
                 return null;
             }

@@ -65,7 +65,7 @@ namespace RunningBox
             {
                 case SkillStatus.Enabled:
                     {
-                        _SceneSlow = SlowRate;
+                        _SceneSlow = Scene.SceneSlow * SlowRate;
                         Scene.SceneSlow += _SceneSlow;
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.White, 1, false, Owner.Energy));
                         Owner.Propertys.Add(_MiniBar);

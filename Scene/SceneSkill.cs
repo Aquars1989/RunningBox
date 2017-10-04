@@ -34,11 +34,11 @@ namespace RunningBox
 
             _Skills = new SkillBase[]
             {
-                new SkillSprint(3500, Sec(1), 0, 6000, true),
-                new SkillShield(1, 6000, 0, Sec(1F), Sec(2.5F)),
-                new SkillShockwave(4000, 0, Sec(1F), Sec(2.5F), Sec(0.1F), 4000, 300),
+                new SkillSprint(3000, Sec(0.7F), 0, 6000, true),
+                new SkillShield(1, 6000, 0, Sec(1F), Sec(3F)),
+                new SkillShockwave(4000, 0, Sec(1F), Sec(2F), Sec(0.1F), 4000, 300),
                 new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
-                new SkillBait(6000, Sec(1.5F), Sec(1.5F), 200)
+                new SkillBait(5000, Sec(1.5F), Sec(1.5F), 400)
             };
 
             int len = _Skills.Length;

@@ -13,6 +13,10 @@ namespace RunningBox
     /// </summary>
     public class ObjectUIGameMenu : ObjectUIPanel
     {
+        private static Font _TitleFont = new Font("微軟正黑體", 30);
+        private static Font _InfoFont1 = new Font("新細明體", 22, FontStyle.Bold);
+        private static Font _InfoFont2 = new Font("微軟正黑體", 12, FontStyle.Bold);
+
         /// <summary>
         /// 發生於返回按鈕被按下
         /// </summary>
@@ -189,9 +193,6 @@ namespace RunningBox
             UIObjects.Add(_UICommandAction);
         }
 
-        private static Font _TitleFont = new Font("微軟正黑體", 30);
-        private static Font _InfoFont1 = new Font("新細明體", 22, FontStyle.Bold);
-        private static Font _InfoFont2 = new Font("新細明體", 14, FontStyle.Bold);
         public override void Draw(Graphics g)
         {
             int left = Layout.Rectangle.Left;
@@ -245,13 +246,10 @@ namespace RunningBox
                 Rectangle shadow1Rect = new Rectangle(info1Rect.Left + 1, info1Rect.Top + 1, info1Rect.Width, info1Rect.Height);
                 Rectangle shadow2Rect = new Rectangle(info2Rect.Left + 1, info2Rect.Top + 1, info2Rect.Width, info2Rect.Height);
                 Rectangle brushRect = new Rectangle(left, top + 100, width, 40);
-                using (LinearGradientBrush brushInfo = new LinearGradientBrush(info2Rect, Color.RoyalBlue, Color.FromArgb(200, 220, 255, 200), 90F))
-                {
-                    g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.Gray, shadow1Rect, GlobalFormat.BottomLeft);
-                    g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{0:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, Brushes.RoyalBlue, shadow2Rect, GlobalFormat.BottomLeft);
-                    g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.BottomLeft);
-                    g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{0:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, brushInfo, info2Rect, GlobalFormat.BottomLeft);
-                }
+                g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.Gray, shadow1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, Brushes.LightGray, shadow2Rect, GlobalFormat.BottomLeft);
+                g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, Brushes.RoyalBlue, info2Rect, GlobalFormat.BottomLeft);
             }
         }
     }

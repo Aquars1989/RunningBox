@@ -73,6 +73,7 @@ namespace RunningBox
                         ObjectActive bait = new ObjectActive(Owner.Layout, BaitLife, Owner.League, draw, move);
                         move.Target.SetObject(bait);
 
+                        bait.Propertys.Add(new PropertySpeeded(-1, -(BaitSpeed / (float)BaitLife * 800)));
                         bait.Propertys.Add(new PropertyCollision(0)); //強度碰撞
 
                         //新增雜訊物件

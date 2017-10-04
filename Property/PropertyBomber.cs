@@ -155,7 +155,7 @@ namespace RunningBox
                     newObject.Life.Limit = life;
 
                     newObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(280, 360), false, true));
-                    newObject.Propertys.Add(new PropertyDeadExplosion(8, 0, 1, LeagueType.Ememy1, Color.FromArgb(180, 255, 0, 0), 0, 1, 2, ObjectDeadType.All) { DrawRange = false });
+                    newObject.Propertys.Add(new PropertyDeadExplosion(8, 0, 1, LeagueType.Ememy1, Color.FromArgb(180, 225, 70, 40), 0, 1, 2, ObjectDeadType.All) { DrawRange = false });
                     newObject.Propertys.Add(new PropertyCollision(1));
 
                     moveObject.Target.SetObject(newObject);

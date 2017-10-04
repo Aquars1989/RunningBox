@@ -142,6 +142,16 @@ namespace RunningBox
             {
                 g.DrawRectangle(_PenRectGaming, MainRectangle);
             }
+
+            if (IsStart)
+            {
+                int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / 1000 + 1;
+                if (lastTime < 10)
+                {
+                    g.DrawString(lastTime.ToString(), _LastTimeFont, BrushLastTime, MainRectangle, GlobalFormat.MiddleCenter);
+                }
+            }
+
             base.OnDrawFloor(g);
         }
 
@@ -153,20 +163,9 @@ namespace RunningBox
                 g.DrawString(string.Format("分數:{0:N0}", PlayingInfo.Score), Font, Brushes.RoyalBlue, 85, 62);
             }
 
-            if (IsStart)
+            if (!IsStart && !ShowMenu)
             {
-                int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / 1000 + 1;
-                if (lastTime < 10)
-                {
-                    g.DrawString(lastTime.ToString(), _LastTimeFont, BrushLastTime, MainRectangle, GlobalFormat.MiddleCenter);
-                }
-            }
-            else
-            {
-                if (!ShowMenu)
-                {
                     g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
-                }
             }
             base.OnAfterDrawUI(g);
         }
@@ -624,7 +623,7 @@ namespace RunningBox
             IsStart = false;
             IsEnding = false;
             PlayingInfo = new ScenePlayingInfo(SceneInfo.SceneID, Level, SceneInfo.GetPlayingTimeLimit(Level));
-            SceneSlow = 1;
+            SceneSlow = 0.95F;
             GameObjects.Clear();
             EffectObjects.Clear();
             Waves.Clear();

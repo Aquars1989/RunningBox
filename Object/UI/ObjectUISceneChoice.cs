@@ -177,7 +177,7 @@ namespace RunningBox
             _UIGroup2.Layout.Depend.Anchor = DirectionType.TopLeft;
             _UIGroup2.Layout.Depend.SetObject(this);
 
-            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.FromArgb(200, 255, 255, 220), Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
+            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.FromArgb(255, 255, 255, 220), Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
             _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0F, GFix = 0F, BFix = 0F });
             _CommandBack.Layout.Depend.Anchor = DirectionType.TopLeft;
             _CommandBack.Layout.Depend.SetObject(this);
@@ -273,7 +273,7 @@ namespace RunningBox
                         _BackDrak += 0.05F;
 
                         if (_BackDrak > 1) _BackDrak = 1;
-                        DrawObject.Colors.RFix = DrawObject.Colors.GFix = DrawObject.Colors.BFix = -_BackDrak * 0.6F;
+                        DrawObject.Colors.RFix = DrawObject.Colors.GFix = DrawObject.Colors.BFix = -_BackDrak * 1F;
                         for (int i = 0; i < BackObjects.Count; i++)
                         {
                             BackObjects[i].DrawObject.Colors.RFix = BackObjects[i].DrawObject.Colors.GFix = _BackDrak * 1F;
@@ -295,7 +295,7 @@ namespace RunningBox
                         _BackDrak -= 0.05F;
 
                         if (_BackDrak < 0) _BackDrak = 0;
-                        DrawObject.Colors.RFix = DrawObject.Colors.GFix = DrawObject.Colors.BFix = -_BackDrak * 0.6F;
+                        DrawObject.Colors.RFix = DrawObject.Colors.GFix = DrawObject.Colors.BFix = -_BackDrak * 1F;
                         for (int i = 0; i < BackObjects.Count; i++)
                         {
                             BackObjects[i].DrawObject.Colors.RFix = BackObjects[i].DrawObject.Colors.GFix = _BackDrak * 1F;
@@ -308,8 +308,8 @@ namespace RunningBox
             {
                 int Size = Global.Rand.Next(2, 5);
                 int top = Layout.Rectangle.Top + Global.Rand.Next(5, Layout.RectHeight - 10);
-                MoveStraight moveObject = new MoveStraight(null, 1, Size * Global.Rand.Next(80, 120), 1, 100, 0);
-                ObjectSmoke newObject = new ObjectSmoke(-10, top, Size, Size, -1, 1, 1, Color.Gray, moveObject);
+                MoveStraight moveObject = new MoveStraight(null, 1, Size * Global.Rand.Next(120, 180) - 80, 1, 100, 0);
+                ObjectSmoke newObject = new ObjectSmoke(-10, top, Size, Size, -1, 1, 1, Color.FromArgb(50, 50, 50), moveObject);
                 newObject.DrawObject.Colors.RFix = newObject.DrawObject.Colors.GFix = _BackDrak * 1F;
                 moveObject.Target.SetObject(newObject);
                 moveObject.Target.SetOffsetByXY(1000, 0);
