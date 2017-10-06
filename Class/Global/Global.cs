@@ -24,8 +24,6 @@ namespace RunningBox
         public static Padding DefaultMainRectanglePadding = new Padding(80, 80, 80, 80);
         public static int DefaultEnergyLimit = 10000;
         public static int DefaultEnergyGetPerSec = 1500;
-
-        public static string PlayerName;
         public static string UUID;
 
         static Global()

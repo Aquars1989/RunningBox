@@ -8,16 +8,16 @@ using System.Windows.Forms;
 namespace RunningBox
 {
     /// <summary>
-    /// 誘餌技能,放出分身
+    /// 貪婪技能,讓你增加分數
     /// </summary>
-    public class SkillBait : SkillBase
+    public class SkillGreedy : SkillBase
     {
         /// <summary>
         /// 辨識碼
         /// </summary>
         public override SkillID ID
         {
-            get { return SkillID.Bait; }
+            get { return SkillID.Greedy; }
         }
 
         /// <summary>
@@ -25,27 +25,17 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return "釋放誘餌吸引注意\n誘餌可被摧毀"; }
+            get { return "無任何效果,施放時無法移動"; }
         }
 
         /// <summary>
-        /// 誘餌生命(毫秒)
-        /// </summary>
-        public int BaitLife { get; set; }
-
-        /// <summary>
-        /// 誘餌速度
-        /// </summary>
-        public int BaitSpeed { get; set; }
-
-        /// <summary>
-        /// 新增誘餌技能,放出分身
+        /// 新增貪婪技能,讓你增加分數
         /// </summary>
         /// <param name="costEnergy">耗費能量</param>
         /// <param name="cooldown">冷卻時間(毫秒)</param>
         /// <param name="baitLife">誘餌生命(毫秒)</param>
         /// <param name="baitSpeed">誘餌速度</param>
-        public SkillBait(int costEnergy, int cooldown, int baitLife, int baitSpeed)
+        public SkillGreedy(int costEnergy, int cooldown, int baitLife, int baitSpeed)
         {
             Status = SkillStatus.Disabled;
             CostEnergy = costEnergy;

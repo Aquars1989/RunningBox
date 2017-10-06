@@ -59,16 +59,19 @@
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
     <Compile Include="Class\Function\FunctionInGame.cs" />
     <Compile Include="Class\Function\FunctionConvert.cs" />
+    <Compile Include="Class\Global\GlobalPlayer.cs" />
     <Compile Include="Class\Global\GlobalScenes.cs" />
     <Compile Include="Class\Global\GlobalFormat.cs" />
     <Compile Include="Class\Global\GlobalColors.cs" />
     <Compile Include="Class\Object\CounterObject.cs" />
     <Compile Include="Class\Object\SQLobject.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillText.cs" />
+    <Compile Include="Enum\ID\SkillID.cs" />
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
     <Compile Include="Handle\GoSceneEventHandle.cs" />
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
+    <Compile Include="Object\UI\ObjectUIUserInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
     <Compile Include="SceneInfo\ISceneInfo.cs" />
     <Compile Include="SceneInfo\ScenePlayInfo.cs" />
@@ -186,6 +189,7 @@
       <DependentUpon>SceneWelcome.cs</DependentUpon>
     </Compile>
     <Compile Include="Skill\%24SkillCollection.cs" />
+    <Compile Include="Skill\SkillGreedy.cs" />
     <Compile Include="Skill\SkillBulletTime.cs" />
     <Compile Include="Layout\%40LayoutSet.cs" />
     <Compile Include="Skill\SkillShockwave.cs" />

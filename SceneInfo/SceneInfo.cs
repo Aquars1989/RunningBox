@@ -13,7 +13,26 @@ namespace RunningBox
     public class SceneInfo<T> : ISceneInfo
         where T : SceneGaming, new()
     {
+        /// <summary>
+        /// 關卡資訊
+        /// </summary>
         private SceneLevelInfo[] SceneLevels { get; set; }
+
+        /// <summary>
+        /// 發生於資訊變更
+        /// </summary>
+        public event EventHandler InfoChanged;
+
+        /// <summary>
+        /// 發生於資訊變更
+        /// </summary>
+        public void OnInfoChanged()
+        {
+            if (InfoChanged != null)
+            {
+                InfoChanged(this, new EventArgs());
+            }
+        }
 
         /// <summary>
         /// 取得場景名稱
@@ -188,6 +207,7 @@ namespace RunningBox
             SceneLevels[idx].HighPlayingTime = highPlayingTime;
             SceneLevels[idx].HighScore = highScore;
             SceneLevels[idx].Complete = complete;
+            OnInfoChanged();
         }
 
         /// <summary>
@@ -227,6 +247,7 @@ namespace RunningBox
             }
 
             SceneLevels[idx].WriteRegistry();
+            OnInfoChanged();
         }
 
         /// <summary>
@@ -271,6 +292,7 @@ namespace RunningBox
             HighPlayingTime += SceneLevels[idx].HighPlayingTime - oldHighPlayingTime;
             HighScore += SceneLevels[idx].HighScore - oldHighScore;
             CountOfComplete += (SceneLevels[idx].Complete ? 1 : 0) - (oldComplete ? 1 : 0);
+            OnInfoChanged();
         }
 
         /// <summary>
@@ -304,6 +326,7 @@ namespace RunningBox
                 HighScore += SceneLevels[i].HighScore;
                 CountOfComplete += (SceneLevels[i].Complete ? 1 : 0);
             }
+            OnInfoChanged();
         }
     }
 }

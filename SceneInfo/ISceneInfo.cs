@@ -3,6 +3,7 @@ namespace RunningBox
 {
     public interface ISceneInfo
     {
+        event EventHandler InfoChanged;
         string SceneName { get; }
         int CountOfChallenge { get; }
         int CountOfComplete { get; }

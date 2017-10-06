@@ -44,7 +44,7 @@ namespace RunningBox
         /// <param name="playingTime">遊戲時間限制(毫秒)</param>
         public ScenePlayingInfo(string sceneID, int level, int playingTime)
         {
-            PlayingTime = new CounterObject(playingTime);
+            PlayingTime = new CounterObject(playingTime, 0, false);
             SceneID = sceneID;
             Level = level;
         }

@@ -18,6 +18,14 @@ namespace RunningBox
         private PropertyUI _MiniBar;        //迷你條棒+幽靈屬性
 
         /// <summary>
+        /// 辨識碼
+        /// </summary>
+        public override SkillID ID
+        {
+            get { return SkillID.Shield; }
+        }
+
+        /// <summary>
         /// 說明文字
         /// </summary>
         public override string Info

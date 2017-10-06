@@ -71,6 +71,11 @@ namespace RunningBox
         public event ValueChangedEnentHandle<ObjectUI> FocusObjectUIChanged;
 
         /// <summary>
+        /// 發生於場景計時器速度修正變更
+        /// </summary>
+        public event ValueChangedEnentHandle<float> SceneTimeFixChanged;
+
+        /// <summary>
         /// 發生於場景速度減慢值變更
         /// </summary>
         public event ValueChangedEnentHandle<float> SceneSlowChanged;
@@ -233,13 +238,26 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 發生於場景計時器速度修正變更
+        /// </summary>
+        protected virtual void OnSceneTimeFixChanged(float oldValue, float newValue)
+        {
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow * SceneTimeFix);
+
+            if (SceneTimeFixChanged != null)
+            {
+                SceneTimeFixChanged(this, oldValue, newValue);
+            }
+        }
+
+        /// <summary>
         /// 發生於回合時間變更
         /// </summary>
         protected virtual void OnIntervalOfRoundChanged(int oldValue, int newValue)
         {
             RoundPerSec = 1000F / IntervalOfRound;
             SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
-            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow * SceneTimeFix);
 
             if (IntervalOfRoundChanged != null)
             {
@@ -252,8 +270,8 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnSceneSlowChanged(float oldValue, float newValue)
         {
-            SceneRoundPerSec = 1000F / IntervalOfRound * SceneSlow;
-            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow);
+            SceneRoundPerSec = (float)1000 / IntervalOfRound * SceneSlow;
+            SceneIntervalOfRound = (int)(IntervalOfRound / SceneSlow * SceneTimeFix);
             if (SceneSlowChanged != null)
             {
                 SceneSlowChanged(this, oldValue, newValue);
@@ -420,6 +438,22 @@ namespace RunningBox
         #endregion
 
         #region===== 屬性 =====
+        private float _SceneTimeFix = 1;
+        /// <summary>
+        /// 場景計時器速度修正
+        /// </summary>
+        public float SceneTimeFix
+        {
+            get { return _SceneTimeFix; }
+            set
+            {
+                if (_SceneTimeFix == value) return;
+                float oldValue = _SceneTimeFix;
+                _SceneTimeFix = value;
+                OnSceneTimeFixChanged(oldValue, value);
+            }
+        }
+
         private ObjectUI _FocusObjectUI;
         /// <summary>
         /// 目前獲得焦點的UI
@@ -699,13 +733,13 @@ namespace RunningBox
         }
 
         /// <summary>
-        /// 秒轉換為毫秒
+        /// 場景定義的秒數轉換為毫秒數
         /// </summary>
         /// <param name="sec"></param>
         /// <returns></returns>
         public int Sec(float sec)
         {
-            return (int)(sec * 1000 + 0.5F);
+            return (int)(sec * 1000);
         }
 
         /// <summary>

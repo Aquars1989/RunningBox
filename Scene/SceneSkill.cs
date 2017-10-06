@@ -35,10 +35,10 @@ namespace RunningBox
             _Skills = new SkillBase[]
             {
                 new SkillSprint(3000, Sec(0.7F), 0, 6000, true),
-                new SkillShield(1, 6000, 0, Sec(1F), Sec(3F)),
-                new SkillShockwave(4000, 0, Sec(1F), Sec(2F), Sec(0.1F), 4000, 300),
+                new SkillShield(1, 6000, 0, Sec(2F), Sec(4F)),
+                new SkillShockwave(4000, 0, Sec(1.5F), Sec(4F), Sec(0.1F), 4000, 300),
                 new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
-                new SkillBait(5000, Sec(1.5F), Sec(1.5F), 400)
+                new SkillBait(5000, Sec(2F), Sec(2F), 400)
             };
 
             int len = _Skills.Length;
@@ -49,7 +49,8 @@ namespace RunningBox
                 int left = i % 2 * 270 + 30;
                 int top = i / 2 * 100 + 120;
                 DrawBase skillDraw = _Skills[i].GetDrawObject(Color.FromArgb(120, 60, 0));
-                _UISkillIcons[i] = new ObjectUI(left, top, 75, 75, new DrawUISkillFrame(Color.White, Color.FromArgb(210, 180, 50), 2, 10, SkillKeyType.None, skillDraw) { StaticMode = true });
+                DrawUISkillFrame drawFrame = new DrawUISkillFrame(Color.White, Color.FromArgb(210, 180, 50), 2, 10, SkillKeyType.None, skillDraw) { StaticMode = true };
+                _UISkillIcons[i] = new ObjectUI(left, top, 75, 75, drawFrame);
                 _UISkillIcons[i].GetFocus += (s, e) =>
                 {
                     (s as ObjectUI).DrawObject.Colors.SetColor("Border", Color.Chocolate);
@@ -66,6 +67,18 @@ namespace RunningBox
                 _UISkillInfos[i] = new ObjectUI(left + 85, top + 6, 170, 75, infoDraw);
 
                 _UISkillIcons[i].Propertys.Add(new PropertyShadow(4, 6, 1, 1, 0.2F) { RFix = -0.3F, GFix = -0.3F, BFix = -0.3F });
+
+                if (GlobalScenes.ChoiceSkill1 != null && _Skills[i].ID == GlobalScenes.ChoiceSkill1.ID)
+                {
+                    Skill1 = drawFrame;
+                    drawFrame.DrawButton = SkillKeyType.MouseButtonLeft;
+                }
+                else if (GlobalScenes.ChoiceSkill2 != null && _Skills[i].ID == GlobalScenes.ChoiceSkill2.ID)
+                {
+                    Skill2 = drawFrame;
+                    drawFrame.DrawButton = SkillKeyType.MouseButtonRight;
+                }
+
                 UIObjects.Add(_UISkillIcons[i]);
                 UIObjects.Add(_UISkillInfos[i]);
             }
@@ -86,9 +99,9 @@ namespace RunningBox
 
             _UICommandOK.Click += (x, e) =>
             {
+                GlobalScenes.ChoiceSkill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill;
+                GlobalScenes.ChoiceSkill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill;
                 SceneGaming scene = GlobalScenes.ChoiceScene.CreateScene(GlobalScenes.ChoiceLevel);
-                scene.Skill1 = Skill1 == null ? null : (Skill1.DrawObjectInside as DrawSkillBase).BindingSkill;
-                scene.Skill2 = Skill2 == null ? null : (Skill2.DrawObjectInside as DrawSkillBase).BindingSkill;
                 OnGoScene(scene);
             };
 

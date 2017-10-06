@@ -10,6 +10,8 @@ namespace RunningBox
 {
     class GlobalScenes
     {
+        public static SkillBase ChoiceSkill1;
+        public static SkillBase ChoiceSkill2;
         public static ISceneInfo ChoiceScene;
         public static int ChoiceLevel;
 

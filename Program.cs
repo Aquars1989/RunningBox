@@ -33,7 +33,7 @@ namespace RunningBox
             SetDebug();
 
             RegistryKey oRegistryKey = Registry.CurrentUser.CreateSubKey(Global.RegistryAddr + "\\PlayerInfo");
-            Global.PlayerName = oRegistryKey.GetValue("PlayerName", "") as string;
+            GlobalPlayer.PlayerName = oRegistryKey.GetValue("PlayerName", "") as string;
 
             GlobalScenes.Scenes.AllReadRegistry();
             Application.Run(new MainForm());

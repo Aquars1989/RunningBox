@@ -32,12 +32,18 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnIntervalOfWaveChanged(int oldValue, int newValue)
         {
-            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow * SceneTimeFix);
             RoundPerWave = IntervalOfWave / IntervalOfRound;
             if (IntervalOfWaveChanged != null)
             {
                 IntervalOfWaveChanged(this, oldValue, newValue);
             }
+        }
+
+        protected override void OnSceneTimeFixChanged(float oldValue, float newValue)
+        {
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow * SceneTimeFix);
+            base.OnSceneTimeFixChanged(oldValue, newValue);
         }
 
         /// <summary>
@@ -54,7 +60,7 @@ namespace RunningBox
         /// </summary>
         protected override void OnSceneSlowChanged(float oldValue, float newValue)
         {
-            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow);
+            SceneIntervalOfWave = (int)(IntervalOfWave / SceneSlow * SceneTimeFix);
             base.OnSceneSlowChanged(oldValue, newValue);
         }
 
@@ -145,7 +151,7 @@ namespace RunningBox
 
             if (IsStart)
             {
-                int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / 1000 + 1;
+                int lastTime = (PlayingInfo.PlayingTime.Limit - PlayingInfo.PlayingTime.Value) / Sec(1) + 1;
                 if (lastTime < 10)
                 {
                     g.DrawString(lastTime.ToString(), _LastTimeFont, BrushLastTime, MainRectangle, GlobalFormat.MiddleCenter);
@@ -159,13 +165,13 @@ namespace RunningBox
         {
             if (PlayingInfo != null)
             {
-                g.DrawString(string.Format("波數:{0}/{1}    存活時間:{2:N2} 秒", WaveNo.Value, WaveNo.Limit, PlayingInfo.PlayingTime.Value / 1000F), Font, Brushes.Black, 85, 45);
+                g.DrawString(string.Format("波數:{0}/{1}    存活時間:{2:N2} 秒", WaveNo.Value, WaveNo.Limit, PlayingInfo.PlayingTime.Value / (float)Sec(1F)), Font, Brushes.Black, 85, 45);
                 g.DrawString(string.Format("分數:{0:N0}", PlayingInfo.Score), Font, Brushes.RoyalBlue, 85, 62);
             }
 
             if (!IsStart && !ShowMenu)
             {
-                    g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
+                g.DrawString("請點擊任意區域開始", Font, Brushes.OrangeRed, MainRectangle, GlobalFormat.MiddleCenter);
             }
             base.OnAfterDrawUI(g);
         }
@@ -457,6 +463,7 @@ namespace RunningBox
 
         public SceneGaming()
         {
+            SceneTimeFix = 1.4F;
             MenuCooldownCounter = new CounterObject(Sec(5));
             EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
@@ -466,6 +473,9 @@ namespace RunningBox
 
             _UISkillIcon1 = new ObjectUI(300, 10, 50, 50, _DrawSkill1);
             _UISkillIcon2 = new ObjectUI(380, 10, 50, 50, _DrawSkill2);
+
+            Skill1 = GlobalScenes.ChoiceSkill1;
+            Skill2 = GlobalScenes.ChoiceSkill2;
 
             _UIMenu.NextButtonClick += (x, e) =>
             {
@@ -623,7 +633,7 @@ namespace RunningBox
             IsStart = false;
             IsEnding = false;
             PlayingInfo = new ScenePlayingInfo(SceneInfo.SceneID, Level, SceneInfo.GetPlayingTimeLimit(Level));
-            SceneSlow = 0.95F;
+            SceneSlow = 1F;
             GameObjects.Clear();
             EffectObjects.Clear();
             Waves.Clear();

@@ -246,10 +246,13 @@ namespace RunningBox
                 Rectangle shadow1Rect = new Rectangle(info1Rect.Left + 1, info1Rect.Top + 1, info1Rect.Width, info1Rect.Height);
                 Rectangle shadow2Rect = new Rectangle(info2Rect.Left + 1, info2Rect.Top + 1, info2Rect.Width, info2Rect.Height);
                 Rectangle brushRect = new Rectangle(left, top + 100, width, 40);
-                g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.Gray, shadow1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, Brushes.LightGray, shadow2Rect, GlobalFormat.BottomLeft);
-                g.DrawString("等級" + PlayingInfo.Level.ToString(), _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / 1000), PlayingInfo.Score), _InfoFont2, Brushes.RoyalBlue, info2Rect, GlobalFormat.BottomLeft);
+
+                string info1 = string.Format("等級{0}", PlayingInfo.Level);
+                string info2 = string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / Scene.Sec(1)), PlayingInfo.Score);
+                g.DrawString(info1, _InfoFont1, Brushes.Gray, shadow1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(info2, _InfoFont2, Brushes.LightGray, shadow2Rect, GlobalFormat.BottomLeft);
+                g.DrawString(info1, _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(info2, _InfoFont2, Brushes.RoyalBlue, info2Rect, GlobalFormat.BottomLeft);
             }
         }
     }

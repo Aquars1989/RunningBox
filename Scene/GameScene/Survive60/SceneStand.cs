@@ -453,14 +453,19 @@ namespace RunningBox
             //PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 100, 200, Sec(0.1F), Sec(1F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
-            //PlayerObject.Propertys.Add(new PropertySmoking(-1, 500));
             return PlayerObject;
+        }
+
+        protected override void OnAfterRound()
+        {
+            PlayingInfo.Score += 10 + (WaveNo.Value) / 10;
+            base.OnAfterRound();
         }
 
         public override void DoAfterStart()
         {
-            _SpeedFix = 1;
-            _LifeFix = 1;
+            _SpeedFix = 0.8F;
+            _LifeFix = 1F;
         }
 
         public override void DoAfterWave()

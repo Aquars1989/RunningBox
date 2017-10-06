@@ -147,7 +147,7 @@ namespace RunningBox
             infoLeft = insideLeft + insideWidth / 2 + 10;
             g.DrawString("冷卻", _InfoFont, brushInfo1, infoLeft, infoTop);
             infoLeft += (int)g.MeasureString("冷卻", _InfoFont).Width;
-            string cooldownText = string.Format("{0:N1}秒", BindingSkill.Cooldown.Limit / 1000F);
+            string cooldownText = string.Format("{0:N1}秒", BindingSkill.Cooldown.Limit / (float)Scene.Sec(1));
             g.DrawString(cooldownText, _InfoFont, brushInfo3, infoLeft, infoTop);
             g.ResetClip();
 

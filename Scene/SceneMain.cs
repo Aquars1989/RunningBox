@@ -35,11 +35,7 @@ namespace RunningBox
         {
             _UITopbar = new ObjectUI(0, 0, 0, 90, new DrawUIFrame(Color.Wheat, Color.DarkSlateBlue, 1, 0));
 
-            _UIInfo = new ObjectUI(5, 5, 200, 80, new DrawCustom());
-            _UIInfo.DrawObject.BeforeDraw += (x, g, r) =>
-            {
-                g.DrawRectangle(Pens.CornflowerBlue, r);
-            };
+            _UIInfo = new ObjectUIUserInfo(DirectionType.TopLeft, 5, 5, MoveNull.Value);
             _UIInfo.Click += (x, e) => { PlayerInfoShow = true; };
 
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };

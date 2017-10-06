@@ -106,6 +106,10 @@ namespace RunningBox
         #endregion
 
         #region ===== 屬性 =====
+        /// <summary>
+        /// 辨識碼
+        /// </summary>
+        public abstract SkillID ID { get; }
 
         /// <summary>
         /// 說明文字

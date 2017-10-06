@@ -31,7 +31,7 @@ namespace RunningBox
             Propertys.Add(new PropertyShadow(0, 6, 0.95F, 1));
 
             //玩家姓名
-            _DrawPlayerName = new DrawUITextFrame(Color.OrangeRed, Color.Orange, Color.FromArgb(230, 255, 245), Color.CornflowerBlue, 1, 10, "口口口口口口口口口口", new Font("標楷體", 16), GlobalFormat.MiddleLeft) { TextPadding = new Padding(10, 10, 0, 5) };
+            _DrawPlayerName = new DrawUITextFrame(Color.OrangeRed, Color.Orange, Color.FromArgb(230, 255, 245), Color.CornflowerBlue, 1, 10, GlobalPlayer.PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleLeft) { TextPadding = new Padding(10, 10, 0, 5) };
             ObjectUI uiPlayerName = new ObjectUI(30, 80, 270, 40, _DrawPlayerName);
 
             //重新選取
@@ -52,7 +52,10 @@ namespace RunningBox
             uiCommandClose.Layout.Depend.SetObject(this);
 
 
-            uiCommandBuildName.Click += (s, e) => { _DrawPlayerName.Text = Function.GetRandName(); };
+            uiCommandBuildName.Click += (s, e) =>
+            {
+                _DrawPlayerName.Text = GlobalPlayer.PlayerName = Function.GetRandName();
+            };
             uiCommandClose.Click += (s, e) => { OnClose(); };
 
             UIObjects.Add(uiPlayerName);
