@@ -458,7 +458,10 @@ namespace RunningBox
 
         protected override void OnAfterRound()
         {
-            PlayingInfo.Score += 10 + (WaveNo.Value) / 10;
+            if (IsStart && !IsEnding)
+            {
+                PlayingInfo.Score += 10 + (WaveNo.Value) / 10;
+            }
             base.OnAfterRound();
         }
 

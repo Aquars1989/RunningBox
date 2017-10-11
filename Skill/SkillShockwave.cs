@@ -133,10 +133,6 @@ namespace RunningBox
             switch (endType)
             {
                 case SkillEndType.ChanneledBreak:
-                    {
-                        _MiniBar.Break();
-                    }
-                    break;
                 case SkillEndType.Finish:
                     {
                         _MiniBar.Break();

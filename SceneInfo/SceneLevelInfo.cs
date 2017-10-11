@@ -87,7 +87,7 @@ namespace RunningBox
                 writer.Close();
                 ms.Close();
             }
-            return Function.EncryptByte(result, Global.UUID, GlobalPlayer.PlayerName, false);
+            return Function.EncryptByte(result, GlobalPlayer.UUID, GlobalPlayer.PlayerID, false);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace RunningBox
         {
             if (input == null) return;
 
-            byte[] infoBytes = Function.EncryptByte(input, Global.UUID, GlobalPlayer.PlayerName, true);
+            byte[] infoBytes = Function.EncryptByte(input, GlobalPlayer.UUID, GlobalPlayer.PlayerID, true);
             if (infoBytes == null || infoBytes.Length < 35) return;
 
             using (MemoryStream ms = new MemoryStream(infoBytes))

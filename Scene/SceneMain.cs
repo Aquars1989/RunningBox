@@ -16,7 +16,7 @@ namespace RunningBox
         private ObjectUI _UITopbar;
         private ObjectUI _UIInfo;
         private ObjectUI _UIDarkCover;
-        private ObjectUIPlayerInfo _UIPlayerInfo;
+        private ObjectUIPlayerSetting _UIPlayerInfo;
         private ObjectUISceneChoice _UISceneChoice;
         protected override void OnReLayout()
         {
@@ -35,12 +35,12 @@ namespace RunningBox
         {
             _UITopbar = new ObjectUI(0, 0, 0, 90, new DrawUIFrame(Color.Wheat, Color.DarkSlateBlue, 1, 0));
 
-            _UIInfo = new ObjectUIUserInfo(DirectionType.TopLeft, 5, 5, MoveNull.Value);
+            _UIInfo = new ObjectUIPlayerInfo(DirectionType.TopLeft, 5, 5, MoveNull.Value);
             _UIInfo.Click += (x, e) => { PlayerInfoShow = true; };
 
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
 
-            _UIPlayerInfo = new ObjectUIPlayerInfo(DirectionType.TopLeft, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
+            _UIPlayerInfo = new ObjectUIPlayerSetting(DirectionType.TopLeft, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
             _UIPlayerInfo.Close += (x, e) => { PlayerInfoShow = false; };
 
             _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);

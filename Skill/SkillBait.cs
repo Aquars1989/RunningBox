@@ -57,7 +57,7 @@ namespace RunningBox
         /// <summary>
         /// 技能生效
         /// </summary>
-        public override void DoBeforeActionMove()
+        public override void DoBeforeAction()
         {
             switch (Status)
             {
@@ -126,7 +126,7 @@ namespace RunningBox
                     break;
             }
 
-            base.DoBeforeActionMove();
+            base.DoBeforeAction();
         }
 
         /// <summary>

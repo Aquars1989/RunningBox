@@ -329,7 +329,7 @@ namespace RunningBox
             switch (Status)
             {
                 case SkillStatus.Channeled:
-                    DoUseWhenEfficacy(target);
+                    Recast(target);
                     break;
                 case SkillStatus.Disabled:
                     if (Owner.Status == ObjectStatus.Alive && Owner.Energy.Value > CostEnergy)
@@ -416,7 +416,7 @@ namespace RunningBox
         /// <summary>
         /// 當技能生效時又使用技能時的動作
         /// </summary>
-        public virtual void DoUseWhenEfficacy(ITargetability target) { }
+        public virtual void Recast(ITargetability target) { }
 
         /// <summary>
         /// 物件活動前執行動作

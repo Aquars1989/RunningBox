@@ -57,11 +57,11 @@ namespace RunningBox
         /// <summary>
         /// 重複使用時中斷
         /// </summary>
-        public override void DoUseWhenEfficacy(ITargetability target)
+        public override void Recast(ITargetability target)
         {
             Break();
 
-            base.DoUseWhenEfficacy(target);
+            base.Recast(target);
         }
 
         /// <summary>

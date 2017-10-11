@@ -88,7 +88,7 @@ namespace RunningBox
             get
             {
                 RefreshInfo();
-                return _HighScore;
+                return _CountOfComplete;
             }
         }
 
@@ -154,7 +154,7 @@ namespace RunningBox
                 _TimeOfChallenge += sceneInfo.TimeOfChallenge;
                 _HighPlayingTime += sceneInfo.HighPlayingTime;
                 _HighScore += sceneInfo.HighScore;
-                _CountOfComplete += sceneInfo.CountOfChallenge;
+                _CountOfComplete += sceneInfo.CountOfComplete;
             }
             _GetInfo = true;
         }

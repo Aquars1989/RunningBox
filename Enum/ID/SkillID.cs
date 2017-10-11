@@ -12,6 +12,6 @@ namespace RunningBox
         Shield,
         BulletTime,
         Bait,
-        Greedy
+        Sleep
     }
 }

@@ -186,9 +186,9 @@ namespace RunningBox
             }
             else
             {
-                g.DrawString(string.Format("挑戰次數總計：{0:N0}次", _BindingScene.CountOfChallenge), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("存活時間總計：{0:N0}秒", (int)(_BindingScene.HighPlayingTime / 1000F)), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
-                g.DrawString(string.Format("最高分數總計：{0:N0}分", _BindingScene.HighScore), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("挑戰次數：{0:N0}次", _BindingScene.CountOfChallenge), InfoFont, Brushes.SteelBlue, info1Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("時間總計：{0:N0}秒", (int)(_BindingScene.HighPlayingTime / 1000F)), InfoFont, Brushes.SteelBlue, info2Rect, GlobalFormat.BottomLeft);
+                g.DrawString(string.Format("分數總計：{0:N0}分", _BindingScene.HighScore), InfoFont, Brushes.SteelBlue, info3Rect, GlobalFormat.BottomLeft);
             }
         }
     }

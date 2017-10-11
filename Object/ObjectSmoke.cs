@@ -19,8 +19,8 @@ namespace RunningBox
         /// <param name="width">物件寬度</param>
         /// <param name="height">物件高度</param>
         /// <param name="fadeTime">淡出時間(毫秒),小於0為永久</param>
-        /// <param name="fadeTime">計時器結束時大小比例</param>
-        /// <param name="fadeTime">計時器結束時透明度</param>
+        /// <param name="finelScale">計時器結束時大小比例</param>
+        /// <param name="finelOpacity">計時器結束時透明度</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectSmoke(float x, float y, int width, int height, int fadeTime, float finelScale, float finelOpacity, DrawBase drawObject, MoveBase moveObject) :
@@ -41,8 +41,8 @@ namespace RunningBox
         /// </summary>
         /// <param name="layout">配置資訊</param>
         /// <param name="fadeTime">淡出時間(毫秒),小於0為永久</param>
-        /// <param name="fadeTime">計時器結束時大小比例</param>
-        /// <param name="fadeTime">計時器結束時透明度</param>
+        /// <param name="finelScale">計時器結束時大小比例</param>
+        /// <param name="finelOpacity">計時器結束時透明度</param>
         /// <param name="drawObject">繪製物件</param>
         /// <param name="moveObject">移動物件</param>
         public ObjectSmoke(LayoutSet layout, int fadeTime, float finelScale, float finelOpacity, DrawBase drawObject, MoveBase moveObject)

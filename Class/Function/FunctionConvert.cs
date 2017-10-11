@@ -22,6 +22,8 @@ namespace RunningBox
         /// <returns>加/解密後字串</returns>
         public static byte[] EncryptByte(byte[] source, string key, string iv, bool decrypt)
         {
+            if (source == null) return null;
+
             byte[] result;
             try
             {

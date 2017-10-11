@@ -16,6 +16,7 @@ namespace RunningBox
     /// </summary>
     public abstract class SceneGaming : SceneBase
     {
+        private static Font _InfoFont = new Font("微軟正黑體", 10);
         private static Font _LastTimeFont = new Font("微軟正黑體", 38, FontStyle.Bold);
         private static Cursor _StartCursor = new Cursor(new Bitmap(1, 1).GetHicon());
 
@@ -165,8 +166,9 @@ namespace RunningBox
         {
             if (PlayingInfo != null)
             {
-                g.DrawString(string.Format("波數:{0}/{1}    存活時間:{2:N2} 秒", WaveNo.Value, WaveNo.Limit, PlayingInfo.PlayingTime.Value / (float)Sec(1F)), Font, Brushes.Black, 85, 45);
-                g.DrawString(string.Format("分數:{0:N0}", PlayingInfo.Score), Font, Brushes.RoyalBlue, 85, 62);
+                g.DrawString(string.Format("波數：{0}/{1}", WaveNo.Value, WaveNo.Limit), _InfoFont, Brushes.Black, 390, 10);
+                g.DrawString(string.Format("存活時間：{0:N1} 秒", PlayingInfo.PlayingTime.Value / (float)Sec(1F)), _InfoFont, Brushes.Black, 390, 30);
+                g.DrawString(string.Format("分數：{0:N0}", PlayingInfo.Score), _InfoFont, Brushes.RoyalBlue, 390, 50);
             }
 
             if (!IsStart && !ShowMenu)
@@ -204,17 +206,22 @@ namespace RunningBox
         /// <summary>
         /// 附蓋灰色區塊
         /// </summary>
-        private ObjectUI _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
+        private ObjectUI _UIDarkCover;
 
         /// <summary>
         /// 遊戲選單
         /// </summary>
-        private ObjectUIGameMenu _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value);
+        private ObjectUIGameMenu _UIMenu;
+
+        /// <summary>
+        /// 名稱顯示
+        /// </summary>
+        private ObjectUI _UIPlayName;
 
         /// <summary>
         /// 能量條物件
         /// </summary>
-        private ObjectUI _UIEnergyBar = new ObjectUI(80, 20, 150, 15, new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
+        private ObjectUI _UIEnergyBar;
 
         /// <summary>
         /// 技能1顯示物件
@@ -471,8 +478,13 @@ namespace RunningBox
             Waves = new List<WaveLine>();
             WaveEvents = new Dictionary<string, WaveEventHandle>();
 
-            _UISkillIcon1 = new ObjectUI(300, 10, 50, 50, _DrawSkill1);
-            _UISkillIcon2 = new ObjectUI(380, 10, 50, 50, _DrawSkill2);
+
+            _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
+            _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value);
+            _UIPlayName = new ObjectUI(75, 20, 150, 25, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Empty, 0, 0, GlobalPlayer.PlayerName, new Font("微軟正黑體", 11), GlobalFormat.MiddleLeft));
+            _UIEnergyBar = new ObjectUI(80, 45, 150, 15, new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
+            _UISkillIcon1 = new ObjectUI(250, 10, 50, 50, _DrawSkill1);
+            _UISkillIcon2 = new ObjectUI(320, 10, 50, 50, _DrawSkill2);
 
             Skill1 = GlobalScenes.ChoiceSkill1;
             Skill2 = GlobalScenes.ChoiceSkill2;
@@ -500,6 +512,7 @@ namespace RunningBox
 
             UIObjects.Add(_UISkillIcon1);
             UIObjects.Add(_UISkillIcon2);
+            UIObjects.Add(_UIPlayName);
             UIObjects.Add(_UIEnergyBar);
             UIObjects.Add(_UIDarkCover);
             UIObjects.Add(_UIMenu);

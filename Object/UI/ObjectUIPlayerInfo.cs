@@ -9,73 +9,54 @@ using System.Windows.Forms;
 namespace RunningBox
 {
     /// <summary>
-    /// 玩家資訊畫面
+    /// 玩家資訊物件
     /// </summary>
     public class ObjectUIPlayerInfo : ObjectUIPanel
     {
-        public event EventHandler Close;
+        private static Font _NameFont = new Font("標楷體", 16);
+        private static Font _NameFont2 = new Font("標楷體", 15, FontStyle.Bold);
+        private static Font _InfoFont = new Font("微軟正黑體", 10);
+        private static SolidBrush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
 
-        public void OnClose()
-        {
-            if (Close != null)
-            {
-                Close(this, new EventArgs());
-            }
-        }
-
-        private DrawUITextFrame _DrawPlayerName;
-
+        /// <summary>
+        /// 新增場景資訊畫面
+        /// </summary>
+        /// <param name="anchor">訂位位置</param>
+        /// <param name="x">X座標</param>
+        /// <param name="y">Y座標</param>
+        /// <param name="moveObject">移動物件</param>
         public ObjectUIPlayerInfo(DirectionType anchor, int x, int y, MoveBase moveObject)
-            : base(anchor, x, y, 330, 150, new DrawUIFrame(Color.AliceBlue, Color.CornflowerBlue, 2, 20), moveObject)
+            : base(anchor, x, y, 250, 80, new DrawUIFrame(Color.FromArgb(50, 220, 255, 255), Color.FromArgb(160, 240, 160, 150), 1, 0), moveObject)
         {
-            Propertys.Add(new PropertyShadow(0, 6, 0.95F, 1));
-
-            //玩家姓名
-            _DrawPlayerName = new DrawUITextFrame(Color.OrangeRed, Color.Orange, Color.FromArgb(230, 255, 245), Color.CornflowerBlue, 1, 10, GlobalPlayer.PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleLeft) { TextPadding = new Padding(10, 10, 0, 5) };
-            ObjectUI uiPlayerName = new ObjectUI(30, 80, 270, 40, _DrawPlayerName);
-
-            //重新選取
-            DrawUITextFrame drawCommandBuildName = new DrawUITextFrame(Color.CornflowerBlue, Color.Empty, Color.Empty, Color.Empty, 0, 0, "↻", new Font("標楷體", 22, FontStyle.Bold), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 10, 0, 0) };
-            DrawUITextFrame drawCommandBuildNameHover = new DrawUITextFrame(Color.Orange, Color.Empty, Color.Empty, Color.Empty, 0, 0, "↻", new Font("標楷體", 22, FontStyle.Bold), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 10, 0, 0) };
-            ObjectUI uiCommandBuildName = new ObjectUI(260, 80, 40, 40, drawCommandBuildName) { DrawObjectHover = drawCommandBuildNameHover };
-
-            DrawUITextFrame drawCommandClose = new DrawUITextFrame(Color.Pink, Color.Empty, Color.Empty, Color.Empty, 0, 0, "X", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandCloseHover = new DrawUITextFrame(Color.Red, Color.Empty, Color.Empty, Color.Empty, 0, 0, "X", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            ObjectUI uiCommandClose = new ObjectUI(290, 15, 30, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
-
-            uiPlayerName.Layout.Depend.Anchor = DirectionType.TopLeft;
-            uiCommandBuildName.Layout.Depend.Anchor = DirectionType.TopLeft;
-            uiCommandClose.Layout.Depend.Anchor = DirectionType.TopLeft;
-
-            uiCommandBuildName.Layout.Depend.SetObject(this);
-            uiPlayerName.Layout.Depend.SetObject(this);
-            uiCommandClose.Layout.Depend.SetObject(this);
-
-
-            uiCommandBuildName.Click += (s, e) =>
-            {
-                _DrawPlayerName.Text = GlobalPlayer.PlayerName = Function.GetRandName();
-            };
-            uiCommandClose.Click += (s, e) => { OnClose(); };
-
-            UIObjects.Add(uiPlayerName);
-            UIObjects.Add(uiCommandBuildName);
-            UIObjects.Add(uiCommandClose);
         }
 
-        private static Font _TitleFont = new Font("微軟正黑體", 22);
         public override void Draw(Graphics g)
         {
-            base.Draw(g);
-            if (Visible)
+            int left = Layout.Rectangle.Left;
+            int top = Layout.Rectangle.Top;
+            int width = Layout.Rectangle.Width;
+            int height = Layout.Rectangle.Height;
+            Rectangle halfRect = new Rectangle(left, top, width, 60);
+            Rectangle nameRect = new Rectangle(left + 5, top + 18, width - 10, 24);
+            Rectangle nameBackRect = new Rectangle(left + 5, top + 5, width - 10, 50);
+            Rectangle scroeRect = new Rectangle(left + 10, top + 50, width - 10, 25);
+
+            using (LinearGradientBrush brush = new LinearGradientBrush(halfRect, Color.FromArgb(100, 255, 255, 180), Color.FromArgb(0, 0, 0, 0), 90))
             {
-                g.DrawString("玩家資料", _TitleFont, Brushes.DarkGray, Layout.Rectangle.Left + 21, Layout.Rectangle.Top + 26);
-                RectangleF drawRect = new RectangleF(Layout.Rectangle.Left + 20, Layout.Rectangle.Top + 25, 150, 40);
-                using (LinearGradientBrush _TitleBrush = new LinearGradientBrush(drawRect, Color.FromArgb(200, 140, 220, 255), Color.RoyalBlue, 110))
-                {
-                    g.DrawString("玩家資料", _TitleFont, _TitleBrush, drawRect);
-                }
+                g.FillRectangle(brush, nameBackRect);
             }
+            base.Draw(g);
+
+
+            using (LinearGradientBrush brush = new LinearGradientBrush(nameRect, Color.Maroon, Color.DarkSlateBlue, 90))
+            using (LinearGradientBrush brush2 = new LinearGradientBrush(nameRect, Color.FromArgb(50, 200, 200, 200), Color.Empty, 270))
+            {
+                nameRect.Offset(0, 4);
+                g.DrawString(GlobalPlayer.PlayerName, _NameFont2, brush2, nameRect, GlobalFormat.MiddleCenter);
+                nameRect.Offset(0, -4);
+                g.DrawString(GlobalPlayer.PlayerName, _NameFont, brush, nameRect, GlobalFormat.MiddleCenter);
+            }
+            g.DrawString(string.Format("總分數：{0:N0}    完成度：{1} / {2}", GlobalScenes.Scenes.HighScore, GlobalScenes.Scenes.CountOfComplete, GlobalScenes.Scenes.CountOfLevel), _InfoFont, Brushes.Maroon, scroeRect, GlobalFormat.MiddleLeft);
         }
     }
 }
