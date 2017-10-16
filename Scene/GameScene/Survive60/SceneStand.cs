@@ -137,10 +137,12 @@ namespace RunningBox
                     int life = Sec(10F);
                     MoveStraight moveObject = new MoveStraight(null, weight, speed, movesCount, 0, 1F);
                     moveObject.Target.SetOffsetByXY(1000F, 0);
-                    DrawPolygon drawObject = new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0) { RotateEnabled = true };
-                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 28, 28, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
-                    newObject.Propertys.Add(new PropertyRotate(-1, 780, false, true));
-                    newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
+                    DrawBrush drawObject = new DrawBrush(Color.Orchid, ShapeType.Rectangle) { RotateEnabled = false };
+                    //DrawPolygon drawObject = new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0) { RotateEnabled = false };
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    //newObject.Propertys.Add(new PropertyRotate(-1, 780, false, true));
+                    //newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
+                    newObject.Propertys.Add(new PropertyDeadBrokenShaping(15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     newObject.Propertys.Add(new PropertyOutClear());
@@ -432,6 +434,7 @@ namespace RunningBox
                     Waves.Add(new WaveLine("Blocker   ", "                    1                     1       "));
                     Waves.Add(new WaveLine("Mine      ", "        4                  5                  6   "));
                     Waves.Add(new WaveLine("@Shrink   ", "              ++++                     ++++       "));
+                    Waves.Add(new WaveLine("WallA   ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     break;
                 case 2:
                     //                                    12345678901234567890123456789012345678901234567890
@@ -450,7 +453,7 @@ namespace RunningBox
         {
             MovePlayer moveObject = new MovePlayer(this, 1, 200, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
-            //PlayerObject.Propertys.Add(new PropertyCollision(1));
+            PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 100, 200, Sec(0.1F), Sec(1F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             return PlayerObject;

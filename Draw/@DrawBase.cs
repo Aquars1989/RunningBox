@@ -307,7 +307,7 @@ namespace RunningBox
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>
-        /// <param name="rectangle">繪製區域</param>
+        /// <param name="rectangle">繪製區域(未縮放)</param>
         public void Draw(Graphics g, Rectangle rectangle)
         {
             OnBeforeDraw(g, rectangle);

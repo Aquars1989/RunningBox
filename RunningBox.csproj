@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,6 +68,7 @@
     <Compile Include="Class\Object\SQLobject.cs" />
     <Compile Include="Draw\DrawSkill\DrawSkillSleep.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillText.cs" />
+    <Compile Include="Draw\DrawUI\DrawUITextScroll.cs" />
     <Compile Include="Enum\ID\SkillID.cs" />
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
@@ -74,6 +76,8 @@
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
+    <Compile Include="Property\PropertyDead\PropertyDeadBrokenShaping.cs" />
+    <Compile Include="Property\PropertyShadowReflected.cs" />
     <Compile Include="SceneInfo\ISceneInfo.cs" />
     <Compile Include="SceneInfo\ScenePlayInfo.cs" />
     <Compile Include="SceneInfo\SceneLevelInfo.cs" />
@@ -90,7 +94,7 @@
     <Compile Include="Draw\DrawSkill\DrawSkillShockwave.cs" />
     <Compile Include="Draw\DrawUI\%40DrawUIFrame.cs" />
     <Compile Include="Draw\DrawUI\DrawSceneTypeA.cs" />
-    <Compile Include="Draw\DrawUI\DrawUITextFrame.cs" />
+    <Compile Include="Draw\DrawUI\DrawUIText.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillFrame.cs" />
     <Compile Include="Draw\DrawSkill\DrawSkillBulletTime.cs" />
     <Compile Include="Draw\DrawSkill\DrawSkillSprint.cs">
@@ -126,7 +130,7 @@
     <Compile Include="Move\%40MoveBase.cs" />
     <Compile Include="Object\ObjectWave.cs" />
     <Compile Include="Object\UI\ObjectUISceneChoice.cs" />
-    <Compile Include="Object\UI\ObjectUIPlayerSetting.cs" />
+    <Compile Include="Object\UI\ObjectUINameSetting.cs" />
     <Compile Include="Object\UI\ObjectUIPanel.cs" />
     <Compile Include="Object\UI\ObjectUI.cs" />
     <Compile Include="Property\PropertyAlert.cs" />

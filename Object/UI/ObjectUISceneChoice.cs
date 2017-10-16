@@ -80,8 +80,8 @@ namespace RunningBox
             }
         }
 
-        private DrawUITextFrame _DrawGroup1;
-        private DrawUITextFrame _DrawGroup2;
+        private DrawUIText _DrawGroup1;
+        private DrawUIText _DrawGroup2;
 
         private ObjectUI _CommandBack;
         private ObjectUI _UIGroup1;
@@ -146,7 +146,7 @@ namespace RunningBox
                 }
             }
 
-            _DrawGroup1 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.BottomCenter);
+            _DrawGroup1 = new DrawUIText(Color.DarkSlateBlue, Color.White, Color.AliceBlue, Color.DarkSlateBlue, 2, 12, "生存100秒", new Font("標楷體", 18, FontStyle.Bold), GlobalFormat.BottomCenter);
             _DrawGroup1.DrawObjectInside = new DrawSceneTypeA(Color.LightSteelBlue);
             _UIGroup1 = new ObjectUI(DirectionType.Center, -200, height / 2, 200, 200, _DrawGroup1, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup1.Propertys.Add(new PropertyShadow(3, 4));
@@ -171,13 +171,13 @@ namespace RunningBox
                 Mode = 1;
             };
 
-            _DrawGroup2 = new DrawUITextFrame(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.BottomCenter);
+            _DrawGroup2 = new DrawUIText(Color.DarkSlateBlue, Color.White, Color.WhiteSmoke, Color.DarkSlateBlue, 2, 12, "", new Font("標楷體", 18), GlobalFormat.BottomCenter);
             _UIGroup2 = new ObjectUI(DirectionType.Center, width + 200, height / 2, 200, 200, _DrawGroup2, new MoveStraight(this, 1, 3000, 1, 100, 1F));
             _UIGroup2.Propertys.Add(new PropertyShadow(-3, 4));
             _UIGroup2.Layout.Depend.Anchor = DirectionType.TopLeft;
             _UIGroup2.Layout.Depend.SetObject(this);
 
-            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUITextFrame(Color.Black, Color.Gray, Color.FromArgb(255, 255, 255, 220), Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
+            _CommandBack = new ObjectUI(20, 20, 80, 40, new DrawUIText(Color.Black, Color.Gray, Color.FromArgb(255, 255, 255, 220), Color.Black, 1, 8, "返回", new Font("微軟正黑體", 18), GlobalFormat.MiddleCenter));
             _CommandBack.Propertys.Add(new PropertyShadow(5, 4) { RFix = 0F, GFix = 0F, BFix = 0F });
             _CommandBack.Layout.Depend.Anchor = DirectionType.TopLeft;
             _CommandBack.Layout.Depend.SetObject(this);

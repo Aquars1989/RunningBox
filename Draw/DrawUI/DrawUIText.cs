@@ -11,7 +11,7 @@ namespace RunningBox
     /// <summary>
     /// 文字繪圖物件
     /// </summary>
-    public class DrawUITextFrame : DrawUIFrame
+    public class DrawUIText : DrawUIFrame
     {
         /// <summary>
         /// 繪製文字
@@ -42,7 +42,7 @@ namespace RunningBox
         /// <param name="text">文字</param>
         /// <param name="font">字型</param>
         /// <param name="drawFormat">繪製設定</param>
-        public DrawUITextFrame(DrawColors drawColor, int borderWidtrh, int readius, string text, Font font, StringFormat drawFormat)
+        public DrawUIText(DrawColors drawColor, int borderWidtrh, int readius, string text, Font font, StringFormat drawFormat)
             : base(drawColor, borderWidtrh, readius)
         {
             Text = text;
@@ -63,7 +63,7 @@ namespace RunningBox
         /// <param name="text">文字</param>
         /// <param name="font">字型</param>
         /// <param name="drawFormat">繪製設定</param>
-        public DrawUITextFrame(Color textColor, Color shadowColor, Color backColor, Color borderColor, int borderWidtrh, int readius, string text, Font font, StringFormat drawFormat)
+        public DrawUIText(Color textColor, Color shadowColor, Color backColor, Color borderColor, int borderWidtrh, int readius, string text, Font font, StringFormat drawFormat)
             : base(backColor, borderColor, borderWidtrh, readius)
         {
             Colors.SetColor("Text", textColor);
@@ -113,7 +113,7 @@ namespace RunningBox
         /// <returns>複製繪圖物件</returns>
         public override DrawBase Copy()
         {
-            return new DrawUITextFrame(Colors.Copy(), BorderWidth, Readius, Text, Font, DrawFormat)
+            return new DrawUIText(Colors.Copy(), BorderWidth, Readius, Text, Font, DrawFormat)
             {
                 Scale = this.Scale,
                 TextPadding = this.TextPadding,

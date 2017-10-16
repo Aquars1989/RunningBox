@@ -84,22 +84,22 @@ namespace RunningBox
         /// <summary>
         /// 重試/繼續/下一關按鈕繪製物件
         /// </summary>
-        private DrawUITextFrame _DrawCommandAction;
+        private DrawUIText _DrawCommandAction;
 
         /// <summary>
         /// 返回按鈕繪製物件
         /// </summary>
-        private DrawUITextFrame _DrawCommandBack;
+        private DrawUIText _DrawCommandBack;
 
         /// <summary>
         /// 重試/繼續/下一關按鈕焦點繪製物件
         /// </summary>
-        private DrawUITextFrame _DrawCommandActionHover;
+        private DrawUIText _DrawCommandActionHover;
 
         /// <summary>
         /// 返回按鈕焦點繪製物件
         /// </summary>
-        private DrawUITextFrame _DrawCommandBackHover;
+        private DrawUIText _DrawCommandBackHover;
 
         /// <summary>
         /// 重試/繼續/下一關按鈕
@@ -151,8 +151,8 @@ namespace RunningBox
         public ObjectUIGameMenu(DirectionType anchor, int x, int y, MoveBase moveObject)
             : base(anchor, x, y, 380, 250, new DrawUIFrame(Color.Empty, Color.DarkSlateBlue, 2, 20), moveObject)
         {
-            _DrawCommandAction = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
-            _DrawCommandActionHover = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _DrawCommandAction = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _DrawCommandActionHover = new DrawUIText(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
             _UICommandAction = new ObjectUI(210, 175, 150, 50, _DrawCommandAction);
             _UICommandAction.DrawObjectHover = _DrawCommandActionHover;
             _UICommandAction.Layout.Depend.SetObject(this);
@@ -177,8 +177,8 @@ namespace RunningBox
                   }
               };
 
-            _DrawCommandBack = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
-            _DrawCommandBackHover = new DrawUITextFrame(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _DrawCommandBack = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
+            _DrawCommandBackHover = new DrawUIText(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
             _UICommandBack = new ObjectUI(20, 175, 150, 50, _DrawCommandBack);
             _UICommandBack.DrawObjectHover = _DrawCommandBackHover;
             _UICommandBack.Layout.Depend.SetObject(this);

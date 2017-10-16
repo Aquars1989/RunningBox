@@ -84,10 +84,10 @@ namespace RunningBox
                 UIObjects.Add(_UISkillInfos[i]);
             }
 
-            DrawUITextFrame drawCommandOK = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandCancel = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandOKHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
-            DrawUITextFrame drawCommandCancelHover = new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUIText drawCommandOK = new DrawUIText(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUIText drawCommandCancel = new DrawUIText(Color.Black, Color.WhiteSmoke, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUIText drawCommandOKHover = new DrawUIText(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "繼續", Global.CommandFont, GlobalFormat.MiddleCenter);
+            DrawUIText drawCommandCancelHover = new DrawUIText(Color.Black, Color.WhiteSmoke, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "返回", Global.CommandFont, GlobalFormat.MiddleCenter);
             _UICommandOK = new ObjectUI(0, 0, 150, 50, drawCommandOK);
             _UICommandCancel = new ObjectUI(0, 0, 150, 50, drawCommandCancel);
             _UICommandOK.DrawObjectHover = drawCommandOKHover;

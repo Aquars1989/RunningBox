@@ -481,7 +481,7 @@ namespace RunningBox
 
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
             _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value);
-            _UIPlayName = new ObjectUI(75, 20, 150, 25, new DrawUITextFrame(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Empty, 0, 0, GlobalPlayer.PlayerName, new Font("微軟正黑體", 11), GlobalFormat.MiddleLeft));
+            _UIPlayName = new ObjectUI(75, 20, 150, 25, new DrawUIText(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Empty, 0, 0, GlobalPlayer.PlayerName, new Font("微軟正黑體", 11), GlobalFormat.MiddleLeft));
             _UIEnergyBar = new ObjectUI(80, 45, 150, 15, new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
             _UISkillIcon1 = new ObjectUI(250, 10, 50, 50, _DrawSkill1);
             _UISkillIcon2 = new ObjectUI(320, 10, 50, 50, _DrawSkill2);
