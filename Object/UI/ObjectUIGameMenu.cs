@@ -204,7 +204,7 @@ namespace RunningBox
             {
                 using (LinearGradientBrush brushBack = new LinearGradientBrush(new Rectangle(left, top - 20, width, height + 20), Color.LightYellow, Color.AliceBlue, 90))
                 {
-                    g.FillPath(brushBack, (DrawObject as DrawUIFrame).GetBackFrame(Layout.Rectangle));
+                    g.FillPath(brushBack, Function.GetRadiusFrame(Layout.Rectangle, (DrawObject as DrawUIFrame).Readius));
                 }
             }
 
