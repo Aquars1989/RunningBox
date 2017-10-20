@@ -16,7 +16,7 @@ namespace RunningBox
         private static Font _NameFont = new Font("標楷體", 16);
         private static Font _NameFont2 = new Font("標楷體", 15, FontStyle.Bold);
         private static Font _InfoFont = new Font("微軟正黑體", 10);
-        private static SolidBrush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
+        private static Brush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
 
         /// <summary>
         /// 新增場景資訊畫面
@@ -44,15 +44,18 @@ namespace RunningBox
 
             if (_PlayerName != GlobalPlayer.PlayerName)
             {
-                ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter), MoveNull.Value);
-                oldName.Propertys.Add(new PropertyDeadBrokenShaping(10, 1, 1, ObjectDeadType.All, 360, 0, 2, Scene.Sec(1F), Scene.Sec(2F)));
+                DrawUIText drawObject = new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 0, 0, 0) };
+                ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, drawObject, MoveNull.Value);
+                oldName.Propertys.Add(new PropertyDeadBrokenShaping(_PlayerName.Length * 50, 2, 2, ObjectDeadType.All, 360, 10, 20, Scene.Sec(0.3F), Scene.Sec(0.5F)));
                 _PlayerName = GlobalPlayer.PlayerName;
+                _DrawNameAlpha = 0;
                 Container.Add(oldName);
             }
 
             base.OnAfterAction();
         }
 
+        private int _DrawNameAlpha = 255;
         public override void Draw(Graphics g)
         {
             int left = Layout.Rectangle.Left;
@@ -70,9 +73,9 @@ namespace RunningBox
             }
             base.Draw(g);
 
-
-            using (LinearGradientBrush brush = new LinearGradientBrush(nameRect, Color.Maroon, Color.DarkSlateBlue, 90))
-            using (LinearGradientBrush brush2 = new LinearGradientBrush(nameRect, Color.FromArgb(50, 200, 200, 200), Color.Empty, 270))
+            _DrawNameAlpha = Math.Min(_DrawNameAlpha + 10, 255);
+            using (LinearGradientBrush brush = new LinearGradientBrush(nameRect, Color.FromArgb(_DrawNameAlpha, Color.Maroon), Color.FromArgb(_DrawNameAlpha, Color.DarkSlateBlue), 90))
+            using (LinearGradientBrush brush2 = new LinearGradientBrush(nameRect, Color.FromArgb(_DrawNameAlpha / 4, 200, 200, 200), Color.Empty, 270))
             {
                 nameRect.Offset(0, 4);
                 g.DrawString(GlobalPlayer.PlayerName, _NameFont2, brush2, nameRect, GlobalFormat.MiddleCenter);

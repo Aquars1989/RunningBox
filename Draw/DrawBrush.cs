@@ -54,7 +54,7 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            SolidBrush brushBack = Colors.GetBrush("Main");
+            Brush brushBack = Colors.GetBrush("Main");
             switch (DrawShape)
             {
                 case RunningBox.ShapeType.Rectangle:

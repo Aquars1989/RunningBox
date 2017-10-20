@@ -91,7 +91,7 @@ namespace RunningBox
             Pen penBorder = Colors.GetPen("Border", BorderWidth);
             if (NumberOfSides > 2)
             {
-                SolidBrush brushBack = Colors.GetBrush("Main");
+                Brush brushBack = Colors.GetBrush("Main");
                 g.FillPolygon(brushBack, pots);
                 g.DrawPolygon(penBorder, pots);
             }

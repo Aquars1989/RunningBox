@@ -12,6 +12,7 @@ namespace RunningBox
         Shield,
         BulletTime,
         Bait,
-        Sleep
+        Sleep,
+        SkillShotgun,
     }
 }

@@ -131,7 +131,6 @@ namespace RunningBox
             if (Owner.DrawObject == DrawNull.Value || (DeadType & deadType) != deadType) return;
 
             double angle = Function.GetAngle(0, 0, Owner.MoveObject.MoveX, Owner.MoveObject.MoveY);
-
             DrawBase drawObject = Owner.DrawObject;
             Rectangle baseRectangle = Owner.Layout.Rectangle;
             Rectangle drawRectangle;
@@ -170,36 +169,44 @@ namespace RunningBox
                     }
                 }
                 image.UnlockBits(bitData);
-                
-                //if (getPoints.Count == 0) return;
-                //for (int i = 0; i < ScrapCount; i++)
-                //{
-                //    Point point = getPoints[Global.Rand.Next(getPoints.Count)];
-                //    PointF putPoint = new PointF(Owner.Layout.CenterX - (drawRectangle.Width / 2) + point.X,
-                //                                 Owner.Layout.CenterY - (drawRectangle.Height / 2) + point.Y);
+                if (getPoints.Count == 0) return;
 
-                //    int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax));
-                //    int fadeTime = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax));
-                //    double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
+                int idxPlus = ((getPoints.Count - 1) / ScrapCount) + 1;
+                int idx = Global.Rand.Next(idxPlus);
+                for (int i = 0; i < ScrapCount; i++)
+                {
+                    Point point = getPoints[idx];
+                    PointF putPoint = new PointF(Owner.Layout.CenterX - (drawRectangle.Width / 2) + point.X,
+                                                 Owner.Layout.CenterY - (drawRectangle.Height / 2) + point.Y);
 
-                //    MoveStraight moveObject = new MoveStraight(null, 1, speed, 1, 0, 1);
-                //    moveObject.Target.SetOffsetByAngle(scrapDirection, 1000);
-                //    ObjectSmoke newObject;
-                //    if (ScrapDrawObject == null)
-                //    {
-                //        Color drawColor = image.GetPixel(point.X, point.Y);
-                //        newObject = new ObjectSmoke(putPoint.X, putPoint.Y, ScrapWidth, ScrapHeight, fadeTime, 1, 0, drawColor, moveObject);
-                //    }
-                //    else
-                //    {
-                //        DrawBase scrapDraw = ScrapDrawObject.Copy();
-                //        scrapDraw.Angle = Global.Rand.Next(360);
-                //        newObject = new ObjectSmoke(putPoint.X, putPoint.Y, ScrapWidth, ScrapHeight, fadeTime, 1, 0, scrapDraw, moveObject);
-                //        newObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(280, 520), false, true));
-                //    }
-                //    moveObject.Target.SetObject(newObject);
-                //    Owner.Container.Add(newObject);
-                //}
+                    int speed = Global.Rand.Next(ScrapSpeedMin, Math.Max(ScrapSpeedMin, ScrapSpeedMax));
+                    int fadeTime = Global.Rand.Next(ScrapLifeMin, Math.Max(ScrapLifeMin, ScrapLifeMax));
+                    double scrapDirection = angle + (Global.Rand.NextDouble() - 0.5) * Radiation;
+
+                    MoveStraight moveObject = new MoveStraight(null, 1, speed, 1, 0, 1);
+                    moveObject.Target.SetOffsetByAngle(scrapDirection, 1000);
+                    ObjectSmoke newObject;
+                    if (ScrapDrawObject == null)
+                    {
+                        Color drawColor = image.GetPixel(point.X, point.Y);
+                        newObject = new ObjectSmoke(putPoint.X, putPoint.Y, ScrapWidth, ScrapHeight, fadeTime, 1, 0, drawColor, moveObject);
+                    }
+                    else
+                    {
+                        DrawBase scrapDraw = ScrapDrawObject.Copy();
+                        scrapDraw.Angle = Global.Rand.Next(360);
+                        newObject = new ObjectSmoke(putPoint.X, putPoint.Y, ScrapWidth, ScrapHeight, fadeTime, 1, 0, scrapDraw, moveObject);
+                        newObject.Propertys.Add(new PropertyRotate(-1, Global.Rand.Next(280, 520), false, true));
+                    }
+                    moveObject.Target.SetObject(newObject);
+                    Owner.Container.Add(newObject);
+
+                    idx += idxPlus;
+                    if (idx >= getPoints.Count)
+                    {
+                        idx = Global.Rand.Next(idxPlus);
+                    }
+                }
             }
             base.DoAfterDead(killer, deadType);
         }

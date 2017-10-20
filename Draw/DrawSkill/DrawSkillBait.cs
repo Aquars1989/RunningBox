@@ -75,7 +75,7 @@ namespace RunningBox
             int aniStart = aniMax / 3;
             float offsetWidth = (width * 0.2F);
 
-            SolidBrush brushIcon = Colors.GetBrush("Icon");
+            Brush brushIcon = Colors.GetBrush("Icon");
             if (Animation <= aniStart)
             {
                 g.FillEllipse(brushIcon, centLeft, centTop, centerWidth, centerHeight);

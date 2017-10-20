@@ -49,6 +49,11 @@ namespace RunningBox
         /// </summary>
         protected Bitmap BufferImage { get; set; }
 
+        /// <summary>
+        /// 繪圖物件清除計次器
+        /// </summary>
+        protected CounterObject DrawClearCount { get;set;}
+
         #region ===== 事件 =====
         /// <summary>
         /// 載入完成
@@ -607,6 +612,7 @@ namespace RunningBox
             UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
             GameObjects = new ObjectCollection(this);
+            DrawClearCount = new CounterObject(20);//計次
             RoundTimer.Tick += RoundTimer_Tick;
         }
 
@@ -678,6 +684,14 @@ namespace RunningBox
                 _FPSWatch.Stop();
                 _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
             }
+
+            //清除繪圖物件
+            if (DrawClearCount.IsFull)
+            {
+                DrawPool.ReleaseUseless();
+                DrawClearCount.Value = 0;
+            }
+            DrawClearCount.Value++;
         }
 
         /// <summary>

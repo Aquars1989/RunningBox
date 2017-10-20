@@ -41,14 +41,14 @@ namespace RunningBox
                         int alpha = (int)(EnablingTime.GetRatio() * Color.A + 0.5F);
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
-                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color)))
+                        using (Brush brush = new SolidBrush(Color.FromArgb(alpha, Color)))
                         {
                             g.FillRectangle(brush, Scene.ClientRectangle);
                         }
                     }
                     break;
                 case EffectStatus.Enabled:
-                    using (SolidBrush brush = new SolidBrush(Color))
+                    using (Brush brush = new SolidBrush(Color))
                     {
                         g.FillRectangle(brush, Scene.ClientRectangle);
                     }
@@ -60,7 +60,7 @@ namespace RunningBox
 
                         if (alpha < 0) alpha = 0;
                         else if (alpha > 255) alpha = 255;
-                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(alpha, Color)))
+                        using (Brush brush = new SolidBrush(Color.FromArgb(alpha, Color)))
                         {
                             g.FillRectangle(brush, Scene.ClientRectangle);
                         }

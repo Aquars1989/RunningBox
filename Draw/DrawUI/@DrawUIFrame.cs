@@ -240,7 +240,7 @@ namespace RunningBox
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
             GetBackFrame(drawRectangle);
 
-            SolidBrush brushBack = Colors.GetBrush("Back");
+            Brush brushBack = Colors.GetBrush("Back");
             g.FillPath(brushBack, _BackFrame);
             if (DrawObjectInside != DrawNull.Value)
             {

@@ -216,7 +216,7 @@ namespace RunningBox
                 Rectangle titleRect2 = new Rectangle(left + 2 + 1, top + 1 + 95, width - 4, 60);
 
                 using (LinearGradientBrush brushShadow = new LinearGradientBrush(titleRect, Color.Maroon, Color.LightGoldenrodYellow, 25))
-                using (SolidBrush brushBack = new SolidBrush(Color.FromArgb(100, 230, 230, 230)))
+                using (Brush brushBack = new SolidBrush(Color.FromArgb(100, 230, 230, 230)))
                 {
                     g.FillRectangle(brushBack, titleRect);
                     //g.DrawRectangle(Pens.Gray, titleRect);

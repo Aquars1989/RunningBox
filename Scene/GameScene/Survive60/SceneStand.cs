@@ -453,8 +453,10 @@ namespace RunningBox
         {
             MovePlayer moveObject = new MovePlayer(this, 1, 200, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
+
             PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 100, 200, Sec(0.1F), Sec(1F)));
+            PlayerObject.Propertys.Add(new PropertyShowMoveAngle(-1));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             return PlayerObject;
         }

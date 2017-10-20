@@ -73,7 +73,7 @@ namespace RunningBox
             Rectangle centerRect = new Rectangle(left + (width - centerWidth) / 2, top + (height - centerHeight) / 2, centerWidth, centerHeight);
             Rectangle shieldRect = new Rectangle(left + (width - shieldWidth) / 2, top + (height - shieldHeight) / 2, shieldWidth, shieldHeight);
 
-            SolidBrush brushIcon = Colors.GetBrush("Icon");
+            Brush brushIcon = Colors.GetBrush("Icon");
             Pen penIcon = Colors.GetPen("Icon");
             if (BindingSkill != null && BindingSkill.Status != SkillStatus.Channeled)
             {

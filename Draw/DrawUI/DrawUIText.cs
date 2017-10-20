@@ -82,9 +82,8 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-
+            
             SolidBrush brushBack = Colors.GetBrush("Back");
-
             GetBackFrame(drawRectangle);
             g.FillPath(brushBack, _BackFrame);
 
@@ -97,6 +96,7 @@ namespace RunningBox
             SolidBrush brushShadow = Colors.GetBrush("Shadow");
 
             Rectangle textRectangle = GetScaleRectangle(new Rectangle(rectangle.X + TextPadding.Left, rectangle.Y + TextPadding.Top, rectangle.Width - TextPadding.Horizontal, rectangle.Height - TextPadding.Vertical));
+
             g.DrawString(Text, Font, brushShadow, new Rectangle(textRectangle.X + 1, textRectangle.Y + 1, textRectangle.Width, textRectangle.Height), DrawFormat);
             g.DrawString(Text, Font, brushText, textRectangle, DrawFormat);
             g.ResetClip();

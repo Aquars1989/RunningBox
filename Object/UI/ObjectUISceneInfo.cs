@@ -18,7 +18,7 @@ namespace RunningBox
         private static Font TitleFont = new Font("標楷體", 22, FontStyle.Bold);
         private static Font TitleFont2 = new Font("標楷體", 14, FontStyle.Bold);
         private static Font InfoFont = new Font("微軟正黑體", 11, FontStyle.Bold);
-        private static SolidBrush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
+        private static Brush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
 
         /// <summary>
         /// 發生於場景被選取時

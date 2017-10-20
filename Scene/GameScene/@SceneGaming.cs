@@ -431,11 +431,11 @@ namespace RunningBox
             set { _EndDelay = value; }
         }
 
-        private SolidBrush _BrushLastTime = new SolidBrush(Color.LightGreen);
+        private Brush _BrushLastTime = new SolidBrush(Color.LightGreen);
         /// <summary>
         /// 剩餘時間繪製筆刷
         /// </summary>
-        public SolidBrush BrushLastTime
+        public Brush BrushLastTime
         {
             get { return _BrushLastTime; }
             set

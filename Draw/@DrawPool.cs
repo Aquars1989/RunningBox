@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RunningBox
 {
@@ -13,6 +14,8 @@ namespace RunningBox
     {
         private static Dictionary<Color, DrawPoolBrush> _BrushPool = new Dictionary<Color, DrawPoolBrush>();
         private static Dictionary<Color, DrawPoolPen> _PenPool = new Dictionary<Color, DrawPoolPen>();
+        private static Pen _PenEmpty = new Pen(Color.Empty, 0);
+        private static SolidBrush _BrushEmpty = new SolidBrush(Color.Empty);
 
         /// <summary>
         /// 使用的筆刷數量
@@ -37,6 +40,8 @@ namespace RunningBox
         /// <returns>筆刷</returns>
         public static SolidBrush GetBrush(Color color)
         {
+            if (color.A == 0) return _BrushEmpty;
+
             DrawPoolBrush drawPoolBrush;
             if (_BrushPool.TryGetValue(color, out drawPoolBrush))
             {
@@ -58,6 +63,8 @@ namespace RunningBox
         /// <returns>畫筆</returns>
         public static Pen GetPen(Color color)
         {
+            if (color.A == 0) return _PenEmpty;
+
             DrawPoolPen drawPoolPen;
             if (_PenPool.TryGetValue(color, out drawPoolPen))
             {
@@ -78,15 +85,22 @@ namespace RunningBox
         /// <param name="brush">筆刷</param>
         public static void BackBrush(SolidBrush brush)
         {
+            if (brush == _BrushEmpty) return;
+
             DrawPoolBrush drawPoolBrush;
             if (_BrushPool.TryGetValue(brush.Color, out drawPoolBrush))
             {
                 drawPoolBrush.UseCount--;
                 if (drawPoolBrush.UseCount == 0)
                 {
-                    _BrushPool.Remove(brush.Color);
-                    drawPoolBrush.Dispose();
+                    drawPoolBrush.ReleaseCount = 0;
                 }
+                //移至場景統一刪除
+                //if (drawPoolBrush.UseCount == 0)
+                //{
+                //_BrushPool.Remove(brush.Color);
+                //drawPoolBrush.Dispose();
+                //}
             }
         }
 
@@ -96,15 +110,64 @@ namespace RunningBox
         /// <param name="pen">畫筆</param>
         public static void BackPen(Pen pen)
         {
+            if (pen == _PenEmpty) return;
+
             DrawPoolPen drawPoolPen;
             if (_PenPool.TryGetValue(pen.Color, out drawPoolPen))
             {
                 drawPoolPen.UseCount--;
                 if (drawPoolPen.UseCount == 0)
                 {
-                    _PenPool.Remove(pen.Color);
-                    drawPoolPen.Dispose();
+                    drawPoolPen.ReleaseCount = 0;
                 }
+                //if (drawPoolPen.UseCount == 0)
+                //{
+                //_PenPool.Remove(pen.Color);
+                //drawPoolPen.Dispose();
+                //}
+            }
+        }
+        /// <summary>
+        /// 檢查所有使用數為0的筆刷/畫筆並評估是否刪除
+        /// </summary>
+        public static void ReleaseUseless()
+        {
+            List<Color> removePens = new List<Color>();
+            List<Color> removeBrushes = new List<Color>();
+
+            int clearLimit = Math.Max(5 - (BrushCount + PenCount) / 100, 1);
+            foreach (var poolPen in _PenPool)
+            {
+                if (poolPen.Value.UseCount <= 0)
+                {
+                    poolPen.Value.ReleaseCount++;
+                    if (poolPen.Value.ReleaseCount >= clearLimit)
+                    {
+                        removePens.Add(poolPen.Key);
+                        poolPen.Value.Dispose();
+                    }
+                }
+            }
+            foreach (var poolBrush in _BrushPool)
+            {
+                if (poolBrush.Value.UseCount <= 0)
+                {
+                    poolBrush.Value.ReleaseCount++;
+                    if (poolBrush.Value.ReleaseCount >= clearLimit)
+                    {
+                        removeBrushes.Add(poolBrush.Key);
+                        poolBrush.Value.Dispose();
+                    }
+                }
+            }
+
+            foreach (Color removePen in removePens)
+            {
+                _PenPool.Remove(removePen);
+            }
+            foreach (Color removeBrush in removeBrushes)
+            {
+                _BrushPool.Remove(removeBrush);
             }
         }
 
@@ -121,7 +184,12 @@ namespace RunningBox
             /// <summary>
             /// 正在使用的數量計數
             /// </summary>
-            public int UseCount { get; set; }
+            public int UseCount { get; internal set; }
+
+            /// <summary>
+            /// 釋放計時
+            /// </summary>
+            public int ReleaseCount { get; internal set; }
 
             /// <summary>
             /// 新增工具池筆刷物件
@@ -165,11 +233,16 @@ namespace RunningBox
             /// 畫筆
             /// </summary>
             public Pen Pen { get; private set; }
-            
+
             /// <summary>
             /// 正在使用的數量計數
             /// </summary>
             public int UseCount { get; set; }
+
+            /// <summary>
+            /// 釋放計時
+            /// </summary>
+            public int ReleaseCount { get; internal set; }
 
             /// <summary>
             /// 新增工具池畫筆物件

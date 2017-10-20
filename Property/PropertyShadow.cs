@@ -130,5 +130,14 @@ namespace RunningBox
                 _DrawObject.Binding(_BaseDrawObject);
             }
         }
+
+        public override void DoBeforeEnd(PropertyEndType endType)
+        {
+            if (_DrawObject != null && _DrawObject != DrawNull.Value)
+            {
+                _DrawObject.Dispose();
+            }
+            base.DoBeforeEnd(endType);
+        }
     }
 }

@@ -39,7 +39,9 @@ namespace RunningBox
                 new SkillShockwave(4000, 0, Sec(1.5F), Sec(4F), Sec(0.1F), 4000, 300),
                 new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
                 new SkillBait(5000, Sec(2F), Sec(2F), 400),
-                new SkillSleep(3000,Sec(0.5F),Sec(0.5F))
+                new SkillShotgun(5,1,60,3000,Sec(1.5F))
+                
+                //new SkillSleep(3000,Sec(0.5F),Sec(0.5F))
             };
 
             int len = _Skills.Length;

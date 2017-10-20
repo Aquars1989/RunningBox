@@ -120,7 +120,7 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            SolidBrush brushBack = Colors.GetBrush("Back");
+            Brush brushBack = Colors.GetBrush("Back");
 
             GetBackFrame(drawRectangle);
             g.FillPath(brushBack, _BackFrame);
@@ -139,8 +139,8 @@ namespace RunningBox
             }
             Animation.Value += Scene.IntervalOfRound;
 
-            SolidBrush brushText = Colors.GetBrush("Text");
-            SolidBrush brushShadow = Colors.GetBrush("Shadow");
+            Brush brushText = Colors.GetBrush("Text");
+            Brush brushShadow = Colors.GetBrush("Shadow");
 
             Rectangle textRectangle = GetScaleRectangle(new Rectangle(rectangle.X + TextPadding.Left, rectangle.Y + TextPadding.Top, rectangle.Width - TextPadding.Horizontal, rectangle.Height - TextPadding.Vertical));
             if (Animation.IsFull)

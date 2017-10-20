@@ -143,7 +143,7 @@ namespace RunningBox
                         else
                         {
                             float channeledSize = (1F - bindingSkill.Channeled.GetRatio()) * drawRectangle.Height;
-                            SolidBrush brushChannel = Colors.GetBrush("Channel");
+                            Brush brushChannel = Colors.GetBrush("Channel");
                             g.FillRectangle(brushChannel, drawRectangle.X, drawRectangle.Y + drawRectangle.Height - channeledSize, drawRectangle.Width, channeledSize);
                         }
                         break;

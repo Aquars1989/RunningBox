@@ -77,8 +77,8 @@ namespace RunningBox
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            SolidBrush brushMain = Colors.GetBrush("Main");
-            SolidBrush brushBack = Colors.GetBrush("Back");
+            Brush brushMain = Colors.GetBrush("Main");
+            Brush brushBack = Colors.GetBrush("Back");
             Pen penBorder = Colors.GetPen("Border", BorderWidth);
             g.FillRectangle(brushBack, drawRectangle);
             g.DrawRectangle(penBorder, drawRectangle);
