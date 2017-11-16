@@ -419,6 +419,11 @@ namespace RunningBox
         public virtual void Recast(ITargetability target) { }
 
         /// <summary>
+        /// 停止使用技能時的動作(放開)
+        /// </summary>
+        public virtual void Release(ITargetability target) { }
+
+        /// <summary>
         /// 物件活動前執行動作
         /// </summary>
         public virtual void DoBeforeAction() { }

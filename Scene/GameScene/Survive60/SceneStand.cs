@@ -192,7 +192,7 @@ namespace RunningBox
                     DrawPolygon drawObject = new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0) { RotateEnabled = true };
                     ObjectActive newObject = new ObjectActive(enterX, MainRectangle.Top + i - 20, 28, 28, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
                     newObject.Propertys.Add(new PropertyRotate(-1, 780, false, true));
-                    newObject.Propertys.Add(new PropertyDeadBrokenShaping(15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 100, 300, Sec(0.6F), Sec(1.2F))); 
+                    newObject.Propertys.Add(new PropertyDeadBrokenShaping(15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 100, 300, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     newObject.Propertys.Add(new PropertyOutClear());
@@ -421,6 +421,29 @@ namespace RunningBox
                 };
                 GameObjects.Add(newObject);
             });
+
+            //物件:青蛙
+            WaveEvents.Add("Frog", (n) =>
+            {
+                int roundIdx = Global.Rand.Next(4);
+                for (int i = 0; i < n; i++)
+                {
+                    int size = Global.Rand.Next(9, 12);
+                    float weight = 0.3F + size * 0.1F;
+                    int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
+                    Point enterPoint = GetEnterPoint(roundIdx);
+
+                    MoveStraight moveObject = new MoveStraight(PlayerObject, weight, 0, 5, 100, 0.5F);
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), moveObject);
+                    newObject.Skills.Add(new SkillSprint(0, Sec(0.8F), 0, (int)(6500 * _SpeedFix), false) { AutoCastObject = new AutoCastNormal(100) });
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow(2, 3));
+                    GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
+                }
+            });
         }
 
         public override void SetWave()
@@ -451,12 +474,11 @@ namespace RunningBox
 
         public override ObjectActive CreatePlayerObject(int potX, int potY)
         {
-            MovePlayer moveObject = new MovePlayer(this, 1, 200, 8);
+            MovePlayer moveObject = new MovePlayer(this, 1, 250, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
 
             PlayerObject.Propertys.Add(new PropertyCollision(1));
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 30, 150, 400, Sec(0.5F), Sec(0.9F)));
-            PlayerObject.Propertys.Add(new PropertyShowMoveAngle(-1));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             return PlayerObject;
         }

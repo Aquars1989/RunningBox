@@ -122,6 +122,30 @@ namespace RunningBox
             base.OnMouseMove(e);
         }
 
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (!ShowMenu)
+            {
+                if (IsStart)
+                {
+                    switch (e.Button)
+                    {
+                        case System.Windows.Forms.MouseButtons.Left:
+                            ReleasePlayerSkill1();
+                            break;
+                        case System.Windows.Forms.MouseButtons.Right:
+                            ReleasePlayerSkill2();
+                            break;
+                    }
+                }
+                else
+                {
+                    SetStart(e.X, e.Y);
+                }
+            }
+            base.OnMouseUp(e);
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape && PlayerObject != null)
@@ -734,6 +758,28 @@ namespace RunningBox
             if (Skill2 != null)
             {
                 Skill2.Cast(this);
+            }
+        }
+
+        /// <summary>
+        /// 放開玩家物件技能1
+        /// </summary>
+        public virtual void ReleasePlayerSkill1()
+        {
+            if (Skill1 != null)
+            {
+                Skill1.Release(this);
+            }
+        }
+
+        /// <summary>
+        /// 放開玩家物件技能2
+        /// </summary>
+        public virtual void ReleasePlayerSkill2()
+        {
+            if (Skill2 != null)
+            {
+                Skill2.Release(this);
             }
         }
 

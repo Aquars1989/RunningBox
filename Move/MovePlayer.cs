@@ -59,7 +59,7 @@ namespace RunningBox
             float moveX = move.X;
             float moveY = move.Y;
 
-            if (ownerX  < rectScene.Left)
+            if (ownerX < rectScene.Left)
             {
                 moveX = Math.Abs(moveX) * 2 + 2;
             }
@@ -78,6 +78,39 @@ namespace RunningBox
             }
 
             AddOffset(new PointF(moveX, moveY));
+        }
+
+        /// <summary>
+        /// 移動所有者
+        /// </summary>
+        public virtual void Move()
+        {
+            float moveX = MoveX / Scene.SceneRoundPerSec / Resistance / Scene.SceneTimeFix;
+            float moveY = MoveY / Scene.SceneRoundPerSec / Resistance / Scene.SceneTimeFix;
+            if (MoveX != 0 || MoveY != 0)
+            {
+                ObjectActive ownerActive = Owner as ObjectActive;
+                if (ownerActive != null && (ownerActive.Propertys.Affix & SpecialStatus.Movesplit) == SpecialStatus.Movesplit)
+                {
+                    //移動距離大時分成多次移動,供碰撞用
+                    int partCount = (int)(Math.Max(Math.Abs(moveX / Owner.Layout.Width), Math.Abs(moveY / Owner.Layout.Height))) + 1;
+                    float partX = moveX / partCount;
+                    float partY = moveY / partCount;
+                    for (int i = 0; i < partCount; i++)
+                    {
+                        Owner.Layout.X += partX;
+                        Owner.Layout.Y += partY;
+                        OnMoving();
+                    }
+                }
+                else
+                {
+                    Owner.Layout.X += moveX;
+                    Owner.Layout.Y += moveY;
+                    OnMoving();
+                }
+            }
+            OnAfterMove();
         }
     }
 }
