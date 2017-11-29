@@ -20,7 +20,7 @@ namespace RunningBox
         static GlobalScenes()
         {
             Scenes.AddScene(new SceneInfo<SceneStand>("標準", "Stand", 6, 60000));
-            Scenes.AddScene(new SceneInfo<SceneRhythm>("節奏", "Rhythm", 6, 60000));
+            Scenes.AddScene(new SceneInfo<SceneDisco>("舞池", "Disco", 6, 60000));
         }
     }
 }

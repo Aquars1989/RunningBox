@@ -72,9 +72,9 @@ namespace RunningBox
             for (int i = 0; i < 3; i++)
             {
                 float ratio = (0.1F + 0.07F * i);
-                float size = drawRectangle.Width * ratio; //原始大小
-                float drawX = drawRectangle.Left + (drawRectangle.Width * (0.2F + allRatio + (0.1F * i))) - size / 2; //原始位置
-                float drawY = drawRectangle.Top + (drawRectangle.Height * (0.8F - allRatio - (0.1F * i))) - size / 2; //原始位置
+                float size = drawRectangle.Width * ratio; // 原始大小
+                float drawX = drawRectangle.Left + (drawRectangle.Width * (0.2F + allRatio + (0.1F * i))) - size / 2; // 原始位置
+                float drawY = drawRectangle.Top + (drawRectangle.Height * (0.8F - allRatio - (0.1F * i))) - size / 2; // 原始位置
 
                 PointF offsetPoint = Function.GetOffsetPoint(drawX, drawY, (ani - i * 30), drawRectangle.Width * (0.02F * (i + 1)));
                 drawX = offsetPoint.X;

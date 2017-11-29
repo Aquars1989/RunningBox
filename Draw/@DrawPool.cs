@@ -95,7 +95,7 @@ namespace RunningBox
                 {
                     drawPoolBrush.ReleaseCount = 0;
                 }
-                //移至場景統一刪除
+                // 移至場景統一刪除
                 //if (drawPoolBrush.UseCount == 0)
                 //{
                 //_BrushPool.Remove(brush.Color);

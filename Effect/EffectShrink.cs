@@ -12,7 +12,7 @@ namespace RunningBox
     /// </summary>
     class EffectShrink : EffectBase
     {
-        private Padding _Shrinked;//實際已縮小值
+        private Padding _Shrinked;// 實際已縮小值
 
         /// <summary>
         /// 各邊界縮小值
@@ -36,10 +36,10 @@ namespace RunningBox
         {
             switch (Status)
             {
-                case EffectStatus.Enabling: //縮小階段
+                case EffectStatus.Enabling: // 縮小階段
                     if (!EnablingTime.IsFull)
                     {
-                        //計算應該修改的比例
+                        // 計算應該修改的比例
                         float ratio = Scene.SceneIntervalOfRound / (float)(EnablingTime.Limit - EnablingTime.Value + Scene.SceneIntervalOfRound);
                         int left = (int)((ShrinkValue.Left - _Shrinked.Left) * ratio);
                         int right = (int)((ShrinkValue.Right - _Shrinked.Right) * ratio);
@@ -57,7 +57,7 @@ namespace RunningBox
                     }
                     else
                     {
-                        //縮小結束時直接將值設為最終結果
+                        // 縮小結束時直接將值設為最終結果
                         Scene.MainRectangle = new Rectangle
                         (
                             Scene.MainRectangle.Left - _Shrinked.Left + ShrinkValue.Left,
@@ -68,10 +68,10 @@ namespace RunningBox
                         _Shrinked = ShrinkValue;
                     }
                     break;
-                case EffectStatus.Disabling: //恢復階段
+                case EffectStatus.Disabling: // 恢復階段
                     if (!DisablingTime.IsFull)
                     {
-                        //計算應該修改的比例
+                        // 計算應該修改的比例
                         float ratio = Scene.SceneIntervalOfRound / (float)(DisablingTime.Limit - DisablingTime.Value + Scene.SceneIntervalOfRound);
                         int left = (int)(_Shrinked.Left * ratio);
                         int right = (int)(_Shrinked.Right * ratio);
@@ -89,7 +89,7 @@ namespace RunningBox
                     }
                     else
                     {
-                        //恢復結束時直接將值設為最終結果
+                        // 恢復結束時直接將值設為最終結果
                         Scene.MainRectangle = new Rectangle
                         (
                             Scene.MainRectangle.Left - _Shrinked.Left,

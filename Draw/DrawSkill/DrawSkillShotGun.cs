@@ -8,9 +8,9 @@ using System.Text;
 namespace RunningBox
 {
     /// <summary>
-    /// 技能:衝擊波繪圖物件
+    /// 技能:散彈繪圖物件
     /// </summary>
-    public class DrawSkillShockwave : DrawSkillBase
+    public class DrawSkillShotGun : DrawSkillBase
     {
         /// <summary>
         /// 主要繪製顏色(供碎片物件使用)
@@ -30,7 +30,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="drawColor">繪圖工具管理物件</param>
         /// <param name="bindingSkill">綁定技能</param>
-        public DrawSkillShockwave(DrawColors drawColor, SkillBase bindingSkill = null)
+        public DrawSkillShotGun(DrawColors drawColor, SkillBase bindingSkill = null)
             : base(drawColor)
         {
             Animation = 0;
@@ -42,7 +42,7 @@ namespace RunningBox
         /// </summary>
         /// <param name="iconColor">繪製顏色</param>
         /// <param name="bindingSkill">綁定技能</param>
-        public DrawSkillShockwave(Color iconColor, SkillBase bindingSkill = null)
+        public DrawSkillShotGun(Color iconColor, SkillBase bindingSkill = null)
         {
             Colors.SetColor("Icon", iconColor);
             Animation = 0;
@@ -56,46 +56,47 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
-            int aniMax = BindingSkill != null && BindingSkill.Status == SkillStatus.Channeled ? 4 : 24;
-            int criMax = 24;
+            Rectangle drawRectangle = GetScaleRectangle(rectangle);
+
+            int aniMax = 16;
+            int aniHalf = aniMax / 2;
             if (Animation >= aniMax)
             {
                 Animation %= aniMax;
             }
 
-            Rectangle drawRectangle = GetScaleRectangle(rectangle);
-            int left = drawRectangle.Left;
-            int top = drawRectangle.Top;
-            int width = drawRectangle.Width;
-            int height = drawRectangle.Height;
-            int centerWidth = (int)(width * 0.25F + 0.5F);
-            int centerHeight = (int)(height * 0.25F + 0.5F);
-            Rectangle centerRect = new Rectangle(left + (width - centerWidth) / 2, top + (height - centerHeight) / 2, centerWidth, centerHeight);
-
             int ani = Animation;
-            float size = drawRectangle.Width * 0.3F; // 原始大小
-            float maxWidth = width * 1.5F;
+            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.7F); // 原始位置
+            float drawY = drawRectangle.Top + (drawRectangle.Height * 0.7F); // 原始位置
+            float fixX = 0, fixY = 0;
+            float size = drawRectangle.Width * 0.3F;
+            double maxDis = Function.GetDistance(0, 0, drawRectangle.Width, drawRectangle.Height);
 
-            Pen penIcon = Colors.GetPen("Icon", 1);
-            using (Region clip = new Region(drawRectangle))
+            if (Animation < aniHalf)
             {
-                g.Clip = clip;
-                while (true)
+                int anyHHalf = aniHalf / 3;
+                int move = anyHHalf - Math.Abs(anyHHalf - Animation);
+                PointF movePoint = Function.GetOffsetPoint(0, 0, 45, maxDis / 75 * move);
+                fixX = movePoint.X;
+                fixY = movePoint.Y;
+            }
+            Brush brushIcon = Colors.GetBrush("Icon");
+            g.FillEllipse(brushIcon, drawX + fixX - size / 2, drawY + fixY - size / 2, size, size);
+
+            size /= 2;
+            float ratio = ani / (float)aniMax * 1.3F;
+            if (ratio < 1)
+            {
+                for (int i = 0; i < 3; i++)
                 {
-                    float ratio = ani / (float)criMax;
-                    size += ratio * maxWidth;
-                    if (size < maxWidth)
-                    {
-                        g.DrawEllipse(penIcon, drawRectangle.Left + (drawRectangle.Width - size) / 2, drawRectangle.Top + (drawRectangle.Height - size) / 2, size, size);
-                    }
-                    else break;
-                    ani = aniMax;
+                    int angle = 180 + 30 * i;
+
+                    double distance = ratio * maxDis;
+                    PointF drawPoint = Function.GetOffsetPoint(drawX, drawY, angle, distance);
+                    g.FillEllipse(brushIcon, drawPoint.X - size / 2, drawPoint.Y - size / 2, size, size);
                 }
-                g.ResetClip();
             }
 
-            SolidBrush brushIcon = Colors.GetBrush("Icon");
-            g.FillEllipse(brushIcon, centerRect);
             Animation++;
         }
 

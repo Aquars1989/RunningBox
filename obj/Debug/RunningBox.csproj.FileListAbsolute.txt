@@ -35,4 +35,4 @@ C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.exe
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.pdb
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\bin\Debug\MySql.Data.dll
-C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneRhythm.resources
+C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneDisco.resources

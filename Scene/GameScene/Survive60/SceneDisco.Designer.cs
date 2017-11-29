@@ -1,6 +1,6 @@
 ﻿namespace RunningBox
 {
-    partial class SceneRhythm
+    partial class SceneDisco
     {
         /// <summary> 
         /// 設計工具所需的變數。

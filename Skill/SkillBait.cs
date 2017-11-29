@@ -69,7 +69,7 @@ namespace RunningBox
                             return;
                         }
 
-                        //新增誘餌物件
+                        // 新增誘餌物件
                         double angle = Function.GetAngle(Owner.Layout.CenterX, Owner.Layout.CenterY, Owner.MoveObject.Target.X, Owner.MoveObject.Target.Y);
 
                         MoveStraight move = new MoveStraight(null, Owner.MoveObject.Resistance, BaitSpeed, 1, 0, 1F);
@@ -82,9 +82,9 @@ namespace RunningBox
                         move.Target.SetObject(bait);
 
                         bait.Propertys.Add(new PropertySpeeded(-1, -(BaitSpeed / (float)BaitLife * 800)));
-                        bait.Propertys.Add(new PropertyCollision(0)); //強度碰撞
+                        bait.Propertys.Add(new PropertyCollision(0)); // 強度碰撞
 
-                        //新增雜訊物件
+                        // 新增雜訊物件
                         int noiseWidth = Owner.Layout.Width + 2;
                         int noiseHeight = (int)(Owner.Layout.Height * 1.3F + 0.5F) + 5;
                         DrawNoise drawNoise = new DrawNoise(Owner.DrawObject.MainColor, Color.White, 1);
@@ -94,7 +94,7 @@ namespace RunningBox
                         Owner.Container.Add(bait);
                         Owner.Container.Add(noise);
 
-                        //將目標設為誘餌
+                        // 將目標設為誘餌
                         for (int i = 0; i < Owner.Container.Count; i++)
                         {
                             ObjectBase objectBase = Owner.Container[i];

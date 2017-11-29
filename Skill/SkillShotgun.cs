@@ -114,7 +114,7 @@ namespace RunningBox
                     Owner.Container.Add(bullet);
                     shotAngle += partAngle;
                 }
-
+                Owner.MoveObject.AddToNextOffset(Function.GetOffsetPoint(0, 0, angle + 180, 500));
                 Cursor.Position = Scene.PointToScreen(new Point((int)Owner.Layout.CenterX, (int)Owner.Layout.CenterY));
                 Status = SkillStatus.Cooldown;
                 OnEnd(SkillEndType.Finish);
@@ -161,7 +161,7 @@ namespace RunningBox
         /// <returns>繪圖物件</returns>
         public override DrawSkillBase GetDrawObject(Color color)
         {
-            DrawSkillShield drawObject = new DrawSkillShield(color, this);
+            DrawSkillShotGun drawObject = new DrawSkillShotGun(color, this);
             return drawObject;
         }
     }

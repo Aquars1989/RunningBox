@@ -12,7 +12,7 @@ namespace RunningBox
     /// </summary>
     public class SkillSleep : SkillBase
     {
-        private PropertyUI _MiniBar;   //迷你條棒
+        private PropertyUI _MiniBar;   // 迷你條棒
         private float _OwnerSpeed;
 
         /// <summary>

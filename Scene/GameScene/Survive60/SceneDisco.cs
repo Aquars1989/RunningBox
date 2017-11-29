@@ -11,22 +11,22 @@ using System.Diagnostics;
 
 namespace RunningBox
 {
-    public partial class SceneRhythm : SceneGaming
+    public partial class SceneDisco : SceneGaming
     {
         private float _SpeedFix = 1;
         private float _LifeFix = 1;
 
-        public SceneRhythm()
+        public SceneDisco()
         {
             InitializeComponent();
 
-            //場景:畫面變黑暗
+            // 場景:畫面變黑暗
             WaveEvents.Add("@Dark", (n) =>
                 {
                     EffectObjects.Add(new EffectDyeing(Color.Black, Wave(0.1F), Wave(Math.Max(n, 0)), Wave(0.1F)));
                 });
 
-            //場景:邊界縮小
+            // 場景:邊界縮小
             WaveEvents.Add("@Shrink", (n) =>
             {
                 double scaleX = Global.Rand.NextDouble();
@@ -43,7 +43,7 @@ namespace RunningBox
                 EffectObjects.Add(new EffectShrink(shrinkPerRound, Wave(0.1F), Wave(Math.Max(n, 0)), Wave(0.1F)));
             });
 
-            //物件:追捕者
+            // 物件:追捕者
             WaveEvents.Add("Catcher", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -69,7 +69,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:水平牆壁
+            // 物件:水平牆壁
             WaveEvents.Add("WallA", (n) =>
             {
                 List<ObjectActive> objects = new List<ObjectActive>();
@@ -103,7 +103,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:箭雨(水平)
+            // 物件:箭雨(水平)
             WaveEvents.Add("Arrow", (n) =>
             {
                 int baseTop = Global.Rand.Next(MainRectangle.Top - 20, MainRectangle.Top + MainRectangle.Height + 20 - ((n - 1) * 30));
@@ -129,7 +129,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:青蛙
+            // 物件:青蛙
             WaveEvents.Add("Frog", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -141,9 +141,9 @@ namespace RunningBox
                     int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint(roundIdx);
 
-                    MoveStraight moveObject = new MoveStraight(PlayerObject, weight, 0, movesCount, 100, 0.5F);
+                    MoveFrog moveObject = new MoveFrog(PlayerObject, weight, 600, movesCount,Sec(1F));
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
-                    newObject.Skills.Add(new SkillSprint(0, Sec(1F), 0, (int)(10000 * _SpeedFix), false) { AutoCastObject = new AutoCastNormal(100) });
+                    //newObject.Skills.Add(new SkillSprint(0, Sec(1F), 0, (int)(10000 * _SpeedFix), false) { AutoCastObject = new AutoCastNormal(100) });
                     newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
@@ -177,7 +177,10 @@ namespace RunningBox
             MovePlayer moveObject = new MovePlayer(this, 1, 250, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
 
-            PlayerObject.Propertys.Add(new PropertyCollision(1));
+            if (!DeveloperOptions.Player_Ghost)
+            {
+                PlayerObject.Propertys.Add(new PropertyCollision(DeveloperOptions.Player_GodMode ? 10000 : 1));
+            }
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 30, 150, 400, Sec(0.5F), Sec(0.9F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             return PlayerObject;
@@ -196,6 +199,14 @@ namespace RunningBox
         {
             _SpeedFix = 0.8F;
             _LifeFix = 1F;
+
+            Color[] backColors = {
+                                     Color.FromArgb(235,255,235),
+                                     Color.FromArgb(235,235,255),
+                                     Color.FromArgb(255,255,235),
+                                     Color.FromArgb(255,235,220)
+                                 };
+            EffectObjects.Add(new EffectDyeingRotate(backColors, -1, Sec(1), Sec(0.2F)));
         }
 
         public override void DoAfterWave()

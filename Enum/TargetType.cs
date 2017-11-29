@@ -11,7 +11,9 @@ namespace RunningBox
     /// </summary>
     public enum TargetType
     {
-        //無
+        /// <summary>
+        /// 無
+        /// </summary>
         None,
 
         /// <summary>

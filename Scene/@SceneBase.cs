@@ -406,7 +406,7 @@ namespace RunningBox
         /// </summary>
         protected virtual void OnAfterDrawUI(Graphics g)
         {
-            //顯示FPS
+            // 顯示FPS
             if (Global.DebugMode)
             {
                 g.DrawString(string.Format("Object:{0}\nDraw:{1}\nFPS:{2}", GameObjects.Count, DrawPool.BrushCount + DrawPool.PenCount, _FPSText), _FPSFont, Brushes.Red, Width - 80, 5);
@@ -612,7 +612,7 @@ namespace RunningBox
             UIObjects = new ObjectCollection(this);
             EffectObjects = new EffectCollection(this);
             GameObjects = new ObjectCollection(this);
-            DrawClearCount = new CounterObject(20);//計次
+            DrawClearCount = new CounterObject(20); // 計次
             RoundTimer.Tick += RoundTimer_Tick;
         }
 
@@ -666,7 +666,7 @@ namespace RunningBox
 
         private void RoundTimer_Tick(object sender, EventArgs e)
         {
-            //計算FPS
+            // 計算FPS
             _FPSTick--;
             bool refreshFPS = false;
             if (_FPSTick <= 0)
@@ -678,14 +678,14 @@ namespace RunningBox
 
             Round();
 
-            //計算FPS
+            // 計算FPS
             if (refreshFPS)
             {
                 _FPSWatch.Stop();
                 _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
             }
 
-            //清除繪圖物件
+            // 清除繪圖物件
             if (DrawClearCount.IsFull)
             {
                 DrawPool.ReleaseUseless();

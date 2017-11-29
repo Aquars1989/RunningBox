@@ -8,7 +8,7 @@ namespace RunningBox
 {
     public abstract class MoveBase
     {
-        //記錄作用於下次移動的偏移植
+        // 記錄作用於下次移動的偏移植
         private float _NextOffsetFixX = 0;
         private float _NextOffsetFixY = 0;
 
@@ -376,7 +376,7 @@ namespace RunningBox
                 ObjectActive ownerActive = Owner as ObjectActive;
                 if (ownerActive != null && (ownerActive.Propertys.Affix & SpecialStatus.Movesplit) == SpecialStatus.Movesplit)
                 {
-                    //移動距離大時分成多次移動,供碰撞用
+                    // 移動距離大時分成多次移動,供碰撞用
                     int partCount = (int)(Math.Max(Math.Abs(moveX / Owner.Layout.Width), Math.Abs(moveY / Owner.Layout.Height))) + 1;
                     float partX = moveX / partCount;
                     float partY = moveY / partCount;

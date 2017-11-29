@@ -12,7 +12,7 @@ namespace RunningBox
     /// </summary>
     public class SkillBulletTime : SkillBase
     {
-        private float _SceneSlow;//實際減慢的速度
+        private float _SceneSlow; // 實際減慢的速度
         private PropertyUI _MiniBar;
 
         /// <summary>

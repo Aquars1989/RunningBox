@@ -87,16 +87,16 @@ namespace RunningBox
                 bool enterDirection = Global.Rand.Next(2) == 1;
                 switch (oldQuadrant + _Quadrant)
                 {
-                    case 5: //上下
+                    case 5: // 上下
                         newEmemy.BaseX = enterDirection ? -0.1F : 1.1F;
                         newEmemy.BaseY = _DrawPlayer.BaseY + (float)(Global.Rand.NextDouble() * 0.5 - 0.25);
                         break;
-                    case 3://左右
+                    case 3:// 左右
                     case 7:
                         newEmemy.BaseX = _DrawPlayer.BaseX + (float)(Global.Rand.NextDouble() * 0.5 - 0.25);
                         newEmemy.BaseY = enterDirection ? -0.1F : 1.1F;
                         break;
-                    case 4://右上左下
+                    case 4:// 右上左下
                         if (Global.Rand.Next(2) == 1)
                         {
                             newEmemy.BaseX = enterDirection ? (float)Global.Rand.NextDouble() / 2 : -0.1F;
@@ -108,7 +108,7 @@ namespace RunningBox
                             newEmemy.BaseY = enterDirection ? 1.1F : 0.5F + (float)Global.Rand.NextDouble() / 2;
                         }
                         break;
-                    case 6://左上右下
+                    case 6:// 左上右下
                         if (Global.Rand.Next(2) == 1)
                         {
                             newEmemy.BaseX = enterDirection ? 0.5F + (float)Global.Rand.NextDouble() / 2 : 1.1F;

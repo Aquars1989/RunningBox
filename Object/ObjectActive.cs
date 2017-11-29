@@ -135,28 +135,28 @@ namespace RunningBox
         public override void Action()
         {
             Skills.AllDoAutoCast();
-            //回合前
+            // 回合前
             Skills.AllDoBeforeAction();
             Propertys.AllDoBeforeAction();
-            //能量調整前
+            // 能量調整前
             Skills.AllDoBeforeActionEnergyGet();
             Propertys.AllDoBeforeActionEnergyGet();
-            //能量調整
+            // 能量調整
             ActionEnergyGet();
-            //移動規劃前
+            // 移動規劃前
             Skills.AllDoBeforeActionPlan();
             Propertys.AllDoBeforeActionPlan();
-            //移動規劃
+            // 移動規劃
             MoveObject.Plan();
-            //移動動作前
+            // 移動動作前
             Skills.AllDoBeforeActionMove();
             Propertys.AllDoBeforeActionMove();
-            //移動動作
+            // 移動動作
             MoveObject.Move();
-            //回合後
+            // 回合後
             Skills.AllDoAfterAction();
             Propertys.AllDoAfterAction();
-            //結算
+            // 結算
             Settlement();
             Skills.AllSettlement();
             Propertys.AllSettlement();

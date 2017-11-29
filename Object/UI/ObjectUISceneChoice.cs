@@ -116,10 +116,10 @@ namespace RunningBox
 
             if (group1Cot > 0)
             {
-                int maxH = (int)((width - _PaddingX * 2 + _ItemPaddingX) / (_UIScenes[0].Layout.RectWidth + _ItemPaddingX)); //橫向最多項目數
+                int maxH = (int)((width - _PaddingX * 2 + _ItemPaddingX) / (_UIScenes[0].Layout.RectWidth + _ItemPaddingX)); // 橫向最多項目數
 
-                int cotX = group1Cot > maxH ? maxH : group1Cot; //橫向數量
-                int cotY = (group1Cot - 1) / maxH + 1;          //縱向數量
+                int cotX = group1Cot > maxH ? maxH : group1Cot; // 橫向數量
+                int cotY = (group1Cot - 1) / maxH + 1;          // 縱向數量
 
                 float baseX = (width - (_UIScenes[0].Layout.RectWidth * cotX) - (_ItemPaddingX * (cotX - 1))) / 2;
                 float baseY = _PaddingY + (height - (_UIScenes[0].Layout.RectWidth * cotY) - (_ItemPaddingY * (cotY - 1))) / 2;

@@ -111,17 +111,17 @@ namespace RunningBox
                 ObjectBase objectBase = Owner.Container[i];
                 if (objectBase.Status != ObjectStatus.Alive || Function.IsFriendly(objectBase.League, CollisionLeague)) continue;
 
-                //特殊狀態判定 具碰撞 非鬼魂
+                // 特殊狀態判定 具碰撞 非鬼魂
                 if ((objectBase.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
                     (objectBase.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
                 {
                     continue;
                 }
 
-                //碰撞判定
+                // 碰撞判定
                 if (!Function.IsCollison(objectBase.Layout, explosionObject.Layout)) continue;
 
-                //檢查目標有無碰撞特性
+                // 檢查目標有無碰撞特性
                 int colliderPower = -1;
                 for (int j = 0; j < objectBase.Propertys.Count; j++)
                 {

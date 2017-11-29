@@ -558,22 +558,27 @@ namespace RunningBox
             UIObjects.ClearAllDead();
 
             OnBeforeRound();
-            EffectObjects.AllDoBeforeRound();
+
             if (IsStart)
             {
+                EffectObjects.AllDoBeforeRound();
                 GameObjects.AllAction();
+                EffectObjects.AllDoAfterRound();
             }
-            EffectObjects.AllDoAfterRound();
             OnAfterRound();
 
-            EffectObjects.AllSettlement();
+            if (IsStart)
+            {
+                EffectObjects.AllSettlement();
+            }
+
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();
             EffectObjects.ClearAllDisabled();
 
             if (IsStart)
             {
-                //結束時停止波數增加但不立即停止遊戲
+                // 結束時停止波數增加但不立即停止遊戲
                 if (IsEnding)
                 {
                     if (EndDelay.IsFull)

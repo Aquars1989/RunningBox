@@ -20,13 +20,13 @@ namespace RunningBox
         {
             InitializeComponent();
 
-            //場景:畫面變黑暗
+            // 場景:畫面變黑暗
             WaveEvents.Add("@Dark", (n) =>
                 {
                     EffectObjects.Add(new EffectDyeing(Color.Black, Wave(0.5F), Wave(Math.Max(n - 1, 0)), Wave(0.5F)));
                 });
 
-            //場景:邊界縮小
+            // 場景:邊界縮小
             WaveEvents.Add("@Shrink", (n) =>
             {
                 double scaleX = Global.Rand.NextDouble();
@@ -43,7 +43,7 @@ namespace RunningBox
                 EffectObjects.Add(new EffectShrink(shrinkPerRound, Wave(0.5F), Wave(Math.Max(n - 1, 0)), Wave(0.5F)));
             });
 
-            //物件:追捕者
+            // 物件:追捕者
             WaveEvents.Add("Catcher", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -69,7 +69,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:快速追捕者 速度更快 更常使用加速
+            // 物件:快速追捕者 速度更快 更常使用加速
             WaveEvents.Add("Faster", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -95,7 +95,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:流星 四面八方的直線前進物件
+            // 物件:流星 四面八方的直線前進物件
             WaveEvents.Add("Meteor", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -125,7 +125,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:水平牆壁(有缺口)
+            // 物件:水平牆壁(有缺口)
             WaveEvents.Add("WallA", (n) =>
             {
                 List<ObjectActive> objects = new List<ObjectActive>();
@@ -159,7 +159,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:水平牆壁(交錯)
+            // 物件:水平牆壁(交錯)
             WaveEvents.Add("WallB", (n) =>
             {
                 List<ObjectActive> objects = new List<ObjectActive>();
@@ -202,7 +202,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:序列 排列成直線的追捕者
+            // 物件:序列 排列成直線的追捕者
             WaveEvents.Add("Series", (n) =>
             {
                 Point enterPoint = GetEnterPoint();
@@ -238,7 +238,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:轟炸機
+            // 物件:轟炸機
             WaveEvents.Add("Bomber", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -272,7 +272,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:攔截者 不會加速 但速度會越來越快
+            // 物件:攔截者 不會加速 但速度會越來越快
             WaveEvents.Add("Blocker", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -299,7 +299,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:地雷
+            // 物件:地雷
             WaveEvents.Add("Mine", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -349,7 +349,7 @@ namespace RunningBox
                 }
             });
 
-            //物件:分裂地雷
+            // 物件:分裂地雷
             WaveEvents.Add("MineSplit", (n) =>
             {
                 int size = Global.Rand.Next(28, 30);
@@ -422,7 +422,7 @@ namespace RunningBox
                 GameObjects.Add(newObject);
             });
 
-            //物件:青蛙
+            // 物件:青蛙
             WaveEvents.Add("Frog", (n) =>
             {
                 int roundIdx = Global.Rand.Next(4);
@@ -477,7 +477,10 @@ namespace RunningBox
             MovePlayer moveObject = new MovePlayer(this, 1, 250, 8);
             ObjectPlayer PlayerObject = new ObjectPlayer(potX, potY, 8, 7, 7, 170, LeagueType.Player, new DrawPen(Color.Black, ShapeType.Ellipse, 2), moveObject);
 
-            PlayerObject.Propertys.Add(new PropertyCollision(1));
+            if (!DeveloperOptions.Player_Ghost)
+            {
+                PlayerObject.Propertys.Add(new PropertyCollision(DeveloperOptions.Player_GodMode ? 10000 : 1));
+            }
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 30, 150, 400, Sec(0.5F), Sec(0.9F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
             return PlayerObject;

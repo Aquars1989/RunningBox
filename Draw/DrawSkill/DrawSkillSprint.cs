@@ -66,9 +66,9 @@ namespace RunningBox
             }
 
             int ani = Animation;
-            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.1F); //原始位置
-            float drawY = drawRectangle.Top + (drawRectangle.Height * 0.1F); //原始位置
-            float size = drawRectangle.Width * 0.3F; //原始大小
+            float drawX = drawRectangle.Left + (drawRectangle.Width * 0.1F); // 原始位置
+            float drawY = drawRectangle.Top + (drawRectangle.Height * 0.1F); // 原始位置
+            float size = drawRectangle.Width * 0.3F; // 原始大小
 
             Brush brushIcon = Colors.GetBrush("Icon");
             g.FillEllipse(brushIcon, drawX, drawY, size, size);

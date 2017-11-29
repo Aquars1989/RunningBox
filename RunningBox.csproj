@@ -58,6 +58,7 @@
     <Compile Include="AutoCast\%40AutoCastBase.cs" />
     <Compile Include="Class\Function\FunctionInGame.cs" />
     <Compile Include="Class\Function\FunctionConvert.cs" />
+    <Compile Include="Class\Global\DeveloperOptions.cs" />
     <Compile Include="Class\Global\GlobalPlayer.cs" />
     <Compile Include="Class\Global\GlobalScenes.cs" />
     <Compile Include="Class\Global\GlobalFormat.cs" />
@@ -65,12 +66,15 @@
     <Compile Include="Class\Object\CounterObject.cs" />
     <Compile Include="Class\Object\SQLobject.cs" />
     <Compile Include="Draw\DrawSkill\DrawSkillSleep.cs" />
+    <Compile Include="Draw\DrawSkill\DrawSkillShotGun.cs" />
     <Compile Include="Draw\DrawUI\DrawUISkillText.cs" />
     <Compile Include="Draw\DrawUI\DrawUITextScroll.cs" />
+    <Compile Include="Effect\EffectDyeingRotate.cs" />
     <Compile Include="Enum\ID\SkillID.cs" />
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
     <Compile Include="Handle\GoSceneEventHandle.cs" />
+    <Compile Include="Move\MoveFrog.cs" />
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
@@ -168,11 +172,11 @@
     <Compile Include="Property\PropertyDead\PropertyDeadBroken.cs" />
     <Compile Include="Property\PropertyScraping.cs" />
     <Compile Include="Property\PropertySmoking.cs" />
-    <Compile Include="Scene\GameScene\Survive60\SceneRhythm.cs">
+    <Compile Include="Scene\GameScene\Survive60\SceneDisco.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Scene\GameScene\Survive60\SceneRhythm.Designer.cs">
-      <DependentUpon>SceneRhythm.cs</DependentUpon>
+    <Compile Include="Scene\GameScene\Survive60\SceneDisco.Designer.cs">
+      <DependentUpon>SceneDisco.cs</DependentUpon>
     </Compile>
     <Compile Include="Scene\SceneNull.cs">
       <SubType>Component</SubType>
@@ -237,9 +241,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Scene\%40SceneBase.resx">
       <DependentUpon>%40SceneBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Scene\GameScene\Survive60\SceneRhythm.resx">
-      <DependentUpon>SceneRhythm.cs</DependentUpon>
+    <EmbeddedResource Include="Scene\GameScene\Survive60\SceneDisco.resx">
+      <DependentUpon>SceneDisco.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Scene\SceneNull.resx">
       <DependentUpon>SceneNull.cs</DependentUpon>

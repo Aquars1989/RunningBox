@@ -36,7 +36,7 @@ namespace RunningBox
                     ObjectBase objectActive = Owner.Container[i];
                     if (objectActive.Status != ObjectStatus.Alive || Function.IsFriendly(objectActive.League, Owner.League)) continue;
 
-                    //限定目標
+                    // 限定目標
                     if (Target.TargetType == TargetType.GameObejct)
                     {
                         if (objectActive == Target.Object)
@@ -49,14 +49,14 @@ namespace RunningBox
                         }
                     }
 
-                    //特殊狀態判定 具碰撞 非鬼魂
+                    // 特殊狀態判定 具碰撞 非鬼魂
                     if ((objectActive.Propertys.Affix & SpecialStatus.Collision) != SpecialStatus.Collision ||
                         (objectActive.Propertys.Affix & SpecialStatus.Ghost) == SpecialStatus.Ghost)
                     {
                         continue;
                     }
 
-                    //碰撞判定
+                    // 碰撞判定
                     if (!Function.IsCollison(Owner.Layout, objectActive.Layout)) continue;
 
                     int colliderPower = -1;

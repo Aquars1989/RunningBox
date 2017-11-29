@@ -41,11 +41,11 @@ namespace RunningBox
         {
             Propertys.Add(new PropertyShadow(0, 6, 0.95F, 1));
 
-            //玩家姓名
+            // 玩家姓名
             _DrawPlayerName = new DrawUITextScroll(Color.Maroon, Color.LightGray, Color.FromArgb(230, 255, 245), Color.CornflowerBlue, 1, 10, GlobalPlayer.PlayerName, new Font("細明體", 12), GlobalFormat.MiddleLeft, 120) { TextPadding = new Padding(10, 10, 0, 5) };
             ObjectUI uiPlayerName = new ObjectUI(20, 60, 270, 40, _DrawPlayerName);
 
-            //重新選取
+            // 重新選取
             DrawUIText drawCommandBuildName = new DrawUIText(Color.CornflowerBlue, Color.Empty, Color.Empty, Color.Empty, 0, 0, "↻", new Font("標楷體", 22, FontStyle.Bold), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 10, 0, 0) };
             DrawUIText drawCommandBuildNameHover = new DrawUIText(Color.Orange, Color.Empty, Color.Empty, Color.Empty, 0, 0, "↻", new Font("標楷體", 22, FontStyle.Bold), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 10, 0, 0) };
             ObjectUI uiCommandBuildName = new ObjectUI(250, 60, 40, 40, drawCommandBuildName) { DrawObjectHover = drawCommandBuildNameHover };

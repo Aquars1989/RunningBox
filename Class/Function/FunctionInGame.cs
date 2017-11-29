@@ -114,13 +114,13 @@ namespace RunningBox
         /// <returns>是否碰撞</returns>
         public static bool IsCollison(ShapeType type1, Rectangle rect1, ShapeType type2, Rectangle rect2)
         {
-            if (!rect1.IntersectsWith(rect2)) return false; //如果矩形未相交,任意形狀一定不相交
+            if (!rect1.IntersectsWith(rect2)) return false; // 如果矩形未相交,任意形狀一定不相交
 
-            if (type1 == type2)//同類型檢測
+            if (type1 == type2)// 同類型檢測
             {
                 switch (type1)
                 {
-                    case ShapeType.Ellipse:  //圓型碰撞檢測
+                    case ShapeType.Ellipse:  // 圓型碰撞檢測
                         float halfWidth1 = rect1.Width / 2F;
                         float halfHeight1 = rect1.Height / 2F;
                         float halfWidth2 = rect2.Width / 2F;
@@ -131,19 +131,19 @@ namespace RunningBox
                         float centerY2 = rect2.Top + halfHeight2;
                         float distanceX = centerX2 - centerX1;
                         float distanceY = centerY2 - centerY1;
-                        double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY); //兩中心距離
+                        double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY); // 兩中心距離
 
                         double roation = Math.Atan2(distanceY, distanceX);
-                        double radius1 = halfWidth1 == halfHeight1 ? halfWidth1 : Math.Sqrt(Math.Pow(halfWidth1 * Math.Cos(roation), 2) + Math.Pow(halfHeight1 * Math.Sin(roation), 2)); //圓半徑1
-                        double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth2 * Math.Cos(roation), 2) + Math.Pow(halfHeight2 * Math.Sin(roation), 2)); //圓半徑2
+                        double radius1 = halfWidth1 == halfHeight1 ? halfWidth1 : Math.Sqrt(Math.Pow(halfWidth1 * Math.Cos(roation), 2) + Math.Pow(halfHeight1 * Math.Sin(roation), 2)); // 圓半徑1
+                        double radius2 = halfWidth2 == halfHeight2 ? halfWidth2 : Math.Sqrt(Math.Pow(halfWidth2 * Math.Cos(roation), 2) + Math.Pow(halfHeight2 * Math.Sin(roation), 2)); // 圓半徑2
                         return distance < radius1 + radius2;
-                    case ShapeType.Rectangle://矩形碰撞檢測,已做
+                    case ShapeType.Rectangle:// 矩形碰撞檢測,已做
                         return true;
                     default:
                         return true;
                 }
             }
-            else //混合碰撞檢測
+            else // 混合碰撞檢測
             {
                 Rectangle rectangle, ellipse;
 
@@ -198,21 +198,21 @@ namespace RunningBox
                 int width = rectangle.Width;
                 int height = rectangle.Height;
 
-                //頂端
+                // 頂端
                 result.AddLine(rectangle.Left + radius, rectangle.Top, rectangle.Right - radius, rectangle.Top);
-                //右上角
+                // 右上角
                 result.AddArc(rectangle.Right - radius, rectangle.Top, radius, radius, 270, 90);
-                //右邊
+                // 右邊
                 result.AddLine(rectangle.Right, rectangle.Top + radius, rectangle.Right, rectangle.Bottom - radius);
-                //右下角
+                // 右下角
                 result.AddArc(rectangle.Right - radius, rectangle.Bottom - radius, radius, radius, 0, 90);
-                //底邊
+                // 底邊
                 result.AddLine(rectangle.Right - radius, rectangle.Bottom, rectangle.Left + radius, rectangle.Bottom);
-                //左下角
+                // 左下角
                 result.AddArc(rectangle.Left, rectangle.Bottom - radius, radius, radius, 90, 90);
-                //左邊
+                // 左邊
                 result.AddLine(rectangle.Left, rectangle.Bottom - radius, rectangle.Left, rectangle.Top + radius);
-                //左上角
+                // 左上角
                 result.AddArc(rectangle.Left, rectangle.Top, radius, radius, 180, 90);
                 result.CloseAllFigures();
             }

@@ -35,14 +35,30 @@ namespace RunningBox
             _Skills = new SkillBase[]
             {
                 new SkillSprint(3000, Sec(0.7F), 0, 6000, true),
-                new SkillShield(1, 6000, 0, Sec(2F), Sec(4F)),
-                new SkillShockwave(4000, 0, Sec(1.5F), Sec(4F), Sec(0.1F), 4000, 300),
-                new SkillBulletTime(1000, 8000, -1, Sec(5), 1),
-                new SkillBait(5000, Sec(2F), Sec(2F), 400),
-                new SkillShotgun(5,1,60,3000,Sec(1.5F))
-                
+                new SkillShield(1, 6000, 0, Sec(2F), Sec(3F)),
+                new SkillShockwave(6000, 0, Sec(1.5F), Sec(2.5F), Sec(0.1F), 4000, 300),
+                new SkillBulletTime(2000, 9000, -1, Sec(3), 1),
+                new SkillBait(6000, Sec(2F), Sec(2F), 400),
+                new SkillShotgun(5,1,60,5000,Sec(1F))
                 //new SkillSleep(3000,Sec(0.5F),Sec(0.5F))
             };
+
+            if (DeveloperOptions.Player_NoCast)
+            {
+                foreach (SkillBase skill in _Skills)
+                {
+                    skill.CostEnergy = 0;
+                    skill.CostEnergyPerSec = 0;
+                }
+            }
+
+            if (DeveloperOptions.Player_NoCooldown)
+            {
+                foreach (SkillBase skill in _Skills)
+                {
+                    skill.Cooldown.Limit = 0;
+                }
+            }
 
             int len = _Skills.Length;
             _UISkillIcons = new ObjectUI[len];

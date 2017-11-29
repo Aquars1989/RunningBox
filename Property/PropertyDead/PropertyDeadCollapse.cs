@@ -11,7 +11,7 @@ namespace RunningBox
     /// </summary>
     class PropertyDeadCollapse : PropertyBase
     {
-        private PropertyScraping _PropertyScraping; //碎裂特性
+        private PropertyScraping _PropertyScraping; // 碎裂特性
         private bool _Enabled = false;
 
         /// <summary>

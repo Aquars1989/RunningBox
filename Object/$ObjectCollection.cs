@@ -297,7 +297,7 @@ namespace RunningBox
             }
         }
         #endregion
-        //禁用Foreach避免新增時錯誤
+        // 禁用Foreach避免新增時錯誤
         //public IEnumerator<ObjectBase> GetEnumerator()
         //{
         //    return _Collection.GetEnumerator();

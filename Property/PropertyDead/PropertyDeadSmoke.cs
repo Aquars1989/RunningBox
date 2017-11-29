@@ -36,7 +36,7 @@ namespace RunningBox
         public ObjectDeadType DeadType { get; set; }
 
         /// <summary>
-        ///擁有此特性的物件死亡時會逐漸縮小(放大)並淡出
+        /// 擁有此特性的物件死亡時會逐漸縮小(放大)並淡出
         /// </summary>
         /// <param name="fadeTime">縮小/淡出時間計時器(毫秒)</param>
         /// <param name="fadeTime">計時器結束時大小比例</param>

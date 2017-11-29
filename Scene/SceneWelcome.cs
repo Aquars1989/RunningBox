@@ -52,7 +52,7 @@ namespace RunningBox
             int partHeight = drawHeight / partCountY;
             float delay = 0;
             int[,] map = new int[partCountX, partCountY];
-            //建立關連圖
+            // 建立關連圖
             for (int x = 0; x < partCountX; x++)
             {
                 for (int y = 0; y < partCountY; y++)
@@ -65,22 +65,22 @@ namespace RunningBox
 
                         if (checkRight)
                         {
-                            map[x + 1, y] |= 1; //右
+                            map[x + 1, y] |= 1; // 右
                         }
 
                         if (checkBottom)
                         {
-                            map[x, y + 1] |= 2; //下
+                            map[x, y + 1] |= 2; // 下
                         }
 
                         if (checkRight && checkBottom)
                         {
-                            map[x + 1, y + 1] |= 4; //右下
+                            map[x + 1, y + 1] |= 4; // 右下
                         }
 
                         if (checkLeft && checkBottom)
                         {
-                            map[x - 1, y + 1] |= 8; //左下
+                            map[x - 1, y + 1] |= 8; // 左下
                         }
                     }
                     else

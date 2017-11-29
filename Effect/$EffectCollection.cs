@@ -313,7 +313,7 @@ namespace RunningBox
         #endregion
         #endregion
 
-        //禁用Foreach避免新增時錯誤
+        // 禁用Foreach避免新增時錯誤
         //public IEnumerator<IEffect> GetEnumerator()
         //{
         //    return _Collection.GetEnumerator();

@@ -14,8 +14,8 @@ namespace RunningBox
     {
         private static Color _BarColor = Color.FromArgb(160, 210, 100);
 
-        private ObjectActive _ShieldObject; //護盾物件
-        private PropertyUI _MiniBar;        //迷你條棒+幽靈屬性
+        private ObjectActive _ShieldObject; // 護盾物件
+        private PropertyUI _MiniBar;        // 迷你條棒+幽靈屬性
 
         /// <summary>
         /// 辨識碼
@@ -90,7 +90,7 @@ namespace RunningBox
                         Owner.Container.Add(_ShieldObject);
 
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(_BarColor, Color.Black, Color.White, 1, true, Channeled));
-                        _MiniBar.Affix = SpecialStatus.Ghost;   //增加幽靈屬性
+                        _MiniBar.Affix = SpecialStatus.Ghost;   // 增加幽靈屬性
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }

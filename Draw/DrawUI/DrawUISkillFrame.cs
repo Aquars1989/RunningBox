@@ -100,7 +100,7 @@ namespace RunningBox
 
             GetBackFrame(drawRectangle);
             DrawSkillBase drawSkillBase = DrawObjectInside as DrawSkillBase;
-            SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill; //取得綁定技能
+            SkillBase bindingSkill = drawSkillBase == null ? null : drawSkillBase.BindingSkill; // 取得綁定技能
 
             g.FillPath(Colors.GetBrush("Back"), _BackFrame);
             g.Clip = _BackRegion;

@@ -12,7 +12,7 @@ namespace RunningBox
     /// </summary>
     public class SkillShockwave : SkillBase
     {
-        private PropertyUI _MiniBar;   //迷你條棒
+        private PropertyUI _MiniBar;   // 迷你條棒
 
         /// <summary>
         /// 辨識碼
@@ -102,7 +102,7 @@ namespace RunningBox
                             ObjectBase objectActive = Owner.Container[i];
                             if (objectActive == Owner) continue;
 
-                            //範圍判定
+                            // 範圍判定
                             if (!Function.IsCollison(objectActive.Layout, checkRange)) continue;
 
                             double angle = Function.GetAngle(checkRange.CenterX, checkRange.CenterY, objectActive.Layout.CenterX, objectActive.Layout.CenterY);
