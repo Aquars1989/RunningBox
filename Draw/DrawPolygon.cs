@@ -69,7 +69,7 @@ namespace RunningBox
         /// <param name="rectangle">繪製區域</param>
         protected override void OnDraw(Graphics g, Rectangle rectangle)
         {
-            if (BorderWidth < 1 || NumberOfSides < 2) return;
+            if (NumberOfSides < 2 || (NumberOfSides == 2 && BorderWidth < 1)) return;
 
             Rectangle drawRectangle = GetScaleRectangle(rectangle);
 
@@ -83,20 +83,25 @@ namespace RunningBox
             for (int i = 0; i < NumberOfSides; i++)
             {
                 float angle = i * partAngle + Angle;
-                int x = (int)(Math.Sin(angle / 180F * Math.PI) * helfWidth);
-                int y = (int)(Math.Cos(angle / 180F * Math.PI) * helfHeight);
+                int x = (int)(Math.Cos(angle / 180F * Math.PI) * helfWidth);
+                int y = (int)(Math.Sin(angle / 180F * Math.PI) * helfHeight);
                 pots[i] = new Point(midX + x, midY + y);
             }
 
-            Pen penBorder = Colors.GetPen("Border", BorderWidth);
             if (NumberOfSides > 2)
             {
                 Brush brushBack = Colors.GetBrush("Main");
                 g.FillPolygon(brushBack, pots);
-                g.DrawPolygon(penBorder, pots);
+
+                if (BorderWidth > 0)
+                {
+                    Pen penBorder = Colors.GetPen("Border", BorderWidth);
+                    g.DrawPolygon(penBorder, pots);
+                }
             }
             else
             {
+                Pen penBorder = Colors.GetPen("Border", BorderWidth);
                 g.DrawLine(penBorder, pots[0], pots[1]);
             }
         }

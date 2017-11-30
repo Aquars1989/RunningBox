@@ -347,6 +347,34 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 使用指定值旋轉角度到特定角度
+        /// </summary>
+        /// <param name="angel">目標角度</param>
+        /// <param name="rotate">旋轉值</param>
+        /// <param name="ignoreResistance">是否忽略阻力</param>
+        public void Rotate(float angle, float rotate, bool ignoreResistance = false)
+        {
+            if (!RotateEnabled) return;
+
+            float cross = Function.GetRotateAngle(Angle - angle, 0);
+            if(!ignoreResistance) rotate = rotate / Resistance;
+            if (Math.Abs(cross) < rotate)
+            {
+                Angle = angle;
+            }
+            else
+            {
+                if (cross > 0)
+                {
+                    Angle -= rotate;
+                }
+                else if (cross < 0)
+                {
+                    Angle += rotate;
+                }
+            }
+        }
+        /// <summary>
         /// 繪製到Graphics
         /// </summary>
         /// <param name="g">Graphics物件</param>

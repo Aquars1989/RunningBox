@@ -42,7 +42,7 @@ namespace RunningBox
                 Height = 24
             };
 
-            if (_PlayerName != GlobalPlayer.PlayerName)
+            if (_PlayerName != null && _PlayerName != GlobalPlayer.PlayerName)
             {
                 DrawUIText drawObject = new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 0, 0, 0) };
                 ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, drawObject, MoveNull.Value);

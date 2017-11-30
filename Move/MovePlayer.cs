@@ -51,7 +51,7 @@ namespace RunningBox
             }
 
             Rectangle rectScene = Scene.MainRectangle;
-            double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y);
+            double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y) + AngleOffset;
             float speed = (Math.Abs(Target.X - ownerX) + Math.Abs(Target.Y - ownerY)) + 10;
             if (speed > Speed) speed = Speed;
 

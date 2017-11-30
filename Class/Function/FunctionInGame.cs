@@ -105,6 +105,73 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 取得兩點間叉積,>0表示點2在點1的順時鐘方向
+        /// </summary>
+        /// <param name="center">圓心</param>
+        /// <param name="point1">點1</param>
+        /// <param name="point2">點2</param>
+        /// <returns>叉積</returns>
+        public static float GetCross(PointF center, PointF point1, PointF point2)
+        {
+            return (point1.X - center.X) * (point2.Y - center.Y) - (point1.Y - center.Y) * (point2.X - center.X);
+        }
+
+        /// <summary>
+        /// 取得兩點間叉積,>0表示點2在點1的順時鐘方向
+        /// </summary>
+        /// <param name="centerX">圓心X</param>
+        /// <param name="centerY">圓心Y</param>
+        /// <param name="point1X">點1X</param>
+        /// <param name="point1Y">點1Y</param>
+        /// <param name="point2X">點2X</param>
+        /// <param name="point2Y">點2Y</param>
+        /// <returns>叉積</returns>
+        public static float GetCross(float centerX, float centerY, float point1X, float point1Y, float point2X, float point2Y)
+        {
+            return (point1X - centerX) * (point2Y - centerY) - (point1Y - centerY) * (point2X - centerX);
+        }
+
+        /// <summary>
+        /// 取得旋轉後角度
+        /// </summary>
+        /// <param name="baseAngle">原始角度</param>
+        /// <param name="rotate">調整角度</param>
+        /// <returns>旋轉後角度</returns>
+        public static float GetRotateAngle(float baseAngle, float rotate)
+        {
+            float result = baseAngle + rotate;
+            if (result > 180)
+            {
+                result = (result % 180) - 180;
+            }
+            else if (result <= -180)
+            {
+                result = (result % 180) + 180;
+            }
+            return result;
+
+        }
+        /// <summary>
+        /// 取得旋轉後角度
+        /// </summary>
+        /// <param name="baseAngle">原始角度</param>
+        /// <param name="rotate">調整角度</param>
+        /// <returns>旋轉後角度</returns>
+        public static double GetRotateAngle(double baseAngle, double rotate)
+        {
+            double result = baseAngle + rotate;
+            if (result > 180)
+            {
+                result = (result % 180) - 180;
+            }
+            else if (result <= -180)
+            {
+                result = (result % 180) + 180;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 取得物件AB是否碰撞
         /// </summary>
         /// <param name="type1">物件A類型</param>

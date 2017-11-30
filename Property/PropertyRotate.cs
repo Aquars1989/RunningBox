@@ -50,7 +50,7 @@ namespace RunningBox
                 {
                     rotate *= 1 - DurationTime.GetRatio();
                 }
-                Owner.DrawObject.Rotate(RotatingPerSec / Scene.SceneRoundPerSec, IgnoreResistance);
+                Owner.DrawObject.Rotate(rotate, IgnoreResistance);
             }
             base.DoAfterAction();
         }

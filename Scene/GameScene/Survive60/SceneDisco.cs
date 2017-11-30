@@ -13,8 +13,25 @@ namespace RunningBox
 {
     public partial class SceneDisco : SceneGaming
     {
-        private float _SpeedFix = 1;
-        private float _LifeFix = 1;
+        /// <summary>
+        /// 預設敵人速度調整值
+        /// </summary>
+        private float _DefaultSpeedFix = 1;
+
+        /// <summary>
+        /// 預設敵人存活時間調整值
+        /// </summary>
+        private float _DefaultLifeFix = 1;
+
+        /// <summary>
+        /// 敵人速度調整值
+        /// </summary>
+        private float _SpeedFix;
+
+        /// <summary>
+        /// 敵人存活時間調整值
+        /// </summary>
+        private float _LifeFix;
 
         public SceneDisco()
         {
@@ -49,23 +66,73 @@ namespace RunningBox
                 int roundIdx = Global.Rand.Next(4);
                 for (int i = 0; i < n; i++)
                 {
-                    int size = Global.Rand.Next(7, 12);
-                    int offsetLimit = size + Global.Rand.Next(5, 10);
-                    float speed = Global.Rand.Next(320, 380) * _SpeedFix;
+                    int size = Global.Rand.Next(9, 11);
+                    int offsetLimit = 10;
+                    float speed = Global.Rand.Next(200, 240) * _SpeedFix;
                     float weight = 0.3F + size * 0.1F;
-                    int life = Sec(3.5F * _LifeFix) + Global.Rand.Next(0, 5);
+                    int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint(roundIdx);
 
-                    MoveStraight moveObject = new MoveStraight(PlayerObject, weight, speed, offsetLimit, 100, 0.5F);
+                    MoveFrog moveObject = new MoveFrog(PlayerObject, weight, speed, offsetLimit, Sec(1F));
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
-                    newObject.Skills.Add(new SkillSprint(0, Sec(1.5F), 15, 0, true) { AutoCastObject = new AutoCastNormal(0.4F) });
-                    newObject.Skills.Add(new SkillSprint(0, Sec(0.5F), 5, 0, false) { AutoCastObject = new AutoCastNormal(3F) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 30, 150, 400, Sec(0.5F), Sec(0.9F)));
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
                     newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
                     roundIdx = ++roundIdx % 4;
+                }
+            });
+
+            // 物件:快速追捕者 移動間格減半
+            WaveEvents.Add("Faster", (n) =>
+            {
+                int roundIdx = Global.Rand.Next(4);
+                for (int i = 0; i < n; i++)
+                {
+                    int size = Global.Rand.Next(6, 8);
+                    int offsetLimit = 10;
+                    float speed = Global.Rand.Next(275, 320) * _SpeedFix;
+                    float weight = 0.3F + size * 0.1F;
+                    int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
+                    Point enterPoint = GetEnterPoint(roundIdx);
+
+                    MoveFrog moveObject = new MoveFrog(PlayerObject, weight, speed, offsetLimit, Sec(0.5F));
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), moveObject);
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow(2, 3));
+                    GameObjects.Add(newObject);
+                    roundIdx = ++roundIdx % 4;
+                }
+            });
+
+            // 物件:蜻蜓 固定方向且會左右擺動
+            WaveEvents.Add("Dragonfly", (n) =>
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    int size = Global.Rand.Next(14, 18);
+                    int offsetLimit = 10;
+                    float speed = Global.Rand.Next(220, 260) * _SpeedFix;
+                    float weight = 0.3F + size * 0.1F;
+                    int life = -1;
+                    Point enterPoint = GetEnterPoint(DirectionType.Right);
+
+                    MoveFrog moveObject = new MoveFrog(null, weight, speed, offsetLimit, Sec(1F));
+                    DrawPolygon drawObject = new DrawPolygon(Color.BlueViolet, Color.BlueViolet, 3, 0, 0) { RotateEnabled = true };
+                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
+                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    newObject.Propertys.Add(new PropertyCollision(1));
+                    newObject.Propertys.Add(new PropertyShadow(2, 3));
+                    newObject.Propertys.Add(new PropertyOutClear());
+                    newObject.Propertys.Add(new PropertyDelay(Sec(0.5F), new PropertyDrunken(-1, Sec(1F), -45, 45, 100)));
+                    newObject.Propertys.Add(new PropertyRotateTarget(-1, 400, true));
+                    moveObject.Target.SetObject(newObject);
+                    moveObject.Target.SetOffsetByXY(-1000, 0);
+                    GameObjects.Add(newObject);
                 }
             });
 
@@ -76,16 +143,13 @@ namespace RunningBox
                 for (int i = 0; i < MainRectangle.Height + 60; i += 30)
                 {
                     int movesCount = 6;
+                    float speed = 300 * (10 + n) / 10F;
                     float weight = 3;
-                    int life = -1;// Sec(10F);
-                    MoveStraight moveObject = new MoveStraight(null, weight, 0, movesCount, 0, 1F);
+                    int life = -1;
+                    MoveFrog moveObject = new MoveFrog(null, weight, speed, movesCount, Sec(1));
                     moveObject.Target.SetOffsetByXY(1000F, 0);
                     DrawBrush drawObject = new DrawBrush(Color.Orchid, ShapeType.Rectangle) { RotateEnabled = false };
-                    //DrawPolygon drawObject = new DrawPolygon(Color.Orchid, Color.Orchid, 2, 5, 0) { RotateEnabled = false };
                     ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
-                    //newObject.Propertys.Add(new PropertyRotate(-1, 780, false, true));
-                    //newObject.Propertys.Add(new PropertyDeadBroken(new DrawBrush(Color.Orchid, ShapeType.Rectangle), 15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 200, 600, Sec(0.6F), Sec(1.2F)));
-                    newObject.Skills.Add(new SkillSprint(0, Sec(1F), 0, (int)(10000 * (10 + n) / 10F), false) { AutoCastObject = new AutoCastNormal(100) });
                     newObject.Propertys.Add(new PropertyDeadBrokenShaping(15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 100, 300, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
@@ -129,27 +193,34 @@ namespace RunningBox
                 }
             });
 
-            // 物件:青蛙
-            WaveEvents.Add("Frog", (n) =>
+            // 物件:炸彈陣列
+            WaveEvents.Add("BoomGrid", (n) =>
             {
-                int roundIdx = Global.Rand.Next(4);
-                for (int i = 0; i < n; i++)
+                List<ObjectActive> objects = new List<ObjectActive>();
+                for (int i = 0; i < MainRectangle.Height + 60; i += 120)
                 {
-                    int size = Global.Rand.Next(9, 11);
                     int movesCount = 6;
-                    float weight = 0.3F + size * 0.1F;
-                    int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint(roundIdx);
-
-                    MoveFrog moveObject = new MoveFrog(PlayerObject, weight, 600, movesCount,Sec(1F));
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Red, ShapeType.Ellipse), moveObject);
-                    //newObject.Skills.Add(new SkillSprint(0, Sec(1F), 0, (int)(10000 * _SpeedFix), false) { AutoCastObject = new AutoCastNormal(100) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
+                    float speed = 300 * (10 + n) / 10F;
+                    float weight = 3;
+                    int life = -1;
+                    MoveFrog moveObject = new MoveFrog(null, weight, speed, movesCount, Sec(1));
+                    moveObject.Target.SetOffsetByXY(1000F, 0);
+                    DrawBrush drawObject = new DrawBrush(Color.Orchid, ShapeType.Rectangle) { RotateEnabled = false };
+                    ObjectActive newObject = new ObjectActive(-50, MainRectangle.Top + i - 20, 5, 28, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
+                    newObject.Propertys.Add(new PropertyDeadBrokenShaping(15, 6, 6, ObjectDeadType.Collision | ObjectDeadType.LifeEnd, 20, 100, 300, Sec(0.6F), Sec(1.2F)));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
+                    newObject.Propertys.Add(new PropertyOutClear());
+                    moveObject.Target.SetObject(newObject);
                     GameObjects.Add(newObject);
-                    roundIdx = ++roundIdx % 4;
+                    objects.Add(newObject);
+                }
+
+                int clearCount = 2;
+                int clearIndex = Global.Rand.Next(1, objects.Count - 2 - clearCount + 1);
+                for (int i = 0; i < clearCount; i++)
+                {
+                    objects[clearIndex + i].Kill(null, ObjectDeadType.Clear);
                 }
             });
         }
@@ -160,8 +231,10 @@ namespace RunningBox
             {
                 case 1:
                     //                                    12345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Frog     ", "1111 111111 111111 111111 111111 111111 111111 111"));
-                    Waves.Add(new WaveLine("Arrow  ", " 23456789A      ++++                     ++++       "));
+                    Waves.Add(new WaveLine("Dragonfly ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("WallA     ", "11111111      ++++                     ++++       "));
+                    //Waves.Add(new WaveLine("Arrow     ", " 23456789A      ++++                     ++++       "));
                     break;
                 case 2:
                     //                                    12345678901234567890123456789012345678901234567890
@@ -197,9 +270,8 @@ namespace RunningBox
 
         public override void DoAfterStart()
         {
-            _SpeedFix = 0.8F;
-            _LifeFix = 1F;
-
+            _SpeedFix = _DefaultSpeedFix;
+            _LifeFix = _DefaultLifeFix;
             Color[] backColors = {
                                      Color.FromArgb(235,255,235),
                                      Color.FromArgb(235,235,255),
@@ -211,8 +283,8 @@ namespace RunningBox
 
         public override void DoAfterWave()
         {
-            _SpeedFix = 1F + WaveNo.Value * 0.01F;
-            _LifeFix = 1F + WaveNo.Value * 0.01F;
+            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.01F;
+            _LifeFix = _DefaultLifeFix + WaveNo.Value * 0.01F;
         }
 
         public override void DoAfterEnd() { }

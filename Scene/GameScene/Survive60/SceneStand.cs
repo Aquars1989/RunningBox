@@ -13,8 +13,25 @@ namespace RunningBox
 {
     public partial class SceneStand : SceneGaming
     {
-        private float _SpeedFix = 1;
-        private float _LifeFix = 1;
+        /// <summary>
+        /// 預設敵人速度調整值
+        /// </summary>
+        private float _DefaultSpeedFix = 1;
+
+        /// <summary>
+        /// 預設敵人存活時間調整值
+        /// </summary>
+        private float _DefaultLifeFix = 1;
+
+        /// <summary>
+        /// 敵人速度調整值
+        /// </summary>
+        private float _SpeedFix;
+
+        /// <summary>
+        /// 敵人存活時間調整值
+        /// </summary>
+        private float _LifeFix;
 
         public SceneStand()
         {
@@ -421,29 +438,6 @@ namespace RunningBox
                 };
                 GameObjects.Add(newObject);
             });
-
-            // 物件:青蛙
-            WaveEvents.Add("Frog", (n) =>
-            {
-                int roundIdx = Global.Rand.Next(4);
-                for (int i = 0; i < n; i++)
-                {
-                    int size = Global.Rand.Next(9, 12);
-                    float weight = 0.3F + size * 0.1F;
-                    int life = Sec(4.5F * _LifeFix) + Global.Rand.Next(0, 5);
-                    Point enterPoint = GetEnterPoint(roundIdx);
-
-                    MoveStraight moveObject = new MoveStraight(PlayerObject, weight, 0, 5, 100, 0.5F);
-                    ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, new DrawBrush(Color.Blue, ShapeType.Ellipse), moveObject);
-                    newObject.Skills.Add(new SkillSprint(0, Sec(0.8F), 0, (int)(6500 * _SpeedFix), false) { AutoCastObject = new AutoCastNormal(100) });
-                    newObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 20, 150, 400, Sec(0.5F), Sec(0.9F)));
-                    newObject.Propertys.Add(new PropertyDeadCollapse(1, Sec(0.6F), Sec(0.01F), 2, 2, ObjectDeadType.LifeEnd, 50, 100, Sec(0.15F), Sec(0.25F)));
-                    newObject.Propertys.Add(new PropertyCollision(1));
-                    newObject.Propertys.Add(new PropertyShadow(2, 3));
-                    GameObjects.Add(newObject);
-                    roundIdx = ++roundIdx % 4;
-                }
-            });
         }
 
         public override void SetWave()
@@ -497,14 +491,14 @@ namespace RunningBox
 
         public override void DoAfterStart()
         {
-            _SpeedFix = 0.8F;
-            _LifeFix = 1F;
+            _SpeedFix = _DefaultSpeedFix;
+            _LifeFix = _DefaultLifeFix;
         }
 
         public override void DoAfterWave()
         {
-            _SpeedFix = 1F + WaveNo.Value * 0.01F;
-            _LifeFix = 1F + WaveNo.Value * 0.01F;
+            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.01F;
+            _LifeFix = _DefaultLifeFix + WaveNo.Value * 0.01F;
         }
 
         public override void DoAfterEnd() { }

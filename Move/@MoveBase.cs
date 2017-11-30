@@ -283,6 +283,11 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 往目標點的的偏差角度
+        /// </summary>
+        public float AngleOffset { get; set; }
+
+        /// <summary>
         /// 追蹤目標(必要)
         /// </summary>
         public TargetSet Target { get; private set; }

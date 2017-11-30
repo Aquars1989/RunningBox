@@ -34,6 +34,8 @@ namespace RunningBox
 
             GlobalPlayer.ReadRegistry();
             GlobalScenes.Scenes.AllReadRegistry();
+
+            //Application.Run(new TestAngle());
             Application.Run(new MainForm());
         }
 

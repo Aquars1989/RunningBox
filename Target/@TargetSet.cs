@@ -154,7 +154,7 @@ namespace RunningBox
             }
         }
 
-        // <summary>
+        /// <summary>
         /// 取得目標物件偏移後的X座標
         /// </summary>
         public float X { get { return BaseX + OffsetX; } }

@@ -59,11 +59,8 @@ namespace RunningBox
                         ownerY = Owner.Layout.CenterY;
                     }
 
-                    double distance = Function.GetDistance(ownerX, ownerY, Target.X, Target.Y);
-                    double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y);
-
-                    float speed = SpeedPerOffsets;
-
+                    double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y) + AngleOffset;
+                    float speed = (float)(SpeedPerOffsets * (Scene.RoundPerSec * _MoveTime.Limit / Scene.Sec(1) / OffsetsLimit));
                     for (int i = 0; i < OffsetsLimit; i++)
                     {
                         AddOffset(Function.GetOffsetPoint(0, 0, direction, speed));

@@ -69,7 +69,7 @@ namespace RunningBox
                 }
 
                 double distance = Function.GetDistance(ownerX, ownerY, Target.X, Target.Y);
-                double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y);
+                double direction = Function.GetAngle(ownerX, ownerY, Target.X, Target.Y) + AngleOffset;
 
                 float speed = SpeedPerOffsets;
                 if (distance < CloseRange)

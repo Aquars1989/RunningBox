@@ -78,9 +78,11 @@
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
+    <Compile Include="Property\PropertyDrunken.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadBrokenShaping.cs" />
     <Compile Include="Property\PropertyDirection.cs" />
     <Compile Include="Property\PropertyShadowReflected.cs" />
+    <Compile Include="Property\PropertyDelay.cs" />
     <Compile Include="SceneInfo\ISceneInfo.cs" />
     <Compile Include="SceneInfo\ScenePlayInfo.cs" />
     <Compile Include="SceneInfo\SceneLevelInfo.cs" />
@@ -219,6 +221,12 @@
     <Compile Include="Target\%40ITargetability.cs" />
     <Compile Include="Target\PointObject.cs" />
     <Compile Include="Draw\%40DrawPool.cs" />
+    <Compile Include="TestAngle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestAngle.Designer.cs">
+      <DependentUpon>TestAngle.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestCollision.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -277,6 +285,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TestAngle.resx">
+      <DependentUpon>TestAngle.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestCollision.resx">
       <DependentUpon>TestCollision.cs</DependentUpon>
     </EmbeddedResource>
