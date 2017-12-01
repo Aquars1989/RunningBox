@@ -27,8 +27,8 @@ namespace RunningBox
             _UISceneChoice.Layout.Height = Height - _UITopbar.Layout.Height;
             _UIDarkCover.Layout.Width = Width;
             _UIDarkCover.Layout.Height = Height;
-            _UIPlayerNameSetting.Layout.X = Width / 2;
-            _UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
+            //_UIPlayerNameSetting.Layout.X = Width / 2;
+            //_UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
         }
 
         protected override void OnLoadComplete()
@@ -40,8 +40,8 @@ namespace RunningBox
 
             _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
 
-            _UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
-            _UIPlayerNameSetting.Close += (x, e) => { PlayerInfoShow = false; };
+            //_UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
+            //_UIPlayerNameSetting.Close += (x, e) => { PlayerInfoShow = false; };
             _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);
             _UISceneChoice.SceneChoice += (x, i, l) =>
             {
@@ -55,7 +55,7 @@ namespace RunningBox
             UIObjects.Add(_UISceneChoice);
             UIObjects.Add(_UIInfo);
             UIObjects.Add(_UIDarkCover);
-            UIObjects.Add(_UIPlayerNameSetting);
+            //UIObjects.Add(_UIPlayerNameSetting);
 
             if (string.IsNullOrWhiteSpace(GlobalPlayer.PlayerName))
             {
@@ -103,14 +103,18 @@ namespace RunningBox
                 _PlayerInfoShow = value;
                 if (_PlayerInfoShow)
                 {
+                    _UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F));
+                    _UIPlayerNameSetting.Close += (x, e) => { PlayerInfoShow = false; };
+                    _UIPlayerNameSetting.Layout.X = Width / 2;
                     _UIPlayerNameSetting.Layout.Y = Height / 2 - 100;
+                    _UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
                     _UIDarkCover.DrawObject.Colors.Opacity = 0;
                     _UIDarkCover.Visible = true;
-                    _UIPlayerNameSetting.Visible = true;
+                    UIObjects.Add(_UIPlayerNameSetting);
                 }
                 else
                 {
-                    _UIPlayerNameSetting.Visible = false;
+                    _UIPlayerNameSetting.Kill(null, ObjectDeadType.Clear);
                 }
             }
         }

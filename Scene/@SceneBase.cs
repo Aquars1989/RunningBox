@@ -52,7 +52,7 @@ namespace RunningBox
         /// <summary>
         /// 繪圖物件清除計次器
         /// </summary>
-        protected CounterObject DrawClearCount { get;set;}
+        protected CounterObject DrawClearCount { get; set; }
 
         #region ===== 事件 =====
         /// <summary>
@@ -825,6 +825,19 @@ namespace RunningBox
                     break;
             }
             return new Point(x, y);
+        }
+
+        public void LockScene(Color coverColor, float fadeTime)
+        {
+            DrawBrush drawCover = new DrawBrush(coverColor, ShapeType.Rectangle);
+            ObjectUI newCover = new ObjectUI(0, 0, 150, 15, drawCover);
+
+            if (fadeTime > 0)
+            {
+                drawCover.Colors.Opacity = 0;
+                newCover.Propertys.Add(new PropertyOpacityFix(1, 1, true));
+            }
+
         }
 
         /// <summary>

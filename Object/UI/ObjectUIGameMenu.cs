@@ -16,6 +16,7 @@ namespace RunningBox
         private static Font _TitleFont = new Font("微軟正黑體", 30);
         private static Font _InfoFont1 = new Font("新細明體", 22, FontStyle.Bold);
         private static Font _InfoFont2 = new Font("微軟正黑體", 12, FontStyle.Bold);
+        private static Font _UpdateFont = new Font(Global.CommandFont.FontFamily, 11);
 
         /// <summary>
         /// 發生於返回按鈕被按下
@@ -92,6 +93,11 @@ namespace RunningBox
         private DrawUIText _DrawCommandBack;
 
         /// <summary>
+        /// 上傳按鈕繪製物件
+        /// </summary>
+        private DrawUIText _DrawCommandUpdate;
+
+        /// <summary>
         /// 重試/繼續/下一關按鈕焦點繪製物件
         /// </summary>
         private DrawUIText _DrawCommandActionHover;
@@ -102,6 +108,10 @@ namespace RunningBox
         private DrawUIText _DrawCommandBackHover;
 
         /// <summary>
+        /// 上傳按鈕焦點繪製物件
+        /// </summary>
+        private DrawUIText _DrawCommandUpdateHover;
+
         /// 重試/繼續/下一關按鈕
         /// </summary>
         private ObjectUI _UICommandAction;
@@ -110,6 +120,11 @@ namespace RunningBox
         /// 返回按鈕
         /// </summary>
         private ObjectUI _UICommandBack;
+
+        /// <summary>
+        /// 上傳分數
+        /// </summary>
+        private ObjectUI _UICommandUpdate;
 
         /// <summary>
         /// 場景挑戰資訊
@@ -131,18 +146,27 @@ namespace RunningBox
                     case 1:
                         _DrawCommandAction.Text = "繼續";
                         _DrawCommandActionHover.Text = "繼續";
+                        //_UICommandUpdate.Visible = false;
+                        _DrawCommandUpdate.Text = "上傳分數";
                         break;
                     case 2:
                         _DrawCommandAction.Text = "重試";
                         _DrawCommandActionHover.Text = "重試";
+                        _UICommandUpdate.Visible = false;
                         break;
                     case 3:
                         _DrawCommandAction.Text = "下一關";
                         _DrawCommandActionHover.Text = "下一關";
+                        _DrawCommandUpdate.Text = "上傳分數";
+                        _DrawCommandUpdateHover.Text = "上傳分數";
+                        _UICommandUpdate.Visible = Global.Online;
                         break;
                     case 4:
                         _DrawCommandAction.Text = "重試";
                         _DrawCommandActionHover.Text = "重試";
+                        _DrawCommandUpdate.Text = "上傳分數";
+                        _DrawCommandUpdateHover.Text = "上傳分數";
+                        _UICommandUpdate.Visible = Global.Online;
                         break;
                 }
             }
@@ -189,8 +213,47 @@ namespace RunningBox
                 OnBackButtonClick();
             };
 
+            _DrawCommandUpdate = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 225, 255, 225), Color.Black, 2, 10, "上傳分數", _UpdateFont, GlobalFormat.MiddleCenter);
+            _DrawCommandUpdateHover = new DrawUIText(Color.Black, Color.White, Color.FromArgb(200, 255, 235, 220), Color.Black, 2, 10, "上傳分數", _UpdateFont, GlobalFormat.MiddleCenter);
+            _UICommandUpdate = new ObjectUI(270, 10, 90, 25, _DrawCommandUpdate);
+            _UICommandUpdate.DrawObjectHover = _DrawCommandUpdateHover;
+            _UICommandUpdate.Layout.Depend.SetObject(this);
+            _UICommandUpdate.Layout.Depend.Anchor = DirectionType.TopLeft;
+            _UICommandUpdate.Propertys.Add(new PropertyShadow(4, 4) { RFix = 0, GFix = 0, BFix = 0 });
+            _UICommandUpdate.Click += (s, e) =>
+            {
+                if (Global.Online)
+                {
+
+                    Global.SQL.AddParameter("@SceneID", PlayingInfo.SceneID);
+                    Global.SQL.AddParameter("@Level", PlayingInfo.Level);
+                    Global.SQL.AddParameter("@PlayerName", GlobalPlayer.PlayerName);
+                    Global.SQL.AddParameter("@Score", PlayingInfo.Score);
+                    if (Global.SQL.Run(@"Set  time_zone = '+8:00';
+                                     INSERT INTO Score (SceneID,Level,PlayerName,Score,UpdateTime) 
+                                     VALUES (@SceneID,@Level,@PlayerName,@Score,now())"))
+                    {
+                        _DrawCommandUpdate.Text = "上傳成功";
+                        _DrawCommandUpdateHover.Text = "上傳成功";
+                        _UICommandUpdate.Enabled = false;
+                    }
+                    else
+                    {
+                        _DrawCommandUpdate.Text = "上傳失敗";
+                        _DrawCommandUpdateHover.Text = "上傳失敗";
+                    }
+                }
+                else
+                {
+                    _DrawCommandUpdate.Text = "不可用";
+                    _DrawCommandUpdateHover.Text = "不可用";
+                    _UICommandUpdate.Enabled = false;
+                }
+            };
+
             UIObjects.Add(_UICommandBack);
             UIObjects.Add(_UICommandAction);
+            UIObjects.Add(_UICommandUpdate);
         }
 
         public override void Draw(Graphics g)

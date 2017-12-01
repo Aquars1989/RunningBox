@@ -27,10 +27,21 @@ namespace RunningBox
         /// </summary>
         public event MouseEventHandler Click;
 
+        private bool _Enabled;
         /// <summary>
         /// 是否啟用
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _Enabled; }
+            set
+            {
+                if (_Enabled == value) return;
+                _Enabled = value;
+                if (!_Enabled)
+                    Focused = false;
+            }
+        }
 
         /// <summary>
         /// 是否綁定Click事件

@@ -33,17 +33,17 @@ namespace RunningBox
         private string _PlayerName = "";
         protected override void OnAfterAction()
         {
-            LayoutSet layout = new LayoutSet()
-            {
-                Anchor = DirectionType.TopLeft,
-                X = Layout.Rectangle.Left + 5,
-                Y = Layout.Rectangle.Top + 18,
-                Width = Layout.Width - 10,
-                Height = 24
-            };
-
             if (_PlayerName != null && _PlayerName != GlobalPlayer.PlayerName)
             {
+                LayoutSet layout = new LayoutSet()
+                {
+                    Anchor = DirectionType.TopLeft,
+                    X = Layout.Rectangle.Left + 5,
+                    Y = Layout.Rectangle.Top + 18,
+                    Width = Layout.Width - 10,
+                    Height = 24
+                };
+
                 DrawUIText drawObject = new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 0, 0, 0) };
                 ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, drawObject, MoveNull.Value);
                 oldName.Propertys.Add(new PropertyDeadBrokenShaping(_PlayerName.Length * 50, 2, 2, ObjectDeadType.All, 360, 10, 20, Scene.Sec(0.3F), Scene.Sec(0.5F)));

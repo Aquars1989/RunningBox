@@ -13,6 +13,11 @@ namespace RunningBox
         private MySqlCommand cmd;
         private MySqlDataAdapter adapter;
 
+        /// <summary>
+        /// 儲存最後一次執行的失敗訊息
+        /// </summary>
+        public string ErrorMessage { get; private set; }
+
         public SQLobject(string conningString)
         {
             conn = new MySqlConnection(conningString);
@@ -32,11 +37,17 @@ namespace RunningBox
             try
             {
                 cmd.ExecuteNonQuery();
+                ErrorMessage = "";
             }
-            catch
+            catch (Exception ex)
             {
                 CloseConn();
+                ErrorMessage = ex.Message;
                 return false;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
             }
             return true;
         }
@@ -56,13 +67,29 @@ namespace RunningBox
                 DataTable fillData = new DataTable();
                 adapter.Fill(fillData);
                 result = fillData;
+                ErrorMessage = "";
             }
-            catch
+            catch (Exception ex)
             {
                 CloseConn();
+                ErrorMessage = ex.Message;
                 return false;
             }
+            finally
+            {
+                cmd.Parameters.Clear();
+            }
             return true;
+        }
+
+        /// <summary>
+        /// 新增SQL參數
+        /// </summary>
+        /// <param name="parameterName">參數名稱</param>
+        /// <param name="value">參數值</param>
+        public void AddParameter(string parameterName, object value)
+        {
+            cmd.Parameters.AddWithValue(parameterName, value);
         }
 
         /// <summary>
@@ -76,8 +103,10 @@ namespace RunningBox
             {
                 conn.Open();
             }
-            catch
+            catch (Exception ex)
             {
+                cmd.Parameters.Clear();
+                ErrorMessage = ex.Message;
                 return false;
             }
             return true;
@@ -95,16 +124,36 @@ namespace RunningBox
             {
                 conn.Close();
             }
-            catch
+            catch (Exception ex)
             {
+                ErrorMessage = ex.Message;
                 return false;
             }
             return true;
         }
 
+        #region IDisposable Support
+        private bool disposedValue = false; // 偵測多餘的呼叫
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    conn.Close();
+                    adapter.Dispose();
+                    cmd.Dispose();
+                    conn.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        // 加入這個程式碼的目的在正確實作可處置的模式。
         public void Dispose()
         {
-
+            Dispose(true);
         }
+        #endregion
     }
 }

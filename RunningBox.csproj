@@ -76,8 +76,10 @@
     <Compile Include="Handle\GoSceneEventHandle.cs" />
     <Compile Include="Move\MoveFrog.cs" />
     <Compile Include="Object\UI\ObjectUIGameMenu.cs" />
+    <Compile Include="Object\UI\ObjectUIHighScore.cs" />
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
+    <Compile Include="Property\PropertyOpac.cs" />
     <Compile Include="Property\PropertyDrunken.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadBrokenShaping.cs" />
     <Compile Include="Property\PropertyDirection.cs" />
