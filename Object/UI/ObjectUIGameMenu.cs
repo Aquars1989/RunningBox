@@ -266,7 +266,7 @@ namespace RunningBox
                 }
 
                 Rectangle info1Rect = new Rectangle(left + 20, top + 15, 100, 40);
-                Rectangle info2Rect = new Rectangle(left + 50, top + 45, width - 130, 40);
+                Rectangle info2Rect = new Rectangle(left + 50, top + 45, width - 50, 40);
                 Rectangle shadow1Rect = new Rectangle(info1Rect.Left + 1, info1Rect.Top + 1, info1Rect.Width, info1Rect.Height);
                 Rectangle shadow2Rect = new Rectangle(info2Rect.Left + 1, info2Rect.Top + 1, info2Rect.Width, info2Rect.Height);
                 Rectangle brushRect = new Rectangle(left, top + 100, width, 40);

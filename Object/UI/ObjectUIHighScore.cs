@@ -16,7 +16,7 @@ namespace RunningBox
     public class ObjectUIHighScore : ObjectUIPanel
     {
         private static Font _ItemFont = new Font("微軟正黑體", 12, FontStyle.Bold);
-        private static Font _ItemFont2 = new Font("微軟正黑體", 12, FontStyle.Bold);
+        private static Font _ItemFont2 = new Font("微軟正黑體", 11, FontStyle.Bold);
 
         public event EventHandler Close;
 
@@ -45,6 +45,7 @@ namespace RunningBox
                     Color backColor = i == _SelectedIndex - 1 ? Color.FromArgb(200, 255, 220) : Color.FromArgb(175, 255, 255, 255);
                     _SceneButtons[i].DrawObject.Colors.SetColor("Back", backColor);
                 }
+                GetData(_SelectedIndex);
             }
         }
 
@@ -54,14 +55,14 @@ namespace RunningBox
         private ObjectUI[] _SceneButtons;
 
         public ObjectUIHighScore(DirectionType anchor, int x, int y, MoveBase moveObject, ISceneInfo sceneInfo)
-            : base(anchor, x, y, 360, 390, new DrawUIFrame(Color.AliceBlue, Color.CornflowerBlue, 2, 20), moveObject)
+            : base(anchor, x, y, 380, 390, new DrawUIFrame(Color.AliceBlue, Color.CornflowerBlue, 2, 20), moveObject)
         {
             Propertys.Add(new PropertyShadow(0, 6, 0.95F, 1));
 
             DrawUIText drawCommandClose = new DrawUIText(Color.RoyalBlue, Color.Gray, Color.FromArgb(175, 220, 230, 255), Color.FromArgb(100, 140, 255), 1, 10, "關 閉", new Font("微軟正黑體", 14), GlobalFormat.MiddleCenter);
             DrawUIText drawCommandCloseHover = new DrawUIText(Color.RoyalBlue, Color.Gray, Color.FromArgb(220, 255, 250, 235), Color.FromArgb(100, 140, 255), 1, 10, "關 閉", new Font("微軟正黑體", 14), GlobalFormat.MiddleCenter);
 
-            _CommandClose = new ObjectUI(275, 10, 75, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
+            _CommandClose = new ObjectUI(285, 10, 75, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
             _CommandClose.Propertys.Add(new PropertyShadow(2, 2) { RFix = -0.5F, GFix = -0.5F, BFix = -0.5F, Opacity = 0.2F });
             _CommandClose.Layout.Depend.Anchor = DirectionType.TopLeft;
             _CommandClose.Layout.Depend.SetObject(this);
@@ -126,13 +127,13 @@ namespace RunningBox
             int rectHeight = 27;
             for (int i = 0; i < 10; i++)
             {
-                _DrawRects[0, i] = new DrawUIText(Color.RoyalBlue, Color.Gray, Color.AliceBlue, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleCenter);
-                _DrawRects[1, i] = new DrawUIText(Color.RoyalBlue, Color.Gray, Color.AliceBlue, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleCenter);
-                _DrawRects[2, i] = new DrawUIText(Color.RoyalBlue, Color.Gray, Color.AliceBlue, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleCenter);
+                _DrawRects[0, i] = new DrawUIText(Color.RoyalBlue, Color.Empty, Color.AliceBlue, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleCenter);
+                _DrawRects[1, i] = new DrawUIText(Color.RoyalBlue, Color.Empty, Color.WhiteSmoke, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleLeft);
+                _DrawRects[2, i] = new DrawUIText(Color.RoyalBlue, Color.Empty, Color.WhiteSmoke, Color.Empty, 0, 0, "", _ItemFont2, GlobalFormat.MiddleRight);
 
-                ObjectUI object1 = new ObjectUI(rectLeft, rectTop, 40, rectHeight, _DrawRects[0, i]);
-                ObjectUI object2 = new ObjectUI(rectLeft + 45, rectTop, 205, rectHeight, _DrawRects[1, i]);
-                ObjectUI object3 = new ObjectUI(rectLeft + 255, rectTop, 70, rectHeight, _DrawRects[2, i]);
+                ObjectUI object1 = new ObjectUI(rectLeft, rectTop, 35, rectHeight, _DrawRects[0, i]);
+                ObjectUI object2 = new ObjectUI(rectLeft + 40, rectTop, 210, rectHeight, _DrawRects[1, i]);
+                ObjectUI object3 = new ObjectUI(rectLeft + 255, rectTop, 90, rectHeight, _DrawRects[2, i]);
 
                 object1.Propertys.Add(new PropertyShadow(2, 2));
                 object2.Propertys.Add(new PropertyShadow(2, 2));
@@ -150,10 +151,11 @@ namespace RunningBox
                 rectTop += rectHeight + 5;
             }
 
-            _DrawCommandMessage = new DrawUIText(Color.Red, Color.Gray, Color.LightYellow, Color.Black, 2, 0, "連線中...", new Font("微軟正黑體", 20), GlobalFormat.MiddleCenter);
-            _CommandMessage = new ObjectUI(DirectionType.Center, 100, 50, Layout.Width / 2, Layout.Height / 2, _DrawCommandMessage);
+            _DrawCommandMessage = new DrawUIText(Color.Red, Color.Gray, Color.LightYellow, Color.Black, 1, 0, "連線中...", new Font("微軟正黑體", 20), GlobalFormat.MiddleCenter);
+            _CommandMessage = new ObjectUI(DirectionType.Center, 0, 0, 200, 60, _DrawCommandMessage);
             _CommandMessage.Layout.Depend.SetObject(this);
             _CommandMessage.Layout.Depend.Anchor = DirectionType.Center;
+            _CommandMessage.Propertys.Add(new PropertyShadow(2,4));
             UIObjects.Add(_CommandMessage);
             LoadData();
         }
@@ -198,6 +200,7 @@ namespace RunningBox
                                                       WHERE rank<=10");
             _SourceData.DefaultView.Sort = "Score DESC";
             LoadStatus = _SourceData == null ? -1 : 1;
+            GetData(_SelectedIndex);
         }
 
         private void GetData(int level)
@@ -207,8 +210,21 @@ namespace RunningBox
             _SourceData.DefaultView.RowFilter = string.Format("Level={0}", level);
             for (int i = 0; i < 10; i++)
             {
-
-
+                _DrawRects[0, i].Text = (i + 1).ToString();
+                if (i < _SourceData.DefaultView.Count)
+                {
+                    _DrawRects[1, i].Text = (_SourceData.DefaultView[i]["PlayerName"] as string).Trim();
+                    _DrawRects[2, i].Text = string.Format("{0:N0}",_SourceData.DefaultView[i]["Score"]);
+                    _DrawRects[1, i].Colors.SetColor("Back", Color.LightYellow);
+                    _DrawRects[2, i].Colors.SetColor("Back", Color.LightYellow);
+                }
+                else
+                {
+                    _DrawRects[1, i].Text = "";
+                    _DrawRects[2, i].Text = "";
+                    _DrawRects[1, i].Colors.SetColor("Back", Color.WhiteSmoke);
+                    _DrawRects[2, i].Colors.SetColor("Back", Color.WhiteSmoke);
+                }
             }
         }
 
