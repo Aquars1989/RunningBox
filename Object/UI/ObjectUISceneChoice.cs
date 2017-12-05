@@ -25,6 +25,11 @@ namespace RunningBox
         public event SceneInfoEnentHandle SceneChoice;
 
         /// <summary>
+        /// 發生於場景排行榜被選取時
+        /// </summary>
+        public event SceneInfoEnentHandle SceneHightScoreClick;
+
+        /// <summary>
         /// 發生於背景集合變更
         /// </summary>
         public event ValueChangedEnentHandle<ObjectCollection> BackObjectsChanged;
@@ -39,6 +44,19 @@ namespace RunningBox
             if (SceneChoice != null)
             {
                 SceneChoice(this, sceneInfo, level);
+            }
+        }
+
+        /// <summary>
+        /// 發生於場景排行榜被選取時
+        /// </summary>
+        /// <param name="sceneInfo">場景資訊</param>
+        /// <param name="level">關卡等級</param>
+        protected virtual void OnSceneHightScoreClick(ISceneInfo sceneInfo)
+        {
+            if (SceneHightScoreClick != null)
+            {
+                SceneHightScoreClick(this, sceneInfo, 0);
             }
         }
 
@@ -110,6 +128,7 @@ namespace RunningBox
                 _UIScenes[group1Idx].Layout.Depend.SetObject(this);
                 _UIScenes[group1Idx].BindingScene = sceneInfo;
                 _UIScenes[group1Idx].SceneChoice += (s, i, l) => { OnSceneChoice(i, l); };
+                _UIScenes[group1Idx].HightScoreClick += (s, i) => { OnSceneHightScoreClick(sceneInfo); };
                 UIObjects.Add(_UIScenes[group1Idx]);
                 group1Idx++;
             }

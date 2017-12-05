@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RunningBox</RootNamespace>
     <AssemblyName>RunningBox</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ICON.ico</ApplicationIcon>
@@ -70,7 +73,9 @@
     <Compile Include="Draw\DrawUI\DrawUISkillText.cs" />
     <Compile Include="Draw\DrawUI\DrawUITextScroll.cs" />
     <Compile Include="Effect\EffectDyeingRotate.cs" />
+    <Compile Include="Enum\GameMenuCommandType.cs" />
     <Compile Include="Enum\ID\SkillID.cs" />
+    <Compile Include="Handle\GameMenuCommandEnentHandle.cs" />
     <Compile Include="Handle\SceneInfoEnentHandle.cs" />
     <Compile Include="Handle\WaveEventHandle.cs" />
     <Compile Include="Handle\GoSceneEventHandle.cs" />
@@ -79,7 +84,7 @@
     <Compile Include="Object\UI\ObjectUIHighScore.cs" />
     <Compile Include="Object\UI\ObjectUIPlayerInfo.cs" />
     <Compile Include="Object\UI\ObjectUISceneInfo.cs" />
-    <Compile Include="Property\PropertyOpac.cs" />
+    <Compile Include="Property\PropertyOpacityFix.cs" />
     <Compile Include="Property\PropertyDrunken.cs" />
     <Compile Include="Property\PropertyDead\PropertyDeadBrokenShaping.cs" />
     <Compile Include="Property\PropertyDirection.cs" />

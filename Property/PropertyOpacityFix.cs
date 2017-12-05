@@ -27,6 +27,11 @@ namespace RunningBox
         }
 
         /// <summary>
+        /// 是否先中斷目標身上其他透明度調整
+        /// </summary>
+        public bool BreakOld { get; set; }
+
+        /// <summary>
         /// 不透明度調整屬性,調整到指定不透明度後中斷該特性
         /// </summary>
         /// <param name="opacity">目標不透明度</param>
@@ -36,17 +41,22 @@ namespace RunningBox
         {
             Opacity = opacity;
             FixPerSec = fixPerSec;
+            BreakOld = breakOld;
+        }
 
-            if (breakOld)
+        protected override void OnBindingChanged()
+        {
+            if (BreakOld && Owner != null)
             {
                 for (int i = 0; i < Owner.Propertys.Count; i++)
                 {
-                    if (Owner.Propertys[i] is PropertyOpacityFix)
+                    if (Owner.Propertys[i] is PropertyOpacityFix && Owner.Propertys[i] != this)
                     {
                         Owner.Propertys[i].Break();
                     }
                 }
             }
+            base.OnBindingChanged();
         }
 
         public override void DoAfterAction()

@@ -21,64 +21,27 @@ namespace RunningBox
         /// <summary>
         /// 發生於返回按鈕被按下
         /// </summary>
-        public event EventHandler BackButtonClick;
-
-        /// <summary>
-        /// 發生於繼續按鈕被按下
-        /// </summary>
-        public event EventHandler ResumeButtonClick;
-
-        /// <summary>
-        /// 發生於重試按鈕被按下
-        /// </summary>
-        public event EventHandler RetryButtonClick;
-
-        /// <summary>
-        /// 發生於下一關按鈕被按下
-        /// </summary>
-        public event EventHandler NextButtonClick;
+        public event GameMenuCommandEnentHandle ButtonClick;
 
         /// <summary>
         /// 發生於返回按鈕被按下
         /// </summary>
         public void OnBackButtonClick()
         {
-            if (BackButtonClick != null)
+            if (ButtonClick != null)
             {
-                BackButtonClick(this, new EventArgs());
+                ButtonClick(this, GameMenuCommandType.Back);
             }
         }
 
         /// <summary>
-        /// 發生於繼續按鈕被按下
+        /// 發生於重試/繼續/下一關按鈕被按下
         /// </summary>
-        public void OnResumeButtonClick()
+        public void OnActionButtonClick(GameMenuCommandType command)
         {
-            if (ResumeButtonClick != null)
+            if (ButtonClick != null)
             {
-                ResumeButtonClick(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於重試按鈕被按下
-        /// </summary>
-        public void OnRetryButtonClick()
-        {
-            if (RetryButtonClick != null)
-            {
-                RetryButtonClick(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// 發生於下一關按鈕被按下
-        /// </summary>
-        public void OnNextButtonClick()
-        {
-            if (NextButtonClick != null)
-            {
-                NextButtonClick(this, new EventArgs());
+                ButtonClick(this, command);
             }
         }
 
@@ -122,6 +85,11 @@ namespace RunningBox
         private ObjectUI _UICommandBack;
 
         /// <summary>
+        /// 重試/繼續/下一關按鈕回傳值
+        /// </summary>
+        private GameMenuCommandType _ActionCommand;
+
+        /// <summary>
         /// 上傳分數
         /// </summary>
         private ObjectUI _UICommandUpdate;
@@ -146,17 +114,22 @@ namespace RunningBox
                     case 1:
                         _DrawCommandAction.Text = "繼續";
                         _DrawCommandActionHover.Text = "繼續";
+                        _ActionCommand = GameMenuCommandType.Resume;
                         //_UICommandUpdate.Visible = false;
                         _DrawCommandUpdate.Text = "上傳分數";
                         break;
                     case 2:
                         _DrawCommandAction.Text = "重試";
                         _DrawCommandActionHover.Text = "重試";
+                        _ActionCommand = GameMenuCommandType.Retry;
+
                         _UICommandUpdate.Visible = false;
                         break;
                     case 3:
                         _DrawCommandAction.Text = "下一關";
                         _DrawCommandActionHover.Text = "下一關";
+                        _ActionCommand = GameMenuCommandType.NextLevel;
+
                         _DrawCommandUpdate.Text = "上傳分數";
                         _DrawCommandUpdateHover.Text = "上傳分數";
                         _UICommandUpdate.Visible = Global.Online;
@@ -164,6 +137,8 @@ namespace RunningBox
                     case 4:
                         _DrawCommandAction.Text = "重試";
                         _DrawCommandActionHover.Text = "重試";
+                        _ActionCommand = GameMenuCommandType.Retry;
+
                         _DrawCommandUpdate.Text = "上傳分數";
                         _DrawCommandUpdateHover.Text = "上傳分數";
                         _UICommandUpdate.Visible = Global.Online;
@@ -184,21 +159,7 @@ namespace RunningBox
             _UICommandAction.Propertys.Add(new PropertyShadow(-4, 4) { RFix = 0, GFix = 0, BFix = 0 });
             _UICommandAction.Click += (s, e) =>
               {
-                  switch (Mode)
-                  {
-                      case 1:
-                          OnResumeButtonClick();
-                          break;
-                      case 2:
-                          OnRetryButtonClick();
-                          break;
-                      case 3:
-                          OnNextButtonClick();
-                          break;
-                      case 4:
-                          OnRetryButtonClick();
-                          break;
-                  }
+                  OnActionButtonClick(_ActionCommand);
               };
 
             _DrawCommandBack = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
@@ -229,9 +190,9 @@ namespace RunningBox
                     Global.SQL.AddParameter("@Level", PlayingInfo.Level);
                     Global.SQL.AddParameter("@PlayerName", GlobalPlayer.PlayerName);
                     Global.SQL.AddParameter("@Score", PlayingInfo.Score);
-                    if (Global.SQL.Run(@"Set  time_zone = '+8:00';
-                                     INSERT INTO Score (SceneID,Level,PlayerName,Score,UpdateTime) 
-                                     VALUES (@SceneID,@Level,@PlayerName,@Score,now())"))
+                    if (Global.SQL.Run(@"set time_zone = '+8:00';
+                                         insert into Score (SceneID,Level,PlayerName,Score,UpdateTime) 
+                                         values (@SceneID,@Level,@PlayerName,@Score,now())"))
                     {
                         _DrawCommandUpdate.Text = "上傳成功";
                         _DrawCommandUpdateHover.Text = "上傳成功";

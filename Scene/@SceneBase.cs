@@ -20,6 +20,7 @@ namespace RunningBox
         private Stopwatch _FPSWatch = new Stopwatch();
         private int _FPSTick = 0;
         private string _FPSText = "";
+        private Stack<ObjectUI> _LockCover = new Stack<ObjectUI>();
 
         protected new Cursor DefaultCursor { get; set; }
 
@@ -827,17 +828,44 @@ namespace RunningBox
             return new Point(x, y);
         }
 
-        public void LockScene(Color coverColor, float fadeTime)
+        /// <summary>
+        /// 鎖定場景
+        /// </summary>
+        /// <param name="coverColor">遮罩顏色</param>
+        /// <param name="fadeSpeed">遮罩出現速度</param>
+        public void LockScene(Color coverColor, float fadeSpeed)
         {
             DrawBrush drawCover = new DrawBrush(coverColor, ShapeType.Rectangle);
-            ObjectUI newCover = new ObjectUI(0, 0, 150, 15, drawCover);
+            ObjectUI newCover = new ObjectUI(0, 0, Width, Height, drawCover);
 
-            if (fadeTime > 0)
+            if (fadeSpeed > 0)
             {
                 drawCover.Colors.Opacity = 0;
-                newCover.Propertys.Add(new PropertyOpacityFix(1, 1, true));
+                newCover.Propertys.Add(new PropertyOpacityFix(1, fadeSpeed, true));
             }
+            _UIObjects.Add(newCover);
+            _LockCover.Push(newCover);
+            SearchFocusObjectUI();
+        }
 
+        /// <summary>
+        /// 取消鎖定場景
+        /// </summary>
+        /// <param name="fadeSpeed">遮罩消失速度</param>
+        public void UnlockScene(float fadeSpeed)
+        {
+            if (_LockCover.Count == 0) return;
+
+            ObjectUI cover = _LockCover.Pop();
+            if (fadeSpeed > 0)
+            {
+                PropertyOpacityFix fadeout = new PropertyOpacityFix(0, fadeSpeed, true);
+                fadeout.End += (x, e) =>
+                {
+                    cover.Kill(null, ObjectDeadType.Clear);
+                };
+                cover.Propertys.Add(fadeout);
+            }
         }
 
         /// <summary>

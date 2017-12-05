@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RunningBox
 {
@@ -50,6 +51,34 @@ namespace RunningBox
                 cmd.Parameters.Clear();
             }
             return true;
+        }
+
+        /// <summary>
+        /// 執行SQL指令碼
+        /// </summary>
+        /// <returns></returns>
+        public async Task<DataTable> RunAsync(string commandText)
+        {
+            if (!OpenConn()) return null;
+
+            DataTable fillData = new DataTable();
+            cmd.CommandText = commandText;
+            try
+            {
+                await adapter.FillAsync(fillData);
+                ErrorMessage = "";
+            }
+            catch (Exception ex)
+            {
+                CloseConn();
+                ErrorMessage = ex.Message;
+                fillData = null;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+            }
+            return fillData;
         }
 
         /// <summary>

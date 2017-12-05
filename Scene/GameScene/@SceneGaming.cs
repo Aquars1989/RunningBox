@@ -85,11 +85,6 @@ namespace RunningBox
 
             Padding padding = Global.DefaultMainRectanglePadding;
             MainRectangle = new Rectangle(padding.Left, padding.Top, Width - padding.Horizontal, Height - padding.Vertical);
-
-            _UIDarkCover.Layout.Width = Width;
-            _UIDarkCover.Layout.Height = Height;
-            _UIMenu.Layout.X = Width / 2;
-            _UIMenu.Layout.Y = Height / 2;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -227,11 +222,6 @@ namespace RunningBox
         #endregion
 
         #region ===== UI物件 =====
-        /// <summary>
-        /// 附蓋灰色區塊
-        /// </summary>
-        private ObjectUI _UIDarkCover;
-
         /// <summary>
         /// 遊戲選單
         /// </summary>
@@ -379,12 +369,36 @@ namespace RunningBox
             set
             {
                 _ShowMenu = value;
-                _UIDarkCover.Visible = value;
-                _UIMenu.Visible = value;
-
                 if (value)
                 {
                     IsStart = false;
+                    LockScene(Color.FromArgb(100, 0, 0, 0), 6);
+
+                    _UIMenu = new ObjectUIGameMenu(DirectionType.Center, Width / 2, Height / 2, MoveNull.Value);
+                    _UIMenu.ButtonClick += (x, e) =>
+                    {
+                        switch (e)
+                        {
+                            case GameMenuCommandType.NextLevel:
+                                ShowMenu = false;
+                                Level++;
+                                Reset();
+                                break;
+                            case GameMenuCommandType.Retry:
+                                ShowMenu = false;
+                                Reset();
+                                break;
+                            case GameMenuCommandType.Resume:
+                                ShowMenu = false;
+                                IsStart = true;
+                                break;
+                            case GameMenuCommandType.Back:
+                                OnGoScene(new SceneSkill());
+                                break;
+                        }
+                    };
+
+                    _UIMenu.PlayingInfo = _PlayingInfo;
                     if (PlayingInfo.PlayingTime.IsFull)
                     {
                         _UIMenu.Mode = Level >= SceneInfo.MaxLevel ? 4 : 3;
@@ -392,6 +406,15 @@ namespace RunningBox
                     else
                     {
                         _UIMenu.Mode = PlayerObject == null ? 2 : 1;
+                    }
+                    UIObjects.Add(_UIMenu);
+                }
+                else
+                {
+                    UnlockScene(12);
+                    if (_UIMenu != null)
+                    {
+                        _UIMenu.Kill(null, ObjectDeadType.Clear);
                     }
                 }
             }
@@ -407,7 +430,6 @@ namespace RunningBox
             private set
             {
                 _PlayingInfo = value;
-                _UIMenu.PlayingInfo = _PlayingInfo;
             }
         }
 
@@ -503,8 +525,6 @@ namespace RunningBox
             WaveEvents = new Dictionary<string, WaveEventHandle>();
 
 
-            _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle));
-            _UIMenu = new ObjectUIGameMenu(DirectionType.Center, 0, 0, MoveNull.Value);
             _UIPlayName = new ObjectUI(75, 20, 150, 25, new DrawUIText(Color.Black, Color.WhiteSmoke, Color.Empty, Color.Empty, 0, 0, GlobalPlayer.PlayerName, new Font("微軟正黑體", 11), GlobalFormat.MiddleLeft));
             _UIEnergyBar = new ObjectUI(80, 45, 150, 15, new DrawUICounterBar(GlobalColors.EnergyBar, Color.Black, Color.AliceBlue, 2, false));
             _UISkillIcon1 = new ObjectUI(250, 10, 50, 50, _DrawSkill1);
@@ -513,33 +533,10 @@ namespace RunningBox
             Skill1 = GlobalScenes.ChoiceSkill1;
             Skill2 = GlobalScenes.ChoiceSkill2;
 
-            _UIMenu.NextButtonClick += (x, e) =>
-            {
-                ShowMenu = false;
-                Level++;
-                Reset();
-            };
-
-            _UIMenu.RetryButtonClick += (x, e) =>
-            {
-                ShowMenu = false;
-                Reset();
-            };
-
-            _UIMenu.ResumeButtonClick += (x, e) =>
-            {
-                ShowMenu = false;
-                IsStart = true;
-            };
-
-            _UIMenu.BackButtonClick += (x, e) => { OnGoScene(new SceneSkill()); };
-
             UIObjects.Add(_UISkillIcon1);
             UIObjects.Add(_UISkillIcon2);
             UIObjects.Add(_UIPlayName);
             UIObjects.Add(_UIEnergyBar);
-            UIObjects.Add(_UIDarkCover);
-            UIObjects.Add(_UIMenu);
             GameObjects.ObjectDead += OnObjectDead;
             ShowMenu = false;
         }
@@ -571,6 +568,8 @@ namespace RunningBox
             {
                 EffectObjects.AllSettlement();
             }
+            
+            UIObjects.AllAction();
 
             GameObjects.ClearAllDead();
             UIObjects.ClearAllDead();

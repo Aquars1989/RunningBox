@@ -23,16 +23,6 @@ namespace RunningBox
             }
         }
 
-        protected override void OnVisibleChanged()
-        {
-            if (Visible)
-            {
-                _CommandClose.Visible = !string.IsNullOrWhiteSpace(GlobalPlayer.PlayerName);
-                _CommandOK.Visible = false;
-            }
-            base.OnVisibleChanged();
-        }
-
         private DrawUITextScroll _DrawPlayerName;
         private ObjectUI _CommandOK;
         private ObjectUI _CommandClose;

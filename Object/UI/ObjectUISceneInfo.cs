@@ -20,10 +20,19 @@ namespace RunningBox
         private static Font InfoFont = new Font("微軟正黑體", 11, FontStyle.Bold);
         private static Brush _BrushTextBack = new SolidBrush(Color.FromArgb(200, 255, 255, 200));
 
+        private ObjectUI _CommandHighScore;
+        private DrawUIText _DrawCommandHighScore;
+        private DrawUIText _DrawCommandHighScoreHover;
+
         /// <summary>
         /// 發生於場景被選取時
         /// </summary>
         public event SceneInfoEnentHandle SceneChoice;
+
+        /// <summary>
+        /// 發生於排行榜被按下時
+        /// </summary>
+        public event EventHandler HightScoreClick;
 
         /// <summary>
         /// 發生於場景被選取時
@@ -35,6 +44,17 @@ namespace RunningBox
             if (SceneChoice != null)
             {
                 SceneChoice(this, sceneInfo, level);
+            }
+        }
+
+        /// <summary>
+        /// 發生於排行榜被按下時
+        /// </summary>
+        protected virtual void OnHightScoreClick()
+        {
+            if (HightScoreClick != null)
+            {
+                HightScoreClick(this, new EventArgs());
             }
         }
 
@@ -127,6 +147,8 @@ namespace RunningBox
                         }
                     }
                 }
+
+                UIObjects.Add(_CommandHighScore);
             }
         }
 
@@ -141,7 +163,7 @@ namespace RunningBox
             {
                 if (_Level == value) return;
                 _Level = value;
-
+                _CommandHighScore.Visible = _Level == 0;
             }
         }
 
@@ -155,6 +177,18 @@ namespace RunningBox
         public ObjectUISceneInfo(DirectionType anchor, int x, int y, MoveBase moveObject)
             : base(anchor, x, y, 220, 150, new DrawUIFrame(Color.AliceBlue, Color.DarkSlateBlue, 2, 20), moveObject)
         {
+            _DrawCommandHighScore = new DrawUIText(Color.SteelBlue, Color.RoyalBlue, Color.FromArgb(220, 255, 255), Color.SteelBlue, 2, 8, "排行榜", new Font("微軟正黑體", 12), GlobalFormat.MiddleCenter);
+            _DrawCommandHighScoreHover = new DrawUIText(Color.SteelBlue, Color.RoyalBlue, Color.FromArgb(100, 220, 255, 255), Color.SteelBlue, 2, 8, "排行榜", new Font("微軟正黑體", 12), GlobalFormat.MiddleCenter);
+            _CommandHighScore = new ObjectUI(160, 10, 50, 25, _DrawCommandHighScore);
+            _CommandHighScore.DrawObjectHover = _DrawCommandHighScoreHover;
+            _CommandHighScore.Propertys.Add(new PropertyShadow(2, 2));
+            _CommandHighScore.Layout.Depend.SetObject(this);
+            _CommandHighScore.Layout.Depend.Anchor = DirectionType.Left | DirectionType.Top;
+
+            _CommandHighScore.Click += (s, e) =>
+            {
+                OnHightScoreClick();
+            };
         }
 
         public override void Draw(Graphics g)
@@ -167,9 +201,9 @@ namespace RunningBox
             int height = Layout.Rectangle.Height;
 
             Rectangle titleBackRect = new Rectangle(left + 1, top + 1, width - 120, 50);
-            Rectangle titleBack2Rect = new Rectangle(left + width - 80 + 1, top + 1, 80, 50);
+            Rectangle titleBack2Rect = new Rectangle(left + width - 80 + 1, top + 1, 80, 40);
             Rectangle titleRect = new Rectangle(left, top, width - 120, 50);
-            Rectangle title2Rect = new Rectangle(left + width - 80, top, 80, 50);
+            Rectangle title2Rect = new Rectangle(left + width - 80, top, 80, 40);
             Rectangle info1Rect = new Rectangle(left + 30, top + 50, width - 60, 20);
             Rectangle info2Rect = new Rectangle(left + 30, top + 70, width - 60, 20);
             Rectangle info3Rect = new Rectangle(left + 30, top + 90, width - 60, 20);

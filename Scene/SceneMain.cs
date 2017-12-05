@@ -15,9 +15,9 @@ namespace RunningBox
     {
         private ObjectUI _UITopbar;
         private ObjectUI _UIInfo;
-        private ObjectUI _UIDarkCover;
         private ObjectUINameSetting _UIPlayerNameSetting;
         private ObjectUISceneChoice _UISceneChoice;
+        private ObjectUIHighScore _UIHightScore;
         protected override void OnReLayout()
         {
             base.OnReLayout();
@@ -25,10 +25,6 @@ namespace RunningBox
             _UITopbar.Layout.Width = Width;
             _UISceneChoice.Layout.Width = Width;
             _UISceneChoice.Layout.Height = Height - _UITopbar.Layout.Height;
-            _UIDarkCover.Layout.Width = Width;
-            _UIDarkCover.Layout.Height = Height;
-            //_UIPlayerNameSetting.Layout.X = Width / 2;
-            //_UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
         }
 
         protected override void OnLoadComplete()
@@ -36,12 +32,8 @@ namespace RunningBox
             _UITopbar = new ObjectUI(0, 0, 0, 90, new DrawUIFrame(Color.Wheat, Color.DarkSlateBlue, 1, 0));
 
             _UIInfo = new ObjectUIPlayerInfo(DirectionType.TopLeft, 5, 5, MoveNull.Value);
-            _UIInfo.Click += (x, e) => { PlayerInfoShow = true; };
+            _UIInfo.Click += (x, e) => { PlayerInfoShow(); };
 
-            _UIDarkCover = new ObjectUI(0, 0, 150, 15, new DrawBrush(Color.FromArgb(100, 0, 0, 0), ShapeType.Rectangle)) { Visible = false };
-
-            //_UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F)) { Visible = false };
-            //_UIPlayerNameSetting.Close += (x, e) => { PlayerInfoShow = false; };
             _UISceneChoice = new ObjectUISceneChoice(0, 90, Width, Height - _UITopbar.Layout.Height);
             _UISceneChoice.SceneChoice += (x, i, l) =>
             {
@@ -49,17 +41,19 @@ namespace RunningBox
                 GlobalScenes.ChoiceLevel = l;
                 OnGoScene(new SceneSkill());
             };
+            _UISceneChoice.SceneHightScoreClick += (x, i, l) =>
+            {
+                HightScoreShow(i);
+            };
             _UISceneChoice.Mode = GlobalScenes.ChoiceScene == null ? 0 : 1;
 
             UIObjects.Add(_UITopbar);
             UIObjects.Add(_UISceneChoice);
             UIObjects.Add(_UIInfo);
-            UIObjects.Add(_UIDarkCover);
-            //UIObjects.Add(_UIPlayerNameSetting);
 
             if (string.IsNullOrWhiteSpace(GlobalPlayer.PlayerName))
             {
-                PlayerInfoShow = true;
+                PlayerInfoShow();
             }
             base.OnLoadComplete();
         }
@@ -69,54 +63,53 @@ namespace RunningBox
             InitializeComponent();
         }
 
-
-        protected override void OnAfterRound()
+        public void PlayerInfoShow()
         {
-            if (_PlayerInfoShow)
-            {
-                if (_UIDarkCover.DrawObject.Colors.Opacity < 1)
-                {
-                    _UIDarkCover.DrawObject.Colors.Opacity += 0.05F;
-                }
-            }
-            else
-            {
-                if (_UIDarkCover.DrawObject.Colors.Opacity > 0)
-                {
-                    _UIDarkCover.DrawObject.Colors.Opacity -= 0.1F;
-                    if (_UIDarkCover.DrawObject.Colors.Opacity <= 0)
-                    {
-                        _UIDarkCover.Visible = false;
-                    }
-                }
-            }
+            if (_UIPlayerNameSetting != null) return;
 
-            base.OnAfterRound();
+            LockScene(Color.FromArgb(100, 0, 0, 0), 3);
+            _UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F));
+            _UIPlayerNameSetting.Close += (x, e) =>
+            {
+                PlayerInfoHide();
+            };
+            _UIPlayerNameSetting.Layout.X = Width / 2;
+            _UIPlayerNameSetting.Layout.Y = Height / 2 - 100;
+            _UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
+            UIObjects.Add(_UIPlayerNameSetting);
         }
 
-        private bool _PlayerInfoShow;
-        private bool PlayerInfoShow
+        public void PlayerInfoHide()
         {
-            get { return _PlayerInfoShow; }
-            set
+            if (_UIPlayerNameSetting == null) return;
+
+            _UIPlayerNameSetting.Kill(null, ObjectDeadType.Clear);
+            _UIPlayerNameSetting = null;
+            UnlockScene(6);
+        }
+
+        public void HightScoreShow(ISceneInfo sceneInfo)
+        {
+            if (_UIHightScore != null) return;
+
+            LockScene(Color.FromArgb(100, 0, 0, 0), 3);
+            _UIHightScore = new ObjectUIHighScore(DirectionType.Center, 5, 5, MoveNull.Value, sceneInfo);
+            _UIHightScore.Close += (x, e) =>
             {
-                _PlayerInfoShow = value;
-                if (_PlayerInfoShow)
-                {
-                    _UIPlayerNameSetting = new ObjectUINameSetting(DirectionType.Center, 5, 5, new MoveStraight(null, 1, 800, 1, 100, 1F));
-                    _UIPlayerNameSetting.Close += (x, e) => { PlayerInfoShow = false; };
-                    _UIPlayerNameSetting.Layout.X = Width / 2;
-                    _UIPlayerNameSetting.Layout.Y = Height / 2 - 100;
-                    _UIPlayerNameSetting.MoveObject.Target.SetObject(new PointObject(_UIPlayerNameSetting.Layout.X, Height / 2));
-                    _UIDarkCover.DrawObject.Colors.Opacity = 0;
-                    _UIDarkCover.Visible = true;
-                    UIObjects.Add(_UIPlayerNameSetting);
-                }
-                else
-                {
-                    _UIPlayerNameSetting.Kill(null, ObjectDeadType.Clear);
-                }
-            }
+                HightScoreHide();
+            };
+            _UIHightScore.Layout.X = Width / 2;
+            _UIHightScore.Layout.Y = Height / 2;
+            UIObjects.Add(_UIHightScore);
+        }
+
+        public void HightScoreHide()
+        {
+            if (_UIHightScore == null) return;
+
+            _UIHightScore.Kill(null, ObjectDeadType.Clear);
+            _UIHightScore = null;
+            UnlockScene(6);
         }
     }
 }
