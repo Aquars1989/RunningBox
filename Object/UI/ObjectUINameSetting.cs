@@ -42,12 +42,12 @@ namespace RunningBox
 
             DrawUIText drawCommandOK = new DrawUIText(Color.FromArgb(100, 220, 100), Color.Empty, Color.Empty, Color.Empty, 0, 0, "✔", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
             DrawUIText drawCommandOKHover = new DrawUIText(Color.FromArgb(0, 180, 0), Color.Empty, Color.Empty, Color.Empty, 0, 0, "✔", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            _CommandOK = new ObjectUI(230, 15, 30, 30, drawCommandOK) { DrawObjectHover = drawCommandOKHover };
+            _CommandOK = new ObjectUI(230, 15, 30, 30, drawCommandOK) { Visible = false, DrawObjectHover = drawCommandOKHover };
             _CommandOK.Propertys.Add(new PropertyShadow(2, 2) { RFix = -0.5F, GFix = -0.5F, BFix = -0.5F, Opacity = 0.2F });
 
             DrawUIText drawCommandClose = new DrawUIText(Color.FromArgb(255, 150, 150), Color.Empty, Color.Empty, Color.Empty, 0, 0, "✘", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
             DrawUIText drawCommandCloseHover = new DrawUIText(Color.FromArgb(255, 70, 70), Color.Empty, Color.Empty, Color.Empty, 0, 0, "✘", new Font("微軟正黑體", 16, FontStyle.Bold), GlobalFormat.MiddleCenter);
-            _CommandClose = new ObjectUI(260, 15, 30, 30, drawCommandClose) { DrawObjectHover = drawCommandCloseHover };
+            _CommandClose = new ObjectUI(260, 15, 30, 30, drawCommandClose) { Visible = !string.IsNullOrWhiteSpace(GlobalPlayer.PlayerName), DrawObjectHover = drawCommandCloseHover };
             _CommandClose.Propertys.Add(new PropertyShadow(2, 2) { RFix = -0.5F, GFix = -0.5F, BFix = -0.5F, Opacity = 0.2F });
 
             uiPlayerName.Layout.Depend.Anchor = DirectionType.TopLeft;

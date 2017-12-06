@@ -28,7 +28,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("減緩時間流逝速度{0:P0}", SlowRate); }
+            get { return string.Format("時間減緩{0:P0}", SlowRate); }
         }
 
         /// <summary>

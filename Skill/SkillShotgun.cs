@@ -28,7 +28,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("發射{0:N0}顆子彈", BulletCount); }
+            get { return string.Format("發射{0:N0}顆子彈\n獎勵：擊中目標", BulletCount); }
         }
 
         /// <summary>
@@ -111,6 +111,17 @@ namespace RunningBox
                     bullet.Propertys.Add(new PropertyDeadBroken(5, 2, 2, ObjectDeadType.All, 360, 40, 100, Scene.Sec(0.2F), Scene.Sec(0.3F)));
                     bulletMove.Target.SetOffsetByAngle(shotAngle, 1000);
                     bulletMove.Target.SetObject(bullet);
+                    bullet.Dead += (s, k, t) =>
+                    {
+                        if (t == ObjectDeadType.Collision)
+                        {
+                            SceneGaming scene = Scene as SceneGaming;
+                            if (scene != null)
+                            {
+                                scene.AddScoreToPlayer("擊中", 150);
+                            }
+                        }
+                    };
                     Owner.Container.Add(bullet);
                     shotAngle += partAngle;
                 }

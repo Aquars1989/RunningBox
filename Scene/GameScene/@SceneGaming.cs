@@ -374,7 +374,17 @@ namespace RunningBox
                     IsStart = false;
                     LockScene(Color.FromArgb(100, 0, 0, 0), 6);
 
-                    _UIMenu = new ObjectUIGameMenu(DirectionType.Center, Width / 2, Height / 2, MoveNull.Value);
+                    int mode = 0;
+                    if (PlayingInfo.PlayingTime.IsFull)
+                    {
+                        mode = Level >= SceneInfo.MaxLevel ? 4 : 3;
+                    }
+                    else
+                    {
+                        mode = PlayerObject == null ? 2 : 1;
+                    }
+
+                    _UIMenu = new ObjectUIGameMenu(DirectionType.Center, Width / 2, Height / 2, MoveNull.Value, _PlayingInfo, mode);
                     _UIMenu.ButtonClick += (x, e) =>
                     {
                         switch (e)
@@ -397,16 +407,6 @@ namespace RunningBox
                                 break;
                         }
                     };
-
-                    _UIMenu.PlayingInfo = _PlayingInfo;
-                    if (PlayingInfo.PlayingTime.IsFull)
-                    {
-                        _UIMenu.Mode = Level >= SceneInfo.MaxLevel ? 4 : 3;
-                    }
-                    else
-                    {
-                        _UIMenu.Mode = PlayerObject == null ? 2 : 1;
-                    }
                     UIObjects.Add(_UIMenu);
                 }
                 else
@@ -517,7 +517,7 @@ namespace RunningBox
         public SceneGaming()
         {
             SceneTimeFix = 1.4F;
-            MenuCooldownCounter = new CounterObject(Sec(5));
+            MenuCooldownCounter = new CounterObject(Sec(2));
             EndDelay = new CounterObject(Global.DefaultEndDelayLimit);
             IntervalOfWave = Global.DefaultIntervalOfWave;
             WaveNo = new CounterObject(0);
@@ -795,6 +795,16 @@ namespace RunningBox
         public int Wave(float wave)
         {
             return (int)(wave * IntervalOfWave + 0.5F);
+        }
+
+        /// <summary>
+        /// 增加玩家分數
+        /// </summary>
+        /// <param name="from">來源</param>
+        /// <param name="score">分數</param>
+        public void AddScoreToPlayer(string from, int score)
+        {
+            PlayingInfo.AddScore(from, score);
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("產生強度{0:N0}點的護盾", CollisionPower); }
+            get { return string.Format("產生強度{0:N0}點的護盾\n獎勵：撞擊前開盾", CollisionPower); }
         }
 
         /// <summary>
@@ -91,6 +91,7 @@ namespace RunningBox
 
                         _MiniBar = new PropertyUI(-1, new Size(30, 6), new DrawUICounterBar(_BarColor, Color.Black, Color.White, 1, true, Channeled));
                         _MiniBar.Affix = SpecialStatus.Ghost;   // 增加幽靈屬性
+
                         Owner.Propertys.Add(_MiniBar);
                         Status = SkillStatus.Channeled;
                     }
@@ -98,6 +99,14 @@ namespace RunningBox
                 case SkillStatus.Channeled:
                     if (_ShieldObject.Status != ObjectStatus.Alive)
                     {
+                        if (_ShieldObject.Life.Value < Scene.Sec(0.3F))
+                        {
+                            SceneGaming scene = Scene as SceneGaming;
+                            if (scene != null)
+                            {
+                                scene.AddScoreToPlayer("千鈞一髮", 800);
+                            }
+                        }
                         this.Break();
                     }
                     break;

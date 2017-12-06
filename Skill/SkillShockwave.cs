@@ -27,7 +27,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return string.Format("連續產生衝擊波\n擊退所有物件", PushSycle.Limit / 1000F); }
+            get { return string.Format("產生衝擊波擊退物件\n獎勵：擊退目標", PushSycle.Limit / 1000F); }
         }
 
         /// <summary>
@@ -97,6 +97,7 @@ namespace RunningBox
                             Height = Range
                         };
 
+                        int hitCount = 0;
                         for (int i = 0; i < Owner.Container.Count; i++)
                         {
                             ObjectBase objectActive = Owner.Container[i];
@@ -108,6 +109,18 @@ namespace RunningBox
                             double angle = Function.GetAngle(checkRange.CenterX, checkRange.CenterY, objectActive.Layout.CenterX, objectActive.Layout.CenterY);
                             double pushPower = PushPower * Function.GetDistance(checkRange.CenterX, checkRange.CenterY, objectActive.Layout.CenterX, objectActive.Layout.CenterY) / Range;
                             objectActive.MoveObject.AddToNextOffset(objectActive.MoveObject.GetOffsetByAngle(angle, PushPower));
+                            hitCount++;
+                        }
+
+                        if (hitCount > 0)
+                        {
+                            if (hitCount > 4)
+                                hitCount = 4;
+                            SceneGaming scene = Scene as SceneGaming;
+                            if (scene != null)
+                            {
+                                scene.AddScoreToPlayer("震盪衝擊", hitCount * 15);
+                            }
                         }
 
                         Color waveColor = Color.FromArgb(150, Owner.DrawObject.MainColor);

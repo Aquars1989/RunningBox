@@ -25,7 +25,7 @@ namespace RunningBox
         /// </summary>
         public override string Info
         {
-            get { return "釋放誘餌吸引注意\n誘餌可被摧毀"; }
+            get { return "釋放誘餌吸引注意\n獎勵：誘餌生存"; }
         }
 
         /// <summary>
@@ -119,6 +119,12 @@ namespace RunningBox
                                     {
                                         objectBase.MoveObject.Target.SetObject(Owner);
                                     }
+                                }
+
+                                SceneGaming scene = Scene as SceneGaming;
+                                if (t == ObjectDeadType.LifeEnd && scene != null)
+                                {
+                                    scene.AddScoreToPlayer("誘餌生還",300);
                                 }
                             };
                         Status = SkillStatus.Cooldown;

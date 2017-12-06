@@ -128,7 +128,7 @@ namespace RunningBox
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     newObject.Propertys.Add(new PropertyOutClear());
-                    newObject.Propertys.Add(new PropertyDelay(Sec(0.5F), new PropertyDrunken(-1, Sec(1F), -45, 45, 100)));
+                    newObject.Propertys.Add(new PropertyDelay(Sec(0.5F), new PropertyDrunken(-1, Sec(1F), -45, 45, Global.Rand.Next(2) == 0 ? 100 : -100)));
                     newObject.Propertys.Add(new PropertyRotateTarget(-1, 400, true));
                     moveObject.Target.SetObject(newObject);
                     moveObject.Target.SetOffsetByXY(-1000, 0);
@@ -231,15 +231,52 @@ namespace RunningBox
             {
                 case 1:
                     //                                    12345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Dragonfly ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
-                    Waves.Add(new WaveLine("WallA     ", "11111111      ++++                     ++++       "));
-                    //Waves.Add(new WaveLine("Arrow     ", " 23456789A      ++++                     ++++       "));
+                    Waves.Add(new WaveLine("Dragonfly ", "        8          A          C          E        "));
+                    Waves.Add(new WaveLine("@Shrink   ", " ++          ++          ++          ++         ++"));
                     break;
                 case 2:
                     //                                    12345678901234567890123456789012345678901234567890
-                    Waves.Add(new WaveLine("Frog   ", "1111 111111 111111 111111 111111 111111 111111 111"));
-                    Waves.Add(new WaveLine("@Dark     ", "          ++                    ++                "));
+                    Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Dragonfly ", "        8          A          C          E        "));
+                    Waves.Add(new WaveLine("Arrow     ", "     4                   5                  6     "));
+                    Waves.Add(new WaveLine("@Dark     ", "             ++                    ++             "));
+                    break;
+                case 3:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Dragonfly ", "                 8               9                "));
+                    Waves.Add(new WaveLine("Arrow     ", "         4               5                 6      "));
+                    Waves.Add(new WaveLine("WallA     ", "     2       2       2      2  2  2  2  2    22222"));
+                    break;
+                case 4:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Dragonfly ", "       3      4      5      6      7      8     9 "));
+                    Waves.Add(new WaveLine("Arrow     ", "   2      3      4      5      6      7      8    "));
+                    Waves.Add(new WaveLine("@Dark     ", "             ++                    ++             "));
+                    break;
+                case 5:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Dragonfly ", "  4   4   5   5   6   6   7   7   8   8   9   9555"));
+                    Waves.Add(new WaveLine("Arrow     ", "    1     1     1    1    1   1   1    1    1   1 "));
+                    break;
+                case 6:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Dragonfly ", "33333333333333333333333333333333333333333333333333"));
+                    Waves.Add(new WaveLine("Arrow     ", "11111111111111111111111111111111111111111111111111"));
+                    Waves.Add(new WaveLine("Arrow     ", "           111111111111111111111111111111111111111"));
+                    Waves.Add(new WaveLine("Arrow     ", "                      1111111111111111111111111111"));
+                    Waves.Add(new WaveLine("Arrow     ", "                                 11111111111111111"));
+                    Waves.Add(new WaveLine("Arrow     ", "                                            111111"));
                     break;
             }
 
@@ -259,11 +296,23 @@ namespace RunningBox
             return PlayerObject;
         }
 
+        int _EnergyFillTime;
+        int _EnergyFillTimeKeep;
         protected override void OnAfterRound()
         {
             if (IsStart && !IsEnding)
             {
-                PlayingInfo.Score += 10 + (WaveNo.Value) / 10;
+                AddScoreToPlayer("存活", SceneIntervalOfRound);
+
+                if (PlayerObject.Energy.IsFull)
+                {
+                    _EnergyFillTime += SceneIntervalOfRound * (1 + _EnergyFillTimeKeep / 3000);
+                    _EnergyFillTimeKeep += SceneIntervalOfRound;
+                }
+                else
+                {
+                    _EnergyFillTimeKeep = 0;
+                }
             }
             base.OnAfterRound();
         }
@@ -272,6 +321,9 @@ namespace RunningBox
         {
             _SpeedFix = _DefaultSpeedFix;
             _LifeFix = _DefaultLifeFix;
+            _EnergyFillTime = 0;
+            _EnergyFillTimeKeep = 0;
+
             Color[] backColors = {
                                      Color.FromArgb(235,255,235),
                                      Color.FromArgb(235,235,255),
@@ -283,9 +335,17 @@ namespace RunningBox
 
         public override void DoAfterWave()
         {
-            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.01F;
+            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.005F;
             _LifeFix = _DefaultLifeFix + WaveNo.Value * 0.01F;
+            AddScoreToPlayer("經歷波數", WaveNo.Value * 15);
+            if (_EnergyFillTime > 0)
+            {
+                AddScoreToPlayer("能量滿溢", _EnergyFillTime / 30);
+                _EnergyFillTime = 0;
+            }
         }
+
+
 
         public override void DoAfterEnd() { }
     }

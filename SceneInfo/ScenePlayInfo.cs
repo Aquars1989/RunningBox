@@ -11,6 +11,15 @@ namespace RunningBox
     /// </summary>
     public class ScenePlayingInfo
     {
+        Dictionary<string, int> _ScoreDetail = new Dictionary<string, int>();
+        /// <summary>
+        /// 取得分數明細
+        /// </summary>
+        public IReadOnlyDictionary<string, int> ScoreDetail
+        {
+            get { return _ScoreDetail; }
+        }
+
         /// <summary>
         /// 場景ID
         /// </summary>
@@ -29,7 +38,7 @@ namespace RunningBox
         /// <summary>
         /// 本次分數
         /// </summary>
-        public int Score { get; set; }
+        public int Score { get; private set; }
 
         /// <summary>
         /// 本次是否完成
@@ -47,6 +56,24 @@ namespace RunningBox
             PlayingTime = new CounterObject(playingTime, 0, false);
             SceneID = sceneID;
             Level = level;
+        }
+
+        /// <summary>
+        /// 新增分數
+        /// </summary>
+        /// <param name="from">分數來源</param>
+        /// <param name="score">分數</param>
+        public void AddScore(string from, int score)
+        {
+            if (_ScoreDetail.ContainsKey(from))
+            {
+                _ScoreDetail[from] += score;
+            }
+            else
+            {
+                _ScoreDetail.Add(from, score);
+            }
+            Score += score;
         }
     }
 }

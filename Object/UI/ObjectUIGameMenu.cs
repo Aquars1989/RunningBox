@@ -16,7 +16,9 @@ namespace RunningBox
         private static Font _TitleFont = new Font("微軟正黑體", 30);
         private static Font _InfoFont1 = new Font("新細明體", 22, FontStyle.Bold);
         private static Font _InfoFont2 = new Font("微軟正黑體", 12, FontStyle.Bold);
+        private static Font _InfoFont3 = new Font("微軟正黑體", 11, FontStyle.Bold);
         private static Font _UpdateFont = new Font(Global.CommandFont.FontFamily, 11);
+        private static int _DetailHeight = 20;
 
         /// <summary>
         /// 發生於返回按鈕被按下
@@ -147,12 +149,12 @@ namespace RunningBox
             }
         }
 
-        public ObjectUIGameMenu(DirectionType anchor, int x, int y, MoveBase moveObject)
-            : base(anchor, x, y, 380, 250, new DrawUIFrame(Color.Empty, Color.DarkSlateBlue, 2, 20), moveObject)
+        public ObjectUIGameMenu(DirectionType anchor, int x, int y, MoveBase moveObject, ScenePlayingInfo playingInfo, int mode)
+            : base(anchor, x, y, 380, 240 + playingInfo.ScoreDetail.Count * _DetailHeight, new DrawUIFrame(Color.Empty, Color.DarkSlateBlue, 2, 20), moveObject)
         {
             _DrawCommandAction = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
             _DrawCommandActionHover = new DrawUIText(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "", Global.CommandFont, GlobalFormat.MiddleCenter);
-            _UICommandAction = new ObjectUI(210, 175, 150, 50, _DrawCommandAction);
+            _UICommandAction = new ObjectUI(210, Layout.Height - 75, 150, 50, _DrawCommandAction);
             _UICommandAction.DrawObjectHover = _DrawCommandActionHover;
             _UICommandAction.Layout.Depend.SetObject(this);
             _UICommandAction.Layout.Depend.Anchor = DirectionType.TopLeft;
@@ -164,7 +166,7 @@ namespace RunningBox
 
             _DrawCommandBack = new DrawUIText(Color.Black, Color.White, Color.FromArgb(150, 255, 255, 255), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
             _DrawCommandBackHover = new DrawUIText(Color.Black, Color.White, Color.FromArgb(200, 255, 255, 220), Color.Black, 2, 10, "回選單", Global.CommandFont, GlobalFormat.MiddleCenter);
-            _UICommandBack = new ObjectUI(20, 175, 150, 50, _DrawCommandBack);
+            _UICommandBack = new ObjectUI(20, Layout.Height - 75, 150, 50, _DrawCommandBack);
             _UICommandBack.DrawObjectHover = _DrawCommandBackHover;
             _UICommandBack.Layout.Depend.SetObject(this);
             _UICommandBack.Layout.Depend.Anchor = DirectionType.TopLeft;
@@ -215,6 +217,9 @@ namespace RunningBox
             UIObjects.Add(_UICommandBack);
             UIObjects.Add(_UICommandAction);
             UIObjects.Add(_UICommandUpdate);
+
+            PlayingInfo = playingInfo;
+            Mode = mode;
         }
 
         public override void Draw(Graphics g)
@@ -236,47 +241,74 @@ namespace RunningBox
 
             if (Visible)
             {
-                Rectangle titleRect = new Rectangle(left + 2, top + 95, width - 4, 60);
-                Rectangle titleRect2 = new Rectangle(left + 2 + 1, top + 1 + 95, width - 4, 60);
-
+                Rectangle titleRect = new Rectangle(left + 2, top + 50, width - 4, 60);
+                string title = "";
                 using (LinearGradientBrush brushShadow = new LinearGradientBrush(titleRect, Color.Maroon, Color.LightGoldenrodYellow, 25))
                 using (Brush brushBack = new SolidBrush(Color.FromArgb(100, 230, 230, 230)))
                 {
                     g.FillRectangle(brushBack, titleRect);
-                    //g.DrawRectangle(Pens.Gray, titleRect);
                     switch (Mode)
                     {
                         case 1:
-                            g.DrawString("暫停遊戲", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
-                            g.DrawString("暫停遊戲", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                            title = "暫停遊戲";
                             break;
                         case 2:
-                            g.DrawString("挑戰失敗", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
-                            g.DrawString("挑戰失敗", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                            title = "挑戰失敗";
                             break;
                         case 3:
-                            g.DrawString("挑戰成功", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
-                            g.DrawString("挑戰成功", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                            title = "挑戰成功";
                             break;
                         case 4:
-                            g.DrawString("完成全部關卡!!", _TitleFont, Brushes.OliveDrab, titleRect2, GlobalFormat.MiddleCenter);
-                            g.DrawString("完成全部關卡!!", _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                            title = "完成全部關卡";
                             break;
                     }
+
+                    g.DrawString(title, _TitleFont, brushShadow, titleRect, GlobalFormat.MiddleCenter);
+                    titleRect.Offset(1, 1);
+                    g.DrawString(title, _TitleFont, Brushes.OliveDrab, titleRect, GlobalFormat.MiddleCenter);
                 }
 
+
+
                 Rectangle info1Rect = new Rectangle(left + 20, top + 15, 100, 40);
-                Rectangle info2Rect = new Rectangle(left + 50, top + 45, width - 50, 40);
-                Rectangle shadow1Rect = new Rectangle(info1Rect.Left + 1, info1Rect.Top + 1, info1Rect.Width, info1Rect.Height);
-                Rectangle shadow2Rect = new Rectangle(info2Rect.Left + 1, info2Rect.Top + 1, info2Rect.Width, info2Rect.Height);
-                Rectangle brushRect = new Rectangle(left, top + 100, width, 40);
+                Rectangle info2Rect = new Rectangle(left + 30, top + 115, 150, 30);
+                Rectangle info3Rect = new Rectangle(left + 180, top + 115, width - 200, 30);
 
                 string info1 = string.Format("等級{0}", PlayingInfo.Level);
-                string info2 = string.Format("存活時間：{0:N0}秒　分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / Scene.Sec(1)), PlayingInfo.Score);
-                g.DrawString(info1, _InfoFont1, Brushes.Gray, shadow1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(info2, _InfoFont2, Brushes.LightGray, shadow2Rect, GlobalFormat.BottomLeft);
-                g.DrawString(info1, _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.BottomLeft);
-                g.DrawString(info2, _InfoFont2, Brushes.RoyalBlue, info2Rect, GlobalFormat.BottomLeft);
+                string info2 = string.Format("存活時間：{0:N0}秒", (int)(PlayingInfo.PlayingTime.Value / Scene.Sec(1)), PlayingInfo.Score);
+                string info3 = string.Format("分數：{1:N0}分", (int)(PlayingInfo.PlayingTime.Value / Scene.Sec(1)), PlayingInfo.Score);
+                g.DrawString(info1, _InfoFont1, Brushes.Gray, info1Rect, GlobalFormat.MiddleLeft);
+                g.DrawString(info2, _InfoFont2, Brushes.LightGray, info2Rect, GlobalFormat.MiddleLeft);
+                g.DrawString(info3, _InfoFont2, Brushes.LightGray, info3Rect, GlobalFormat.MiddleLeft);
+                info1Rect.Offset(1, 1);
+                info2Rect.Offset(1, 1);
+                info3Rect.Offset(1, 1);
+                g.DrawString(info1, _InfoFont1, Brushes.RoyalBlue, info1Rect, GlobalFormat.MiddleLeft);
+                g.DrawString(info2, _InfoFont2, Brushes.RoyalBlue, info2Rect, GlobalFormat.MiddleLeft);
+                g.DrawString(info3, _InfoFont2, Brushes.RoyalBlue, info3Rect, GlobalFormat.MiddleLeft);
+
+                int bx = info3Rect.Left + 10;
+                int ex = info3Rect.Left + 20;
+                int detailLeft = left + 200;
+                int detailTop = top + 150;
+                int detailWidth = width - 200;
+                int lastTop = 0;
+                foreach (var detail in PlayingInfo.ScoreDetail)
+                {
+                    int lineTop = detailTop + _DetailHeight / 2;
+                    g.DrawLine(Pens.OliveDrab, bx, lineTop, ex, lineTop);
+                    Rectangle infoDetail = new Rectangle(detailLeft, detailTop, detailWidth, _DetailHeight);
+                    //g.DrawString(string.Format("{0} + {1:N0}", detail.Key, detail.Value), _InfoFont3, Brushes.LightGray, infoDetail, GlobalFormat.MiddleLeft);
+                    //infoDetail.Offset(1, 1);
+                    g.DrawString(string.Format("{0} + {1:N0}", detail.Key, detail.Value), _InfoFont3, Brushes.OliveDrab, infoDetail, GlobalFormat.MiddleLeft);
+                    detailTop += _DetailHeight;
+                    lastTop = lineTop;
+                }
+
+                if (lastTop > 0)
+                {
+                    g.DrawLine(Pens.DarkSeaGreen, bx, top + 145, bx, lastTop);
+                }
             }
         }
     }

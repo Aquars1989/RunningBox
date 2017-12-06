@@ -358,7 +358,7 @@ namespace RunningBox
                     DrawPic drawObject = new DrawPic(Color.Black, Properties.Resources.Mine, 0) { RotateEnabled = true, Resistance = weight };
                     ObjectActive newObject = new ObjectActive(enterPoint.X, enterPoint.Y, size, size, life, LeagueType.Ememy1, ShapeType.Ellipse, drawObject, moveObject);
                     newObject.Propertys.Add(new PropertyRotate(-1, 280, false, false));
-                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.None, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
+                    newObject.Propertys.Add(new PropertyDeadExplosion(10, 0, 1, LeagueType.Chaos, Color.FromArgb(180, 225, 70, 40), 0.15F, 0.1F, 5, ObjectDeadType.Collision | ObjectDeadType.LifeEnd));
                     newObject.Propertys.Add(new PropertyCollision(1));
                     newObject.Propertys.Add(new PropertyShadow(2, 3));
                     GameObjects.Add(newObject);
@@ -451,7 +451,6 @@ namespace RunningBox
                     Waves.Add(new WaveLine("Blocker   ", "                    1                     1       "));
                     Waves.Add(new WaveLine("Mine      ", "        4                  5                  6   "));
                     Waves.Add(new WaveLine("@Shrink   ", "              ++++                     ++++       "));
-                    Waves.Add(new WaveLine("WallA   ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     break;
                 case 2:
                     //                                    12345678901234567890123456789012345678901234567890
@@ -459,8 +458,46 @@ namespace RunningBox
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
                     Waves.Add(new WaveLine("Blocker   ", "        1           1            1          1     "));
                     Waves.Add(new WaveLine("Mine      ", "              4               5                  6"));
-                    Waves.Add(new WaveLine("Meteor    ", "   4                4                  8          "));
+                    Waves.Add(new WaveLine("Meteor    ", "   4                6                  8          "));
                     Waves.Add(new WaveLine("@Dark     ", "          ++                    ++                "));
+                    break;
+                case 3:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("WallA     ", "  2         6         A         E         I    III"));
+                    Waves.Add(new WaveLine("WallB     ", "       4         8         C         G            "));
+                    Waves.Add(new WaveLine("Mine      ", "          3              4                  5     "));
+                    Waves.Add(new WaveLine("Meteor    ", "   4                6                  8          "));
+                    break;
+                case 4:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Mine      ", "  6     7           8       9          4444       "));
+                    Waves.Add(new WaveLine("MineSplit ", "              6                 8            6 6 6"));
+                    Waves.Add(new WaveLine("Meteor    ", "      4                6             8            "));
+                    break;
+                case 5:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Series    ", "         5         6         7         8         9"));
+                    Waves.Add(new WaveLine("WallA     ", "  2           6           A           E          I"));
+                    Waves.Add(new WaveLine("Mine      ", "        3            4                     5      "));
+                    Waves.Add(new WaveLine("Bomber      ", "           1                  1                 "));
+                    Waves.Add(new WaveLine("Meteor    ", "   2   2   2   2   2   2   2   2   2   2   2   2  "));
+                    break;
+                case 6:
+                    //                                    12345678901234567890123456789012345678901234567890
+                    Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
+                    Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
+                    Waves.Add(new WaveLine("Blocker   ", "        1                              1          "));
+                    Waves.Add(new WaveLine("Series    ", "   4          5         6        7           8    "));
+                    Waves.Add(new WaveLine("WallA     ", "         6         A         E          I         "));
+                    Waves.Add(new WaveLine("Mine      ", "            4            5           6         7  "));
+                    Waves.Add(new WaveLine("MineSplit ", "                  6                      7        "));
+                    Waves.Add(new WaveLine("Meteor    ", "     4        5        6        7        8      9 "));
                     break;
             }
 
@@ -477,14 +514,27 @@ namespace RunningBox
             }
             PlayerObject.Propertys.Add(new PropertyDeadBroken(15, 2, 2, ObjectDeadType.Collision, 30, 150, 400, Sec(0.5F), Sec(0.9F)));
             PlayerObject.Propertys.Add(new PropertyShadow(2, 3));
+            PlayerObject.Propertys.Add(new PropertySmallTouch(Sec(1)));
             return PlayerObject;
         }
 
+        int _EnergyFillTime;
+        int _EnergyFillTimeKeep;
         protected override void OnAfterRound()
         {
             if (IsStart && !IsEnding)
             {
-                PlayingInfo.Score += 10 + (WaveNo.Value) / 10;
+                AddScoreToPlayer("存活", SceneIntervalOfRound);
+
+                if (PlayerObject.Energy.IsFull)
+                {
+                    _EnergyFillTime += SceneIntervalOfRound * (1 + _EnergyFillTimeKeep / 3000);
+                    _EnergyFillTimeKeep += SceneIntervalOfRound;
+                }
+                else
+                {
+                    _EnergyFillTimeKeep = 0;
+                }
             }
             base.OnAfterRound();
         }
@@ -493,12 +543,29 @@ namespace RunningBox
         {
             _SpeedFix = _DefaultSpeedFix;
             _LifeFix = _DefaultLifeFix;
+            _EnergyFillTime = 0;
+            _EnergyFillTimeKeep = 0;
         }
 
         public override void DoAfterWave()
         {
-            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.01F;
+            _SpeedFix = _DefaultSpeedFix + WaveNo.Value * 0.005F;
             _LifeFix = _DefaultLifeFix + WaveNo.Value * 0.01F;
+            AddScoreToPlayer("經歷波數", WaveNo.Value * 15);
+            if (_EnergyFillTime > 0)
+            {
+                AddScoreToPlayer("能量滿溢", _EnergyFillTime / 30);
+                _EnergyFillTime = 0;
+            }
+        }
+
+        protected override void OnObjectDead(ObjectBase sender, ObjectBase killer, ObjectDeadType deadType)
+        {
+            if (killer != null && sender.League != LeagueType.Player && killer.League != LeagueType.Player && deadType == ObjectDeadType.Collision)
+            {
+                AddScoreToPlayer("借刀殺人", 350);
+            }
+            base.OnObjectDead(sender, killer, deadType);
         }
 
         public override void DoAfterEnd() { }

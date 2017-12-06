@@ -487,7 +487,7 @@ namespace RunningBox
         public float RoundPerSec { get; private set; }
 
         /// <summary>
-        /// 場景每秒回合時間(以毫秒為單位,計入場景速度)
+        /// 場景每回合時間(以毫秒為單位,計入場景速度)
         /// </summary>
         public int SceneIntervalOfRound { get; private set; }
 
@@ -641,8 +641,6 @@ namespace RunningBox
             // 
             // SceneBase
             // 
-            this.BackColor = System.Drawing.Color.White;
-            this.Name = "SceneBase";
             this.SizeChanged += new System.EventHandler(this.SceneBase_SizeChanged);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SceneBase_MouseDown);
             this.ResumeLayout(false);

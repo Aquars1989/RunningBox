@@ -28,28 +28,33 @@ namespace RunningBox
         public ObjectUIPlayerInfo(DirectionType anchor, int x, int y, MoveBase moveObject)
             : base(anchor, x, y, 250, 80, new DrawUIFrame(Color.FromArgb(50, 220, 255, 255), Color.FromArgb(160, 240, 160, 150), 1, 0), moveObject)
         {
+            _PlayerName = GlobalPlayer.PlayerName;
         }
 
         private string _PlayerName = "";
         protected override void OnAfterAction()
         {
-            if (_PlayerName != null && _PlayerName != GlobalPlayer.PlayerName)
+            if (_PlayerName != GlobalPlayer.PlayerName)
             {
-                LayoutSet layout = new LayoutSet()
+                if (_PlayerName != null)
                 {
-                    Anchor = DirectionType.TopLeft,
-                    X = Layout.Rectangle.Left + 5,
-                    Y = Layout.Rectangle.Top + 18,
-                    Width = Layout.Width - 10,
-                    Height = 24
-                };
+                    LayoutSet layout = new LayoutSet()
+                    {
+                        Anchor = DirectionType.TopLeft,
+                        X = Layout.Rectangle.Left + 5,
+                        Y = Layout.Rectangle.Top + 18,
+                        Width = Layout.Width - 10,
+                        Height = 24
+                    };
 
-                DrawUIText drawObject = new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 0, 0, 0) };
-                ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, drawObject, MoveNull.Value);
-                oldName.Propertys.Add(new PropertyDeadBrokenShaping(_PlayerName.Length * 50, 2, 2, ObjectDeadType.All, 360, 10, 20, Scene.Sec(0.3F), Scene.Sec(0.5F)));
+                    DrawUIText drawObject = new DrawUIText(Color.Maroon, Color.Gray, Color.Empty, Color.Empty, 0, 0, _PlayerName, new Font("標楷體", 16), GlobalFormat.MiddleCenter) { TextPadding = new Padding(0, 0, 0, 0) };
+                    ObjectBase oldName = new ObjectActive(layout, 0, LeagueType.None, drawObject, MoveNull.Value);
+                    oldName.Propertys.Add(new PropertyDeadBrokenShaping(_PlayerName.Length * 50, 2, 2, ObjectDeadType.All, 360, 10, 20, Scene.Sec(0.3F), Scene.Sec(0.5F)));
+
+                    _DrawNameAlpha = 0;
+                    Container.Add(oldName);
+                }
                 _PlayerName = GlobalPlayer.PlayerName;
-                _DrawNameAlpha = 0;
-                Container.Add(oldName);
             }
 
             base.OnAfterAction();

@@ -15,16 +15,16 @@ namespace RunningBox
         /// <summary>
         /// 角色無敵
         /// </summary>
-        public static bool Player_GodMode = true;
+        public static bool Player_GodMode = false;
 
         /// <summary>
         /// 取消CD時間
         /// </summary>
-        public static bool Player_NoCooldown = true;
+        public static bool Player_NoCooldown = false;
 
         /// <summary>
         /// 取消能量消耗
         /// </summary>
-        public static bool Player_NoCast = true;
+        public static bool Player_NoCast = false;
     }
 }
