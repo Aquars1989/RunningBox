@@ -70,7 +70,7 @@ namespace RunningBox
                     int offsetLimit = 10;
                     float speed = Global.Rand.Next(200, 240) * _SpeedFix;
                     float weight = 0.3F + size * 0.1F;
-                    int life = Sec(6F * _LifeFix) + Global.Rand.Next(0, 5);
+                    int life = Sec(5F * _LifeFix) + Global.Rand.Next(0, 5);
                     Point enterPoint = GetEnterPoint(roundIdx);
 
                     MoveFrog moveObject = new MoveFrog(PlayerObject, weight, speed, offsetLimit, Sec(1F));
@@ -233,14 +233,14 @@ namespace RunningBox
                     //                                    12345678901234567890123456789012345678901234567890
                     Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
-                    Waves.Add(new WaveLine("Dragonfly ", "        8          A          C          E        "));
+                    Waves.Add(new WaveLine("Dragonfly ", "        6          7          8          9        "));
                     Waves.Add(new WaveLine("@Shrink   ", " ++          ++          ++          ++         ++"));
                     break;
                 case 2:
                     //                                    12345678901234567890123456789012345678901234567890
                     Waves.Add(new WaveLine("Frog      ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
-                    Waves.Add(new WaveLine("Dragonfly ", "        8          A          C          E        "));
+                    Waves.Add(new WaveLine("Dragonfly ", "        6          7          8          9        "));
                     Waves.Add(new WaveLine("Arrow     ", "     4                   5                  6     "));
                     Waves.Add(new WaveLine("@Dark     ", "             ++                    ++             "));
                     break;

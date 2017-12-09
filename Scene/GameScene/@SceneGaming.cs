@@ -391,6 +391,7 @@ namespace RunningBox
                         {
                             case GameMenuCommandType.NextLevel:
                                 ShowMenu = false;
+                                GlobalScenes.ChoiceLevel++;
                                 Level++;
                                 Reset();
                                 break;
@@ -552,6 +553,8 @@ namespace RunningBox
         /// </summary>
         protected override void Round()
         {
+            if (Global.Freeze) return;
+
             UIObjects.ClearAllDead();
 
             OnBeforeRound();

@@ -31,6 +31,11 @@ namespace RunningBox
         public static bool DebugMode = false;
 
         /// <summary>
+        /// 是否凍結場景
+        /// </summary>
+        public static bool Freeze = false;
+
+        /// <summary>
         /// 公用亂數產生器
         /// </summary>
         public static Random Rand = new Random(Guid.NewGuid().GetHashCode());

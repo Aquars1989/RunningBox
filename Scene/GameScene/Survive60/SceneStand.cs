@@ -465,8 +465,8 @@ namespace RunningBox
                     //                                    12345678901234567890123456789012345678901234567890
                     Waves.Add(new WaveLine("Catcher   ", "1111 111111 111111 111111 111111 111111 111111 111"));
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
-                    Waves.Add(new WaveLine("WallA     ", "  2         6         A         E         I    III"));
-                    Waves.Add(new WaveLine("WallB     ", "       4         8         C         G            "));
+                    Waves.Add(new WaveLine("WallA     ", "  2         3         4         5         6    333"));
+                    Waves.Add(new WaveLine("WallB     ", "       2         3         4         5            "));
                     Waves.Add(new WaveLine("Mine      ", "          3              4                  5     "));
                     Waves.Add(new WaveLine("Meteor    ", "   4                6                  8          "));
                     break;
@@ -494,7 +494,7 @@ namespace RunningBox
                     Waves.Add(new WaveLine("Faster    ", "    1      1      1      1      1      1      1   "));
                     Waves.Add(new WaveLine("Blocker   ", "        1                              1          "));
                     Waves.Add(new WaveLine("Series    ", "   4          5         6        7           8    "));
-                    Waves.Add(new WaveLine("WallA     ", "         6         A         E          I         "));
+                    Waves.Add(new WaveLine("WallA     ", "         2         3         4          5         "));
                     Waves.Add(new WaveLine("Mine      ", "            4            5           6         7  "));
                     Waves.Add(new WaveLine("MineSplit ", "                  6                      7        "));
                     Waves.Add(new WaveLine("Meteor    ", "     4        5        6        7        8      9 "));

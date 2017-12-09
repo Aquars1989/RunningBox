@@ -33,6 +33,7 @@ namespace RunningBox
 
             _TimerOfEnter.Tick += (x, e) =>
             {
+                if (Global.Freeze) return;
                 _TimerOfEnter.Enabled = false;
                 OnGoScene(new SceneMain());
             };

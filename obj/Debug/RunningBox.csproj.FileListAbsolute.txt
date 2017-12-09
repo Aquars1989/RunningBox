@@ -13,7 +13,6 @@ E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.TestCollision.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneWelcome.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneSkill.resources
 E:\VsProject\RunningBox\RunningBox\bin\Debug\RunningBox.exe.config
-E:\VsProject\RunningBox\RunningBox\bin\Debug\MySql.Data.dll
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneNull.resources
 E:\VsProject\RunningBox\RunningBox\obj\Debug\RunningBox.SceneMain.resources
 C:\Users\Aquars\Documents\Visual Studio 2013\Projects\RunningBox\RunningBox\obj\Debug\RunningBox.SceneBase.resources

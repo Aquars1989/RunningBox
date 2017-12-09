@@ -681,7 +681,7 @@ namespace RunningBox
             if (refreshFPS)
             {
                 _FPSWatch.Stop();
-                _FPSText = (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString();
+                _FPSText = _FPSWatch.Elapsed.Ticks > 0 ? (TimeSpan.TicksPerSecond / _FPSWatch.Elapsed.Ticks).ToString() : "--";
             }
 
             // 清除繪圖物件
@@ -698,6 +698,8 @@ namespace RunningBox
         /// </summary>
         protected virtual void Round()
         {
+            if (Global.Freeze) return;
+
             OnBeforeRound();
             EffectObjects.AllDoBeforeRound();
             GameObjects.AllAction();
