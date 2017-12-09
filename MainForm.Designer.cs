@@ -42,7 +42,10 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;
+<<<<<<< HEAD
             this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
+=======
+>>>>>>> master
             this.ResumeLayout(false);
 
         }
